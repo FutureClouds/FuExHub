@@ -1,0 +1,2513 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Future Exams Hub</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Roboto:wght@400;500&family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <!-- ===== ملفات أسئلة الشهادات - English ===== -->
+    <script src="AIF.js"></script>
+    <script src="CLF.js"></script>
+    <script src="MLA.js"></script>
+    <script src="SAA.js"></script>
+    <script src="DVA.js"></script>
+    <script src="DEA.js"></script>
+    <script src="SOA2.js"></script>
+    <script src="SOA3.js"></script>
+    <script src="AIP.js"></script>
+    <script src="SAP.js"></script>
+    <script src="DOP.js"></script>
+    <script src="MLS.js"></script>
+    <script src="ANS.js"></script>
+    <script src="SCS2.js"></script>
+    <script src="SCS3.js"></script>
+    <!-- ===== ملفات أسئلة الشهادات - العربية ===== -->
+    <script src="AIFAR.js"></script>
+    <script src="CLFAR.js"></script>
+
+    <!-- ===== FIREBASE SDK ===== -->
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+
+    <style>
+        /* ===== CSS VARIABLES - THEMES ===== */
+        [data-theme="light"] {
+            --bg-gradient: linear-gradient(45deg, #3498db, #8e44ad);
+            --text-color: #fff;
+            --container-bg: rgba(0, 0, 0, 0.7);
+            --question-bg: linear-gradient(135deg, #fff, #f8f9fa);
+            --question-text: #333;
+            --option-bg: #f8f9fa;
+            --option-hover: #e3f2fd;
+            --option-border: #ddd;
+            --header-color: #2c3e50;
+            --setup-box-bg: rgba(255,255,255,0.1);
+            --setup-box-border: rgba(255,255,255,0.2);
+            --timer-bg: linear-gradient(45deg, #2c3e50, #34495e);
+            --submit-bg: rgba(0,0,0,0.9);
+            --result-box-bg: linear-gradient(135deg, #fff, #f8f9fa);
+            --result-box-border: #ddd;
+            --result-box-text: #333;
+            --topbar-bg: linear-gradient(90deg, #0f0c29 0%, #302b63 55%, #24243e 100%);
+            --fab-dropdown-bg: rgba(12,12,22,0.97);
+            --fab-label-bg: rgba(15,15,15,0.88);
+            --fab-timer-display-bg: linear-gradient(135deg, #1a1a2e, #2c3e50);
+            --select-bg: #ecf0f1;
+            --select-color: #333;
+            --input-bg: #ecf0f1;
+            --input-color: #333;
+            --review-info-bg: rgba(0,0,0,0.1);
+            --review-explanation-bg: rgba(52,152,219,0.1);
+            --option-selected-bg: #3498db;
+            --option-selected-color: white;
+            --setup-hover-bg: rgba(138, 68, 173, 0.3);
+            --cert-card-bg: rgba(255,255,255,0.12);
+            --cert-card-border: rgba(255,255,255,0.25);
+            --cert-card-hover: rgba(255,255,255,0.22);
+        }
+
+        [data-theme="dark"] {
+            --bg-gradient: linear-gradient(135deg, #0a0a0f 0%, #0d1117 50%, #0a0e1a 100%);
+            --text-color: #c9d1d9;
+            --container-bg: rgba(13, 17, 23, 0.97);
+            --question-bg: linear-gradient(135deg, #161b22, #1c2333);
+            --question-text: #c9d1d9;
+            --option-bg: #1c2333;
+            --option-hover: #1f3a5f;
+            --option-border: #30363d;
+            --header-color: #58a6ff;
+            --setup-box-bg: rgba(22, 27, 34, 0.85);
+            --setup-box-border: rgba(48, 54, 61, 0.8);
+            --timer-bg: linear-gradient(45deg, #0d1117, #161b22);
+            --submit-bg: rgba(10, 10, 15, 0.97);
+            --result-box-bg: linear-gradient(135deg, #161b22, #1c2333);
+            --result-box-border: #30363d;
+            --result-box-text: #c9d1d9;
+            --topbar-bg: linear-gradient(90deg, #050508 0%, #0a0d14 55%, #060a10 100%);
+            --fab-dropdown-bg: rgba(5, 7, 12, 0.98);
+            --fab-label-bg: rgba(5, 7, 12, 0.95);
+            --fab-timer-display-bg: linear-gradient(135deg, #050508, #0d1117);
+            --select-bg: #161b22;
+            --select-color: #c9d1d9;
+            --input-bg: #161b22;
+            --input-color: #c9d1d9;
+            --review-info-bg: rgba(255,255,255,0.04);
+            --review-explanation-bg: rgba(88,166,255,0.08);
+            --option-selected-bg: #1f3a5f;
+            --option-selected-color: #58a6ff;
+            --setup-hover-bg: rgba(22, 40, 70, 0.85);
+            --cert-card-bg: rgba(22, 27, 34, 0.85);
+            --cert-card-border: rgba(48, 54, 61, 0.8);
+            --cert-card-hover: rgba(31, 58, 95, 0.85);
+        }
+
+        /* ===== BASE ===== */
+        * { box-sizing: border-box; }
+
+body {
+    font-family: 'Montserrat', 'Roboto', sans-serif;
+    background: var(--bg-gradient);
+    color: var(--text-color);
+    margin: 0; padding: 0;
+    min-height: 100vh;
+    overflow-x: hidden;
+    transition: all 0.3s ease;
+}
+
+        body.lang-ar,
+body.lang-ar * {
+    font-family: 'Tajawal', sans-serif !important;
+    direction: rtl;
+}
+
+        /* ===== PAGES ===== */
+        .page { display: none; }
+        .page.active { display: block; }
+
+        /* ===== QUIZ CONTAINER ===== */
+        .quiz-container {
+            width: 90%; max-width: 1200px; margin: 0 auto; padding: 20px;
+            text-align: center; background-color: var(--container-bg);
+            border-radius: 15px; box-shadow: 0 8px 16px rgba(0,0,0,0.3);
+            margin-top: 30px; margin-bottom: 30px; transition: all 0.3s ease;
+        }
+
+        h1 { color: var(--text-color); font-size: 2.5rem; margin-bottom: 20px; font-weight: 700; text-shadow: 2px 2px 4px rgba(0,0,0,0.5); }
+
+        /* ===== LANGUAGE SELECTION ===== */
+        .lang-select-wrapper { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 30px 20px; }
+        .lang-select-container { background: var(--container-bg); border-radius: 20px; padding: 50px 40px; max-width: 700px; width: 100%; box-shadow: 0 20px 60px rgba(0,0,0,0.5); text-align: center; }
+        .lang-select-logo { font-size: 3rem; margin-bottom: 10px; }
+        .lang-select-title { font-size: 1.8rem; font-weight: 700; margin-bottom: 8px; color: var(--text-color); }
+        .lang-select-subtitle { font-size: 1rem; opacity: 0.75; margin-bottom: 40px; color: var(--text-color); }
+        .lang-cards { display: flex; gap: 20px; justify-content: center; flex-wrap: wrap; }
+        .lang-card { background: var(--setup-box-bg); border: 1px solid var(--setup-box-border); border-radius: 16px; padding: 30px 40px; cursor: pointer; flex: 1; min-width: 180px; max-width: 240px; transition: all 0.3s ease; display: flex; flex-direction: column; align-items: center; gap: 12px; }
+        .lang-card:hover { background: var(--setup-hover-bg); transform: translateY(-5px); box-shadow: 0 16px 32px rgba(138,68,173,0.4); }
+        .lang-card-flag { font-size: 2.8rem; }
+        .lang-card-name { font-size: 1.3rem; font-weight: 700; color: var(--text-color); }
+        .lang-card-sub { font-size: 0.85rem; opacity: 0.7; color: var(--text-color); }
+
+        /* ===== CERTIFICATE SELECTION ===== */
+        .cert-select-wrapper { min-height: 100vh; padding: 30px 20px; }
+        .cert-select-container { background: var(--container-bg); border-radius: 20px; padding: 40px 30px; max-width: 1300px; margin: 0 auto; box-shadow: 0 20px 60px rgba(0,0,0,0.5); text-align: center; }
+        .cert-select-title { font-size: 2rem; font-weight: 700; margin-bottom: 8px; color: var(--text-color); text-align: center; }
+        .cert-select-subtitle { font-size: 1rem; opacity: 0.75; margin-bottom: 10px; color: var(--text-color); text-align: center; }
+        .back-to-cert-btn { display: inline-flex; align-items: center; gap: 8px; padding: 11px 24px; font-size: 0.95rem; background: linear-gradient(45deg, #636e72, #95a5a6); color: #fff; border: none; border-radius: 8px; cursor: pointer; transition: all 0.3s ease; margin: 0 10px 20px; font-weight: 600; box-shadow: 0 4px 8px rgba(0,0,0,0.3); }
+        .back-to-cert-btn:hover { background: linear-gradient(45deg, #2d3436, #636e72); transform: scale(1.04); }
+        .cert-level-title { font-size: 1.1rem; font-weight: 700; text-align: center; padding: 10px 5px 5px; opacity: 0.85; color: var(--text-color); border-bottom: 1px solid rgba(255,255,255,0.15); margin-bottom: 15px; margin-top: 25px; }
+        .cert-grid { display: flex; flex-wrap: wrap; gap: 16px; justify-content: center; margin-bottom: 10px; }
+        .cert-card { background: var(--cert-card-bg); border: 1px solid var(--cert-card-border); border-radius: 14px; padding: 18px 14px; cursor: pointer; width: 130px; min-height: 145px; transition: all 0.3s ease; display: flex; flex-direction: column; align-items: center; gap: 10px; text-align: center; }
+        .cert-card:hover { background: var(--cert-card-hover); transform: translateY(-4px); box-shadow: 0 12px 28px rgba(41,128,185,0.4); border-color: rgba(52,152,219,0.6); }
+        .cert-card img { width: 80px; height: 80px; object-fit: contain; border-radius: 8px; display: block; }
+        .cert-card-code { font-size: 0.78rem; font-weight: 700; color: #58a6ff; letter-spacing: 0.5px; }
+        .cert-back-btn { display: inline-flex; align-items: center; gap: 8px; padding: 12px 28px; font-size: 1rem; background: linear-gradient(45deg, #636e72, #95a5a6); color: #fff; border: none; border-radius: 8px; cursor: pointer; transition: all 0.3s ease; margin-top: 20px; font-weight: 600; box-shadow: 0 4px 8px rgba(0,0,0,0.3); }
+        .cert-back-btn:hover { background: linear-gradient(45deg, #2d3436, #636e72); transform: scale(1.04); }
+
+        /* ===== TOPBAR ===== */
+        .quiz-topbar { display: none; position: fixed; top: 0; left: 0; right: 0; z-index: 1998; height: 62px; background: var(--topbar-bg); box-shadow: 0 4px 24px rgba(0,0,0,.55); align-items: center; justify-content: space-between; padding: 0 22px; gap: 14px; }
+        .quiz-topbar.active { display: flex; }
+        .quiz-topbar.rtl-bar { direction: rtl; }
+        .quiz-topbar-left { display: flex; align-items: center; gap: 10px; flex: 1; min-width: 0; }
+        .quiz-topbar-title { color: #fff; font-size: .95rem; font-weight: 700; white-space: nowrap; opacity: .9; }
+        .quiz-topbar-info { color: rgba(255,255,255,.5); font-size: .78rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .quiz-topbar-right { display: flex; align-items: center; gap: 12px; flex-shrink: 0; }
+        .topbar-timer { display: flex; align-items: center; gap: 8px; background: rgba(255,255,255,.1); border: 1px solid rgba(255,255,255,.2); border-radius: 30px; padding: 7px 18px; transition: all .3s ease; }
+        .topbar-timer.hidden-timer { display: none !important; }
+        .topbar-timer.warning { background: rgba(231,76,60,.3); border-color: rgba(231,76,60,.7); animation: timerPulse 1s infinite; }
+        .topbar-timer-icon { font-size: 1rem; }
+        #timer { color: #fff; font-size: 1.1rem; font-weight: 700; letter-spacing: 2px; font-family: 'Courier New', monospace; min-width: 52px; }
+        .topbar-fab-btn { width: 44px; height: 44px; border-radius: 50%; background: linear-gradient(135deg, #2980b9, #8e44ad); border: none; color: white; font-size: 1.2rem; cursor: pointer; box-shadow: 0 3px 12px rgba(0,0,0,.4); transition: all .3s cubic-bezier(.34,1.56,.64,1); display: flex; align-items: center; justify-content: center; padding: 0; margin: 0; flex-shrink: 0; position: relative; z-index: 2001; }
+        .topbar-fab-btn:hover { transform: scale(1.1) rotate(15deg); background: linear-gradient(135deg, #8e44ad, #2980b9); }
+        .topbar-fab-btn.open { transform: rotate(45deg); background: linear-gradient(135deg, #e74c3c, #c0392b); }
+        .topbar-fab-btn.open:hover { transform: rotate(45deg) scale(1.08); }
+        .topbar-fab-wrapper { position: relative; }
+        .fab-dropdown { position: absolute; top: 54px; right: 0; z-index: 2100; background: var(--fab-dropdown-bg); backdrop-filter: blur(16px); border: 1px solid rgba(255,255,255,.1); border-radius: 16px; padding: 10px 8px; display: flex; flex-direction: column; gap: 8px; min-width: 210px; box-shadow: 0 10px 40px rgba(0,0,0,.55); transform: translateY(-8px) scale(.96); opacity: 0; pointer-events: none; transition: all .25s cubic-bezier(.34,1.56,.64,1); }
+        .fab-dropdown.open { transform: translateY(0) scale(1); opacity: 1; pointer-events: all; }
+        .fab-dropdown .fab-item { display: flex; align-items: center; gap: 10px; padding: 4px 6px; border-radius: 10px; transition: background .2s; }
+        .fab-dropdown .fab-item:hover { background: rgba(255,255,255,.07); }
+        .fab-dropdown .fab-item-label { color: rgba(255,255,255,.88); font-size: .85rem; font-weight: 600; flex: 1; white-space: nowrap; background: none; box-shadow: none; padding: 0; opacity: 1; transform: none; pointer-events: all; border-radius: 0; }
+        .fab-dropdown .fab-item-btn { width: 38px; height: 38px; font-size: 1rem; flex-shrink: 0; }
+        .quiz-topbar.rtl-bar .fab-dropdown { right: auto; left: 0; }
+        .quiz-topbar.rtl-bar .fab-dropdown .fab-item { flex-direction: row-reverse; }
+
+        /* ===== FAB ===== */
+        body.simple-theme-page #fabWrapper {
+            position: fixed !important;
+            top: 20px !important;
+            right: 20px !important;
+            left: auto !important;
+            display: flex !important;
+            flex-direction: column !important;
+            align-items: flex-end !important;
+            gap: 8px !important;
+            direction: ltr !important;
+            z-index: 2000 !important;
+        }
+        body.simple-theme-page #fabWrapper .fab-item {
+            flex-direction: row !important;
+            justify-content: flex-end !important;
+            width: auto !important;
+        }
+        body.simple-theme-page #fabThemeSingleItem {
+            width: auto !important;
+            display: flex !important;
+            justify-content: flex-end !important;
+            align-self: flex-end !important;
+            margin: 0 !important;
+            padding: 0 !important;
+        }
+        body.simple-theme-page #fabThemeBtnSingle {
+            margin: 0 !important;
+        }
+
+        .fab-wrapper { position: fixed; top: 20px; right: 20px; z-index: 2000; display: flex; flex-direction: column; align-items: flex-end; gap: 8px; }
+        .fab-wrapper.rtl-fab { right: auto; left: 20px; align-items: flex-start; direction: ltr; }
+        .fab-main { width: 50px; height: 50px; border-radius: 50%; background: linear-gradient(135deg, #2980b9, #8e44ad); border: none; color: white; font-size: 1.3rem; cursor: pointer; box-shadow: 0 5px 18px rgba(0,0,0,0.4); transition: all 0.3s cubic-bezier(0.34,1.56,0.64,1); display: flex; align-items: center; justify-content: center; padding: 0; margin: 0; flex-shrink: 0; }
+        .fab-main:hover { transform: scale(1.1) rotate(15deg); box-shadow: 0 8px 24px rgba(142,68,173,0.55); background: linear-gradient(135deg, #8e44ad, #2980b9); }
+        .fab-main.open { transform: rotate(45deg); background: linear-gradient(135deg, #e74c3c, #c0392b); }
+        .fab-main.open:hover { transform: rotate(45deg) scale(1.08); }
+        .fab-items { display: flex; flex-direction: column; gap: 9px; align-items: flex-end; overflow: hidden; max-height: 0; opacity: 0; transition: max-height 0.4s cubic-bezier(0.4,0,0.2,1), opacity 0.3s ease; pointer-events: none; width: 100%; }
+        .fab-wrapper.rtl-fab .fab-items { align-items: flex-start; }
+        .fab-items.open { max-height: 500px; opacity: 1; pointer-events: all; }
+        .fab-item { display: flex; align-items: center; gap: 8px; justify-content: flex-end; width: 100%; }
+        .fab-wrapper.rtl-fab .fab-item { flex-direction: row-reverse; justify-content: flex-end; }
+        .fab-item-label { background: var(--fab-label-bg); color: #fff; padding: 5px 12px; border-radius: 18px; font-size: 0.8rem; font-weight: 600; white-space: nowrap; backdrop-filter: blur(8px); opacity: 0; transform: translateX(8px); transition: all 0.28s ease; pointer-events: none; box-shadow: 0 2px 8px rgba(0,0,0,0.3); flex-shrink: 1; }
+        .fab-wrapper.rtl-fab .fab-item-label { transform: translateX(-8px); }
+        .fab-items.open .fab-item-label { opacity: 1; transform: translateX(0); }
+        .fab-item-btn { width: 42px; height: 42px; border-radius: 50%; border: none; cursor: pointer; font-size: 1.1rem; display: flex; align-items: center; justify-content: center; box-shadow: 0 3px 12px rgba(0,0,0,0.28); transition: all 0.25s cubic-bezier(0.34,1.56,0.64,1); padding: 0; margin: 0; flex-shrink: 0; }
+        .fab-item-btn:hover { transform: scale(1.15); box-shadow: 0 5px 18px rgba(0,0,0,0.38); }
+        .fab-btn-theme { background: linear-gradient(135deg, #00aeff, #8e44ad); color: white; }
+        .fab-btn-pdf { background: linear-gradient(135deg, #27ae60, #2ecc71); color: white; }
+        .fab-btn-timer-hide { background: linear-gradient(135deg, #e74c3c, #c0392b); color: white; }
+        .fab-btn-timer-show { background: linear-gradient(135deg, #27ae60, #16a085); color: white; }
+        .fab-backdrop { position: fixed; inset: 0; z-index: 1999; display: none; }
+        .fab-backdrop.open { display: block; }
+
+        @keyframes timerPulse {
+            0%, 100% { transform: scale(1); box-shadow: 0 3px 12px rgba(231,76,60,0.4); }
+            50% { transform: scale(1.06); box-shadow: 0 5px 18px rgba(231,76,60,0.7); }
+        }
+
+        #page2.page.active { padding-top: 62px; }
+
+        @media (max-width: 768px) {
+            .fab-wrapper { top: 12px; right: 12px; }
+            body.simple-theme-page #fabWrapper {
+                top: 12px !important;
+                right: 12px !important;
+                left: auto !important;
+            }
+            .fab-wrapper.rtl-fab { right: auto; left: 12px; }
+            .fab-main { width: 44px; height: 44px; font-size: 1.15rem; }
+            .fab-item-btn { width: 38px; height: 38px; font-size: 1rem; }
+        }
+
+        /* ===== SETUP ===== */
+        .setup-container { display: flex; flex-direction: column; align-items: center; margin: 40px 0; gap: 30px; }
+        .setup-box { background: var(--setup-box-bg); padding: 30px; border-radius: 15px; min-width: 400px; backdrop-filter: blur(10px); border: 1px solid var(--setup-box-border); text-align: center; transition: all 0.3s ease; }
+        .setup-box:hover { background: var(--setup-hover-bg); transform: translateY(-3px); box-shadow: 0 12px 24px rgba(138,68,173,0.4); }
+        .setup-box h3 { font-size: 1.5rem; margin-bottom: 20px; color: var(--text-color); }
+
+        select { padding: 15px; margin: 10px; font-size: 1.1rem; background-color: var(--select-bg); color: var(--select-color); border: 1px solid var(--option-border); border-radius: 8px; width: 200px; cursor: pointer; }
+
+        button { padding: 15px 30px; font-size: 1.2rem; background: linear-gradient(45deg, #2980b9, #3498db); color: #fff; border: none; border-radius: 8px; cursor: pointer; transition: all 0.3s ease; margin: 20px 10px; font-weight: 600; box-shadow: 0 4px 8px rgba(0,0,0,0.3); }
+        button:hover { background: linear-gradient(45deg, #8e44ad, #9b59b6); transform: scale(1.05); }
+        button:disabled { background: #95a5a6; cursor: not-allowed; transform: none; }
+
+        /* ===== MODE SELECTION ===== */
+        .mode-selection-container { display: flex; gap: 20px; justify-content: center; flex-wrap: wrap; margin: 30px 0; }
+        .mode-card { background: var(--setup-box-bg); border: 1px solid var(--setup-box-border); border-radius: 15px; padding: 30px 25px; max-width: 280px; flex: 1; min-width: 220px; cursor: pointer; transition: all 0.3s ease; text-align: center; }
+        .mode-card:hover { background: var(--setup-hover-bg); transform: translateY(-3px); box-shadow: 0 12px 24px rgba(138,68,173,0.4); }
+        .mode-card h3 { font-size: 1.3rem; margin: 12px 0 8px; color: var(--text-color); }
+        .mode-card p { font-size: 0.9rem; opacity: 0.8; color: var(--text-color); margin-bottom: 16px; }
+        .mode-icon { font-size: 2.5rem; }
+        .mode-select-btn { padding: 10px 22px; font-size: 1rem; margin: 0; background: linear-gradient(45deg, #2980b9, #8e44ad); }
+
+        /* ===== QUESTIONS ===== */
+        .question { background: var(--question-bg); padding: 25px; margin: 20px 0; border-radius: 15px; box-shadow: 0 8px 16px rgba(0,0,0,0.2); transition: all 0.3s ease; text-align: left; color: var(--question-text); }
+        body.lang-ar .question { text-align: right; }
+        .question:hover { transform: translateY(-2px); box-shadow: 0 12px 24px rgba(0,0,0,0.3); }
+        .question h3 { color: var(--header-color); font-size: 1.3rem; margin-bottom: 20px; font-weight: 600; }
+        .option { display: block; padding: 15px; margin: 10px 0; border: 2px solid var(--option-border); border-radius: 8px; cursor: pointer; transition: all 0.3s ease; background: var(--option-bg); color: var(--question-text); }
+        .option:hover { background: var(--option-hover); border-color: #3498db; }
+        .option input[type="checkbox"], .option input[type="radio"] { margin-right: 10px; transform: scale(1.2); }
+        body.lang-ar .option input[type="checkbox"], body.lang-ar .option input[type="radio"] { margin-right: 0; margin-left: 10px; }
+        .option.selected { background: var(--option-selected-bg); color: var(--option-selected-color); border-color: #2980b9; }
+        .question-image { max-width: 100%; height: auto; margin: 15px 0; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.2); display: block; }
+        .option-image { max-width: 400px; height: auto; margin: 10px 0; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.2); display: block; }
+        @media (max-width: 768px) { .option-image { max-width: 300px; } }
+        @media (max-width: 480px) { .option-image { max-width: 250px; } }
+        .image-container { text-align: center; margin: 15px 0; }
+        .option-content { display: flex; align-items: flex-start; gap: 15px; }
+        .option-text { flex: 1; }
+        .warning { color: #e74c3c; font-weight: bold; margin: 10px 0; }
+
+        /* ===== RESULTS ===== */
+        .result-container { display: flex; flex-wrap: wrap; justify-content: space-around; margin: 30px 0; gap: 20px; align-items: stretch; }
+        .result-box { background: var(--result-box-bg); padding: 30px; border-radius: 15px; min-width: 250px; backdrop-filter: blur(10px); border: 1px solid var(--result-box-border); flex: 1; max-width: 300px; color: var(--result-box-text); display: flex; flex-direction: column; }
+        .result-box-title { font-size: 1.5rem; font-weight: 700; color: var(--result-box-text); margin-bottom: 15px; text-align: center; }
+        .result-box-main { display: flex; align-items: center; justify-content: center; text-align: center; flex: 1; }
+        .result-box-sub { display: flex; align-items: center; justify-content: center; text-align: center; min-height: 38px; margin-top: 8px; }
+        .result-box h3 { font-size: 1.5rem; margin-bottom: 15px; color: var(--result-box-text); }
+
+        /* ===== STATISTICS BOX - FIXED CENTER ===== */
+        .statistics-box {
+            min-width: unset;
+            max-width: 100%;
+            text-align: center;
+            background: var(--result-box-bg);
+            border: 1px solid var(--result-box-border);
+            color: var(--result-box-text);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        .statistics-box h3,
+        .statistics-box p {
+            text-align: center;
+            width: 100%;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        body.lang-ar .statistics-box,
+        body.lang-ar .statistics-box h3,
+        body.lang-ar .statistics-box p {
+            text-align: center;
+        }
+
+        .success { color: #2ecc71; font-weight: bold; }
+        .failure { color: #e74c3c; font-weight: bold; }
+
+        /* ===== MOTIVATIONAL ===== */
+        .motivational-message { font-size: 1.3rem; margin: 20px 0; padding: 20px; border-radius: 10px; background: var(--result-box-bg); backdrop-filter: blur(10px); border: 1px solid var(--result-box-border); color: var(--result-box-text); }
+
+        /* ===== REVIEW ===== */
+        .review-item { border: 1px solid var(--result-box-border); border-radius: 10px; margin: 10px 0; overflow: hidden; background: var(--result-box-bg); }
+        .review-item.correct .review-item-header:hover,
+        .review-item.correct .review-item-header.open { background: rgba(39,174,96,0.15); }
+        .review-item.wrong .review-item-header:hover,
+        .review-item.wrong .review-item-header.open { background: rgba(231,76,60,0.15); }
+        .review-item-header { display: flex; justify-content: space-between; align-items: center; padding: 14px 18px; cursor: pointer; user-select: none; background: transparent; transition: background 0.2s; }
+        .review-item-left { display: flex; align-items: center; gap: 10px; }
+        .review-item-arrow { font-size: 0.8rem; color: var(--result-box-text); opacity: 0.55; transition: transform 0.3s ease; display: inline-block; }
+        .review-item-arrow.open { transform: rotate(180deg); }
+        .review-q-label { font-weight: 700; font-size: 1rem; color: var(--result-box-text); }
+        .review-score-badge { padding: 4px 10px; border-radius: 6px; font-size: 0.85rem; font-weight: 700; min-width: 42px; text-align: center; }
+        .review-score-badge.correct { background: rgba(39,174,96,0.2); color: #27ae60; }
+        .review-score-badge.wrong { background: rgba(231,76,60,0.15); color: #e74c3c; }
+        .review-item-body { max-height: 0; overflow: hidden; transition: max-height 0.4s cubic-bezier(0.4,0,0.2,1); }
+        .review-item-body.open { max-height: 2000px; }
+        .review-question { padding: 16px 18px 18px; color: var(--result-box-text); text-align: left; direction: ltr; }
+        .review-question h4, .review-question p, .review-question label { text-align: left; }
+        body.lang-ar .review-question { text-align: right; direction: rtl; }
+        body.lang-ar .review-question h4,
+        body.lang-ar .review-question p,
+        body.lang-ar .review-question label { text-align: right; }
+        body.lang-ar .review-info-box,
+        body.lang-ar .review-explanation-box { text-align: right; direction: rtl; }
+        .user-correct-label { color: #27ae60; font-weight: 700; }
+        .user-wrong-label { color: #e74c3c; font-weight: 700; }
+        .user-correct-answer { color: #27ae60; }
+        .user-wrong-answer { color: #e74c3c; }
+        .correct-answer-label { color: #3498db; font-weight: 700; }
+        .correct-answer-text { color: #3498db; }
+
+        .review-source-box { margin-top: 12px; padding: 10px; background: var(--review-info-bg); border-radius: 8px; display: flex; gap: 8px; align-items: center; }
+        .review-source-label { font-weight: 700; font-size: 0.9rem; color: #000; white-space: nowrap; }
+        [data-theme="dark"] .review-source-label { color: #fff; }
+        .review-source-link { color: #8e44ad; font-weight: 700; font-size: 0.9rem; text-decoration: none; transition: color 0.2s ease; }
+        .review-source-link:hover { color: #bc92ce; text-decoration: underline; }
+
+        .review-info-box {
+            margin-bottom: 15px;
+            padding: 10px;
+            background: var(--review-info-bg);
+            border-radius: 8px;
+            text-align: left;
+        }
+        .review-explanation-box {
+            padding: 10px;
+            background: var(--review-explanation-bg);
+            border-radius: 8px;
+            text-align: left;
+        }
+        body.lang-ar .review-info-box,
+        body.lang-ar .review-explanation-box {
+            text-align: right;
+            direction: rtl;
+        }
+
+        /* ===== SUBMIT ===== */
+        .submit-container { background: var(--submit-bg); padding: 20px; border-radius: 10px; margin-top: 30px; text-align: center; box-shadow: 0 4px 12px rgba(0,0,0,0.3); }
+
+        /* ===== COMPOSITE ===== */
+        .composite-questions { margin-top: 15px; }
+        .sub-question { margin: 10px 0; border: 1px solid var(--option-border); border-radius: 8px; overflow: hidden; }
+        .sub-question-header { display: flex; justify-content: space-between; align-items: center; padding: 12px 15px; cursor: pointer; background: var(--option-bg); color: var(--question-text); transition: background 0.2s; }
+        .sub-question-header:hover { background: var(--option-hover); }
+        .sub-question-text { flex: 1; font-weight: 600; }
+        .toggle-arrow { font-size: 0.9rem; transition: transform 0.3s ease; }
+        .sub-question-options { display: flex; flex-wrap: wrap; gap: 10px; padding: 12px 15px; background: var(--question-bg); }
+        .horizontal-option { display: flex; align-items: center; gap: 8px; padding: 8px 14px; border: 2px solid var(--option-border); border-radius: 20px; cursor: pointer; transition: all 0.2s; background: var(--option-bg); color: var(--question-text); font-size: 0.9rem; }
+        .horizontal-option:hover { background: var(--option-hover); border-color: #3498db; }
+        .horizontal-option.selected { background: var(--option-selected-bg); color: var(--option-selected-color); border-color: #2980b9; }
+        .horizontal-option input { margin: 0; transform: scale(1.1); }
+
+        /* ===== HOTSPOT ===== */
+        .hotspot-table { width: 100%; border-collapse: collapse; margin: 14px 0; font-size: 0.93rem; }
+        .hotspot-table th { background: linear-gradient(135deg, #2980b9, #8e44ad); color: #fff; padding: 10px 14px; text-align: left; font-weight: 700; }
+        body.lang-ar .hotspot-table th { text-align: right; }
+        .hotspot-table td { padding: 11px 14px; border-bottom: 1px solid var(--option-border); color: var(--question-text); vertical-align: middle; background: var(--option-bg); }
+        body.lang-ar .hotspot-table td { text-align: right; }
+        .hotspot-table tr:last-child td { border-bottom: none; }
+        .hotspot-table tr:hover td { background: var(--option-hover); }
+        .hotspot-row-select { padding: 9px 12px; font-size: 0.95rem; background-color: var(--select-bg); color: var(--select-color); border: 2px solid var(--option-border); border-radius: 8px; width: 100%; cursor: pointer; transition: border-color 0.2s; font-family: inherit; }
+        .hotspot-row-select:focus { outline: none; border-color: #3498db; }
+        .hotspot-row-select.answered { border-color: #3498db; }
+        .hotspot-row-select option[value=""] { color: #aaa; }
+        .hotspot-td-select { min-width: 190px; }
+        .hotspot-review-table { width: 100%; border-collapse: collapse; margin: 14px 0; font-size: 0.93rem; }
+        .hotspot-review-table th { background: linear-gradient(135deg, #2980b9, #8e44ad); color: #fff; padding: 10px 14px; text-align: left; font-weight: 700; }
+        body.lang-ar .hotspot-review-table th { text-align: right; }
+        .hotspot-review-table td { padding: 11px 14px; border-bottom: 1px solid var(--option-border); color: var(--question-text); vertical-align: middle; background: var(--option-bg); }
+        .hotspot-review-table tr:last-child td { border-bottom: none; }
+        .hotspot-correct-cell { color: #27ae60; font-weight: 700; }
+        .hotspot-wrong-cell { color: #e74c3c; font-weight: 700; }
+        .hotspot-expected-cell { color: #3498db; font-weight: 700; }
+
+        /* ===== CUSTOM RANGE ===== */
+        .range-row { display: flex; align-items: center; gap: 12px; justify-content: center; flex-wrap: wrap; margin: 10px 0; }
+        .range-label { font-size: 1rem; color: var(--text-color); font-weight: 600; }
+        .custom-range-input { padding: 10px 14px; font-size: 1.1rem; width: 100px; background-color: var(--input-bg); color: var(--input-color); border: 1px solid var(--option-border); border-radius: 8px; text-align: center; }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 600px) {
+            .setup-box { min-width: unset; width: 100%; }
+            h1 { font-size: 1.8rem; }
+            .cert-card { width: 100px; min-height: 125px; }
+            .cert-card img { width: 58px; height: 58px; }
+            .lang-card { min-width: 140px; padding: 22px 20px; }
+        }
+    
+.lang-select-subtitle {
+    font-family: 'Tajawal', sans-serif !important;
+}
+
+
+        body.lang-ar .setup-action-buttons {
+            flex-direction: row-reverse !important;
+        }
+
+        /* ===================================================== */
+        /* ===== AUTH PAGE STYLES (NEW)                    ===== */
+        /* ===================================================== */
+        .auth-wrapper { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 30px 20px; }
+        .auth-container { background: var(--container-bg); border-radius: 24px; padding: 48px 40px; max-width: 460px; width: 100%; box-shadow: 0 24px 64px rgba(0,0,0,0.55); text-align: center; }
+        .auth-logo { font-size: 3rem; margin-bottom: 10px; }
+        .auth-title { font-size: 1.9rem; font-weight: 700; color: var(--text-color); margin-bottom: 6px; }
+        .auth-subtitle { font-size: 0.95rem; opacity: 0.7; color: var(--text-color); margin-bottom: 36px; font-family: 'Tajawal', sans-serif; }
+
+        .auth-btn-google {
+            display: flex; align-items: center; justify-content: center; gap: 12px;
+            width: 100%; padding: 14px 20px; font-size: 1rem; font-weight: 700;
+            background: #fff; color: #333; border: 2px solid #ddd; border-radius: 12px;
+            cursor: pointer; transition: all 0.3s ease; margin: 0 0 14px 0;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+        .auth-btn-google:hover { background: #f5f5f5; transform: translateY(-2px); box-shadow: 0 6px 18px rgba(0,0,0,0.2); }
+        .auth-btn-google img { width: 22px; height: 22px; }
+
+        .auth-separator { display: flex; align-items: center; gap: 12px; margin: 20px 0; color: rgba(255,255,255,0.45); font-size: 0.85rem; }
+        .auth-separator::before, .auth-separator::after { content: ''; flex: 1; height: 1px; background: rgba(255,255,255,0.15); }
+
+        .auth-input { width: 100%; padding: 13px 16px; font-size: 1rem; background: var(--input-bg); color: var(--input-color); border: 1.5px solid var(--option-border); border-radius: 10px; margin-bottom: 12px; font-family: inherit; transition: border-color 0.2s; outline: none; box-sizing: border-box; }
+        .auth-input:focus { border-color: #3498db; }
+
+        .auth-btn-primary { width: 100%; padding: 13px; font-size: 1rem; font-weight: 700; background: linear-gradient(45deg, #2980b9, #8e44ad); color: #fff; border: none; border-radius: 10px; cursor: pointer; margin: 4px 0; transition: all 0.3s ease; box-shadow: 0 4px 12px rgba(0,0,0,0.3); }
+        .auth-btn-primary:hover { transform: translateY(-2px); box-shadow: 0 6px 18px rgba(142,68,173,0.4); }
+
+        .auth-btn-secondary { width: 100%; padding: 12px; font-size: 0.95rem; font-weight: 600; background: transparent; color: var(--text-color); border: 1.5px solid rgba(255,255,255,0.2); border-radius: 10px; cursor: pointer; margin: 4px 0; transition: all 0.3s ease; }
+        .auth-btn-secondary:hover { background: rgba(255,255,255,0.08); transform: translateY(-1px); }
+
+        .auth-toggle-row { margin-top: 18px; font-size: 0.88rem; color: rgba(255,255,255,0.6); }
+        .auth-toggle-link { color: #58a6ff; cursor: pointer; font-weight: 600; text-decoration: underline; }
+        .auth-toggle-link:hover { color: #79b8ff; }
+
+        .auth-guest-row { margin-top: 24px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.1); }
+        .auth-btn-guest { background: transparent; color: rgba(255,255,255,0.55); font-size: 0.88rem; border: none; cursor: pointer; padding: 8px 16px; margin: 0; transition: color 0.2s; text-decoration: underline; font-weight: 600; box-shadow: none; }
+        .auth-btn-guest:hover { background: transparent; color: rgba(255,255,255,0.85); transform: none; }
+
+        .auth-error { color: #e74c3c; font-size: 0.88rem; margin: 8px 0; min-height: 20px; }
+        .auth-loading { display: inline-block; width: 18px; height: 18px; border: 3px solid rgba(255,255,255,0.3); border-top-color: #fff; border-radius: 50%; animation: spin 0.8s linear infinite; vertical-align: middle; margin-left: 8px; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* ===== USER BAR (small banner when logged in) ===== */
+        .user-info-bar {
+            position: fixed; bottom: 0; left: 0; right: 0; z-index: 1997;
+            background: rgba(0,0,0,0.82); backdrop-filter: blur(12px);
+            padding: 8px 20px; display: none; align-items: center;
+            justify-content: space-between; gap: 12px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+        .user-info-bar.show { display: flex; }
+        .user-info-bar-left { display: flex; align-items: center; gap: 10px; }
+        .user-info-avatar { width: 30px; height: 30px; border-radius: 50%; object-fit: cover; border: 2px solid rgba(255,255,255,0.3); }
+        .user-info-name { color: #fff; font-size: 0.85rem; font-weight: 600; opacity: 0.9; }
+        .user-info-attempts { color: rgba(255,255,255,0.55); font-size: 0.78rem; }
+        .user-info-bar-right { display: flex; align-items: center; gap: 10px; }
+        .user-info-btn { background: transparent; color: rgba(255,255,255,0.7); font-size: 0.8rem; border: 1px solid rgba(255,255,255,0.2); border-radius: 6px; padding: 5px 12px; cursor: pointer; margin: 0; font-weight: 600; transition: all 0.2s; box-shadow: none; }
+        .user-info-btn:hover { background: rgba(255,255,255,0.1); color: #fff; transform: none; }
+        .user-info-btn.my-results-btn { background: linear-gradient(45deg, #e67e22, #f39c12); color: #fff; border-color: transparent; }
+        .user-info-btn.my-results-btn:hover { background: linear-gradient(45deg, #d35400, #e67e22); }
+
+        /* Guest notice banner on page3 */
+        .guest-notice-banner {
+            background: linear-gradient(135deg, #2980b9, #8e44ad);
+            border: none;
+            border-radius: 16px; padding: 20px 28px; margin: 16px 0 8px;
+            color: #fff; display: none;
+            box-shadow: 0 6px 24px rgba(142,68,173,0.35);
+        }
+        .guest-notice-banner.show { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; text-align: center; }
+        .guest-notice-banner-text { text-align: center; }
+        .guest-notice-banner strong { color: #fff; font-size: 1rem; display: block; margin-bottom: 4px; text-shadow: 0 1px 3px rgba(0,0,0,0.4); }
+        .guest-notice-banner-sub { font-size: 0.85rem; color: rgba(255,255,255,0.85); font-family: 'Tajawal', sans-serif; }
+        .guest-notice-login-btn {
+            display: inline-flex; align-items: center; gap: 8px;
+            padding: 11px 22px; font-size: 0.9rem; font-weight: 700;
+            background: linear-gradient(45deg, #2980b9, #8e44ad);
+            color: #fff !important; border: none; border-radius: 10px; cursor: pointer;
+            margin: 0 !important; transition: all 0.3s ease;
+            box-shadow: 0 4px 14px rgba(142,68,173,0.35); white-space: nowrap; flex-shrink: 0;
+        }
+        .guest-notice-login-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(142,68,173,0.5); background: linear-gradient(45deg, #8e44ad, #2980b9); }
+
+        /* Attempt limit warning */
+        .attempt-limit-overlay {
+            position: fixed; inset: 0; z-index: 9999;
+            background: rgba(0,0,0,0.85); display: none;
+            align-items: center; justify-content: center;
+            padding: 20px;
+        }
+        .attempt-limit-overlay.show { display: flex; }
+        .attempt-limit-box {
+            background: var(--container-bg); border-radius: 20px;
+            padding: 44px 36px; max-width: 440px; width: 100%;
+            text-align: center; box-shadow: 0 20px 60px rgba(0,0,0,0.6);
+            border: 1px solid rgba(231,76,60,0.3);
+        }
+        .attempt-limit-icon { font-size: 3.5rem; margin-bottom: 16px; }
+        .attempt-limit-title { font-size: 1.5rem; font-weight: 700; color: #e74c3c; margin-bottom: 10px; }
+        .attempt-limit-msg { color: var(--text-color); opacity: 0.85; font-size: 1rem; margin-bottom: 8px; }
+        .attempt-limit-timer { font-size: 1.8rem; font-weight: 700; color: #f39c12; font-family: 'Courier New', monospace; margin: 16px 0; }
+        .attempt-limit-close-btn { padding: 12px 28px; font-size: 1rem; background: linear-gradient(45deg, #636e72, #95a5a6); margin: 0; }
+
+        /* ===== MY RESULTS PAGE ===== */
+        .my-results-wrapper { min-height: 100vh; padding: 30px 20px; }
+        .my-results-container { background: var(--container-bg); border-radius: 20px; padding: 40px 30px; max-width: 900px; margin: 0 auto; box-shadow: 0 20px 60px rgba(0,0,0,0.5); }
+        .my-results-title { font-size: 1.8rem; font-weight: 700; color: var(--text-color); text-align: center; margin-bottom: 8px; }
+        .my-results-subtitle { font-size: 0.95rem; opacity: 0.65; color: var(--text-color); text-align: center; margin-bottom: 30px; font-family: 'Tajawal', sans-serif; }
+        .my-results-table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        .my-results-table th { background: linear-gradient(135deg, #2980b9, #8e44ad); color: #fff; padding: 12px 14px; text-align: center; font-weight: 700; font-size: 0.9rem; }
+        .my-results-table td { padding: 13px 14px; border-bottom: 1px solid var(--option-border); color: var(--result-box-text); background: var(--result-box-bg); text-align: center; font-size: 0.92rem; vertical-align: middle; }
+        .my-results-table tr:last-child td { border-bottom: none; }
+        .my-results-table tr:hover td { background: var(--option-hover); }
+        .result-badge-pass { display: inline-block; background: rgba(39,174,96,0.2); color: #27ae60; font-weight: 700; padding: 4px 12px; border-radius: 20px; font-size: 0.85rem; border: 1px solid rgba(39,174,96,0.3); }
+        .result-badge-fail { display: inline-block; background: rgba(231,76,60,0.15); color: #e74c3c; font-weight: 700; padding: 4px 12px; border-radius: 20px; font-size: 0.85rem; border: 1px solid rgba(231,76,60,0.2); }
+        .result-lang-badge { display: inline-block; background: rgba(52,152,219,0.15); color: #3498db; font-weight: 700; padding: 3px 10px; border-radius: 20px; font-size: 0.8rem; }
+        .my-results-empty { text-align: center; padding: 50px 20px; color: var(--text-color); opacity: 0.65; font-size: 1.1rem; }
+        .my-results-loading { text-align: center; padding: 40px; color: var(--text-color); opacity: 0.7; }
+        .my-results-stats-row { display: flex; gap: 14px; flex-wrap: wrap; justify-content: center; margin-bottom: 24px; }
+        .my-results-stat { background: var(--setup-box-bg); border: 1px solid var(--setup-box-border); border-radius: 12px; padding: 16px 24px; text-align: center; flex: 1; min-width: 130px; }
+        .my-results-stat-val { font-size: 1.8rem; font-weight: 700; color: var(--text-color); }
+        .my-results-stat-label { font-size: 0.8rem; opacity: 0.65; color: var(--text-color); margin-top: 4px; font-family: 'Tajawal', sans-serif; }
+
+        @media (max-width: 600px) {
+            .auth-container { padding: 36px 24px; }
+            .my-results-table th, .my-results-table td { padding: 10px 8px; font-size: 0.82rem; }
+        }
+
+</style>
+</head>
+<body data-theme="light">
+
+<!-- ===================================================== -->
+<!-- PAGE: AUTH (NEW) - Login / Register / Guest           -->
+<!-- ===================================================== -->
+<div id="pageAuth" class="page active">
+    <div class="auth-wrapper">
+        <div class="auth-container">
+            <div class="auth-logo">☁️</div>
+            <div class="auth-title">FuExHub</div>
+            <div class="auth-subtitle">سجّل دخولك لحفظ نتائجك · Login to save your results</div>
+
+            <!-- Google Sign In -->
+            <button class="auth-btn-google" onclick="authLoginGoogle()">
+                <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google">
+                Continue with Google
+            </button>
+
+            <!-- Email / Password form -->
+            <div class="auth-separator">or</div>
+
+            <div id="authFormLogin">
+                <input type="email" id="authEmail" class="auth-input" placeholder="Email / البريد الإلكتروني" autocomplete="email">
+                <input type="password" id="authPassword" class="auth-input" placeholder="Password / كلمة المرور" autocomplete="current-password">
+                <div class="auth-error" id="authError"></div>
+                <button class="auth-btn-primary" onclick="authLoginEmail()">Login / تسجيل الدخول</button>
+                <button class="auth-btn-secondary" onclick="authShowRegister()">New account / حساب جديد</button>
+            </div>
+
+            <div id="authFormRegister" style="display:none;">
+                <input type="text" id="authRegName" class="auth-input" placeholder="Your name / اسمك" autocomplete="name">
+                <input type="email" id="authRegEmail" class="auth-input" placeholder="Email / البريد الإلكتروني" autocomplete="email">
+                <input type="password" id="authRegPassword" class="auth-input" placeholder="Password (min 6 chars) / كلمة المرور" autocomplete="new-password">
+                <div class="auth-error" id="authRegError"></div>
+                <button class="auth-btn-primary" onclick="authRegisterEmail()">Create Account / إنشاء حساب</button>
+                <button class="auth-btn-secondary" onclick="authShowLogin()">Back to Login / العودة للدخول</button>
+            </div>
+
+            <div class="auth-guest-row">
+                <button class="auth-btn-guest" onclick="authContinueAsGuest()">
+                    Continue as guest (results won't be saved) / دخول كضيف (لن تُحفظ النتائج)
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ===================================================== -->
+<!-- PAGE: LANGUAGE SELECTION                              -->
+<!-- ===================================================== -->
+<div id="pageLang" class="page">
+    <div class="lang-select-wrapper">
+        <div class="lang-select-container">
+            <div class="lang-select-logo">☁️</div>
+            <div class="lang-select-title">FuExHub</div>
+<div class="lang-select-subtitle">
+    Please select your preferred language |
+    <span class="ar-text">اختر اللغة المفضلة</span>
+</div>
+            <div class="lang-cards">
+
+            <div class="lang-card" onclick="selectLanguage('en')">
+    <div class="lang-card-flag">
+        <img src="https://flagcdn.com/w80/us.png" style="width:50px;">
+    </div>
+    <div class="lang-card-name">US</div>
+</div>
+
+<div class="lang-card" onclick="selectLanguage('ar')">
+    <div class="lang-card-flag">
+        <img src="https://flagcdn.com/w80/sa.png" style="width:50px;">
+    </div>
+    <div class="lang-card-name">AR</div>
+</div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ===================================================== -->
+<!-- PAGE: CERTIFICATE SELECTION - ENGLISH                 -->
+<!-- ===================================================== -->
+<div id="pageCertEN" class="page">
+    <div class="cert-select-wrapper">
+        <div class="cert-select-container">
+            <div class="cert-select-title">Select Your AWS Certification</div>
+            <div class="cert-select-subtitle">Choose the exam you want to practice</div>
+            <div class="cert-level-title">⚫️ Foundational</div>
+            <div class="cert-grid">
+                <div class="cert-card" onclick="loadCert('en','AIF','AIF-C01','AWS Certified AI Practitioner','120','65','700','BOOKAWSAIF.com')">
+                    <img src="AIF.png" alt="AIF" onerror="this.style.background='#2980b9';this.style.borderRadius='50%';">
+                    <div class="cert-card-code">AIF-C01</div>
+                </div>
+                <div class="cert-card" onclick="loadCert('en','CLF','CLF-C02','AWS Certified Cloud Practitioner','120','65','700','BOOKAWSCLF.com')">
+                    <img src="CLF.png" alt="CLF" onerror="this.style.background='#27ae60';this.style.borderRadius='50%';">
+                    <div class="cert-card-code">CLF-C02</div>
+                </div>
+            </div>
+            <div class="cert-level-title">🔵 Associate</div>
+            <div class="cert-grid">
+                <div class="cert-card" onclick="loadCert('en','MLA','MLA-C01','AWS Certified Machine Learning Engineer','160','65','720','BOOKAWSMLA.com')">
+                    <img src="MLA.png" alt="MLA" onerror="this.style.background='#8e44ad';this.style.borderRadius='50%';">
+                    <div class="cert-card-code">MLA-C01</div>
+                </div>
+                <div class="cert-card" onclick="loadCert('en','SAA','SAA-C03','AWS Certified Solutions Architect','160','65','720','BOOKAWSSAA.com')">
+                    <img src="SAA.png" alt="SAA" onerror="this.style.background='#e67e22';this.style.borderRadius='50%';">
+                    <div class="cert-card-code">SAA-C03</div>
+                </div>
+                <div class="cert-card" onclick="loadCert('en','DVA','DVA-C02','AWS Certified Developer','160','65','720','BOOKAWSDVA.com')">
+                    <img src="DVA.png" alt="DVA" onerror="this.style.background='#16a085';this.style.borderRadius='50%';">
+                    <div class="cert-card-code">DVA-C02</div>
+                </div>
+                <div class="cert-card" onclick="loadCert('en','DEA','DEA-C01','AWS Certified Data Engineer','160','65','720','BOOKAWSDEA.com')">
+                    <img src="DEA.png" alt="DEA" onerror="this.style.background='#2980b9';this.style.borderRadius='50%';">
+                    <div class="cert-card-code">DEA-C01</div>
+                </div>
+                <div class="cert-card" onclick="loadCert('en','SOA2','SOA-C02','AWS Certified SysOps Administrator','160','65','720','BOOKAWSSOA2.com')">
+                    <img src="SOA2.png" alt="SOA2" onerror="this.style.background='#c0392b';this.style.borderRadius='50%';">
+                    <div class="cert-card-code">SOA-C02</div>
+                </div>
+                <div class="cert-card" onclick="loadCert('en','SOA3','SOA-C03','AWS Certified CloudOps Engineer','160','65','720','BOOKAWSSOA3.com')">
+                    <img src="SOA3.png" alt="SOA3" onerror="this.style.background='#c0392b';this.style.borderRadius='50%';">
+                    <div class="cert-card-code">SOA-C03</div>
+                </div>
+            </div>
+            <div class="cert-level-title">🟢 Professional</div>
+            <div class="cert-grid">
+                <div class="cert-card" onclick="loadCert('en','AIP','AIP-C01','AWS Certified Generative AI Developer','210','75','750','BOOKAWSAIP.com')">
+                    <img src="AIP.png" alt="AIP" onerror="this.style.background='#8e44ad';this.style.borderRadius='50%';">
+                    <div class="cert-card-code">AIP-C01</div>
+                </div>
+                <div class="cert-card" onclick="loadCert('en','SAP','SAP-C02','AWS Certified Solutions Architect','210','75','750','BOOKAWSSAP.com')">
+                    <img src="SAP.png" alt="SAP" onerror="this.style.background='#e67e22';this.style.borderRadius='50%';">
+                    <div class="cert-card-code">SAP-C02</div>
+                </div>
+                <div class="cert-card" onclick="loadCert('en','DOP','DOP-C02','AWS Certified DevOps Engineer','210','75','750','BOOKAWSDOP.com')">
+                    <img src="DOP.png" alt="DOP" onerror="this.style.background='#16a085';this.style.borderRadius='50%';">
+                    <div class="cert-card-code">DOP-C02</div>
+                </div>
+            </div>
+            <div class="cert-level-title">🟣 Specialty</div>
+            <div class="cert-grid">
+                <div class="cert-card" onclick="loadCert('en','MLS','MLS-C01','AWS Certified Machine Learning','210','65','750','BOOKAWSMLS.com')">
+                    <img src="MLS.png" alt="MLS" onerror="this.style.background='#8e44ad';this.style.borderRadius='50%';">
+                    <div class="cert-card-code">MLS-C01</div>
+                </div>
+                <div class="cert-card" onclick="loadCert('en','ANS','ANS-C01','AWS Certified Advanced Networking','210','65','750','BOOKAWSANS.com')">
+                    <img src="ANS.png" alt="ANS" onerror="this.style.background='#2980b9';this.style.borderRadius='50%';">
+                    <div class="cert-card-code">ANS-C01</div>
+                </div>
+                <div class="cert-card" onclick="loadCert('en','SCS2','SCS-C02','AWS Certified Security','210','65','750','BOOKAWSSCS2.com')">
+                    <img src="SCS2.png" alt="SCS2" onerror="this.style.background='#c0392b';this.style.borderRadius='50%';">
+                    <div class="cert-card-code">SCS-C02</div>
+                </div>
+                <div class="cert-card" onclick="loadCert('en','SCS3','SCS-C03','AWS Certified Security','210','65','750','BOOKAWSSCS3.com')">
+                    <img src="SCS3.png" alt="SCS3" onerror="this.style.background='#c0392b';this.style.borderRadius='50%';">
+                    <div class="cert-card-code">SCS-C03</div>
+                </div>
+            </div>
+            <div style="text-align:center; margin-top:30px;">
+                <button class="cert-back-btn" onclick="goBackToLang()">← Back to Language</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ===================================================== -->
+<!-- PAGE: CERTIFICATE SELECTION - ARABIC                  -->
+<!-- ===================================================== -->
+<div id="pageCertAR" class="page">
+    <div class="cert-select-wrapper">
+        <div class="cert-select-container">
+            <div class="cert-select-title" style="font-family:'Tajawal',sans-serif;">اختر شهادتك من AWS</div>
+            <div class="cert-select-subtitle" style="font-family:'Tajawal',sans-serif;">اختر الاختبار الذي تريد التدرب عليه</div>
+            <div class="cert-level-title" style="font-family:'Tajawal',sans-serif;">⚫️ التأسيسية</div>
+            <div class="cert-grid">
+                <div class="cert-card" onclick="loadCert('ar','CLFAR','CLF-C02','شهادة AWS ممارس الحوسبة السحابية التأسيسية','120','65','700','BOOKAWSCLFAR.com')">
+                    <img src="CLF.png" alt="CLF-AR" onerror="this.style.background='#27ae60';this.style.borderRadius='50%';">
+                    <div class="cert-card-code">CLF-C02</div>
+                </div>
+                <div class="cert-card" onclick="loadCert('ar','AIFAR','AIF-C01','شهادة AWS ممارس الذكاء الاصطناعي التأسيسية','120','65','700','BOOKAWSAIFAR.com')">
+                    <img src="AIF.png" alt="AIF-AR" onerror="this.style.background='#2980b9';this.style.borderRadius='50%';">
+                    <div class="cert-card-code">AIF-C01</div>
+                </div>
+            </div>
+            <div style="text-align:center; margin-top:30px;">
+                <button class="cert-back-btn" onclick="goBackToLang()" style="font-family:'Tajawal',sans-serif;">رجوع إلى اختيار اللغة ←</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ===================================================== -->
+<!-- QUIZ TOP BAR                                          -->
+<!-- ===================================================== -->
+<div class="quiz-topbar" id="quizTopBar">
+    <div class="quiz-topbar-left">
+        <span class="quiz-topbar-title" id="topbarCertCode">EXAM</span>
+        <span class="quiz-topbar-info" id="topbarInfo"></span>
+    </div>
+    <div class="quiz-topbar-right">
+        <div class="topbar-timer" id="topbarTimerPill">
+            <span class="topbar-timer-icon">&#9201;</span>
+            <span id="timer">00:00</span>
+        </div>
+        <div class="topbar-fab-wrapper" id="topbarFabWrapper">
+            <button class="topbar-fab-btn" id="topbarFabBtn" onclick="toggleTopbarMenu()">&#9881;&#65039;</button>
+            <div class="fab-dropdown" id="topbarDropdown">
+                <div class="fab-item" onclick="toggleTheme(); updateFabThemeLabel(); closeTopbarMenu();" style="cursor:pointer;">
+                    <span class="fab-item-label" id="fabThemeLabel">Dark Mode</span>
+                    <button class="fab-item-btn fab-btn-theme" id="fabThemeBtn" onclick="event.stopPropagation(); toggleTheme(); updateFabThemeLabel(); closeTopbarMenu();">&#127769;</button>
+                </div>
+                <div class="fab-item" id="fabTimerItem" onclick="toggleFabTimer(); closeTopbarMenu();" style="cursor:pointer;">
+                    <span class="fab-item-label" id="fabTimerToggleLabel">Hide Timer</span>
+                    <button class="fab-item-btn fab-btn-timer-hide" id="fabTimerToggleBtn" onclick="event.stopPropagation(); toggleFabTimer(); closeTopbarMenu();">❌</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ===================================================== -->
+<!-- FAB (non-quiz pages)                                  -->
+<!-- ===================================================== -->
+<div class="fab-backdrop" id="fabBackdrop" onclick="closeFab()"></div>
+<div class="fab-wrapper" id="fabWrapper">
+    <div class="fab-item" id="fabThemeSingleItem" style="display:none;">
+        <button class="fab-item-btn fab-btn-theme" id="fabThemeBtnSingle" onclick="toggleTheme(); updateFabThemeLabel();">&#127769;</button>
+    </div>
+    <button class="fab-main" id="fabMain" onclick="toggleFab()" style="display:none;">&#9881;&#65039;</button>
+    <div class="fab-items" id="fabItems">
+        <div class="fab-item">
+            <span class="fab-item-label" id="fabThemeLabelNormal">Dark Mode</span>
+            <button class="fab-item-btn fab-btn-theme" id="fabThemeBtnNormal" onclick="toggleTheme(); updateFabThemeLabel(); closeFab();">&#127769;</button>
+        </div>
+        <div class="fab-item" id="fabPdfItem" style="display:none;">
+            <span class="fab-item-label" id="fabPdfLabel">Open Q&amp;A File</span>
+            <button class="fab-item-btn fab-btn-pdf" id="fabPdfBtn" onclick="openQAFile(); closeFab();">&#128196;</button>
+        </div>
+        <!-- My Results FAB item - injected by Firebase script -->
+    </div>
+</div>
+
+<!-- ===================================================== -->
+<!-- PAGE 0: MODE SELECTION                                -->
+<!-- ===================================================== -->
+<div id="page0" class="page">
+    <div class="quiz-container">
+        <h1 id="page0Title">AWS Exam</h1>
+        <p id="page0Subtitle" style="font-size:1.2rem; margin-bottom:40px;">Choose your preferred exam mode to begin.</p>
+        <div class="mode-selection-container">
+            <div class="mode-card">
+                <span class="mode-icon">🔀</span>
+                <h3 id="mode1Title">Smart Random Mode</h3>
+                <p id="mode1Desc">Questions are randomly shuffled from the full question bank with the standard time and count options — the classic exam experience.</p>
+                <button class="mode-select-btn" onclick="selectMode('smart')" id="mode1Btn">Select Mode</button>
+            </div>
+            <div class="mode-card">
+                <span class="mode-icon">🎯</span>
+                <h3 id="mode2Title">Custom Range Mode</h3>
+                <p id="mode2Desc">Select a specific range of questions by their order in the question bank. You also set the time limit manually or choose unlimited.</p>
+                <button class="mode-select-btn" onclick="selectMode('custom')" id="mode2Btn">Select Mode</button>
+            </div>
+        </div>
+        <div style="text-align:center; margin-top:10px;">
+            <button class="cert-back-btn" id="backToCertBtn" onclick="goBackToCert()">← Back to Certifications</button>
+        </div>
+    </div>
+</div>
+
+<!-- ===================================================== -->
+<!-- PAGE 1: SETUP - SMART RANDOM                          -->
+<!-- ===================================================== -->
+<div id="page1" class="page">
+    <div class="quiz-container">
+        <h1 id="page1Title">AWS Exam</h1>
+        <p id="page1Subtitle" style="font-size:1.2rem; margin-bottom:40px;">Smart Random Mode — customize question count and time limit.</p>
+        <div class="setup-container">
+            <div class="setup-box">
+                <h3 id="lbl_numQ">Number of Questions</h3>
+                <select id="questionCount">
+                    <option value="5">5</option>
+                    <option value="10">10</option>
+                    <option value="15">15</option>
+                    <option value="30">30</option>
+                    <option value="50">50</option>
+                    <option value="65">65</option>
+                    <option value="75">75</option>
+                    <option value="100">100</option>
+                    <option value="all" id="optAll">All Questions</option>
+                </select>
+            </div>
+            <div class="setup-box">
+                <h3 id="lbl_timeLimit">Time Limit</h3>
+                <select id="timeLimit">
+                    <option value="30">30</option>
+                    <option value="60">60</option>
+                    <option value="90">90</option>
+                    <option value="120">120</option>
+                    <option value="130">130</option>
+                    <option value="160">160</option>
+                    <option value="170">170</option>
+                    <option value="180">180</option>
+                    <option value="200">200</option>
+                    <option value="210">210</option>
+                    <option value="unlimited" id="optUnlimited">Unlimited</option>
+                </select>
+            </div>
+        </div>
+        <div class="setup-action-buttons" style="display:flex; gap:15px; justify-content:center; flex-wrap:wrap;">
+            <button onclick="showPage('page0')" id="backBtn1" style="font-size:1.1rem; padding:15px 30px; background:linear-gradient(45deg,#636e72,#95a5a6);">← Back</button>
+            <button onclick="startQuiz()" id="startBtn1" style="font-size:1.5rem; padding:20px 40px;">Start Exam</button>
+        </div>
+    </div>
+</div>
+
+<!-- ===================================================== -->
+<!-- PAGE 1B: SETUP - CUSTOM RANGE                         -->
+<!-- ===================================================== -->
+<div id="page1b" class="page">
+    <div class="quiz-container">
+        <h1 id="page1bTitle">AWS Exam</h1>
+        <p id="page1bSubtitle" style="font-size:1.2rem; margin-bottom:40px;">Custom Range Mode — Set your question range and time limit.</p>
+        <div class="setup-container">
+            <div class="setup-box">
+                <h3 id="lbl_qRange">Question Range</h3>
+                <div class="range-row">
+                    <span class="range-label" id="lbl_from">From Question:</span>
+                    <input type="number" id="rangeFrom" class="custom-range-input" placeholder="1" min="1" value="1">
+                    <span class="range-label" id="lbl_to">To Question:</span>
+                    <input type="number" id="rangeTo" class="custom-range-input" placeholder="65" min="1" value="65">
+                </div>
+                <div style="font-size:0.85rem; opacity:0.75; margin-top:8px;" id="totalQuestionsHint">Total available questions: loading...</div>
+            </div>
+            <div class="setup-box">
+                <h3 id="lbl_timeLimit2">Time Limit</h3>
+                <div class="range-row">
+                    <input type="number" id="customTimeMinutes" class="custom-range-input" placeholder="Minutes" min="1" value="120" style="width:150px;">
+                    <span class="range-label" id="lbl_minutes">minutes</span>
+                </div>
+                <div style="margin-top:12px;">
+                    <label style="display:inline-flex; align-items:center; gap:8px; cursor:pointer; font-size:1rem;">
+                        <input type="checkbox" id="unlimitedTime" onchange="toggleUnlimitedTime()" style="transform:scale(1.4); cursor:pointer;">
+                        <span id="lbl_unlimitedCheck">Unlimited Time</span>
+                    </label>
+                </div>
+            </div>
+        </div>
+        <div id="rangeError" class="warning" style="display:none; margin-top:10px;"></div>
+        <div class="setup-action-buttons" style="display:flex; gap:15px; justify-content:center; flex-wrap:wrap;">
+            <button onclick="showPage('page0')" id="backBtn1b" style="font-size:1.1rem; padding:15px 30px; background:linear-gradient(45deg,#636e72,#95a5a6);">← Back</button>
+            <button onclick="startCustomQuiz()" id="startBtn1b" style="font-size:1.5rem; padding:20px 40px;">Start Exam</button>
+        </div>
+    </div>
+</div>
+
+<!-- ===================================================== -->
+<!-- PAGE 2: QUIZ                                          -->
+<!-- ===================================================== -->
+<div id="page2" class="page">
+    <div style="width:88%; max-width:1140px; margin:0 auto; padding:20px; margin-top:30px; margin-bottom:30px;">
+        <div style="text-align:center; margin-bottom:30px;">
+            <h1 id="page2Title">AWS Exam</h1>
+            <div id="questionInfo" style="font-size:1.2rem; color:var(--text-color);"></div>
+        </div>
+        <div class="quiz-questions" id="quizQuestions"></div>
+        <div class="submit-container">
+            <div id="warningMessage" class="warning" style="display:none;"></div>
+            <button onclick="submitQuiz()" id="submitBtn" style="font-size:1.3rem; padding:15px 35px;">Submit Exam</button>
+        </div>
+    </div>
+</div>
+
+<!-- ===================================================== -->
+<!-- PAGE 3: RESULTS                                       -->
+<!-- ===================================================== -->
+<div id="page3" class="page">
+    <div class="quiz-container">
+        <h1 id="resultsTitle">Exam Results</h1>
+        <!-- Guest notice banner (shown only for guests) -->
+        <div class="guest-notice-banner" id="guestNoticeBanner">
+            <div class="guest-notice-banner-text">
+                <strong>🔒 Results not saved / النتائج غير محفوظة</strong>
+                <span class="guest-notice-banner-sub">أنت تتصفح كضيف · You are browsing as a guest</span>
+            </div>
+            <button class="guest-notice-login-btn" onclick="showPage('pageAuth')">🔑 Login / تسجيل الدخول</button>
+        </div>
+        <!-- Save success notice (shown for logged in users) -->
+        <div id="savedResultNotice" style="display:none; background:rgba(39,174,96,0.15); border:1px solid rgba(39,174,96,0.3); border-radius:10px; padding:12px 20px; margin:10px 0; color:var(--result-box-text); text-align:center; font-size:0.9rem;">
+            ✅ Result saved to your account · <span style="font-family:'Tajawal',sans-serif;">تم حفظ النتيجة في حسابك</span>
+        </div>
+        <div id="motivationalMessage" class="motivational-message"></div>
+        <div class="result-container">
+            <div class="result-box">
+                <div class="result-box-title" id="lbl_timeCompletion">Time Completion</div>
+                <div class="result-box-main" id="timeResult" style="font-size:2rem; font-weight:400;"></div>
+                <div class="result-box-sub" id="timeResultSub" style="font-size:0.85rem; opacity:0.7;"></div>
+            </div>
+            <div class="result-box">
+                <div class="result-box-title" id="lbl_yourScore">Your Score</div>
+                <div class="result-box-main" id="scoreResult" style="font-size:2rem;"></div>
+                <div class="result-box-sub" id="passResult"></div>
+            </div>
+            <div class="result-box">
+                <div class="result-box-title" id="lbl_percentage">Percentage</div>
+                <div class="result-box-main" id="percentageResult" style="font-size:2rem;"></div>
+                <div class="result-box-sub"></div>
+            </div>
+        </div>
+        <div class="result-box statistics-box" style="width:90%; margin:20px auto;">
+            <h3 id="lbl_stats">Statistics</h3>
+            <p id="correctCount"></p>
+            <p id="wrongCount"></p>
+        </div>
+        <div style="margin-top:30px;">
+            <h2 id="lbl_detailedReview" style="text-align:center; margin-bottom:30px;">Detailed Review</h2>
+            <div id="reviewQuestions"></div>
+        </div>
+        <button onclick="restartQuiz()" id="restartBtn" style="font-size:1.3rem; padding:15px 35px; margin-top:30px;">Retake Exam</button>
+    </div>
+</div>
+
+<!-- ===================================================== -->
+<!-- PAGE: MY RESULTS (NEW)                                -->
+<!-- ===================================================== -->
+<div id="pageMyResults" class="page">
+    <div class="my-results-wrapper">
+        <div class="my-results-container">
+            <div class="my-results-title" id="myResultsTitle">📊 My Results / نتائجي</div>
+            <div class="my-results-subtitle">Last 30 days · آخر 30 يوم</div>
+
+            <!-- Stats row -->
+            <div class="my-results-stats-row" id="myResultsStatsRow" style="display:none;">
+                <div class="my-results-stat">
+                    <div class="my-results-stat-val" id="statTotal">0</div>
+                    <div class="my-results-stat-label">Total Exams / إجمالي الاختبارات</div>
+                </div>
+                <div class="my-results-stat">
+                    <div class="my-results-stat-val" id="statPassed" style="color:#27ae60;">0</div>
+                    <div class="my-results-stat-label">Passed / ناجح</div>
+                </div>
+                <div class="my-results-stat">
+                    <div class="my-results-stat-val" id="statFailed" style="color:#e74c3c;">0</div>
+                    <div class="my-results-stat-label">Failed / راسب</div>
+                </div>
+                <div class="my-results-stat">
+                    <div class="my-results-stat-val" id="statAvg">0%</div>
+                    <div class="my-results-stat-label">Avg Score / متوسط الدرجة</div>
+                </div>
+            </div>
+
+            <!-- Loading -->
+            <div class="my-results-loading" id="myResultsLoading">
+                <div class="auth-loading" style="width:28px;height:28px;border-width:4px;"></div>
+                <div style="margin-top:12px;">Loading results... / جاري التحميل...</div>
+            </div>
+
+            <!-- Empty state -->
+            <div class="my-results-empty" id="myResultsEmpty" style="display:none;">
+                📭 No results yet. Take an exam to see your results here!<br>
+                <span style="font-family:'Tajawal',sans-serif; font-size:0.95rem;">لا توجد نتائج بعد. قم باختبار لترى نتائجك هنا!</span>
+            </div>
+
+            <!-- Table -->
+            <div id="myResultsTableWrap" style="overflow-x:auto; display:none;">
+                <table class="my-results-table" id="myResultsTable">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Cert / الشهادة</th>
+                            <th>Score / الدرجة</th>
+                            <th>%</th>
+                            <th>Status / الحالة</th>
+                            <th>Lang / اللغة</th>
+                            <th>Date &amp; Time / التاريخ والوقت</th>
+                        </tr>
+                    </thead>
+                    <tbody id="myResultsBody"></tbody>
+                </table>
+            </div>
+
+            <div style="text-align:center; margin-top:28px;">
+                <button onclick="goBackFromMyResults()" style="background:linear-gradient(45deg,#636e72,#95a5a6); padding:12px 28px; font-size:1rem; margin:0;">
+                    ← Back / رجوع
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ===================================================== -->
+<!-- ATTEMPT LIMIT OVERLAY (NEW)                           -->
+<!-- ===================================================== -->
+<div class="attempt-limit-overlay" id="attemptLimitOverlay">
+    <div class="attempt-limit-box">
+        <div class="attempt-limit-icon">⏳</div>
+        <div class="attempt-limit-title" id="limitTitle">Daily Limit Reached</div>
+        <div class="attempt-limit-msg" id="limitMsg">You've used all 3 daily attempts. Come back after:</div>
+        <div class="attempt-limit-msg" style="font-family:'Tajawal',sans-serif; margin-top:4px;" id="limitMsgAr">لقد استخدمت المحاولات الثلاث. عد بعد:</div>
+        <div class="attempt-limit-timer" id="limitCountdown">--:--:--</div>
+        <button class="attempt-limit-close-btn" onclick="closeLimitOverlay()">Close / إغلاق</button>
+    </div>
+</div>
+
+<!-- ===================================================== -->
+<!-- USER INFO BAR (bottom bar for logged-in users)        -->
+<!-- ===================================================== -->
+<div class="user-info-bar" id="userInfoBar">
+    <div class="user-info-bar-left">
+        <img class="user-info-avatar" id="userAvatar" src="" alt="" onerror="this.style.display='none'">
+        <div>
+            <div class="user-info-name" id="userDisplayName"></div>
+            <div class="user-info-attempts" id="userAttemptsInfo"></div>
+        </div>
+    </div>
+    <div class="user-info-bar-right">
+        <button class="user-info-btn my-results-btn" onclick="showMyResults()">📊 My Results / نتائجي</button>
+        <button class="user-info-btn" onclick="authSignOut()">Logout / خروج</button>
+    </div>
+</div>
+
+<!-- ===================================================== -->
+<!-- JAVASCRIPT - ORIGINAL (UNTOUCHED)                     -->
+<!-- ===================================================== -->
+<script>
+    /* ===== GLOBAL STATE ===== */
+    var currentLang      = 'en';
+    var currentCertCode  = '';
+    var currentCertName  = '';
+    var currentDefaultTime   = 120;
+    var currentDefaultQCount = 65;
+    var currentPassScore = 700;
+    var currentQALink    = '';
+
+    var questions         = [];
+    var selectedQuestions = [];
+    var userAnswers       = {};
+    var startTime;
+    var timerInterval;
+    var timeLimit;
+    var timerVisible      = true;
+
+    var arabicLetters = ['أ', 'ب', 'ج', 'د', 'هـ', 'و', 'ز', 'ح', 'ط', 'ي'];
+
+    /* ===== SELECT LANGUAGE ===== */
+    function selectLanguage(lang) {
+        currentLang = lang;
+        showPage(lang === 'ar' ? 'pageCertAR' : 'pageCertEN');
+    }
+
+    function goBackToLang() {
+        showPage('pageLang');
+    }
+
+    /* ===== LOAD CERT ===== */
+    function loadCert(lang, certKey, certCode, certName, defaultTime, defaultQCount, passScore, qaLink) {
+        currentLang          = lang;
+        currentCertCode      = certCode;
+        currentCertName      = certName;
+        currentDefaultTime   = parseInt(defaultTime);
+        currentDefaultQCount = parseInt(defaultQCount);
+        currentPassScore     = parseInt(passScore);
+        currentQALink        = qaLink;
+        questions            = [];
+
+        // البحث عن المتغير بأشكال متعددة: AIF أو AIF_TEXT أو AIFAR_TEXT إلخ
+        var rawText = window[certKey]
+                   || window[certKey + '_TEXT']
+                   || window[certKey.toUpperCase()]
+                   || window[certKey.toUpperCase() + '_TEXT']
+                   || window[certKey.toLowerCase()]
+                   || window[certKey.toLowerCase() + '_text']
+                   || null;
+
+        // بحث شامل: يتجاهل _TEXT ويقارن الاسم الأساسي فقط
+        if (!rawText) {
+            var allWinKeys = Object.keys(window);
+            for (var ki = 0; ki < allWinKeys.length; ki++) {
+                var normalized = allWinKeys[ki].toUpperCase().replace(/_TEXT$/, '');
+                if (normalized === certKey.toUpperCase() && typeof window[allWinKeys[ki]] === 'string' && window[allWinKeys[ki]].length > 10) {
+                    rawText = window[allWinKeys[ki]];
+                    break;
+                }
+            }
+        }
+
+        if (rawText) {
+            if (lang === 'ar') {
+                parseQuestionsArabic(rawText);
+            } else {
+                parseQuestionsEnglish(rawText);
+            }
+        } else {
+            console.warn('لم يتم العثور على متغير الأسئلة للمفتاح: ' + certKey);
+            setTimeout(function() {
+                var msg = lang === 'ar'
+                    ? '⚠️ تعذّر تحميل أسئلة ' + certKey + '.\nتأكد من أن الملف ' + certKey + '.js موجود وأن المتغير معرَّف بشكل صحيح.'
+                    : '⚠️ Could not load questions for ' + certKey + '.\nMake sure ' + certKey + '.js exists and exports a variable correctly.';
+                alert(msg);
+            }, 200);
+        }
+
+        applyLangUI();
+        showPage('page0');
+    }
+
+    /* ===== APPLY LANGUAGE UI ===== */
+    function applyLangUI() {
+        var isAr = currentLang === 'ar';
+
+        var fw = document.getElementById('fabWrapper');
+        if (fw) { isAr ? fw.classList.add('rtl-fab') : fw.classList.remove('rtl-fab'); }
+
+        var tb = document.getElementById('quizTopBar');
+        if (tb) { isAr ? tb.classList.add('rtl-bar') : tb.classList.remove('rtl-bar'); }
+
+        if (isAr) {
+            document.body.classList.add('lang-ar');
+            document.documentElement.setAttribute('dir', 'rtl');
+        } else {
+            document.body.classList.remove('lang-ar');
+            document.documentElement.removeAttribute('dir');
+        }
+
+        var tcc = document.getElementById('topbarCertCode');
+        if (tcc) tcc.textContent = currentCertCode;
+
+var titleHTML;
+
+if (isAr) {
+    if (currentCertName.startsWith('شهادة AWS')) {
+        var rest = currentCertName.replace('شهادة AWS', '').trim();
+
+        // فصل كلمة "التأسيسية" لو موجودة
+        if (rest.endsWith('التأسيسية')) {
+            var mainPart = rest.replace('التأسيسية', '').trim();
+            titleHTML =
+                'شهادة AWS<br>' +
+                mainPart + '<br>' +
+                'التأسيسية<br>' +
+                '(' + currentCertCode + ')';
+        } else {
+            titleHTML =
+                'شهادة AWS<br>' +
+                rest + '<br>' +
+                '(' + currentCertCode + ')';
+        }
+    } else {
+        titleHTML = currentCertName + '<br>(' + currentCertCode + ')';
+    }
+} else {
+    if (currentCertName.startsWith('AWS Certified')) {
+        var restEn = currentCertName.replace('AWS Certified', '').trim();
+        titleHTML =
+            'AWS Certified<br>' +
+            restEn + '<br>' +
+            '(' + currentCertCode + ') Exam';
+    } else {
+        titleHTML = currentCertName + '<br>(' + currentCertCode + ') Exam';
+    }
+}
+
+        ['page0Title','page1Title','page1bTitle','page2Title'].forEach(function(id) {
+            var el = document.getElementById(id);
+            if (el) el.innerHTML = titleHTML;
+        });
+
+        if (!isAr) {
+            setText('page0Subtitle', 'Choose your preferred exam mode to begin.');
+            setText('mode1Title', 'Smart Random Mode');
+            setText('mode1Desc', 'Questions are randomly shuffled from the full question bank with the standard time and count options — the classic exam experience.');
+            setText('mode1Btn', 'Select Mode');
+            setText('mode2Title', 'Custom Range Mode');
+            setText('mode2Desc', 'Select a specific range of questions by their order in the question bank (e.g., Q20 to Q81). You also set the time limit manually or choose unlimited.');
+            setText('mode2Btn', 'Select Mode');
+            setText('page1Subtitle', 'Smart Random Mode — customize question count and time limit.');
+            setText('lbl_numQ', 'Number of Questions');
+            setText('lbl_timeLimit', 'Time Limit');
+            setText('optAll', 'All Questions');
+            setText('optUnlimited', 'Unlimited');
+            setText('backBtn1', '← Back');
+            setText('startBtn1', 'Start Exam');
+            setText('page1bSubtitle', 'Custom Range Mode — Set your question range and time limit.');
+            setText('lbl_qRange', 'Question Range');
+            setText('lbl_from', 'From Question:');
+            setText('lbl_to', 'To Question:');
+            setText('lbl_timeLimit2', 'Time Limit');
+            setText('lbl_minutes', 'minutes');
+            setText('lbl_unlimitedCheck', 'Unlimited Time');
+            setText('backBtn1b', '← Back');
+            setText('startBtn1b', 'Start Exam');
+            setText('submitBtn', 'Submit Exam');
+            setText('resultsTitle', 'Exam Results');
+            setText('lbl_timeCompletion', 'Time Completion');
+            setText('lbl_yourScore', 'Your Score');
+            setText('lbl_percentage', 'Percentage');
+            setText('lbl_stats', 'Statistics');
+            setText('lbl_detailedReview', 'Detailed Review');
+            setText('restartBtn', 'Retake Exam');
+            setText('fabPdfLabel', 'Open Q&A File');
+            setText('fabThemeLabel', 'Dark Mode');
+            setText('fabThemeLabelNormal', 'Dark Mode');
+            setText('fabTimerToggleLabel', 'Hide Timer');
+            setText('backToCertBtn', '← Back to Certifications');
+        } else {
+            setText('page0Subtitle', 'اختر وضع الاختبار المفضل للبدء.');
+            setText('mode1Title', 'وضع الترتيب العشوائي الذكي');
+            setText('mode1Desc', 'تُخلط الأسئلة عشوائياً من بنك الأسئلة الكامل مع خيارات الوقت والعدد المعتادة — تجربة الاختبار الكلاسيكية.');
+            setText('mode1Btn', 'اختر هذا الوضع');
+            setText('mode2Title', 'وضع النطاق المخصص');
+            setText('mode2Desc', 'حدد نطاقاً معيناً من الأسئلة حسب ترتيبها في بنك الأسئلة (مثلاً من سؤال 20 إلى سؤال 80). يمكنك أيضاً تحديد الوقت يدوياً أو اختيار وقت غير محدود.');
+            setText('mode2Btn', 'اختر هذا الوضع');
+            setText('page1Subtitle', 'الوضع العشوائي الذكي — حدد عدد الأسئلة والوقت المسموح.');
+            setText('lbl_numQ', 'عدد الأسئلة');
+            setText('lbl_timeLimit', 'الحد الزمني');
+            setText('optAll', 'جميع الأسئلة');
+            setText('optUnlimited', 'غير محدود');
+            setText('backBtn1', 'رجوع ←');
+            setText('startBtn1', 'بدء الاختبار');
+            setText('page1bSubtitle', 'وضع النطاق المخصص — حدد نطاق الأسئلة والوقت.');
+            setText('lbl_qRange', 'نطاق الأسئلة');
+            setText('lbl_from', 'من السؤال:');
+            setText('lbl_to', 'إلى السؤال:');
+            setText('lbl_timeLimit2', 'الحد الزمني');
+            setText('lbl_minutes', 'دقيقة');
+            setText('lbl_unlimitedCheck', 'وقت غير محدود');
+            setText('backBtn1b', 'رجوع ←');
+            setText('startBtn1b', 'بدء الاختبار');
+            setText('submitBtn', 'تسليم الاختبار');
+            setText('resultsTitle', 'نتائج الاختبار');
+            setText('lbl_timeCompletion', 'الوقت المستغرق');
+            setText('lbl_yourScore', 'درجتك');
+            setText('lbl_percentage', 'النسبة المئوية');
+            setText('lbl_stats', 'الإحصائيات');
+            setText('lbl_detailedReview', 'مراجعة تفصيلية');
+            setText('restartBtn', 'إعادة الاختبار');
+            setText('fabPdfLabel', 'فتح ملف الأسئلة');
+            setText('fabThemeLabel', 'الوضع الداكن');
+            setText('fabThemeLabelNormal', 'الوضع الداكن');
+            setText('fabTimerToggleLabel', 'إخفاء المؤقت');
+            setText('backToCertBtn', 'رجوع إلى الشهادات ←');
+        }
+
+        setSelectDefault('questionCount', String(currentDefaultQCount));
+        setSelectDefault('timeLimit', String(currentDefaultTime));
+
+        var rt = document.getElementById('rangeTo');
+        if (rt) rt.value = currentDefaultQCount;
+        var ctm = document.getElementById('customTimeMinutes');
+        if (ctm) ctm.value = currentDefaultTime;
+
+        updateFabThemeLabel();
+    }
+
+    function setText(id, text) {
+        var el = document.getElementById(id);
+        if (el) el.textContent = text;
+    }
+
+    function setSelectDefault(id, val) {
+        var sel = document.getElementById(id);
+        if (!sel) return;
+        for (var i = 0; i < sel.options.length; i++) {
+            sel.options[i].selected = (sel.options[i].value === val);
+        }
+    }
+
+    /* ===== PARSE QUESTIONS - ENGLISH ===== */
+    function parseQuestionsEnglish(text) {
+        if (!text) return;
+        var blocks = text.split('\n\n');
+
+        function processBlock(lines) {
+            if (!lines.length) return;
+            var qLineIdx = -1;
+            for (var i = 0; i < lines.length; i++) {
+                if (lines[i].trim().startsWith('Q:')) { qLineIdx = i; break; }
+            }
+            if (qLineIdx === -1) return;
+
+            var question = lines[qLineIdx].trim().substring(2).trim();
+            var options = [], correct = [], questionImages = [], optionImages = {};
+            var sourceUrl = '', questionType = 'standard';
+            var hotspotOptions = [], hotspotRows = [];
+
+            for (var i = qLineIdx + 1; i < lines.length; i++) {
+                var line = lines[i].trim();
+                if (!line) continue;
+                if (line.startsWith('TYPE:')) {
+                    var t = line.substring(5).trim().toLowerCase();
+                    if (t === 'hotspot') questionType = 'hotspot';
+                } else if (line.startsWith('HOTSPOT_OPTIONS:')) {
+                    hotspotOptions = line.substring(16).trim().split('|').map(function(o){ return o.trim(); });
+                } else if (line.startsWith('HOTSPOT_ROW:')) {
+                    var parts = line.substring(12).trim().split('|');
+                    hotspotRows.push({ statement: parts[0] ? parts[0].trim() : '', correct: parts[1] ? parts[1].trim() : '' });
+                } else if (line.startsWith('IMG_Q:')) {
+                    questionImages = questionImages.concat(line.substring(6).trim().split(' ').filter(Boolean));
+                } else if (/^IMG_[A-Z]:/.test(line)) {
+                    optionImages[line.charCodeAt(4) - 75] = line.substring(6).trim();
+                } else if (/^\*[A-Z]\./.test(line)) {
+                    options.push(line.substring(3).trim());
+                    correct.push(options.length - 1);
+                } else if (/^[A-Z]\./.test(line)) {
+                    options.push(line.substring(2).trim());
+                } else if (/^https?:\/\//i.test(line)) {
+                    sourceUrl = line;
+                }
+            }
+
+            if (questionType === 'hotspot') {
+                if (!hotspotRows.length || !hotspotOptions.length) return;
+                questions.push({ question: question, isHotspot: true, isComposite: false, isMultipleChoice: false, hotspotOptions: hotspotOptions, hotspotRows: hotspotRows, questionImages: questionImages, sourceUrl: sourceUrl });
+                return;
+            }
+            if (!options.length) return;
+            questions.push({ question: question, options: options, correct: correct, isMultipleChoice: correct.length > 1, isComposite: false, isHotspot: false, questionImages: questionImages, optionImages: optionImages, sourceUrl: sourceUrl });
+        }
+
+        blocks.forEach(function(block) {
+            var lines = block.split('\n');
+            if (lines.some(function(l){ return l.trim().startsWith('Q:'); })) processBlock(lines);
+        });
+    }
+
+    /* ===== PARSE QUESTIONS - ARABIC ===== */
+    function getArabicOptionIndex(line) {
+        for (var i = 0; i < arabicLetters.length; i++) {
+            if (line.startsWith(arabicLetters[i] + '.')) return i;
+        }
+        return -1;
+    }
+
+    function getArabicCorrectIndex(line) {
+        if (!line.startsWith('*')) return -1;
+        return getArabicOptionIndex(line.substring(1));
+    }
+
+    function extractArabicOptionText(line) {
+        for (var i = 0; i < arabicLetters.length; i++) {
+            if (line.startsWith(arabicLetters[i] + '.')) {
+                return line.substring(arabicLetters[i].length + 1).trim();
+            }
+        }
+        return line;
+    }
+
+    function parseQuestionsArabic(text) {
+        if (!text) return;
+        var blocks = text.split('\n\n');
+
+        function processBlock(lines) {
+            if (!lines.length) return;
+            var qLineIdx = -1;
+            for (var i = 0; i < lines.length; i++) {
+                if (lines[i].trim().startsWith('س:')) { qLineIdx = i; break; }
+            }
+            if (qLineIdx === -1) return;
+
+            var question = lines[qLineIdx].trim().substring(2).trim();
+            var options = [], correct = [], questionImages = [], optionImages = {};
+            var sourceUrl = '', questionType = 'standard';
+            var hotspotOptions = [], hotspotRows = [];
+
+            for (var i = qLineIdx + 1; i < lines.length; i++) {
+                var line = lines[i].trim();
+                if (!line) continue;
+                if (line.startsWith('TYPE:')) {
+                    if (line.substring(5).trim().toLowerCase() === 'hotspot') questionType = 'hotspot';
+                } else if (line.startsWith('HOTSPOT_OPTIONS:')) {
+                    hotspotOptions = line.substring(16).trim().split('|').map(function(o){ return o.trim(); });
+                } else if (line.startsWith('HOTSPOT_ROW:')) {
+                    var parts = line.substring(12).trim().split('|');
+                    hotspotRows.push({ statement: parts[0] ? parts[0].trim() : '', correct: parts[1] ? parts[1].trim() : '' });
+                } else if (line.startsWith('IMG_Q:')) {
+                    questionImages = questionImages.concat(line.substring(6).trim().split(' ').filter(Boolean));
+                } else {
+                    var cidx = getArabicCorrectIndex(line);
+                    var oidx = getArabicOptionIndex(line);
+                    if (cidx !== -1) {
+                        options.push(extractArabicOptionText(line.substring(1)));
+                        correct.push(options.length - 1);
+                    } else if (oidx !== -1) {
+                        options.push(extractArabicOptionText(line));
+                    } else if (/^https?:\/\//i.test(line)) {
+                        sourceUrl = line;
+                    }
+                }
+            }
+
+            if (questionType === 'hotspot') {
+                if (!hotspotRows.length || !hotspotOptions.length) return;
+                questions.push({ question: question, isHotspot: true, isComposite: false, isMultipleChoice: false, hotspotOptions: hotspotOptions, hotspotRows: hotspotRows, questionImages: questionImages, sourceUrl: sourceUrl });
+                return;
+            }
+            if (!options.length) return;
+            questions.push({ question: question, options: options, correct: correct, isMultipleChoice: correct.length > 1, isComposite: false, isHotspot: false, questionImages: questionImages, optionImages: optionImages, sourceUrl: sourceUrl });
+        }
+
+        blocks.forEach(function(block) {
+            var lines = block.split('\n');
+            if (lines.some(function(l){ return l.trim().startsWith('س:'); })) processBlock(lines);
+        });
+    }
+
+    /* ===== FAB ===== */
+    function toggleFab() {
+        var m = document.getElementById('fabMain'), it = document.getElementById('fabItems'), bd = document.getElementById('fabBackdrop');
+        if (!m) return;
+        m.classList.toggle('open'); it.classList.toggle('open'); bd.classList.toggle('open');
+    }
+
+    function closeFab() {
+        ['fabMain','fabItems','fabBackdrop'].forEach(function(id){ var e = document.getElementById(id); if (e) e.classList.remove('open'); });
+    }
+
+    function toggleTopbarMenu() {
+        var btn = document.getElementById('topbarFabBtn'), dd = document.getElementById('topbarDropdown');
+        if (!btn || !dd) return;
+        var open = dd.classList.toggle('open'); btn.classList.toggle('open', open);
+    }
+
+    function closeTopbarMenu() {
+        var btn = document.getElementById('topbarFabBtn'), dd = document.getElementById('topbarDropdown');
+        if (btn) btn.classList.remove('open'); if (dd) dd.classList.remove('open');
+    }
+
+    document.addEventListener('click', function(e) {
+        var w = document.getElementById('topbarFabWrapper');
+        if (w && !w.contains(e.target)) closeTopbarMenu();
+    });
+
+    function toggleTheme() {
+        document.body.setAttribute('data-theme', document.body.getAttribute('data-theme') === 'light' ? 'dark' : 'light');
+    }
+
+    function updateFabThemeLabel() {
+        var dark = document.body.getAttribute('data-theme') === 'dark';
+        var isAr = currentLang === 'ar';
+        var lbl = dark ? (isAr ? 'الوضع الفاتح' : 'Light Mode') : (isAr ? 'الوضع الداكن' : 'Dark Mode');
+        ['fabThemeLabel','fabThemeLabelNormal'].forEach(function(id){ var e = document.getElementById(id); if (e) e.textContent = lbl; });
+        ['fabThemeBtn','fabThemeBtnNormal','fabThemeBtnSingle'].forEach(function(id){ var e = document.getElementById(id); if (e) e.textContent = dark ? '☀️' : '🌙'; });
+    }
+
+    function openQAFile() {
+        if (currentQALink) window.open(currentQALink, '_blank');
+    }
+
+    function toggleFabTimer() {
+        timerVisible = !timerVisible;
+        var pill = document.getElementById('topbarTimerPill');
+        var btn  = document.getElementById('fabTimerToggleBtn');
+        var lbl  = document.getElementById('fabTimerToggleLabel');
+        var isAr = currentLang === 'ar';
+        if (pill) pill.classList.toggle('hidden-timer', !timerVisible);
+        if (btn) {
+            btn.className = 'fab-item-btn ' + (timerVisible ? 'fab-btn-timer-hide' : 'fab-btn-timer-show');
+            btn.textContent = timerVisible ? '❌' : '👁️';
+        }
+        if (lbl) lbl.textContent = timerVisible
+            ? (isAr ? 'إخفاء المؤقت' : 'Hide Timer')
+            : (isAr ? 'إظهار المؤقت' : 'Show Timer');
+    }
+
+    function updatePdfButtonVisibility(pageId) {
+        var tb        = document.getElementById('quizTopBar');
+        var fw        = document.getElementById('fabWrapper');
+        var pdfItem   = document.getElementById('fabPdfItem');
+        var fabMain   = document.getElementById('fabMain');
+        var fabItems  = document.getElementById('fabItems');
+        var themeOnly = document.getElementById('fabThemeSingleItem');
+
+        if (pageId === 'page2') {
+            if (tb) tb.classList.add('active');
+            if (fw) fw.style.display = 'none';
+            timerVisible = true;
+            var p = document.getElementById('topbarTimerPill'); if (p) p.classList.remove('hidden-timer');
+            var b = document.getElementById('fabTimerToggleBtn'); if (b) { b.className = 'fab-item-btn fab-btn-timer-hide'; b.textContent = '❌'; }
+            var l = document.getElementById('fabTimerToggleLabel');
+            if (l) l.textContent = currentLang === 'ar' ? 'إخفاء المؤقت' : 'Hide Timer';
+        } else {
+            if (tb) tb.classList.remove('active');
+            if (fw) fw.style.display = 'flex';
+
+            var simpleThemePages = (pageId === 'pageLang' || pageId === 'pageCertEN' || pageId === 'pageCertAR');
+            var fullFabPages = (pageId === 'page0' || pageId === 'page1' || pageId === 'page1b' || pageId === 'page3');
+
+            if (themeOnly) themeOnly.style.display = simpleThemePages ? 'flex' : 'none';
+            if (fabMain) fabMain.style.display = fullFabPages ? 'flex' : 'none';
+            if (pdfItem) pdfItem.style.display = fullFabPages ? 'flex' : 'none';
+            if (fabItems && !fullFabPages) fabItems.classList.remove('open');
+
+            if (fw) {
+                fw.classList.remove('rtl-fab');
+
+                if (simpleThemePages) {
+                    fw.style.position = '';
+                    fw.style.top = '';
+                    fw.style.right = '';
+                    fw.style.left = '';
+                    fw.style.zIndex = '';
+                    fw.style.display = '';
+                    fw.style.flexDirection = '';
+                    fw.style.alignItems = '';
+                    fw.style.gap = '';
+                    fw.style.direction = '';
+                } else if (currentLang === 'ar') {
+                    fw.classList.add('rtl-fab');
+                    fw.style.position = '';
+                    fw.style.top = '';
+                    fw.style.right = '';
+                    fw.style.left = '';
+                    fw.style.zIndex = '';
+                    fw.style.display = '';
+                    fw.style.flexDirection = '';
+                    fw.style.alignItems = '';
+                    fw.style.gap = '';
+                    fw.style.direction = '';
+                } else {
+                    fw.style.position = '';
+                    fw.style.top = '';
+                    fw.style.right = '';
+                    fw.style.left = '';
+                    fw.style.zIndex = '';
+                    fw.style.display = '';
+                    fw.style.flexDirection = '';
+                    fw.style.alignItems = '';
+                    fw.style.gap = '';
+                    fw.style.direction = '';
+                }
+            }
+
+            closeFab();
+            closeTopbarMenu();
+        }
+    }
+
+    /* ===== MODE SELECTION ===== */
+    function selectMode(mode) {
+        if (mode === 'custom') {
+            var hint = document.getElementById('totalQuestionsHint');
+            if (hint) hint.textContent = currentLang === 'ar'
+                ? 'إجمالي الأسئلة المتاحة: ' + questions.length
+                : 'Total available questions: ' + questions.length;
+            showPage('page1b');
+        } else {
+            showPage('page1');
+        }
+    }
+
+    function toggleUnlimitedTime() {
+        var cb  = document.getElementById('unlimitedTime');
+        var inp = document.getElementById('customTimeMinutes');
+        inp.disabled      = cb.checked;
+        inp.style.opacity = cb.checked ? '0.4' : '1';
+    }
+
+    /* ===== START QUIZ - SMART RANDOM ===== */
+    function startQuiz() {
+        var questionCountValue = document.getElementById('questionCount').value;
+        timeLimit = document.getElementById('timeLimit').value;
+
+        if (questionCountValue === 'all') {
+            selectedQuestions = questions.slice().sort(function(){ return 0.5 - Math.random(); });
+        } else {
+            var totalCount = parseInt(questionCountValue);
+            var shuffled   = questions.slice().sort(function(){ return 0.5 - Math.random(); });
+            selectedQuestions = shuffled.slice(0, Math.min(totalCount, shuffled.length));
+        }
+
+        userAnswers = {};
+        window.currentMode = 'smart';
+        startTime = new Date();
+        startTimer();
+        generateQuizHTML();
+        showPage('page2');
+    }
+
+    /* ===== START QUIZ - CUSTOM RANGE ===== */
+    function startCustomQuiz() {
+        var fromVal     = parseInt(document.getElementById('rangeFrom').value);
+        var toVal       = parseInt(document.getElementById('rangeTo').value);
+        var isUnlimited = document.getElementById('unlimitedTime').checked;
+        var customMins  = parseInt(document.getElementById('customTimeMinutes').value);
+        var errorDiv    = document.getElementById('rangeError');
+        var isAr        = currentLang === 'ar';
+
+        if (isNaN(fromVal) || isNaN(toVal) || fromVal < 1 || toVal < 1) {
+            errorDiv.textContent = isAr ? 'يرجى إدخال أرقام أسئلة صحيحة (الحد الأدنى 1).' : 'Please enter valid question numbers (minimum 1).';
+            errorDiv.style.display = 'block'; return;
+        }
+        if (fromVal > toVal) {
+            errorDiv.textContent = isAr ? 'يجب أن يكون رقم "من السؤال" أصغر من أو يساوي رقم "إلى السؤال".' : 'The "From" number must be ≤ the "To" number.';
+            errorDiv.style.display = 'block'; return;
+        }
+        if (toVal > questions.length) {
+            errorDiv.textContent = isAr
+                ? 'لا يمكن أن يتجاوز رقم "إلى السؤال" إجمالي الأسئلة المتاحة (' + questions.length + ').'
+                : 'The "To" number cannot exceed the total questions (' + questions.length + ').';
+            errorDiv.style.display = 'block'; return;
+        }
+        if (!isUnlimited && (isNaN(customMins) || customMins < 1)) {
+            errorDiv.textContent = isAr ? 'يرجى إدخال عدد دقائق صحيح (الحد الأدنى 1).' : 'Please enter a valid number of minutes (minimum 1).';
+            errorDiv.style.display = 'block'; return;
+        }
+        errorDiv.style.display = 'none';
+
+        selectedQuestions = questions.slice(fromVal - 1, toVal).map(function(q, i){
+            var obj = {};
+            for (var k in q) obj[k] = q[k];
+            obj.originalIndex = fromVal + i;
+            return obj;
+        });
+        timeLimit = isUnlimited ? 'unlimited' : String(customMins);
+        window.currentMode = 'custom';
+        userAnswers = {};
+        startTime = new Date();
+        startTimer();
+        generateQuizHTML();
+        showPage('page2');
+    }
+
+    /* ===== GENERATE QUIZ HTML ===== */
+    function generateQuizHTML() {
+        var container = document.getElementById('quizQuestions');
+        var info      = document.getElementById('questionInfo');
+        var isAr      = currentLang === 'ar';
+
+        var timeText = timeLimit === 'unlimited'
+            ? (isAr ? 'غير محدود' : 'Unlimited')
+            : timeLimit + (isAr ? ' دقيقة' : ' minutes');
+
+        info.textContent = isAr
+            ? 'الأسئلة: ' + selectedQuestions.length + ' | الوقت: ' + timeText
+            : 'Questions: ' + selectedQuestions.length + ' | Time: ' + timeText;
+
+        var ti = document.getElementById('topbarInfo');
+        if (ti) ti.textContent = info.textContent;
+
+        var html = '';
+        selectedQuestions.forEach(function(q, index) {
+            var qLabel = (window.currentMode === 'custom' && q.originalIndex != null)
+                ? (isAr ? 'سؤال ' + q.originalIndex : 'Q' + q.originalIndex)
+                : (isAr ? 'سؤال ' + (index + 1) : 'Q' + (index + 1));
+
+            var questionImagesHTML = '';
+            if (q.questionImages && q.questionImages.length > 0) {
+                questionImagesHTML = q.questionImages.map(function(img){ return '<div class="image-container"><img src="' + img + '" alt="question image" class="question-image" onerror="this.style.display=\'none\'; this.nextElementSibling.style.display=\'block\';"><div style="display:none; color:#e74c3c; font-style:italic; margin:10px 0;">' + (isAr ? 'الصورة غير موجودة: ' : 'Image not found: ') + img + '</div></div>'; }).join('');
+            }
+
+            if (q.isHotspot) {
+                html += '<div class="question" id="question' + index + '"><h3>' + qLabel + ': ' + q.question + '</h3>' + questionImagesHTML + '<p style="color:#7f8c8d; font-style:italic; margin-bottom:10px;">' + (isAr ? '(اختر السياسة الصحيحة لكل إجراء)' : '(Select the correct filter policy for each action)') + '</p><table class="hotspot-table"><thead><tr><th>' + (isAr ? 'الإجراء' : 'Mitigation Action') + '</th><th>' + (isAr ? 'سياسة التصفية' : 'Filter Policy') + '</th></tr></thead><tbody>';
+                q.hotspotRows.forEach(function(row, ri) {
+                    html += '<tr><td>' + row.statement + '</td><td class="hotspot-td-select"><select class="hotspot-row-select" id="hotspot' + index + '_' + ri + '" onchange="handleHotspotChange(' + index + ',' + ri + ',this.value,this)"><option value="">-- ' + (isAr ? 'اختر' : 'Select') + ' --</option>' + q.hotspotOptions.map(function(opt){ return '<option value="' + opt + '">' + opt + '</option>'; }).join('') + '</select></td></tr>';
+                });
+                html += '</tbody></table></div>';
+            } else {
+                var inputType  = q.isMultipleChoice ? 'checkbox' : 'radio';
+                var selectText;
+                if (isAr) {
+                    if (q.correct.length === 1)      selectText = '(اختر إجابة واحدة)';
+                    else if (q.correct.length === 2) selectText = '(اختر إجابتين)';
+                    else                             selectText = '(اختر ' + q.correct.length + ' إجابات)';
+                } else {
+                    selectText = q.correct.length === 1 ? '(Select one answer)' : '(Select ' + q.correct.length + ' answers)';
+                }
+                html += '<div class="question" id="question' + index + '"><h3>' + qLabel + ': ' + q.question + '</h3>' + questionImagesHTML + '<p style="color:#7f8c8d; font-style:italic; margin-bottom:15px;">' + selectText + '</p>';
+                q.options.forEach(function(option, optIndex) {
+                    var letter = isAr ? arabicLetters[optIndex] : String.fromCharCode(65 + optIndex);
+                    var optImgHTML = '';
+                    if (q.optionImages && q.optionImages[optIndex]) {
+                        optImgHTML = '<img src="' + q.optionImages[optIndex] + '" alt="option" class="option-image" onerror="this.style.display=\'none\';"><div style="display:none; color:#e74c3c; font-style:italic; font-size:0.8rem;">' + (isAr ? 'الصورة غير موجودة' : 'Image not found') + ': ' + q.optionImages[optIndex] + '</div>';
+                    }
+                    html += '<label class="option"><div class="option-content"><div><input type="' + inputType + '" name="question' + index + '" id="q' + index + '_' + optIndex + '" onchange="handleOptionChange(' + index + ',' + optIndex + ',\'' + inputType + '\')"></div><div class="option-text"><span>' + letter + '. ' + option + '</span>' + optImgHTML + '</div></div></label>';
+                });
+                html += '</div>';
+            }
+        });
+        container.innerHTML = html;
+    }
+
+    /* ===== INTERACTION HANDLERS ===== */
+    function handleHotspotChange(questionIndex, rowIndex, value, selectEl) {
+        if (!userAnswers[questionIndex]) userAnswers[questionIndex] = {};
+        userAnswers[questionIndex][rowIndex] = value;
+        if (selectEl) selectEl.classList.toggle('answered', value !== '');
+    }
+
+    function handleOptionChange(questionIndex, optionIndex, inputType) {
+        if (!userAnswers[questionIndex]) userAnswers[questionIndex] = [];
+        var input    = document.getElementById('q' + questionIndex + '_' + optionIndex);
+        var option   = input.parentElement.parentElement;
+        var question = selectedQuestions[questionIndex];
+        var requiredAnswers = question.correct.length;
+
+        if (inputType === 'radio') {
+            userAnswers[questionIndex] = [optionIndex];
+            var allOptions = document.querySelectorAll('input[name="question' + questionIndex + '"]');
+            allOptions.forEach(function(inp) { inp.parentElement.parentElement.classList.remove('selected'); });
+            option.classList.add('selected');
+        } else {
+            var idx = userAnswers[questionIndex].indexOf(optionIndex);
+            if (input.checked) {
+                if (idx === -1) {
+                    if (userAnswers[questionIndex].length < requiredAnswers) {
+                        userAnswers[questionIndex].push(optionIndex);
+                        option.classList.add('selected');
+                    } else {
+                        input.checked = false;
+                    }
+                }
+            } else {
+                if (idx !== -1) {
+                    userAnswers[questionIndex].splice(idx, 1);
+                    option.classList.remove('selected');
+                }
+            }
+        }
+    }
+
+    /* ===== TIMER ===== */
+    function startTimer() {
+        timerVisible = true;
+        var fabDisplay = document.getElementById('topbarTimerPill');
+        if (fabDisplay) fabDisplay.classList.remove('warning');
+        var toggleBtn = document.getElementById('fabTimerToggleBtn');
+        if (toggleBtn) { toggleBtn.className = 'fab-item-btn fab-btn-timer-hide'; toggleBtn.textContent = '❌'; }
+        var toggleLabel = document.getElementById('fabTimerToggleLabel');
+        if (toggleLabel) toggleLabel.textContent = currentLang === 'ar' ? 'إخفاء المؤقت' : 'Hide Timer';
+
+        if (timeLimit === 'unlimited') {
+            timerInterval = setInterval(function(){
+                var elapsed = new Date() - startTime;
+                var m = Math.floor(elapsed / 60000), s = Math.floor((elapsed % 60000) / 1000);
+                var el = document.getElementById('timer');
+                if (el) el.textContent = '∞ ' + String(m).padStart(2,'0') + ':' + String(s).padStart(2,'0');
+            }, 1000);
+            return;
+        }
+
+        var endTime = new Date(startTime.getTime() + parseInt(timeLimit) * 60000);
+        timerInterval = setInterval(function(){
+            var remaining = endTime - new Date();
+            if (remaining <= 0) { clearInterval(timerInterval); submitQuiz(true); return; }
+            var m = Math.floor(remaining / 60000), s = Math.floor((remaining % 60000) / 1000);
+            var el = document.getElementById('timer');
+            if (el) el.textContent = String(m).padStart(2,'0') + ':' + String(s).padStart(2,'0');
+            var disp = document.getElementById('topbarTimerPill');
+            if (disp) disp.classList.toggle('warning', remaining < 300000);
+        }, 1000);
+    }
+
+    /* ===== SUBMIT QUIZ ===== */
+    function submitQuiz(timeExpiredParam) {
+        timeExpiredParam = timeExpiredParam || false;
+        var isAr = currentLang === 'ar';
+
+        if (!timeExpiredParam) {
+            var unanswered = [], incomplete = [];
+            for (var i = 0; i < selectedQuestions.length; i++) {
+                var q = selectedQuestions[i];
+                if (q.isHotspot) {
+                    var ua = userAnswers[i] || {};
+                    var missing = [];
+                    for (var ri = 0; ri < q.hotspotRows.length; ri++) { if (!ua[ri]) missing.push(ri + 1); }
+                    if (missing.length > 0) unanswered.push(i + 1);
+                } else {
+                    var ua2 = userAnswers[i] || [];
+                    if (ua2.length === 0) unanswered.push(i + 1);
+                    else if (ua2.length < selectedQuestions[i].correct.length) incomplete.push(i + 1);
+                }
+            }
+            if (unanswered.length > 0 || incomplete.length > 0) {
+                var warning = document.getElementById('warningMessage');
+                var message = '';
+                if (unanswered.length > 0) message += isAr ? 'يرجى الإجابة على الأسئلة: ' + unanswered.join(', ') + '. ' : 'Please answer questions: ' + unanswered.join(', ') + '. ';
+                if (incomplete.length > 0) message += isAr ? 'يرجى إكمال الأسئلة: ' + incomplete.join(', ') + '.' : 'Please complete questions: ' + incomplete.join(', ') + '.';
+                warning.innerHTML = message;
+                warning.style.display = 'block';
+                var firstProblem = (unanswered.length > 0 ? unanswered[0] : incomplete[0]) - 1;
+                var qEl = document.getElementById('question' + firstProblem);
+                if (qEl) qEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                return;
+            }
+        }
+        clearInterval(timerInterval);
+        calculateResults(timeExpiredParam);
+        showPage('page3');
+    }
+
+    /* ===== CALCULATE RESULTS ===== */
+    function calculateResults(timeExpiredParam) {
+        timeExpiredParam = timeExpiredParam || false;
+        var isAr = currentLang === 'ar';
+        var elapsed = new Date() - startTime;
+        var tm = Math.floor(elapsed / 60000), ts = Math.floor((elapsed % 60000) / 1000);
+        var timeFormatted = String(tm).padStart(2,'0') + ':' + String(ts).padStart(2,'0');
+        var correctAnswers = 0, wrongAnswers = 0;
+        var totalQuestions = selectedQuestions.length;
+
+        selectedQuestions.forEach(function(q, index){
+            if (q.isHotspot) {
+                var ua = userAnswers[index] || {};
+                var allOk = q.hotspotRows.every(function(row, ri){ return ua[ri] && ua[ri] === row.correct; });
+                allOk ? correctAnswers++ : wrongAnswers++;
+            } else {
+                var ua2 = userAnswers[index] || [], ca = q.correct;
+                if (ua2.length === 0) { wrongAnswers++; return; }
+                var ok = ua2.length === ca.length &&
+                         ua2.every(function(v){ return ca.indexOf(v) !== -1; }) &&
+                         ca.every(function(v){ return ua2.indexOf(v) !== -1; });
+                ok ? correctAnswers++ : wrongAnswers++;
+            }
+        });
+
+        var score      = Math.round(correctAnswers * (1000 / totalQuestions));
+        var percentage = Math.round((correctAnswers / totalQuestions) * 100);
+        var passed     = score >= currentPassScore;
+
+        var timeMain, timeSub;
+        if (timeExpiredParam) {
+            timeMain = '<span style="color:#e74c3c;">' + timeFormatted + '</span>';
+            timeSub  = isAr ? 'انتهى الوقت المحدد (' + timeLimit + ' دقيقة)' : 'Time limit of ' + timeLimit + ' min expired';
+        } else if (timeLimit === 'unlimited') {
+            timeMain = timeFormatted;
+            timeSub  = isAr ? 'وقت غير محدود' : 'Unlimited time';
+        } else {
+            timeMain = timeFormatted;
+            timeSub  = isAr ? 'من أصل ' + timeLimit + ' دقيقة' : 'out of ' + timeLimit + ' minutes';
+        }
+
+        document.getElementById('timeResult').innerHTML    = timeMain;
+        document.getElementById('timeResultSub').innerHTML = timeSub;
+        document.getElementById('scoreResult').textContent = score + '/1000';
+        document.getElementById('passResult').innerHTML    = passed
+            ? '<span class="success">' + (isAr ? 'ناجح 🎉' : 'PASS! 🎉') + '</span>'
+            : '<span class="failure">' + (isAr ? 'راسب 😞' : 'FAIL! 😞') + '</span>';
+        document.getElementById('percentageResult').textContent = percentage + '%';
+        document.getElementById('correctCount').innerHTML = isAr
+            ? '<strong>الإجابات الصحيحة:</strong> <span style="color:#27ae60; font-weight:700;">' + correctAnswers + '</span>'
+            : '<strong>Correct answers:</strong> <span style="color:#27ae60; font-weight:700;">' + correctAnswers + '</span>';
+        document.getElementById('wrongCount').innerHTML = isAr
+            ? '<strong>الإجابات الخاطئة:</strong> <span style="color:#e74c3c; font-weight:700;">' + wrongAnswers + '</span>'
+            : '<strong>Wrong answers:</strong> <span style="color:#e74c3c; font-weight:700;">' + wrongAnswers + '</span>';
+        document.getElementById('motivationalMessage').innerHTML = passed
+            ? '<div class="success">' + (isAr ? '🎉 تهانينا! لقد نجحت في الاختبار. حظاً موفقاً في الاختبار الحقيقي!' : '🎉 Congratulations! You passed the exam. Good luck in the real one!') + '</div>'
+            : '<div class="failure">' + (isAr ? '😞 لم تنجح هذه المرة. لا تستسلم — راجع المادة وحاول مرة أخرى!' : '😞 You didn\'t pass this time. Don\'t give up — review and try again!') + '</div>';
+
+        generateReview(timeExpiredParam);
+
+        /* ===== FIREBASE: Save result after calculation ===== */
+        fbSaveResult({
+            score: score,
+            percentage: percentage,
+            passed: passed,
+            timeFormatted: timeFormatted,
+            correctAnswers: correctAnswers,
+            wrongAnswers: wrongAnswers,
+            totalQuestions: totalQuestions,
+            timeExpired: timeExpiredParam
+        });
+    }
+
+    /* ===== GENERATE REVIEW ===== */
+    function generateReview(timeExpiredParam) {
+        timeExpiredParam = timeExpiredParam || false;
+        var container = document.getElementById('reviewQuestions');
+        var html = '';
+        selectedQuestions.forEach(function(q, index){
+            html += buildReviewQuestionHTML(q, index, timeExpiredParam);
+        });
+        container.innerHTML = html;
+    }
+
+    function toggleReviewItem(index) {
+        var body   = document.getElementById('reviewBody'   + index);
+        var arrow  = document.getElementById('reviewArrow'  + index);
+        var header = document.querySelector('#reviewItem' + index + ' .review-item-header');
+        if (!body) return;
+        var open = body.classList.toggle('open');
+        if (arrow)  arrow.classList.toggle('open', open);
+        if (header) header.classList.toggle('open', open);
+    }
+
+    function buildSourceHTML(q) {
+        if (!q.sourceUrl) return '';
+        var isAr = currentLang === 'ar';
+        return '<div class="review-source-box"><span class="review-source-label">' + (isAr ? 'المصدر:' : 'Source:') + '</span><a class="review-source-link" href="' + q.sourceUrl + '" target="_blank" rel="noopener noreferrer">' + (isAr ? 'اضغط هنا' : 'Click here') + '</a></div>';
+    }
+
+    function buildReviewQuestionHTML(q, index, timeExpiredParam) {
+        var isAr   = currentLang === 'ar';
+        var qLabel = (window.currentMode === 'custom' && q.originalIndex != null)
+            ? (isAr ? 'سؤال ' + q.originalIndex : 'Question ' + q.originalIndex)
+            : (isAr ? 'سؤال ' + (index + 1) : 'Question ' + (index + 1));
+
+        var questionImagesHTML = '';
+        if (q.questionImages && q.questionImages.length > 0) {
+            questionImagesHTML = q.questionImages.map(function(img){ return '<div class="image-container"><img src="' + img + '" alt="question image" class="question-image" onerror="this.style.display=\'none\'; this.nextElementSibling.style.display=\'block\';"><div style="display:none; color:#e74c3c; font-style:italic; margin:10px 0;">' + (isAr ? 'الصورة غير موجودة: ' : 'Image not found: ') + img + '</div></div>'; }).join('');
+        }
+
+        if (q.isHotspot) {
+            var ua = userAnswers[index] || {};
+            var allOk = q.hotspotRows.every(function(row, ri){ return ua[ri] && ua[ri] === row.correct; });
+            var badgeClass = allOk ? 'correct' : 'wrong';
+            var rowsHTML = '';
+            q.hotspotRows.forEach(function(row, ri){
+                var userVal  = ua[ri] || '';
+                var isRowOk  = userVal === row.correct;
+                var userDisp = userVal || (timeExpiredParam ? (isAr ? 'لم يتم الإجابة (انتهى الوقت)' : 'Not answered (time expired)') : (isAr ? 'لا توجد إجابة' : 'No answer'));
+                rowsHTML += '<tr><td style="padding:10px 14px; border-bottom:1px solid var(--option-border); color:var(--question-text); background:var(--option-bg);">' + row.statement + '</td><td style="padding:10px 14px; border-bottom:1px solid var(--option-border); background:var(--option-bg);"><div class="' + (isRowOk ? 'hotspot-correct-cell' : 'hotspot-wrong-cell') + '">' + (isRowOk ? '✔ ' : '✘ ') + userDisp + '</div></td><td style="padding:10px 14px; border-bottom:1px solid var(--option-border); background:var(--option-bg);"><div class="hotspot-expected-cell">' + row.correct + '</div></td></tr>';
+            });
+            return '<div class="review-item ' + badgeClass + '" id="reviewItem' + index + '"><div class="review-item-header" onclick="toggleReviewItem(' + index + ')"><div class="review-item-left"><span class="review-item-arrow" id="reviewArrow' + index + '">▼</span><span class="review-q-label">' + qLabel + '</span></div><span class="review-score-badge ' + badgeClass + '">' + (allOk ? '1/1' : '0/1') + '</span></div><div class="review-item-body" id="reviewBody' + index + '"><div class="review-question"><h4 style="margin-top:14px;">' + q.question + '</h4>' + questionImagesHTML + '<table class="hotspot-review-table" style="margin-top:14px;"><thead><tr><th>' + (isAr ? 'الإجراء' : 'Mitigation Action') + '</th><th>' + (isAr ? 'إجابتك' : 'Your Answer') + '</th><th>' + (isAr ? 'الإجابة الصحيحة' : 'Correct Answer') + '</th></tr></thead><tbody>' + rowsHTML + '</tbody></table>' + buildSourceHTML(q) + '</div></div></div>';
+        } else {
+            var ua2 = userAnswers[index] || [], ca = q.correct;
+            var uaText, isOk = false;
+            if (ua2.length === 0) {
+                uaText = timeExpiredParam
+                    ? (isAr ? 'لم يتم الإجابة بسبب انتهاء الوقت' : 'Not answered due to time limit')
+                    : (isAr ? 'لا توجد إجابة' : 'No answer');
+            } else {
+                uaText = ua2.map(function(i){
+                    var letter = isAr ? arabicLetters[i] : String.fromCharCode(65 + i);
+                    var imgH = '';
+                    if (q.optionImages && q.optionImages[i]) imgH = '<div style="margin:10px 0;"><img src="' + q.optionImages[i] + '" class="option-image" onerror="this.style.display=\'none\';"></div>';
+                    return letter + '. ' + q.options[i] + imgH;
+                }).join('<br>');
+                isOk = ua2.length === ca.length &&
+                       ua2.every(function(v){ return ca.indexOf(v) !== -1; }) &&
+                       ca.every(function(v){ return ua2.indexOf(v) !== -1; });
+            }
+            var caText = ca.map(function(i){
+                var letter = isAr ? arabicLetters[i] : String.fromCharCode(65 + i);
+                var imgH = '';
+                if (q.optionImages && q.optionImages[i]) imgH = '<div style="margin:10px 0;"><img src="' + q.optionImages[i] + '" class="option-image" onerror="this.style.display=\'none\';"></div>';
+                return letter + '. ' + q.options[i] + imgH;
+            }).join('<br>');
+
+            var optionsHTML = '';
+            q.options.forEach(function(opt, oi){
+                var letter = isAr ? arabicLetters[oi] : String.fromCharCode(65 + oi);
+                var imgH = '';
+                if (q.optionImages && q.optionImages[oi]) imgH = '<div style="margin:10px 0;"><img src="' + q.optionImages[oi] + '" class="option-image" onerror="this.style.display=\'none\';"></div>';
+                optionsHTML += '<div style="margin:8px 0;">' + letter + '. ' + opt + imgH + '</div>';
+            });
+
+            var itemClass  = (isOk && ua2.length > 0) ? 'correct' : 'wrong';
+            var badgeCls   = (isOk && ua2.length > 0) ? 'correct' : 'wrong';
+            var uaLabelCls = (isOk && ua2.length > 0) ? 'user-correct-label' : 'user-wrong-label';
+            var uaAnsCls   = (isOk && ua2.length > 0) ? 'user-correct-answer' : 'user-wrong-answer';
+
+            return '<div class="review-item ' + itemClass + '" id="reviewItem' + index + '"><div class="review-item-header" onclick="toggleReviewItem(' + index + ')"><div class="review-item-left"><span class="review-item-arrow" id="reviewArrow' + index + '">▼</span><span class="review-q-label">' + qLabel + '</span></div><span class="review-score-badge ' + badgeCls + '">' + ((isOk && ua2.length > 0) ? '1/1' : '0/1') + '</span></div><div class="review-item-body" id="reviewBody' + index + '"><div class="review-question"><h4 style="margin-top:14px;">' + q.question + '</h4>' + questionImagesHTML + optionsHTML + '<div style="margin-top:15px;"><div class="review-info-box"><span class="' + uaLabelCls + '">' + (isAr ? 'إجابتك:' : 'Your answer:') + '</span><div class="' + uaAnsCls + '" style="margin-top:8px;">' + uaText + '</div></div><div class="review-explanation-box"><span class="correct-answer-label">' + (isAr ? 'الإجابة الصحيحة:' : 'The correct answer:') + '</span><div class="correct-answer-text" style="margin-top:8px;">' + caText + '</div></div>' + buildSourceHTML(q) + '</div></div></div></div>';
+        }
+    }
+
+    /* ===== RESTART / BACK ===== */
+    function restartQuiz() {
+        clearInterval(timerInterval);
+        showPage('page0');
+    }
+
+    function goBackToCert() {
+        clearInterval(timerInterval);
+        showPage(currentLang === 'ar' ? 'pageCertAR' : 'pageCertEN');
+    }
+
+    /* ===== SHOW PAGE ===== */
+    function showPage(pageId) {
+        document.querySelectorAll('.page').forEach(function(p){ p.classList.remove('active'); });
+        document.getElementById(pageId).classList.add('active');
+
+        var simpleThemePages = (pageId === 'pageLang' || pageId === 'pageCertEN' || pageId === 'pageCertAR');
+        if (simpleThemePages) {
+            document.body.classList.add('simple-theme-page');
+        } else {
+            document.body.classList.remove('simple-theme-page');
+        }
+
+        updatePdfButtonVisibility(pageId);
+        window.scrollTo(0, 0);
+    }
+
+    /* ===== INIT ===== */
+    document.addEventListener('DOMContentLoaded', function() {
+        updatePdfButtonVisibility('pageLang');
+        updateFabThemeLabel();
+    });
+</script>
+
+<!-- ===================================================== -->
+<!-- JAVASCRIPT - FIREBASE (NEW)                           -->
+<!-- ===================================================== -->
+<script>
+/* ================================================================
+   FIREBASE CONFIGURATION
+   ⚠️ استبدل هذه القيم بقيم مشروعك من Firebase Console
+   ⚠️ Replace these values with YOUR Firebase project settings
+   ================================================================ */
+var firebaseConfig = {
+    apiKey:            "AIzaSyB0CTx-ZWom05WoxqLr5uMd9j4rqY6gTAQ",
+    authDomain:        "fuexhub.firebaseapp.com",
+    projectId:         "fuexhub",
+    storageBucket:     "fuexhub.firebasestorage.app",
+    messagingSenderId: "1011538279540",
+    appId:             "1:1011538279540:web:7b29d2f91c012902046521"
+};
+
+/* ================================================================
+   INIT FIREBASE
+   ================================================================ */
+firebase.initializeApp(firebaseConfig);
+var fbAuth = firebase.auth();
+var fbDb   = firebase.firestore();
+
+/* ================================================================
+   AUTH STATE
+   ================================================================ */
+var fbCurrentUser  = null;   // logged-in user object
+var fbIsGuest      = false;  // true when browsing as guest
+var fbDailyAttempts = 0;     // how many exams taken in last 24h
+var fbPrevPageForResults = 'pageLang'; // where to go back from My Results
+var fbLimitCountdownInterval = null;
+
+/* ================================================================
+   AUTH STATE LISTENER
+   ================================================================ */
+fbAuth.onAuthStateChanged(function(user) {
+    if (user) {
+        fbCurrentUser = user;
+        fbIsGuest     = false;
+        fbOnUserLoggedIn(user);
+    } else {
+        fbCurrentUser = null;
+        // Only show auth page if not already guest
+        if (!fbIsGuest) {
+            showPage('pageAuth');
+            document.getElementById('userInfoBar').classList.remove('show');
+        }
+    }
+});
+
+/* ================================================================
+   ON USER LOGGED IN
+   ================================================================ */
+function fbOnUserLoggedIn(user) {
+    // Update user info bar
+    var bar = document.getElementById('userInfoBar');
+    if (bar) bar.classList.add('show');
+
+    var avatar = document.getElementById('userAvatar');
+    if (avatar) {
+        avatar.src = user.photoURL || '';
+        avatar.style.display = user.photoURL ? 'block' : 'none';
+    }
+
+    var nameEl = document.getElementById('userDisplayName');
+    if (nameEl) nameEl.textContent = user.displayName || user.email || 'User';
+
+    // Load daily attempt count then go to app
+    fbLoadDailyAttempts().then(function() {
+        fbUpdateAttemptsDisplay();
+        showPage('pageLang');
+    });
+}
+
+/* ================================================================
+   AUTH FUNCTIONS
+   ================================================================ */
+function authLoginGoogle() {
+    var provider = new firebase.auth.GoogleAuthProvider();
+    fbAuth.signInWithPopup(provider).catch(function(err) {
+        document.getElementById('authError').textContent = err.message;
+    });
+}
+
+function authLoginEmail() {
+    var email    = document.getElementById('authEmail').value.trim();
+    var password = document.getElementById('authPassword').value;
+    var errEl    = document.getElementById('authError');
+    errEl.textContent = '';
+
+    if (!email || !password) {
+        errEl.textContent = 'Please fill in all fields. / يرجى ملء جميع الحقول.';
+        return;
+    }
+
+    fbAuth.signInWithEmailAndPassword(email, password).catch(function(err) {
+        var msg = err.code === 'auth/user-not-found' ? 'No account found. / لا يوجد حساب.' :
+                  err.code === 'auth/wrong-password' ? 'Wrong password. / كلمة مرور خاطئة.' :
+                  err.code === 'auth/invalid-email'  ? 'Invalid email. / بريد إلكتروني غير صالح.' :
+                  err.message;
+        errEl.textContent = msg;
+    });
+}
+
+function authRegisterEmail() {
+    var name     = document.getElementById('authRegName').value.trim();
+    var email    = document.getElementById('authRegEmail').value.trim();
+    var password = document.getElementById('authRegPassword').value;
+    var errEl    = document.getElementById('authRegError');
+    errEl.textContent = '';
+
+    if (!name || !email || !password) {
+        errEl.textContent = 'Please fill in all fields. / يرجى ملء جميع الحقول.';
+        return;
+    }
+    if (password.length < 6) {
+        errEl.textContent = 'Password must be at least 6 characters. / كلمة المرور 6 أحرف على الأقل.';
+        return;
+    }
+
+    fbAuth.createUserWithEmailAndPassword(email, password).then(function(cred) {
+        return cred.user.updateProfile({ displayName: name });
+    }).catch(function(err) {
+        var msg = err.code === 'auth/email-already-in-use' ? 'Email already in use. / البريد مستخدم بالفعل.' :
+                  err.code === 'auth/invalid-email'        ? 'Invalid email. / بريد غير صالح.' :
+                  err.code === 'auth/weak-password'        ? 'Password too weak. / كلمة المرور ضعيفة.' :
+                  err.message;
+        errEl.textContent = msg;
+    });
+}
+
+function authShowRegister() {
+    document.getElementById('authFormLogin').style.display    = 'none';
+    document.getElementById('authFormRegister').style.display = 'block';
+    document.getElementById('authError').textContent = '';
+}
+
+function authShowLogin() {
+    document.getElementById('authFormRegister').style.display = 'none';
+    document.getElementById('authFormLogin').style.display    = 'block';
+    document.getElementById('authRegError').textContent = '';
+}
+
+function authContinueAsGuest() {
+    fbIsGuest     = true;
+    fbCurrentUser = null;
+    document.getElementById('userInfoBar').classList.remove('show');
+    showPage('pageLang');
+}
+
+function authSignOut() {
+    fbAuth.signOut().then(function() {
+        fbCurrentUser = null;
+        fbIsGuest = false;
+        fbDailyAttempts = 0;
+        document.getElementById('userInfoBar').classList.remove('show');
+        showPage('pageAuth');
+    });
+}
+
+/* ================================================================
+   DAILY ATTEMPT LIMIT  (3 per 24 hours)
+   ================================================================ */
+var FB_DAILY_LIMIT = 3;
+
+function fbLoadDailyAttempts() {
+    if (!fbCurrentUser) return Promise.resolve();
+    var cutoff = new Date(Date.now() - 24 * 60 * 60 * 1000); // 24h ago
+
+    return fbDb
+        .collection('users').doc(fbCurrentUser.uid)
+        .collection('results')
+        .where('timestamp', '>', firebase.firestore.Timestamp.fromDate(cutoff))
+        .get()
+        .then(function(snap) {
+            fbDailyAttempts = snap.size;
+            fbUpdateAttemptsDisplay();
+        })
+        .catch(function(err) {
+            console.warn('Failed to load attempts:', err);
+        });
+}
+
+function fbUpdateAttemptsDisplay() {
+    var el = document.getElementById('userAttemptsInfo');
+    if (!el) return;
+    var remaining = Math.max(0, FB_DAILY_LIMIT - fbDailyAttempts);
+    el.textContent = remaining + ' attempt(s) left today · ' + remaining + ' محاولة متبقية اليوم';
+}
+
+function fbGetEarliestAttemptTimestamp() {
+    if (!fbCurrentUser) return Promise.resolve(null);
+    var cutoff = new Date(Date.now() - 24 * 60 * 60 * 1000);
+
+    return fbDb
+        .collection('users').doc(fbCurrentUser.uid)
+        .collection('results')
+        .where('timestamp', '>', firebase.firestore.Timestamp.fromDate(cutoff))
+        .orderBy('timestamp', 'asc')
+        .limit(1)
+        .get()
+        .then(function(snap) {
+            if (snap.empty) return null;
+            return snap.docs[0].data().timestamp.toDate();
+        });
+}
+
+/* ================================================================
+   OVERRIDE startQuiz & startCustomQuiz to check limit
+   ================================================================ */
+var _origStartQuiz       = window.startQuiz;
+var _origStartCustomQuiz = window.startCustomQuiz;
+
+window.startQuiz = function() {
+    if (fbCurrentUser && !fbIsGuest && fbDailyAttempts >= FB_DAILY_LIMIT) {
+        fbShowLimitOverlay();
+        return;
+    }
+    _origStartQuiz();
+};
+
+window.startCustomQuiz = function() {
+    if (fbCurrentUser && !fbIsGuest && fbDailyAttempts >= FB_DAILY_LIMIT) {
+        fbShowLimitOverlay();
+        return;
+    }
+    _origStartCustomQuiz();
+};
+
+/* ================================================================
+   LIMIT OVERLAY
+   ================================================================ */
+function fbShowLimitOverlay() {
+    document.getElementById('attemptLimitOverlay').classList.add('show');
+    fbGetEarliestAttemptTimestamp().then(function(earliest) {
+        if (!earliest) { closeLimitOverlay(); return; }
+        var unlockTime = new Date(earliest.getTime() + 24 * 60 * 60 * 1000);
+        fbStartLimitCountdown(unlockTime);
+    });
+}
+
+function fbStartLimitCountdown(unlockTime) {
+    if (fbLimitCountdownInterval) clearInterval(fbLimitCountdownInterval);
+    function tick() {
+        var remaining = unlockTime - Date.now();
+        if (remaining <= 0) {
+            clearInterval(fbLimitCountdownInterval);
+            document.getElementById('limitCountdown').textContent = '00:00:00';
+            closeLimitOverlay();
+            fbDailyAttempts = 0;
+            fbUpdateAttemptsDisplay();
+            return;
+        }
+        var h = Math.floor(remaining / 3600000);
+        var m = Math.floor((remaining % 3600000) / 60000);
+        var s = Math.floor((remaining % 60000) / 1000);
+        document.getElementById('limitCountdown').textContent =
+            String(h).padStart(2,'0') + ':' + String(m).padStart(2,'0') + ':' + String(s).padStart(2,'0');
+    }
+    tick();
+    fbLimitCountdownInterval = setInterval(tick, 1000);
+}
+
+function closeLimitOverlay() {
+    document.getElementById('attemptLimitOverlay').classList.remove('show');
+    if (fbLimitCountdownInterval) { clearInterval(fbLimitCountdownInterval); fbLimitCountdownInterval = null; }
+}
+
+/* ================================================================
+   SAVE RESULT TO FIRESTORE
+   Called from calculateResults (added at end of that function)
+   ================================================================ */
+function fbSaveResult(resultData) {
+    // Hide all notices first
+    document.getElementById('guestNoticeBanner').classList.remove('show');
+    document.getElementById('savedResultNotice').style.display = 'none';
+
+    if (fbIsGuest || !fbCurrentUser) {
+        // Show guest notice
+        document.getElementById('guestNoticeBanner').classList.add('show');
+        return;
+    }
+
+    var docData = {
+        certCode:       currentCertCode,
+        certName:       currentCertName,
+        lang:           currentLang,
+        score:          resultData.score,
+        percentage:     resultData.percentage,
+        passed:         resultData.passed,
+        timeFormatted:  resultData.timeFormatted,
+        correctAnswers: resultData.correctAnswers,
+        wrongAnswers:   resultData.wrongAnswers,
+        totalQuestions: resultData.totalQuestions,
+        timeExpired:    resultData.timeExpired,
+        timestamp:      firebase.firestore.FieldValue.serverTimestamp()
+    };
+
+    fbDb.collection('users').doc(fbCurrentUser.uid)
+        .collection('results')
+        .add(docData)
+        .then(function() {
+            fbDailyAttempts++;
+            fbUpdateAttemptsDisplay();
+            document.getElementById('savedResultNotice').style.display = 'block';
+        })
+        .catch(function(err) {
+            console.warn('Failed to save result:', err);
+        });
+}
+
+/* ================================================================
+   MY RESULTS PAGE
+   ================================================================ */
+function showMyResults() {
+    fbPrevPageForResults = document.querySelector('.page.active') ? document.querySelector('.page.active').id : 'pageLang';
+    showPage('pageMyResults');
+    fbLoadMyResults();
+}
+
+function goBackFromMyResults() {
+    showPage(fbPrevPageForResults || 'pageLang');
+}
+
+function fbLoadMyResults() {
+    if (!fbCurrentUser) return;
+
+    document.getElementById('myResultsLoading').style.display = 'block';
+    document.getElementById('myResultsEmpty').style.display   = 'none';
+    document.getElementById('myResultsTableWrap').style.display = 'none';
+    document.getElementById('myResultsStatsRow').style.display  = 'none';
+
+    var thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
+
+    fbDb.collection('users').doc(fbCurrentUser.uid)
+        .collection('results')
+        .where('timestamp', '>', firebase.firestore.Timestamp.fromDate(thirtyDaysAgo))
+        .orderBy('timestamp', 'desc')
+        .get()
+        .then(function(snap) {
+            document.getElementById('myResultsLoading').style.display = 'none';
+
+            if (snap.empty) {
+                document.getElementById('myResultsEmpty').style.display = 'block';
+                return;
+            }
+
+            var results = [];
+            snap.forEach(function(doc) { results.push(doc.data()); });
+
+            // Compute stats
+            var totalPassed = results.filter(function(r){ return r.passed; }).length;
+            var totalFailed = results.length - totalPassed;
+            var avgPct = results.length > 0
+                ? Math.round(results.reduce(function(sum, r){ return sum + (r.percentage || 0); }, 0) / results.length)
+                : 0;
+
+            document.getElementById('statTotal').textContent  = results.length;
+            document.getElementById('statPassed').textContent = totalPassed;
+            document.getElementById('statFailed').textContent = totalFailed;
+            document.getElementById('statAvg').textContent    = avgPct + '%';
+            document.getElementById('myResultsStatsRow').style.display = 'flex';
+
+            // Build table
+            var tbody = document.getElementById('myResultsBody');
+            tbody.innerHTML = '';
+            results.forEach(function(r, idx) {
+                var ts = r.timestamp ? r.timestamp.toDate() : new Date();
+                var dateStr = ts.toLocaleDateString('en-GB', { day:'2-digit', month:'short', year:'numeric' });
+                var timeStr = ts.toLocaleTimeString('en-GB', { hour:'2-digit', minute:'2-digit' });
+                var langBadge = '<span class="result-lang-badge">' + (r.lang === 'ar' ? 'AR' : 'EN') + '</span>';
+                var statusBadge = r.passed
+                    ? '<span class="result-badge-pass">PASS ✅</span>'
+                    : '<span class="result-badge-fail">FAIL ❌</span>';
+                var tr = document.createElement('tr');
+                tr.innerHTML =
+                    '<td>' + (idx + 1) + '</td>' +
+                    '<td><strong>' + (r.certCode || '—') + '</strong></td>' +
+                    '<td><strong>' + (r.score || 0) + '</strong>/1000</td>' +
+                    '<td>' + (r.percentage || 0) + '%</td>' +
+                    '<td>' + statusBadge + '</td>' +
+                    '<td>' + langBadge + '</td>' +
+                    '<td>' + dateStr + '<br><span style="font-size:0.8rem;opacity:0.7;">' + timeStr + '</span></td>';
+                tbody.appendChild(tr);
+            });
+
+            document.getElementById('myResultsTableWrap').style.display = 'block';
+        })
+        .catch(function(err) {
+            document.getElementById('myResultsLoading').style.display = 'none';
+            document.getElementById('myResultsEmpty').style.display   = 'block';
+            document.getElementById('myResultsEmpty').textContent = 'Error loading results. / خطأ في تحميل النتائج.';
+            console.warn('Load results error:', err);
+        });
+}
+
+/* ================================================================
+   DOMContentLoaded - inject My Results FAB button
+   ================================================================ */
+document.addEventListener('DOMContentLoaded', function() {
+    var fabItemsDiv = document.getElementById('fabItems');
+    if (fabItemsDiv) {
+        var myResItem = document.createElement('div');
+        myResItem.className  = 'fab-item';
+        myResItem.id         = 'fabMyResultsItem';
+        myResItem.style.display = 'none';
+        myResItem.innerHTML =
+            '<span class="fab-item-label" id="fabMyResultsLabel">My Results / نتائجي</span>' +
+            '<button class="fab-item-btn" style="background:linear-gradient(135deg,#e67e22,#f39c12);color:#fff;" ' +
+            'onclick="showMyResults(); closeFab();">📊</button>';
+        fabItemsDiv.appendChild(myResItem);
+    }
+
+    // Override updatePdfButtonVisibility to also handle My Results button
+    var _origUpdatePdf = window.updatePdfButtonVisibility;
+    window.updatePdfButtonVisibility = function(pageId) {
+        _origUpdatePdf(pageId);
+        var myResItem = document.getElementById('fabMyResultsItem');
+        if (myResItem) {
+            var showPages = ['page0','page1','page1b','page3'];
+            var shouldShow = fbCurrentUser && !fbIsGuest && showPages.indexOf(pageId) !== -1;
+            myResItem.style.display = shouldShow ? 'flex' : 'none';
+        }
+    };
+});
+</script>
+</body>
+</html>
