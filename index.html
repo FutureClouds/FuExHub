@@ -529,18 +529,48 @@ body.lang-ar * {
         .auth-loading { display: inline-block; width: 18px; height: 18px; border: 3px solid rgba(255,255,255,0.3); border-top-color: #fff; border-radius: 50%; animation: spin 0.8s linear infinite; vertical-align: middle; margin-left: 8px; }
         @keyframes spin { to { transform: rotate(360deg); } }
 
-        /* ===== USER BAR (small banner when logged in) ===== */
+        /* ===== USER BAR (collapsible bottom bar for logged-in users) ===== */
         .user-info-bar {
-            position: fixed; top: 0; left: 0; right: 0; z-index: 1997;
-            background: var(--topbar-bg); backdrop-filter: blur(12px);
-            padding: 8px 22px; display: none; align-items: center;
-            justify-content: space-between; gap: 12px;
-            border-bottom: 1px solid rgba(255,255,255,0.08);
-            box-shadow: 0 4px 20px rgba(0,0,0,0.4);
-            height: 54px;
+            position: fixed; bottom: 0; left: 0; right: 0; z-index: 1997;
+            background: var(--topbar-bg); backdrop-filter: blur(16px);
+            border-top: 1px solid rgba(255,255,255,0.08);
+            box-shadow: 0 -4px 20px rgba(0,0,0,0.45);
+            display: none; flex-direction: column;
+            transition: transform 0.35s cubic-bezier(0.4,0,0.2,1);
         }
         .user-info-bar.show { display: flex; }
-        body.simple-theme-page .user-info-bar.show { display: flex; }
+
+        /* Toggle tab — always visible when bar is shown */
+        .user-bar-toggle {
+            display: flex; align-items: center; justify-content: center;
+            width: 64px; height: 20px;
+            background: var(--topbar-bg);
+            border: 1px solid rgba(255,255,255,0.12);
+            border-bottom: none;
+            border-radius: 10px 10px 0 0;
+            position: absolute; top: -20px; left: 50%; transform: translateX(-50%);
+            cursor: pointer; z-index: 2;
+            box-shadow: 0 -3px 10px rgba(0,0,0,0.3);
+        }
+        .user-bar-toggle-arrow {
+            color: rgba(255,255,255,0.6); font-size: 0.65rem;
+            transition: transform 0.3s ease; line-height: 1;
+        }
+        .user-info-bar.collapsed .user-bar-toggle-arrow { transform: rotate(180deg); }
+
+        /* The actual content row — hidden when collapsed */
+        .user-info-bar-content {
+            display: flex; align-items: center; justify-content: space-between;
+            gap: 12px; padding: 8px 22px; height: 50px;
+            overflow: hidden;
+            transition: height 0.35s cubic-bezier(0.4,0,0.2,1),
+                        padding 0.35s cubic-bezier(0.4,0,0.2,1),
+                        opacity 0.3s ease;
+        }
+        .user-info-bar.collapsed .user-info-bar-content {
+            height: 0; padding-top: 0; padding-bottom: 0; opacity: 0; pointer-events: none;
+        }
+
         .user-info-bar-left { display: flex; align-items: center; gap: 10px; flex: 1; min-width: 0; }
         .user-info-avatar { width: 30px; height: 30px; border-radius: 50%; object-fit: cover; border: 2px solid rgba(255,255,255,0.25); flex-shrink: 0; }
         .user-info-name { color: #fff; font-size: 0.88rem; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
@@ -550,11 +580,6 @@ body.lang-ar * {
         .user-info-btn:hover { background: rgba(255,255,255,0.1); color: #fff; transform: none; }
         .user-info-btn.my-results-btn { background: linear-gradient(45deg, #2980b9, #8e44ad); color: #fff; border-color: transparent; }
         .user-info-btn.my-results-btn:hover { background: linear-gradient(45deg, #8e44ad, #2980b9); transform: none; }
-        /* Push pages down when user bar is shown */
-        body.has-user-bar .lang-select-wrapper,
-        body.has-user-bar .cert-select-wrapper,
-        body.has-user-bar .quiz-container,
-        body.has-user-bar .my-results-wrapper { padding-top: 64px; }
 
         /* Guest notice banner on page3 */
         .guest-notice-banner {
@@ -1063,10 +1088,16 @@ body.lang-ar * {
 <div id="pageMyResults" class="page">
     <div class="my-results-wrapper">
         <div class="my-results-container">
-            <div class="my-results-title" id="myResultsTitle">📊 My Results / نتائجي</div>
+            <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:8px; flex-wrap:wrap; gap:10px;">
+                <div class="my-results-title" id="myResultsTitle">📊 My Results / نتائجي</div>
+                <!-- Fix 6: Theme toggle -->
+                <button onclick="toggleTheme(); updateFabThemeLabel();" style="background:linear-gradient(135deg,#2980b9,#8e44ad); padding:8px 18px; font-size:0.85rem; margin:0; border-radius:8px; display:flex; align-items:center; gap:6px;">
+                    <span id="myResultsThemeIcon">🌙</span> <span id="myResultsThemeLabel">Dark / Light</span>
+                </button>
+            </div>
             <div class="my-results-subtitle">Last 30 days · آخر 30 يوم</div>
 
-            <!-- Stats row -->
+            <!-- Stats row — Avg Score removed (Fix 5) -->
             <div class="my-results-stats-row" id="myResultsStatsRow" style="display:none;">
                 <div class="my-results-stat">
                     <div class="my-results-stat-val" id="statTotal">0</div>
@@ -1079,10 +1110,6 @@ body.lang-ar * {
                 <div class="my-results-stat">
                     <div class="my-results-stat-val" id="statFailed" style="color:#e74c3c;">0</div>
                     <div class="my-results-stat-label">Failed / راسب</div>
-                </div>
-                <div class="my-results-stat">
-                    <div class="my-results-stat-val" id="statAvg">0%</div>
-                    <div class="my-results-stat-label">Avg Score / متوسط الدرجة</div>
                 </div>
             </div>
 
@@ -1140,19 +1167,26 @@ body.lang-ar * {
 </div>
 
 <!-- ===================================================== -->
-<!-- USER INFO BAR (bottom bar for logged-in users)        -->
+<!-- USER INFO BAR (collapsible bottom bar)              -->
 <!-- ===================================================== -->
 <div class="user-info-bar" id="userInfoBar">
-    <div class="user-info-bar-left">
-        <img class="user-info-avatar" id="userAvatar" src="" alt="" onerror="this.style.display='none'">
-        <div>
-            <div class="user-info-name" id="userDisplayName"></div>
-            <div class="user-info-attempts" id="userAttemptsInfo"></div>
-        </div>
+    <!-- Toggle tab -->
+    <div class="user-bar-toggle" onclick="toggleUserBar()" title="Toggle bar">
+        <span class="user-bar-toggle-arrow">▲</span>
     </div>
-    <div class="user-info-bar-right">
-        <button class="user-info-btn my-results-btn" onclick="showMyResults()">📊 My Results / نتائجي</button>
-        <button class="user-info-btn" onclick="authSignOut()">Logout / خروج</button>
+    <!-- Content -->
+    <div class="user-info-bar-content">
+        <div class="user-info-bar-left">
+            <img class="user-info-avatar" id="userAvatar" src="" alt="" onerror="this.style.display='none'">
+            <div>
+                <div class="user-info-name" id="userDisplayName"></div>
+                <div class="user-info-attempts" id="userAttemptsInfo"></div>
+            </div>
+        </div>
+        <div class="user-info-bar-right">
+            <button class="user-info-btn my-results-btn" onclick="showMyResults()">📊 My Results / نتائجي</button>
+            <button class="user-info-btn" onclick="authSignOut()">Logout / خروج</button>
+        </div>
     </div>
 </div>
 
@@ -1577,6 +1611,11 @@ if (isAr) {
         var lbl = dark ? (isAr ? 'الوضع الفاتح' : 'Light Mode') : (isAr ? 'الوضع الداكن' : 'Dark Mode');
         ['fabThemeLabel','fabThemeLabelNormal'].forEach(function(id){ var e = document.getElementById(id); if (e) e.textContent = lbl; });
         ['fabThemeBtn','fabThemeBtnNormal','fabThemeBtnSingle'].forEach(function(id){ var e = document.getElementById(id); if (e) e.textContent = dark ? '☀️' : '🌙'; });
+        // Update My Results theme button
+        var mrIcon = document.getElementById('myResultsThemeIcon');
+        var mrLbl  = document.getElementById('myResultsThemeLabel');
+        if (mrIcon) mrIcon.textContent = dark ? '☀️' : '🌙';
+        if (mrLbl)  mrLbl.textContent  = dark ? (isAr ? 'الوضع الفاتح' : 'Light Mode') : (isAr ? 'الوضع الداكن' : 'Dark Mode');
     }
 
     function openQAFile() {
@@ -2180,9 +2219,6 @@ fbAuth.onAuthStateChanged(function(user) {
    ON USER LOGGED IN
    ================================================================ */
 function fbOnUserLoggedIn(user) {
-    // Add body class for top bar spacing
-    document.body.classList.add('has-user-bar');
-
     // Update user info bar
     var bar = document.getElementById('userInfoBar');
     if (bar) bar.classList.add('show');
@@ -2335,7 +2371,6 @@ function authSignOut() {
         fbCurrentUser = null;
         fbIsGuest = false;
         fbDailyAttempts = 0;
-        document.body.classList.remove('has-user-bar');
         document.getElementById('userInfoBar').classList.remove('show');
         showPage('pageAuth');
     });
@@ -2356,13 +2391,12 @@ function fbLoadDailyAttempts() {
         .orderBy('timestamp', 'desc')
         .get()
         .then(function(snap) {
-            // Count only those within last 24h (client-side filter avoids composite index)
             var count = 0;
             snap.forEach(function(doc) {
                 var data = doc.data();
-                if (data.timestamp && data.timestamp.toDate() > cutoff) {
-                    count++;
-                }
+                // Use server timestamp if available, else clientTimestamp fallback
+                var ts = data.timestamp ? data.timestamp.toDate() : (data.clientTimestamp ? new Date(data.clientTimestamp) : null);
+                if (ts && ts > cutoff) count++;
             });
             fbDailyAttempts = count;
             fbUpdateAttemptsDisplay();
@@ -2402,24 +2436,32 @@ function fbGetEarliestAttemptTimestamp() {
 
 /* ================================================================
    OVERRIDE startQuiz & startCustomQuiz to check limit
+   Always re-fetches from Firestore to prevent bypass
    ================================================================ */
 var _origStartQuiz       = window.startQuiz;
 var _origStartCustomQuiz = window.startCustomQuiz;
 
 window.startQuiz = function() {
-    if (fbCurrentUser && !fbIsGuest && fbDailyAttempts >= FB_DAILY_LIMIT) {
-        fbShowLimitOverlay();
-        return;
-    }
-    _origStartQuiz();
+    if (!fbCurrentUser || fbIsGuest) { _origStartQuiz(); return; }
+    // Always re-fetch from Firestore to get accurate count
+    fbLoadDailyAttempts().then(function() {
+        if (fbDailyAttempts >= FB_DAILY_LIMIT) {
+            fbShowLimitOverlay();
+        } else {
+            _origStartQuiz();
+        }
+    });
 };
 
 window.startCustomQuiz = function() {
-    if (fbCurrentUser && !fbIsGuest && fbDailyAttempts >= FB_DAILY_LIMIT) {
-        fbShowLimitOverlay();
-        return;
-    }
-    _origStartCustomQuiz();
+    if (!fbCurrentUser || fbIsGuest) { _origStartCustomQuiz(); return; }
+    fbLoadDailyAttempts().then(function() {
+        if (fbDailyAttempts >= FB_DAILY_LIMIT) {
+            fbShowLimitOverlay();
+        } else {
+            _origStartCustomQuiz();
+        }
+    });
 };
 
 /* ================================================================
@@ -2489,6 +2531,7 @@ function fbSaveResult(resultData) {
         totalQuestions: resultData.totalQuestions,
         timeExpired:    resultData.timeExpired,
         timestamp:      firebase.firestore.FieldValue.serverTimestamp(),
+        clientTimestamp: Date.now(),   // fallback for immediate display
         uid:            fbCurrentUser.uid
     };
 
@@ -2534,43 +2577,49 @@ function fbLoadMyResults() {
     document.getElementById('myResultsTableWrap').style.display = 'none';
     document.getElementById('myResultsStatsRow').style.display  = 'none';
 
-    // Simple query - just orderBy timestamp descending (no composite index needed)
+    var thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
+
     fbDb.collection('users').doc(fbCurrentUser.uid)
         .collection('results')
         .orderBy('timestamp', 'desc')
-        .limit(100)
+        .limit(200)
         .get()
         .then(function(snap) {
             document.getElementById('myResultsLoading').style.display = 'none';
 
-            if (snap.empty) {
+            // Filter client-side to last 30 days (avoids composite index requirement)
+            var results = [];
+            snap.forEach(function(doc) {
+                var d = doc.data();
+                // Use clientTimestamp fallback if server timestamp not yet set
+                var ts = d.timestamp ? d.timestamp.toDate() : (d.clientTimestamp ? new Date(d.clientTimestamp) : null);
+                if (ts && ts >= thirtyDaysAgo) {
+                    d._ts = ts; // attach resolved date
+                    results.push(d);
+                }
+            });
+
+            if (results.length === 0) {
                 document.getElementById('myResultsEmpty').style.display = 'block';
                 return;
             }
 
-            var results = [];
-            snap.forEach(function(doc) { results.push(doc.data()); });
-
-            // Compute stats
+            // Stats (no avg)
             var totalPassed = results.filter(function(r){ return r.passed; }).length;
             var totalFailed = results.length - totalPassed;
-            var avgPct = results.length > 0
-                ? Math.round(results.reduce(function(sum, r){ return sum + (r.percentage || 0); }, 0) / results.length)
-                : 0;
 
             document.getElementById('statTotal').textContent  = results.length;
             document.getElementById('statPassed').textContent = totalPassed;
             document.getElementById('statFailed').textContent = totalFailed;
-            document.getElementById('statAvg').textContent    = avgPct + '%';
             document.getElementById('myResultsStatsRow').style.display = 'flex';
 
             // Build table
             var tbody = document.getElementById('myResultsBody');
             tbody.innerHTML = '';
             results.forEach(function(r, idx) {
-                var ts = r.timestamp ? r.timestamp.toDate() : new Date();
+                var ts = r._ts;
                 var dateStr = ts.toLocaleDateString('en-GB', { day:'2-digit', month:'short', year:'numeric' });
-                var timeStr = ts.toLocaleTimeString('en-GB', { hour:'2-digit', minute:'2-digit' });
+                var timeStr = ts.toLocaleTimeString('en-GB', { hour:'2-digit', minute:'2-digit', second:'2-digit' });
                 var langBadge = '<span class="result-lang-badge">' + (r.lang === 'ar' ? 'AR' : 'EN') + '</span>';
                 var statusBadge = r.passed
                     ? '<span class="result-badge-pass">PASS ✅</span>'
@@ -2595,6 +2644,18 @@ function fbLoadMyResults() {
             document.getElementById('myResultsEmpty').textContent = 'Error loading results. / خطأ في تحميل النتائج. (' + err.message + ')';
             console.warn('Load results error:', err);
         });
+}
+
+/* ================================================================
+   USER BAR TOGGLE (collapse / expand)
+   ================================================================ */
+function toggleUserBar() {
+    var bar = document.getElementById('userInfoBar');
+    if (!bar) return;
+    bar.classList.toggle('collapsed');
+    var arrow = bar.querySelector('.user-bar-toggle-arrow');
+    // arrow direction: ▲ when expanded (click to collapse), ▼ when collapsed (click to expand)
+    if (arrow) arrow.textContent = bar.classList.contains('collapsed') ? '▼' : '▲';
 }
 
 /* ================================================================
