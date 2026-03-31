@@ -2383,26 +2383,21 @@ var FB_DAILY_LIMIT = 3;
 
 function fbLoadDailyAttempts() {
     if (!fbCurrentUser) return Promise.resolve();
-    var cutoff = new Date(Date.now() - 24 * 60 * 60 * 1000); // 24h ago
+    var cutoff = Date.now() - 24 * 60 * 60 * 1000; // 24h ago in ms
 
+    // Query by clientTimestamp (number) — never null, no index issues
     return fbDb
         .collection('users').doc(fbCurrentUser.uid)
         .collection('results')
-        .orderBy('timestamp', 'desc')
+        .where('clientTimestamp', '>', cutoff)
         .get()
         .then(function(snap) {
-            var count = 0;
-            snap.forEach(function(doc) {
-                var data = doc.data();
-                // Use server timestamp if available, else clientTimestamp fallback
-                var ts = data.timestamp ? data.timestamp.toDate() : (data.clientTimestamp ? new Date(data.clientTimestamp) : null);
-                if (ts && ts > cutoff) count++;
-            });
-            fbDailyAttempts = count;
+            fbDailyAttempts = snap.size;
             fbUpdateAttemptsDisplay();
         })
         .catch(function(err) {
             console.warn('Failed to load attempts:', err);
+            fbDailyAttempts = 0;
         });
 }
 
@@ -2415,23 +2410,20 @@ function fbUpdateAttemptsDisplay() {
 
 function fbGetEarliestAttemptTimestamp() {
     if (!fbCurrentUser) return Promise.resolve(null);
-    var cutoff = new Date(Date.now() - 24 * 60 * 60 * 1000);
+    var cutoff = Date.now() - 24 * 60 * 60 * 1000;
 
     return fbDb
         .collection('users').doc(fbCurrentUser.uid)
         .collection('results')
-        .orderBy('timestamp', 'asc')
+        .where('clientTimestamp', '>', cutoff)
+        .orderBy('clientTimestamp', 'asc')
+        .limit(1)
         .get()
         .then(function(snap) {
-            var earliest = null;
-            snap.forEach(function(doc) {
-                var data = doc.data();
-                if (data.timestamp && data.timestamp.toDate() > cutoff) {
-                    if (!earliest) earliest = data.timestamp.toDate();
-                }
-            });
-            return earliest;
-        });
+            if (snap.empty) return null;
+            return new Date(snap.docs[0].data().clientTimestamp);
+        })
+        .catch(function() { return null; });
 }
 
 /* ================================================================
@@ -2518,21 +2510,22 @@ function fbSaveResult(resultData) {
         return;
     }
 
+    var now = Date.now();
     var docData = {
-        certCode:       currentCertCode,
-        certName:       currentCertName,
-        lang:           currentLang,
-        score:          resultData.score,
-        percentage:     resultData.percentage,
-        passed:         resultData.passed,
-        timeFormatted:  resultData.timeFormatted,
-        correctAnswers: resultData.correctAnswers,
-        wrongAnswers:   resultData.wrongAnswers,
-        totalQuestions: resultData.totalQuestions,
-        timeExpired:    resultData.timeExpired,
-        timestamp:      firebase.firestore.FieldValue.serverTimestamp(),
-        clientTimestamp: Date.now(),   // fallback for immediate display
-        uid:            fbCurrentUser.uid
+        certCode:        currentCertCode,
+        certName:        currentCertName,
+        lang:            currentLang,
+        score:           resultData.score,
+        percentage:      resultData.percentage,
+        passed:          resultData.passed,
+        timeFormatted:   resultData.timeFormatted,
+        correctAnswers:  resultData.correctAnswers,
+        wrongAnswers:    resultData.wrongAnswers,
+        totalQuestions:  resultData.totalQuestions,
+        timeExpired:     resultData.timeExpired,
+        clientTimestamp: now,   // ← primary field: always set immediately, never null
+        timestamp:       firebase.firestore.FieldValue.serverTimestamp(),
+        uid:             fbCurrentUser.uid
     };
 
     // Save to user's subcollection (for My Results)
@@ -2572,42 +2565,33 @@ function goBackFromMyResults() {
 function fbLoadMyResults() {
     if (!fbCurrentUser) return;
 
-    document.getElementById('myResultsLoading').style.display = 'block';
-    document.getElementById('myResultsEmpty').style.display   = 'none';
+    document.getElementById('myResultsLoading').style.display   = 'block';
+    document.getElementById('myResultsEmpty').style.display     = 'none';
     document.getElementById('myResultsTableWrap').style.display = 'none';
     document.getElementById('myResultsStatsRow').style.display  = 'none';
 
-    var thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
+    var thirtyDaysAgo = Date.now() - 30 * 24 * 60 * 60 * 1000; // ms number
 
+    // Query by clientTimestamp (always a number, never null — safe & reliable)
     fbDb.collection('users').doc(fbCurrentUser.uid)
         .collection('results')
-        .orderBy('timestamp', 'desc')
-        .limit(200)
+        .where('clientTimestamp', '>', thirtyDaysAgo)
+        .orderBy('clientTimestamp', 'desc')
         .get()
         .then(function(snap) {
             document.getElementById('myResultsLoading').style.display = 'none';
 
-            // Filter client-side to last 30 days (avoids composite index requirement)
-            var results = [];
-            snap.forEach(function(doc) {
-                var d = doc.data();
-                // Use clientTimestamp fallback if server timestamp not yet set
-                var ts = d.timestamp ? d.timestamp.toDate() : (d.clientTimestamp ? new Date(d.clientTimestamp) : null);
-                if (ts && ts >= thirtyDaysAgo) {
-                    d._ts = ts; // attach resolved date
-                    results.push(d);
-                }
-            });
-
-            if (results.length === 0) {
+            if (snap.empty) {
                 document.getElementById('myResultsEmpty').style.display = 'block';
                 return;
             }
 
-            // Stats (no avg)
+            var results = [];
+            snap.forEach(function(doc) { results.push(doc.data()); });
+
+            // Stats
             var totalPassed = results.filter(function(r){ return r.passed; }).length;
             var totalFailed = results.length - totalPassed;
-
             document.getElementById('statTotal').textContent  = results.length;
             document.getElementById('statPassed').textContent = totalPassed;
             document.getElementById('statFailed').textContent = totalFailed;
@@ -2617,7 +2601,8 @@ function fbLoadMyResults() {
             var tbody = document.getElementById('myResultsBody');
             tbody.innerHTML = '';
             results.forEach(function(r, idx) {
-                var ts = r._ts;
+                // Use clientTimestamp for display (always available)
+                var ts = new Date(r.clientTimestamp);
                 var dateStr = ts.toLocaleDateString('en-GB', { day:'2-digit', month:'short', year:'numeric' });
                 var timeStr = ts.toLocaleTimeString('en-GB', { hour:'2-digit', minute:'2-digit', second:'2-digit' });
                 var langBadge = '<span class="result-lang-badge">' + (r.lang === 'ar' ? 'AR' : 'EN') + '</span>';
@@ -2641,8 +2626,9 @@ function fbLoadMyResults() {
         .catch(function(err) {
             document.getElementById('myResultsLoading').style.display = 'none';
             document.getElementById('myResultsEmpty').style.display   = 'block';
-            document.getElementById('myResultsEmpty').textContent = 'Error loading results. / خطأ في تحميل النتائج. (' + err.message + ')';
-            console.warn('Load results error:', err);
+            document.getElementById('myResultsEmpty').textContent =
+                'Error loading results. / خطأ في تحميل النتائج.\n' + err.message;
+            console.error('Load results error:', err);
         });
 }
 
