@@ -1190,15 +1190,8 @@ body.lang-ar * {
 <div id="pageMyResults" class="page">
     <div class="my-results-wrapper" style="direction:ltr;">
         <div class="my-results-container" style="position:relative;">
-            <!-- Theme button fixed to top-right corner like other pages -->
-            <div style="position:absolute; top:20px; right:20px; z-index:10;">
-                <button onclick="toggleTheme(); updateFabThemeLabel();" style="display:flex;align-items:center;gap:7px;background:var(--setup-box-bg);border:1px solid var(--setup-box-border);border-radius:50px;padding:8px 16px;cursor:pointer;color:var(--text-color);font-size:0.82rem;font-weight:700;font-family:inherit;transition:all 0.3s ease;box-shadow:0 2px 8px rgba(0,0,0,0.2);" onmouseover="this.style.background='var(--setup-hover-bg)'" onmouseout="this.style.background='var(--setup-box-bg)'">
-                    <span id="myResultsThemeIcon">🌙</span><span id="myResultsThemeLabel">Dark Mode</span>
-                </button>
-            </div>
-
             <!-- Title centered -->
-            <div class="my-results-title" id="myResultsTitle" style="text-align:center; margin-bottom:6px; padding-right:120px; padding-left:120px;">📊 My Results</div>
+            <div class="my-results-title" id="myResultsTitle" style="text-align:center; margin-bottom:6px;">📊 My Results</div>
             <div class="my-results-subtitle" style="text-align:center;">Last 30 days</div>
 
             <!-- Stats row: Total wider, Passed/Failed narrower -->
@@ -1724,11 +1717,6 @@ if (isAr) {
         var lbl = dark ? (isAr ? 'الوضع الفاتح' : 'Light Mode') : (isAr ? 'الوضع الداكن' : 'Dark Mode');
         ['fabThemeLabel','fabThemeLabelNormal'].forEach(function(id){ var e = document.getElementById(id); if (e) e.textContent = lbl; });
         ['fabThemeBtn','fabThemeBtnNormal','fabThemeBtnSingle'].forEach(function(id){ var e = document.getElementById(id); if (e) e.textContent = dark ? '☀️' : '🌙'; });
-        // Update My Results theme button
-        var mrIcon = document.getElementById('myResultsThemeIcon');
-        var mrLbl  = document.getElementById('myResultsThemeLabel');
-        if (mrIcon) mrIcon.textContent = dark ? '☀️' : '🌙';
-        if (mrLbl)  mrLbl.textContent  = dark ? 'Light Mode' : 'Dark Mode';
     }
 
     function openQAFile() {
@@ -1775,7 +1763,9 @@ if (isAr) {
             if (tb) tb.classList.remove('active');
             if (fw) fw.style.display = 'flex';
 
-            var simpleThemePages = (pageId === 'pageLang' || pageId === 'pageCertEN' || pageId === 'pageCertAR');
+            // simpleThemePages = pages that show only the circle theme button
+            // pageMyResults also uses circle button (no text button in HTML)
+            var simpleThemePages = (pageId === 'pageLang' || pageId === 'pageCertEN' || pageId === 'pageCertAR' || pageId === 'pageMyResults');
             var fullFabPages = (pageId === 'page0' || pageId === 'page1' || pageId === 'page1b' || pageId === 'page3');
 
             if (themeOnly) themeOnly.style.display = simpleThemePages ? 'flex' : 'none';
@@ -1785,30 +1775,22 @@ if (isAr) {
 
             if (fw) {
                 fw.classList.remove('rtl-fab');
-
-                if (simpleThemePages) {
-                    fw.style.position = '';
-                    fw.style.top = '';
-                    fw.style.right = '';
-                    fw.style.left = '';
-                    fw.style.zIndex = '';
-                    fw.style.display = '';
-                    fw.style.flexDirection = '';
-                    fw.style.alignItems = '';
-                    fw.style.gap = '';
-                    fw.style.direction = '';
+                // pageCertAR: page is RTL so we force the FAB to the left corner
+                if (pageId === 'pageCertAR') {
+                    fw.style.right = 'auto';
+                    fw.style.left  = '20px';
                 } else {
-                    fw.style.position = '';
-                    fw.style.top = '';
                     fw.style.right = '';
-                    fw.style.left = '';
-                    fw.style.zIndex = '';
-                    fw.style.display = '';
-                    fw.style.flexDirection = '';
-                    fw.style.alignItems = '';
-                    fw.style.gap = '';
-                    fw.style.direction = '';
+                    fw.style.left  = '';
                 }
+                fw.style.position    = '';
+                fw.style.top         = '';
+                fw.style.zIndex      = '';
+                fw.style.display     = '';
+                fw.style.flexDirection = '';
+                fw.style.alignItems  = '';
+                fw.style.gap         = '';
+                fw.style.direction   = '';
             }
 
             closeFab();
