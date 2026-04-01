@@ -2184,18 +2184,15 @@ var firebaseConfig = {
 /* ================================================================
    INIT FIREBASE
    ================================================================ */
-firebase.initializeApp(fbConfig);
-
+firebase.initializeApp(firebaseConfig);
 var fbAuth = firebase.auth();
-fbAuth.setPersistence(firebase.auth.Auth.Persistence.LOCAL); // ← هذا السطر الجديد
-
 var fbDb   = firebase.firestore();
 
-/* Keep login session after refresh/browser reopen */
-var fbAuthReady = fbAuth.setPersistence(firebase.auth.Auth.Persistence.LOCAL).catch(function(err) {
-    console.warn('Failed to set auth persistence:', err);
-    return Promise.resolve();
-});
+/* Ensure login stays persisted after refresh/browser restart */
+var fbAuthReadyPromise = fbAuth.setPersistence(firebase.auth.Auth.Persistence.LOCAL)
+    .catch(function(err) {
+        console.warn('Failed to enable LOCAL auth persistence:', err);
+    });
 
 /* ================================================================
    AUTH STATE
@@ -2253,7 +2250,7 @@ function fbOnUserLoggedIn(user) {
    ================================================================ */
 function authLoginGoogle() {
     var provider = new firebase.auth.GoogleAuthProvider();
-    fbAuthReady.then(function() {
+    fbAuthReadyPromise.then(function() {
         return fbAuth.signInWithPopup(provider);
     }).catch(function(err) {
         document.getElementById('authError').textContent = err.message;
@@ -2297,7 +2294,7 @@ function authLoginEmail() {
         return;
     }
 
-    fbAuthReady.then(function() {
+    fbAuthReadyPromise.then(function() {
         return fbAuth.signInWithEmailAndPassword(email, password);
     }).then(function(cred) {
         if (!cred.user.emailVerified) {
@@ -2335,7 +2332,7 @@ function authRegisterEmail() {
     regBtn.disabled = true;
     regBtn.textContent = 'Sending...';
 
-    fbAuthReady.then(function() {
+    fbAuthReadyPromise.then(function() {
         return fbAuth.createUserWithEmailAndPassword(email, password);
     }).then(function(cred) {
         return cred.user.updateProfile({ displayName: name }).then(function() {
@@ -2398,21 +2395,26 @@ var FB_DAILY_LIMIT = 3;
 
 function fbLoadDailyAttempts() {
     if (!fbCurrentUser) return Promise.resolve();
-    var cutoff = Date.now() - 24 * 60 * 60 * 1000; // 24h ago in ms
+    var cutoff = new Date(Date.now() - 24 * 60 * 60 * 1000); // 24h ago
 
-    // Query by clientTimestamp (number) — never null, no index issues
     return fbDb
         .collection('users').doc(fbCurrentUser.uid)
         .collection('results')
-        .where('clientTimestamp', '>', cutoff)
+        .orderBy('timestamp', 'desc')
         .get()
         .then(function(snap) {
-            fbDailyAttempts = snap.size;
+            var count = 0;
+            snap.forEach(function(doc) {
+                var data = doc.data();
+                // Use server timestamp if available, else clientTimestamp fallback
+                var ts = data.timestamp ? data.timestamp.toDate() : (data.clientTimestamp ? new Date(data.clientTimestamp) : null);
+                if (ts && ts > cutoff) count++;
+            });
+            fbDailyAttempts = count;
             fbUpdateAttemptsDisplay();
         })
         .catch(function(err) {
             console.warn('Failed to load attempts:', err);
-            fbDailyAttempts = 0;
         });
 }
 
@@ -2425,20 +2427,23 @@ function fbUpdateAttemptsDisplay() {
 
 function fbGetEarliestAttemptTimestamp() {
     if (!fbCurrentUser) return Promise.resolve(null);
-    var cutoff = Date.now() - 24 * 60 * 60 * 1000;
+    var cutoff = new Date(Date.now() - 24 * 60 * 60 * 1000);
 
     return fbDb
         .collection('users').doc(fbCurrentUser.uid)
         .collection('results')
-        .where('clientTimestamp', '>', cutoff)
-        .orderBy('clientTimestamp', 'asc')
-        .limit(1)
+        .orderBy('timestamp', 'asc')
         .get()
         .then(function(snap) {
-            if (snap.empty) return null;
-            return new Date(snap.docs[0].data().clientTimestamp);
-        })
-        .catch(function() { return null; });
+            var earliest = null;
+            snap.forEach(function(doc) {
+                var data = doc.data();
+                if (data.timestamp && data.timestamp.toDate() > cutoff) {
+                    if (!earliest) earliest = data.timestamp.toDate();
+                }
+            });
+            return earliest;
+        });
 }
 
 /* ================================================================
@@ -2525,22 +2530,21 @@ function fbSaveResult(resultData) {
         return;
     }
 
-    var now = Date.now();
     var docData = {
-        certCode:        currentCertCode,
-        certName:        currentCertName,
-        lang:            currentLang,
-        score:           resultData.score,
-        percentage:      resultData.percentage,
-        passed:          resultData.passed,
-        timeFormatted:   resultData.timeFormatted,
-        correctAnswers:  resultData.correctAnswers,
-        wrongAnswers:    resultData.wrongAnswers,
-        totalQuestions:  resultData.totalQuestions,
-        timeExpired:     resultData.timeExpired,
-        clientTimestamp: now,   // ← primary field: always set immediately, never null
-        timestamp:       firebase.firestore.FieldValue.serverTimestamp(),
-        uid:             fbCurrentUser.uid
+        certCode:       currentCertCode,
+        certName:       currentCertName,
+        lang:           currentLang,
+        score:          resultData.score,
+        percentage:     resultData.percentage,
+        passed:         resultData.passed,
+        timeFormatted:  resultData.timeFormatted,
+        correctAnswers: resultData.correctAnswers,
+        wrongAnswers:   resultData.wrongAnswers,
+        totalQuestions: resultData.totalQuestions,
+        timeExpired:    resultData.timeExpired,
+        timestamp:      firebase.firestore.FieldValue.serverTimestamp(),
+        clientTimestamp: Date.now(),   // fallback for immediate display
+        uid:            fbCurrentUser.uid
     };
 
     // Save to user's subcollection (for My Results)
@@ -2580,33 +2584,42 @@ function goBackFromMyResults() {
 function fbLoadMyResults() {
     if (!fbCurrentUser) return;
 
-    document.getElementById('myResultsLoading').style.display   = 'block';
-    document.getElementById('myResultsEmpty').style.display     = 'none';
+    document.getElementById('myResultsLoading').style.display = 'block';
+    document.getElementById('myResultsEmpty').style.display   = 'none';
     document.getElementById('myResultsTableWrap').style.display = 'none';
     document.getElementById('myResultsStatsRow').style.display  = 'none';
 
-    var thirtyDaysAgo = Date.now() - 30 * 24 * 60 * 60 * 1000; // ms number
+    var thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
 
-    // Query by clientTimestamp (always a number, never null — safe & reliable)
     fbDb.collection('users').doc(fbCurrentUser.uid)
         .collection('results')
-        .where('clientTimestamp', '>', thirtyDaysAgo)
-        .orderBy('clientTimestamp', 'desc')
+        .orderBy('timestamp', 'desc')
+        .limit(200)
         .get()
         .then(function(snap) {
             document.getElementById('myResultsLoading').style.display = 'none';
 
-            if (snap.empty) {
+            // Filter client-side to last 30 days (avoids composite index requirement)
+            var results = [];
+            snap.forEach(function(doc) {
+                var d = doc.data();
+                // Use clientTimestamp fallback if server timestamp not yet set
+                var ts = d.timestamp ? d.timestamp.toDate() : (d.clientTimestamp ? new Date(d.clientTimestamp) : null);
+                if (ts && ts >= thirtyDaysAgo) {
+                    d._ts = ts; // attach resolved date
+                    results.push(d);
+                }
+            });
+
+            if (results.length === 0) {
                 document.getElementById('myResultsEmpty').style.display = 'block';
                 return;
             }
 
-            var results = [];
-            snap.forEach(function(doc) { results.push(doc.data()); });
-
-            // Stats
+            // Stats (no avg)
             var totalPassed = results.filter(function(r){ return r.passed; }).length;
             var totalFailed = results.length - totalPassed;
+
             document.getElementById('statTotal').textContent  = results.length;
             document.getElementById('statPassed').textContent = totalPassed;
             document.getElementById('statFailed').textContent = totalFailed;
@@ -2616,8 +2629,7 @@ function fbLoadMyResults() {
             var tbody = document.getElementById('myResultsBody');
             tbody.innerHTML = '';
             results.forEach(function(r, idx) {
-                // Use clientTimestamp for display (always available)
-                var ts = new Date(r.clientTimestamp);
+                var ts = r._ts;
                 var dateStr = ts.toLocaleDateString('en-GB', { day:'2-digit', month:'short', year:'numeric' });
                 var timeStr = ts.toLocaleTimeString('en-GB', { hour:'2-digit', minute:'2-digit', second:'2-digit' });
                 var langBadge = '<span class="result-lang-badge">' + (r.lang === 'ar' ? 'AR' : 'EN') + '</span>';
@@ -2641,9 +2653,8 @@ function fbLoadMyResults() {
         .catch(function(err) {
             document.getElementById('myResultsLoading').style.display = 'none';
             document.getElementById('myResultsEmpty').style.display   = 'block';
-            document.getElementById('myResultsEmpty').textContent =
-                'Error loading results. / خطأ في تحميل النتائج.\n' + err.message;
-            console.error('Load results error:', err);
+            document.getElementById('myResultsEmpty').textContent = 'Error loading results. / خطأ في تحميل النتائج. (' + err.message + ')';
+            console.warn('Load results error:', err);
         });
 }
 
