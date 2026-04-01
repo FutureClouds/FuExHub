@@ -2735,10 +2735,20 @@ function fbLoadMyResults() {
                 var statusBadge = r.passed
                     ? '<span class="result-badge-pass">PASS ✅</span>'
                     : '<span class="result-badge-fail">FAIL ❌</span>';
+                var certImgMap = {
+                    'AIF-C01':'AIF.png','CLF-C02':'CLF.png','MLA-C01':'MLA.png',
+                    'SAA-C03':'SAA.png','DVA-C02':'DVA.png','DEA-C01':'DEA.png',
+                    'SOA-C02':'SOA2.png','SOA-C03':'SOA3.png','AIP-C01':'AIP.png',
+                    'SAP-C02':'SAP.png','DOP-C02':'DOP.png','MLS-C01':'MLS.png',
+                    'ANS-C01':'ANS.png','SCS-C02':'SCS2.png','SCS-C03':'SCS3.png'
+                };
+                var certImg = r.certCode && certImgMap[r.certCode]
+                    ? '<img src="' + certImgMap[r.certCode] + '" alt="' + r.certCode + '" style="width:48px;height:48px;object-fit:contain;border-radius:6px;">'
+                    : '<strong>' + (r.certCode || '—') + '</strong>';
                 var tr = document.createElement('tr');
                 tr.innerHTML =
                     '<td>' + (idx + 1) + '</td>' +
-                    '<td><strong>' + (r.certCode || '—') + '</strong></td>' +
+                    '<td>' + certImg + '</td>' +
                     '<td><strong>' + (r.score || 0) + '</strong>/1000</td>' +
                     '<td>' + (r.percentage || 0) + '%</td>' +
                     '<td>' + statusBadge + '</td>' +
