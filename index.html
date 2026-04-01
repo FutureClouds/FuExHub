@@ -529,80 +529,83 @@ body.lang-ar * {
         .auth-loading { display: inline-block; width: 18px; height: 18px; border: 3px solid rgba(255,255,255,0.3); border-top-color: #fff; border-radius: 50%; animation: spin 0.8s linear infinite; vertical-align: middle; margin-left: 8px; }
         @keyframes spin { to { transform: rotate(360deg); } }
 
-        /* ===== USER INFO BAR — Professional Floating Card ===== */
+        /* ===== USER INFO BAR — Right Side Panel ===== */
         .user-info-bar {
             position: fixed;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%) translateY(0);
+            top: 50%;
+            right: 0;
+            transform: translateY(-50%) translateX(0);
             z-index: 1997;
-            width: calc(100% - 40px);
-            max-width: 820px;
+            width: 220px;
             display: none;
             flex-direction: column;
-            border-radius: 20px;
-            background: linear-gradient(135deg, rgba(15,12,41,0.97) 0%, rgba(48,43,99,0.97) 55%, rgba(36,36,62,0.97) 100%);
+            border-radius: 20px 0 0 20px;
+            background: linear-gradient(160deg, rgba(15,12,41,0.97) 0%, rgba(48,43,99,0.97) 55%, rgba(36,36,62,0.97) 100%);
             backdrop-filter: blur(24px);
             -webkit-backdrop-filter: blur(24px);
             border: 1px solid rgba(255,255,255,0.12);
-            box-shadow: 0 8px 40px rgba(0,0,0,0.55), 0 2px 12px rgba(142,68,173,0.25), inset 0 1px 0 rgba(255,255,255,0.08);
-            transition: transform 0.4s cubic-bezier(0.4,0,0.2,1), opacity 0.3s ease;
+            border-right: none;
+            box-shadow: -6px 0 40px rgba(0,0,0,0.5), -2px 0 12px rgba(142,68,173,0.2), inset 1px 0 0 rgba(255,255,255,0.06);
+            transition: transform 0.4s cubic-bezier(0.4,0,0.2,1);
         }
         .user-info-bar.show { display: flex; }
         .user-info-bar.collapsed {
-            transform: translateX(-50%) translateY(calc(100% + 20px));
+            transform: translateY(-50%) translateX(calc(100% - 14px));
         }
 
-        /* Pill handle at the top center */
+        /* Tab handle on the left side of the panel */
         .user-bar-toggle {
             display: flex; align-items: center; justify-content: center;
-            position: absolute; top: -14px; left: 50%; transform: translateX(-50%);
-            width: 48px; height: 14px;
-            background: linear-gradient(135deg, #2980b9, #8e44ad);
-            border-radius: 8px 8px 0 0;
+            position: absolute;
+            top: 50%; left: -22px;
+            transform: translateY(-50%);
+            width: 22px; height: 56px;
+            background: linear-gradient(180deg, #2980b9, #8e44ad);
+            border-radius: 10px 0 0 10px;
             cursor: pointer; z-index: 2;
-            box-shadow: 0 -3px 12px rgba(142,68,173,0.4);
-            transition: all 0.2s ease;
+            box-shadow: -4px 0 14px rgba(142,68,173,0.4);
+            transition: width 0.2s ease;
         }
-        .user-bar-toggle:hover { height: 17px; top: -17px; }
+        .user-bar-toggle:hover { width: 26px; left: -26px; }
         .user-bar-toggle-arrow {
-            color: rgba(255,255,255,0.85); font-size: 0.55rem;
+            color: rgba(255,255,255,0.9); font-size: 0.6rem;
             transition: transform 0.35s ease; line-height: 1;
+            writing-mode: vertical-lr;
         }
         .user-info-bar.collapsed .user-bar-toggle-arrow { transform: rotate(180deg); }
 
-        /* Main content row */
+        /* Content column */
         .user-info-bar-content {
-            display: flex; align-items: center; justify-content: space-between;
-            gap: 14px; padding: 12px 20px;
+            display: flex; flex-direction: column; align-items: center;
+            gap: 14px; padding: 22px 16px;
             overflow: hidden;
-            transition: all 0.35s cubic-bezier(0.4,0,0.2,1);
             direction: ltr;
         }
 
-        /* Left side: avatar + name + attempts */
+        /* Left side: avatar + name + attempts — now stacked vertically */
         .user-info-bar-left {
-            display: flex; align-items: center; gap: 12px; flex: 1; min-width: 0;
+            display: flex; flex-direction: column; align-items: center;
+            gap: 10px; width: 100%;
         }
 
-        /* Avatar wrapper — holds both <img> and initials fallback */
+        /* Avatar wrapper */
         .user-avatar-wrap {
             position: relative; flex-shrink: 0;
-            width: 40px; height: 40px;
+            width: 52px; height: 52px;
         }
         .user-info-avatar {
-            width: 40px; height: 40px; border-radius: 50%; object-fit: cover;
+            width: 52px; height: 52px; border-radius: 50%; object-fit: cover;
             border: 2px solid rgba(255,255,255,0.3);
             box-shadow: 0 2px 8px rgba(0,0,0,0.4);
             flex-shrink: 0;
         }
         /* Initials circle for email-only users */
         .user-avatar-initials {
-            width: 40px; height: 40px; border-radius: 50%;
+            width: 52px; height: 52px; border-radius: 50%;
             background: linear-gradient(135deg, #2980b9, #8e44ad);
             border: 2px solid rgba(255,255,255,0.25);
             display: none; align-items: center; justify-content: center;
-            font-size: 0.85rem; font-weight: 800; color: #fff;
+            font-size: 1rem; font-weight: 800; color: #fff;
             letter-spacing: 0.5px;
             box-shadow: 0 2px 8px rgba(0,0,0,0.4);
             flex-shrink: 0;
@@ -611,42 +614,43 @@ body.lang-ar * {
         /* Online indicator dot */
         .user-avatar-wrap::after {
             content: '';
-            position: absolute; bottom: 1px; right: 1px;
-            width: 10px; height: 10px; border-radius: 50%;
+            position: absolute; bottom: 2px; right: 2px;
+            width: 11px; height: 11px; border-radius: 50%;
             background: #2ecc71;
             border: 2px solid rgba(15,12,41,0.97);
             box-shadow: 0 0 6px rgba(46,204,113,0.6);
         }
 
-        .user-info-text { min-width: 0; }
+        .user-info-text { min-width: 0; text-align: center; width: 100%; }
         .user-info-name {
-            color: #fff; font-size: 0.92rem; font-weight: 700;
+            color: #fff; font-size: 0.88rem; font-weight: 700;
             white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-            letter-spacing: 0.2px;
+            letter-spacing: 0.2px; text-align: center;
         }
         .user-info-attempts {
-            color: rgba(255,255,255,0.45); font-size: 0.72rem;
-            margin-top: 1px; white-space: nowrap;
+            color: rgba(255,255,255,0.45); font-size: 0.7rem;
+            margin-top: 2px; text-align: center;
         }
 
-        /* Divider */
+        /* Divider horizontal */
         .user-bar-divider {
-            width: 1px; height: 32px; background: rgba(255,255,255,0.1); flex-shrink: 0;
+            width: 80%; height: 1px; background: rgba(255,255,255,0.1); flex-shrink: 0;
         }
 
-        /* Right side: action buttons */
+        /* Buttons stacked vertically */
         .user-info-bar-right {
-            display: flex; align-items: center; gap: 8px; flex-shrink: 0;
+            display: flex; flex-direction: column; align-items: stretch;
+            gap: 8px; width: 100%;
         }
 
         .user-info-btn {
-            display: inline-flex; align-items: center; gap: 6px;
-            padding: 8px 16px; font-size: 0.8rem; font-weight: 700;
+            display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+            padding: 9px 12px; font-size: 0.78rem; font-weight: 700;
             border-radius: 10px; cursor: pointer; margin: 0;
             transition: all 0.22s cubic-bezier(0.34,1.56,0.64,1);
             white-space: nowrap; border: none; font-family: inherit;
             box-shadow: 0 2px 8px rgba(0,0,0,0.25);
-            letter-spacing: 0.2px;
+            letter-spacing: 0.2px; width: 100%;
         }
         .user-info-btn.my-results-btn {
             background: linear-gradient(135deg, #2980b9, #8e44ad);
@@ -654,7 +658,7 @@ body.lang-ar * {
         }
         .user-info-btn.my-results-btn:hover {
             background: linear-gradient(135deg, #8e44ad, #2980b9);
-            transform: translateY(-2px) scale(1.04);
+            transform: scale(1.04);
             box-shadow: 0 6px 18px rgba(142,68,173,0.45);
         }
         .user-info-btn.logout-btn {
@@ -666,17 +670,16 @@ body.lang-ar * {
             background: rgba(231,76,60,0.18);
             color: #e74c3c;
             border-color: rgba(231,76,60,0.35);
-            transform: translateY(-1px);
+            transform: scale(1.04);
         }
 
-        /* Mobile responsiveness */
+        /* Mobile: shrink to smaller panel */
         @media (max-width: 520px) {
-            .user-info-bar { bottom: 12px; width: calc(100% - 24px); border-radius: 16px; }
-            .user-info-bar-content { padding: 10px 14px; gap: 10px; }
-            .user-info-btn { padding: 7px 11px; font-size: 0.75rem; gap: 4px; }
-            .user-bar-divider { display: none; }
-            .user-info-name { font-size: 0.84rem; max-width: 110px; }
-            .user-info-attempts { display: none; }
+            .user-info-bar { width: 180px; border-radius: 16px 0 0 16px; }
+            .user-info-bar-content { padding: 16px 12px; gap: 10px; }
+            .user-info-avatar, .user-avatar-initials { width: 42px; height: 42px; }
+            .user-avatar-wrap { width: 42px; height: 42px; }
+            .user-info-btn { font-size: 0.72rem; padding: 8px 10px; }
         }
 
         /* Guest notice banner on page3 */
@@ -1186,26 +1189,29 @@ body.lang-ar * {
 <!-- ===================================================== -->
 <div id="pageMyResults" class="page">
     <div class="my-results-wrapper" style="direction:ltr;">
-        <div class="my-results-container">
-            <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:8px; flex-wrap:wrap; gap:10px;">
-                <div class="my-results-title" id="myResultsTitle">📊 My Results</div>
-                <button onclick="toggleTheme(); updateFabThemeLabel();" style="display:flex;align-items:center;gap:8px;background:var(--setup-box-bg);border:1px solid var(--setup-box-border);border-radius:12px;padding:9px 18px;cursor:pointer;color:var(--text-color);font-size:0.85rem;font-weight:700;font-family:inherit;transition:all 0.3s ease;box-shadow:0 2px 8px rgba(0,0,0,0.2);" onmouseover="this.style.background='var(--setup-hover-bg)'" onmouseout="this.style.background='var(--setup-box-bg)'">
-                    <span id="myResultsThemeIcon">🌙</span> <span id="myResultsThemeLabel">Dark Mode</span>
+        <div class="my-results-container" style="position:relative;">
+            <!-- Theme button fixed to top-right corner like other pages -->
+            <div style="position:absolute; top:20px; right:20px; z-index:10;">
+                <button onclick="toggleTheme(); updateFabThemeLabel();" style="display:flex;align-items:center;gap:7px;background:var(--setup-box-bg);border:1px solid var(--setup-box-border);border-radius:50px;padding:8px 16px;cursor:pointer;color:var(--text-color);font-size:0.82rem;font-weight:700;font-family:inherit;transition:all 0.3s ease;box-shadow:0 2px 8px rgba(0,0,0,0.2);" onmouseover="this.style.background='var(--setup-hover-bg)'" onmouseout="this.style.background='var(--setup-box-bg)'">
+                    <span id="myResultsThemeIcon">🌙</span><span id="myResultsThemeLabel">Dark Mode</span>
                 </button>
             </div>
-            <div class="my-results-subtitle">Last 30 days</div>
 
-            <!-- Stats row — Avg Score removed (Fix 5) -->
-            <div class="my-results-stats-row" id="myResultsStatsRow" style="display:none;">
-                <div class="my-results-stat">
+            <!-- Title centered -->
+            <div class="my-results-title" id="myResultsTitle" style="text-align:center; margin-bottom:6px; padding-right:120px; padding-left:120px;">📊 My Results</div>
+            <div class="my-results-subtitle" style="text-align:center;">Last 30 days</div>
+
+            <!-- Stats row: Total wider, Passed/Failed narrower -->
+            <div class="my-results-stats-row" id="myResultsStatsRow" style="display:none; align-items:stretch;">
+                <div class="my-results-stat" style="flex:2; min-width:180px;">
                     <div class="my-results-stat-val" id="statTotal">0</div>
                     <div class="my-results-stat-label">Total Exams</div>
                 </div>
-                <div class="my-results-stat">
+                <div class="my-results-stat" style="flex:1; min-width:100px;">
                     <div class="my-results-stat-val" id="statPassed" style="color:#27ae60;">0</div>
                     <div class="my-results-stat-label">Passed</div>
                 </div>
-                <div class="my-results-stat">
+                <div class="my-results-stat" style="flex:1; min-width:100px;">
                     <div class="my-results-stat-val" id="statFailed" style="color:#e74c3c;">0</div>
                     <div class="my-results-stat-label">Failed</div>
                 </div>
@@ -1269,7 +1275,7 @@ body.lang-ar * {
 <div class="user-info-bar" id="userInfoBar">
     <!-- Pill handle -->
     <div class="user-bar-toggle" onclick="toggleUserBar()" title="Toggle">
-        <span class="user-bar-toggle-arrow">▲</span>
+        <span class="user-bar-toggle-arrow">▶</span>
     </div>
     <!-- Content row -->
     <div class="user-info-bar-content">
@@ -1388,9 +1394,17 @@ body.lang-ar * {
         var tb = document.getElementById('quizTopBar');
         if (tb) { tb.classList.remove('rtl-bar'); }
 
-        // Direction is always LTR — no RTL on lang/results pages
-        document.body.classList.remove('lang-ar');
-        document.documentElement.removeAttribute('dir');
+        // Restore RTL direction for Arabic quiz content pages
+        if (isAr) {
+            document.body.classList.add('lang-ar');
+            document.documentElement.setAttribute('dir', 'rtl');
+        } else {
+            document.body.classList.remove('lang-ar');
+            document.documentElement.removeAttribute('dir');
+        }
+        // Always keep the user info bar LTR regardless of language
+        var uib = document.getElementById('userInfoBar');
+        if (uib) uib.style.direction = 'ltr';
 
         var tcc = document.getElementById('topbarCertCode');
         if (tcc) tcc.textContent = currentCertCode;
@@ -2243,6 +2257,12 @@ if (isAr) {
             document.body.classList.remove('simple-theme-page');
         }
 
+        // pageLang and pageMyResults always stay LTR
+        if (pageId === 'pageLang' || pageId === 'pageMyResults') {
+            document.documentElement.removeAttribute('dir');
+            document.body.classList.remove('lang-ar');
+        }
+
         updatePdfButtonVisibility(pageId);
         window.scrollTo(0, 0);
     }
@@ -2759,14 +2779,14 @@ function fbLoadMyResults() {
 }
 
 /* ================================================================
-   USER BAR TOGGLE (slide down to hide)
+   USER BAR TOGGLE (slide right to hide, slide back to show)
    ================================================================ */
 function toggleUserBar() {
     var bar = document.getElementById('userInfoBar');
     if (!bar) return;
     bar.classList.toggle('collapsed');
     var arrow = bar.querySelector('.user-bar-toggle-arrow');
-    if (arrow) arrow.textContent = bar.classList.contains('collapsed') ? '▼' : '▲';
+    if (arrow) arrow.textContent = bar.classList.contains('collapsed') ? '◀' : '▶';
 }
 
 /* ================================================================
