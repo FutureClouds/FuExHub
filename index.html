@@ -2673,7 +2673,8 @@ function closeLimitOverlay() {
 function fbSaveResult(resultData) {
     // Hide all notices first
     document.getElementById('guestNoticeBanner').classList.remove('show');
-    document.getElementById('savedResultNotice').style.display = 'none';
+    var savedNotice = document.getElementById('savedResultNotice');
+    if (savedNotice) savedNotice.style.display = 'none';
 
     if (fbIsGuest || !fbCurrentUser) {
         // Show guest notice
@@ -2791,7 +2792,7 @@ function fbLoadMyResults() {
                 var tr = document.createElement('tr');
                 tr.innerHTML =
                     '<td>' + (idx + 1) + '</td>' +
-                    '<td><strong>' + (r.certCode || '—') + '</strong></td>' +
+                    '<td>' + renderCertCell(r.certCode || '—') + '</td>' +
                     '<td><strong>' + (r.score || 0) + '</strong>/1000</td>' +
                     '<td>' + (r.percentage || 0) + '%</td>' +
                     '<td>' + statusBadge + '</td>' +
