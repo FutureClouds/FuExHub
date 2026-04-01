@@ -2188,6 +2188,12 @@ firebase.initializeApp(firebaseConfig);
 var fbAuth = firebase.auth();
 var fbDb   = firebase.firestore();
 
+/* Keep login session after refresh/browser reopen */
+var fbAuthReady = fbAuth.setPersistence(firebase.auth.Auth.Persistence.LOCAL).catch(function(err) {
+    console.warn('Failed to set auth persistence:', err);
+    return Promise.resolve();
+});
+
 /* ================================================================
    AUTH STATE
    ================================================================ */
@@ -2244,7 +2250,9 @@ function fbOnUserLoggedIn(user) {
    ================================================================ */
 function authLoginGoogle() {
     var provider = new firebase.auth.GoogleAuthProvider();
-    fbAuth.signInWithPopup(provider).catch(function(err) {
+    fbAuthReady.then(function() {
+        return fbAuth.signInWithPopup(provider);
+    }).catch(function(err) {
         document.getElementById('authError').textContent = err.message;
     });
 }
@@ -2286,7 +2294,9 @@ function authLoginEmail() {
         return;
     }
 
-    fbAuth.signInWithEmailAndPassword(email, password).then(function(cred) {
+    fbAuthReady.then(function() {
+        return fbAuth.signInWithEmailAndPassword(email, password);
+    }).then(function(cred) {
         if (!cred.user.emailVerified) {
             fbAuth.signOut();
             errEl.textContent = '⚠️ Please verify your email before logging in. Check your inbox. / يرجى التحقق من بريدك الإلكتروني أولاً.';
@@ -2322,7 +2332,9 @@ function authRegisterEmail() {
     regBtn.disabled = true;
     regBtn.textContent = 'Sending...';
 
-    fbAuth.createUserWithEmailAndPassword(email, password).then(function(cred) {
+    fbAuthReady.then(function() {
+        return fbAuth.createUserWithEmailAndPassword(email, password);
+    }).then(function(cred) {
         return cred.user.updateProfile({ displayName: name }).then(function() {
             return cred.user.sendEmailVerification();
         }).then(function() {
