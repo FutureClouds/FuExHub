@@ -587,6 +587,29 @@ body.lang-ar * {
         .auth-loading { display: inline-block; width: 18px; height: 18px; border: 3px solid rgba(255,255,255,0.3); border-top-color: #fff; border-radius: 50%; animation: spin 0.8s linear infinite; vertical-align: middle; margin-left: 8px; }
         @keyframes spin { to { transform: rotate(360deg); } }
 
+        /* ===== AUTH PAGE RTL/LTR MIX FIX (minimal) ===== */
+        #pageAuth .auth-container,
+        #pageAuth .auth-container * {
+            font-family: 'Tajawal', sans-serif !important;
+        }
+        #pageAuth .auth-input,
+        #pageAuth .auth-btn-primary,
+        #pageAuth .auth-btn-secondary,
+        #pageAuth .auth-btn-guest,
+        #pageAuth .auth-error,
+        #pageAuth .auth-success,
+        #pageAuth .auth-verify-notice,
+        #pageAuth .auth-subtitle {
+            direction: rtl;
+            text-align: right;
+            unicode-bidi: plaintext;
+        }
+        #pageAuth .auth-forgot-link {
+            direction: rtl;
+            text-align: center !important;
+            unicode-bidi: plaintext;
+        }
+
         /* ===== USER BAR (collapsible bottom bar for logged-in users) ===== */
         .user-info-bar {
             position: fixed; bottom: 0; left: 0; right: 0; z-index: 1997;
