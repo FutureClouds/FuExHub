@@ -360,14 +360,18 @@ body.lang-ar * {
         .review-item-body { max-height: 0; overflow: hidden; transition: max-height 0.4s cubic-bezier(0.4,0,0.2,1); }
         .review-item-body.open { max-height: 2000px; }
         .review-question { padding: 16px 18px 18px; color: var(--result-box-text); text-align: left; direction: ltr; }
-        .review-question h4, .review-question p, .review-question label { text-align: left; }
-        body.lang-ar .review-question { text-align: right !important; direction: rtl !important; }
+        .review-question h4, .review-question p, .review-question label, .review-question .option, .review-question .option-text { text-align: left; }
+        body.lang-ar .review-question { text-align: right; direction: rtl; }
         body.lang-ar .review-question h4,
         body.lang-ar .review-question p,
-        body.lang-ar .review-question label { text-align: right !important; }
-        body.lang-ar .review-question > div { text-align: right !important; direction: rtl !important; }
+        body.lang-ar .review-question label,
+        body.lang-ar .review-question .option,
+        body.lang-ar .review-question .option-text { text-align: right; }
+        body.lang-ar .review-question .option-content { flex-direction: row-reverse; }
+        body.lang-ar .review-question .option input[type="checkbox"],
+        body.lang-ar .review-question .option input[type="radio"] { margin-left: 10px; margin-right: 0; }
         body.lang-ar .review-info-box,
-        body.lang-ar .review-explanation-box { text-align: right !important; direction: rtl !important; }
+        body.lang-ar .review-explanation-box { text-align: right; direction: rtl; }
         .user-correct-label { color: #27ae60; font-weight: 700; }
         .user-wrong-label { color: #e74c3c; font-weight: 700; }
         .user-correct-answer { color: #27ae60; }
@@ -396,8 +400,8 @@ body.lang-ar * {
         }
         body.lang-ar .review-info-box,
         body.lang-ar .review-explanation-box {
-            text-align: right !important;
-            direction: rtl !important;
+            text-align: right;
+            direction: rtl;
         }
 
         /* ===== SUBMIT ===== */
@@ -433,6 +437,7 @@ body.lang-ar * {
         .hotspot-review-table th { background: linear-gradient(135deg, #2980b9, #8e44ad); color: #fff; padding: 10px 14px; text-align: left; font-weight: 700; }
         body.lang-ar .hotspot-review-table th { text-align: right; }
         .hotspot-review-table td { padding: 11px 14px; border-bottom: 1px solid var(--option-border); color: var(--question-text); vertical-align: middle; background: var(--option-bg); }
+        body.lang-ar .hotspot-review-table td { text-align: right; }
         .hotspot-review-table tr:last-child td { border-bottom: none; }
         .hotspot-correct-cell { color: #27ae60; font-weight: 700; }
         .hotspot-wrong-cell { color: #e74c3c; font-weight: 700; }
@@ -532,6 +537,7 @@ body.lang-ar * {
 
         /* ===== USER INFO BAR — Right Side Panel ===== */
         .user-info-bar {
+            display: none !important;
             position: fixed;
             top: 50%;
             right: 0;
@@ -674,6 +680,32 @@ body.lang-ar * {
             transform: scale(1.04);
         }
 
+        .settings-user-panel {
+            display: none;
+            flex-direction: column;
+            gap: 12px;
+            padding: 12px;
+            margin-bottom: 8px;
+            border-radius: 14px;
+            background: rgba(255,255,255,0.06);
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        .settings-user-panel.show { display: flex; }
+        .settings-user-head { display: flex; align-items: center; gap: 12px; }
+        .settings-user-avatar,
+        .settings-user-avatar-initials { width: 42px; height: 42px; border-radius: 50%; flex-shrink: 0; }
+        .settings-user-avatar { object-fit: cover; border: 2px solid rgba(255,255,255,0.24); display: none; }
+        .settings-user-avatar-initials { display: none; align-items: center; justify-content: center; background: linear-gradient(135deg, #2980b9, #8e44ad); color: #fff; font-weight: 800; letter-spacing: 0.4px; border: 2px solid rgba(255,255,255,0.18); }
+        .settings-user-meta { min-width: 0; flex: 1; }
+        .settings-user-name { color: #fff; font-size: 0.9rem; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .settings-user-attempts { color: rgba(255,255,255,0.6); font-size: 0.72rem; margin-top: 2px; }
+        .settings-user-actions { display: flex; flex-direction: column; gap: 8px; }
+        .settings-menu-btn { width: 100%; display: inline-flex; align-items: center; justify-content: center; gap: 8px; margin: 0; padding: 10px 12px; font-size: 0.85rem; font-weight: 700; border-radius: 10px; cursor: pointer; transition: all 0.25s ease; border: none; box-shadow: 0 2px 8px rgba(0,0,0,0.2); }
+        .settings-menu-btn.results-btn { background: linear-gradient(135deg, #2980b9, #8e44ad); color: #fff; }
+        .settings-menu-btn.results-btn:hover { transform: translateY(-1px); box-shadow: 0 5px 16px rgba(142,68,173,0.35); }
+        .settings-menu-btn.logout-btn { background: rgba(255,255,255,0.08); color: rgba(255,255,255,0.88); border: 1px solid rgba(255,255,255,0.12); }
+        .settings-menu-btn.logout-btn:hover { background: rgba(231,76,60,0.18); border-color: rgba(231,76,60,0.35); color: #ff8f8f; }
+
         /* Mobile: shrink to smaller panel */
         @media (max-width: 520px) {
             .user-info-bar { width: 180px; border-radius: 16px 0 0 16px; }
@@ -681,77 +713,6 @@ body.lang-ar * {
             .user-info-avatar, .user-avatar-initials { width: 42px; height: 42px; }
             .user-avatar-wrap { width: 42px; height: 42px; }
             .user-info-btn { font-size: 0.72rem; padding: 8px 10px; }
-        }
-
-        /* Hide the old floating side panel — merged into settings button */
-        .user-info-bar { display: none !important; }
-
-        /* ===== FAB USER SECTION ===== */
-        .fab-user-section {
-            border-top: 1px solid rgba(255,255,255,0.1);
-            margin-top: 4px; padding-top: 4px;
-        }
-        .fab-user-row {
-            display: flex; align-items: center; gap: 10px;
-            padding: 8px 6px; border-radius: 10px;
-            pointer-events: none;
-        }
-        .fab-mini-avatar {
-            width: 32px; height: 32px; border-radius: 50%;
-            background: linear-gradient(135deg, #2980b9, #8e44ad);
-            display: flex; align-items: center; justify-content: center;
-            font-size: 0.75rem; font-weight: 800; color: #fff;
-            flex-shrink: 0; border: 2px solid rgba(255,255,255,0.25);
-            overflow: hidden; position: relative;
-        }
-        .fab-mini-avatar img {
-            width: 100%; height: 100%; object-fit: cover;
-            border-radius: 50%; position: absolute; top:0; left:0;
-        }
-        .fab-user-details { flex: 1; min-width: 0; }
-        .fab-user-name {
-            color: rgba(255,255,255,0.95); font-size: 0.82rem; font-weight: 700;
-            white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-        }
-        .fab-user-attempts {
-            color: rgba(255,255,255,0.45); font-size: 0.68rem; margin-top: 1px;
-            white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-            font-family: 'Tajawal', sans-serif;
-        }
-        .fab-logout-btn {
-            display: flex; align-items: center; gap: 10px;
-            padding: 4px 6px; border-radius: 10px;
-            cursor: pointer; transition: background 0.2s;
-        }
-        .fab-logout-btn:hover { background: rgba(231,76,60,0.18); }
-        .fab-logout-btn:hover .fab-item-label { color: #e74c3c !important; }
-
-        /* ===== MY RESULTS STATS — two-row layout ===== */
-        .my-results-stats-row { flex-direction: column !important; }
-        .my-results-stats-total-row {
-            display: flex; justify-content: center; width: 100%;
-        }
-        .my-results-stats-total-row .my-results-stat {
-            min-width: 200px; max-width: 340px; flex: 1;
-        }
-        .my-results-stats-pf-row {
-            display: flex; gap: 14px; justify-content: center; width: 100%;
-        }
-        .my-results-stats-pf-row .my-results-stat {
-            flex: 1; min-width: 120px; max-width: 200px;
-        }
-
-        /* ===== pageCertAR FAB — left side ===== */
-        body.page-cert-ar.simple-theme-page #fabWrapper {
-            right: auto !important;
-            left: 20px !important;
-            align-items: flex-start !important;
-        }
-        @media (max-width: 768px) {
-            body.page-cert-ar.simple-theme-page #fabWrapper {
-                left: 12px !important;
-                right: auto !important;
-            }
         }
 
         /* Guest notice banner on page3 */
@@ -811,8 +772,9 @@ body.lang-ar * {
         .result-lang-badge { display: inline-block; background: rgba(52,152,219,0.15); color: #3498db; font-weight: 700; padding: 3px 10px; border-radius: 20px; font-size: 0.8rem; }
         .my-results-empty { text-align: center; padding: 50px 20px; color: var(--text-color); opacity: 0.65; font-size: 1.1rem; }
         .my-results-loading { text-align: center; padding: 40px; color: var(--text-color); opacity: 0.7; }
-        .my-results-stats-row { display: flex; gap: 14px; flex-wrap: wrap; justify-content: center; margin-bottom: 24px; }
-        .my-results-stat { background: var(--setup-box-bg); border: 1px solid var(--setup-box-border); border-radius: 12px; padding: 16px 24px; text-align: center; flex: 1; min-width: 130px; }
+        .my-results-stats-row { display: grid; grid-template-columns: repeat(2, minmax(140px, 1fr)); gap: 14px; justify-content: center; margin-bottom: 24px; max-width: 520px; margin-left: auto; margin-right: auto; }
+        .my-results-stat.total-exams-stat { grid-column: 1 / -1; }
+        .my-results-stat { background: var(--setup-box-bg); border: 1px solid var(--setup-box-border); border-radius: 12px; padding: 16px 24px; text-align: center; min-width: 130px; }
         .my-results-stat-val { font-size: 1.8rem; font-weight: 700; color: var(--text-color); }
         .my-results-stat-label { font-size: 0.8rem; opacity: 0.65; color: var(--text-color); margin-top: 4px; font-family: 'Tajawal', sans-serif; }
 
@@ -1003,7 +965,7 @@ body.lang-ar * {
 <!-- ===================================================== -->
 <!-- PAGE: CERTIFICATE SELECTION - ARABIC                  -->
 <!-- ===================================================== -->
-<div id="pageCertAR" class="page">
+<div id="pageCertAR" class="page" dir="rtl">
     <div class="cert-select-wrapper">
         <div class="cert-select-container">
             <div class="cert-select-title" style="font-family:'Tajawal',sans-serif;">اختر شهادتك من AWS</div>
@@ -1042,6 +1004,20 @@ body.lang-ar * {
         <div class="topbar-fab-wrapper" id="topbarFabWrapper">
             <button class="topbar-fab-btn" id="topbarFabBtn" onclick="toggleTopbarMenu()">&#9881;&#65039;</button>
             <div class="fab-dropdown" id="topbarDropdown">
+                <div class="settings-user-panel" id="topbarUserPanel">
+                    <div class="settings-user-head">
+                        <img class="settings-user-avatar" id="topbarUserAvatar" src="" alt="" onerror="this.style.display='none';">
+                        <div class="settings-user-avatar-initials" id="topbarUserAvatarInitials"></div>
+                        <div class="settings-user-meta">
+                            <div class="settings-user-name" id="topbarUserName"></div>
+                            <div class="settings-user-attempts" id="topbarUserAttempts"></div>
+                        </div>
+                    </div>
+                    <div class="settings-user-actions">
+                        <button class="settings-menu-btn results-btn" type="button" onclick="showMyResults(); closeTopbarMenu();">📊 <span id="topbarMyResultsText">My Results</span></button>
+                        <button class="settings-menu-btn logout-btn" type="button" onclick="authSignOut(); closeTopbarMenu();">↩ <span id="topbarLogoutText">Logout</span></button>
+                    </div>
+                </div>
                 <div class="fab-item" onclick="toggleTheme(); updateFabThemeLabel(); closeTopbarMenu();" style="cursor:pointer;">
                     <span class="fab-item-label" id="fabThemeLabel">Dark Mode</span>
                     <button class="fab-item-btn fab-btn-theme" id="fabThemeBtn" onclick="event.stopPropagation(); toggleTheme(); updateFabThemeLabel(); closeTopbarMenu();">&#127769;</button>
@@ -1049,23 +1025,6 @@ body.lang-ar * {
                 <div class="fab-item" id="fabTimerItem" onclick="toggleFabTimer(); closeTopbarMenu();" style="cursor:pointer;">
                     <span class="fab-item-label" id="fabTimerToggleLabel">Hide Timer</span>
                     <button class="fab-item-btn fab-btn-timer-hide" id="fabTimerToggleBtn" onclick="event.stopPropagation(); toggleFabTimer(); closeTopbarMenu();">❌</button>
-                </div>
-                <!-- User section in topbar -->
-                <div class="fab-user-section" id="topbarUserSection" style="display:none;">
-                    <div class="fab-user-row">
-                        <div class="fab-mini-avatar" id="topbarMiniAvatar">
-                            <span id="topbarMiniInitials">U</span>
-                            <img id="topbarMiniImg" src="" alt="" style="display:none;" onerror="this.style.display='none';">
-                        </div>
-                        <div class="fab-user-details">
-                            <div class="fab-user-name" id="topbarUserName">User</div>
-                            <div class="fab-user-attempts" id="topbarUserAttempts"></div>
-                        </div>
-                    </div>
-                    <div class="fab-logout-btn fab-item" onclick="authSignOut(); closeTopbarMenu();">
-                        <span class="fab-item-label" style="color:rgba(255,255,255,0.7);">Logout / تسجيل الخروج</span>
-                        <button class="fab-item-btn" style="background:linear-gradient(135deg,#e74c3c,#c0392b);color:#fff;pointer-events:none;">↩</button>
-                    </div>
                 </div>
             </div>
         </div>
@@ -1082,6 +1041,20 @@ body.lang-ar * {
     </div>
     <button class="fab-main" id="fabMain" onclick="toggleFab()" style="display:none;">&#9881;&#65039;</button>
     <div class="fab-items" id="fabItems">
+        <div class="settings-user-panel" id="fabUserPanel">
+            <div class="settings-user-head">
+                <img class="settings-user-avatar" id="fabUserAvatar" src="" alt="" onerror="this.style.display='none';">
+                <div class="settings-user-avatar-initials" id="fabUserAvatarInitials"></div>
+                <div class="settings-user-meta">
+                    <div class="settings-user-name" id="fabUserName"></div>
+                    <div class="settings-user-attempts" id="fabUserAttempts"></div>
+                </div>
+            </div>
+            <div class="settings-user-actions">
+                <button class="settings-menu-btn results-btn" type="button" onclick="showMyResults(); closeFab();">📊 <span id="fabMyResultsText">My Results</span></button>
+                <button class="settings-menu-btn logout-btn" type="button" onclick="authSignOut(); closeFab();">↩ <span id="fabLogoutText">Logout</span></button>
+            </div>
+        </div>
         <div class="fab-item">
             <span class="fab-item-label" id="fabThemeLabelNormal">Dark Mode</span>
             <button class="fab-item-btn fab-btn-theme" id="fabThemeBtnNormal" onclick="toggleTheme(); updateFabThemeLabel(); closeFab();">&#127769;</button>
@@ -1089,23 +1062,6 @@ body.lang-ar * {
         <div class="fab-item" id="fabPdfItem" style="display:none;">
             <span class="fab-item-label" id="fabPdfLabel">Open Q&amp;A File</span>
             <button class="fab-item-btn fab-btn-pdf" id="fabPdfBtn" onclick="openQAFile(); closeFab();">&#128196;</button>
-        </div>
-        <!-- User section in main fab -->
-        <div class="fab-user-section" id="fabUserSection" style="display:none; flex-direction:column; gap:0;">
-            <div class="fab-user-row">
-                <div class="fab-mini-avatar" id="fabMiniAvatar">
-                    <span id="fabMiniInitials">U</span>
-                    <img id="fabMiniImg" src="" alt="" style="display:none;" onerror="this.style.display='none';">
-                </div>
-                <div class="fab-user-details">
-                    <div class="fab-user-name" id="fabUserName">User</div>
-                    <div class="fab-user-attempts" id="fabUserAttempts"></div>
-                </div>
-            </div>
-            <div class="fab-logout-btn fab-item" onclick="authSignOut(); closeFab();" style="margin-top:4px;">
-                <span class="fab-item-label" style="color:rgba(255,255,255,0.7);">Logout / تسجيل الخروج</span>
-                <button class="fab-item-btn" style="background:linear-gradient(135deg,#e74c3c,#c0392b);color:#fff;pointer-events:none;">↩</button>
-            </div>
         </div>
         <!-- My Results FAB item - injected by Firebase script -->
     </div>
@@ -1255,8 +1211,6 @@ body.lang-ar * {
             </div>
             <button class="guest-notice-login-btn" onclick="showPage('pageAuth')">🔑 Login / تسجيل الدخول</button>
         </div>
-        <!-- Save success notice removed as requested -->
-        <div id="savedResultNotice" style="display:none;"></div>
         <div id="motivationalMessage" class="motivational-message"></div>
         <div class="result-container">
             <div class="result-box">
@@ -1298,25 +1252,19 @@ body.lang-ar * {
             <div class="my-results-title" id="myResultsTitle" style="text-align:center; margin-bottom:6px;">📊 My Results</div>
             <div class="my-results-subtitle" style="text-align:center;">Last 30 days</div>
 
-            <!-- Stats: Total in first row, Passed+Failed in second row -->
-            <div class="my-results-stats-row" id="myResultsStatsRow" style="display:none; gap:14px; margin-bottom:24px;">
-                <!-- Row 1: Total Exams -->
-                <div class="my-results-stats-total-row">
-                    <div class="my-results-stat">
-                        <div class="my-results-stat-val" id="statTotal">0</div>
-                        <div class="my-results-stat-label">Total Exams</div>
-                    </div>
+            <!-- Stats row: Total wider, Passed/Failed narrower -->
+            <div class="my-results-stats-row" id="myResultsStatsRow" style="display:none;">
+                <div class="my-results-stat total-exams-stat">
+                    <div class="my-results-stat-val" id="statTotal">0</div>
+                    <div class="my-results-stat-label">Total Exams</div>
                 </div>
-                <!-- Row 2: Passed + Failed -->
-                <div class="my-results-stats-pf-row">
-                    <div class="my-results-stat">
-                        <div class="my-results-stat-val" id="statPassed" style="color:#27ae60;">0</div>
-                        <div class="my-results-stat-label">Passed ✅</div>
-                    </div>
-                    <div class="my-results-stat">
-                        <div class="my-results-stat-val" id="statFailed" style="color:#e74c3c;">0</div>
-                        <div class="my-results-stat-label">Failed ❌</div>
-                    </div>
+                <div class="my-results-stat">
+                    <div class="my-results-stat-val" id="statPassed" style="color:#27ae60;">0</div>
+                    <div class="my-results-stat-label">Passed</div>
+                </div>
+                <div class="my-results-stat">
+                    <div class="my-results-stat-val" id="statFailed" style="color:#e74c3c;">0</div>
+                    <div class="my-results-stat-label">Failed</div>
                 </div>
             </div>
 
@@ -1373,36 +1321,6 @@ body.lang-ar * {
 </div>
 
 <!-- ===================================================== -->
-<!-- USER INFO BAR — Professional Floating Card          -->
-<!-- ===================================================== -->
-<div class="user-info-bar" id="userInfoBar">
-    <!-- Pill handle -->
-    <div class="user-bar-toggle" onclick="toggleUserBar()" title="Toggle">
-        <span class="user-bar-toggle-arrow">▶</span>
-    </div>
-    <!-- Content row -->
-    <div class="user-info-bar-content">
-        <!-- Left: avatar + name -->
-        <div class="user-info-bar-left">
-            <div class="user-avatar-wrap">
-                <img class="user-info-avatar" id="userAvatar" src="" alt="" style="display:none;" onerror="this.style.display='none';">
-                <div class="user-avatar-initials" id="userAvatarInitials"></div>
-            </div>
-            <div class="user-info-text">
-                <div class="user-info-name" id="userDisplayName"></div>
-                <div class="user-info-attempts" id="userAttemptsInfo"></div>
-            </div>
-        </div>
-        <div class="user-bar-divider"></div>
-        <!-- Right: action buttons -->
-        <div class="user-info-bar-right">
-            <button class="user-info-btn my-results-btn" onclick="showMyResults()">📊 My Results</button>
-            <button class="user-info-btn logout-btn" onclick="authSignOut()">↩ Logout</button>
-        </div>
-    </div>
-</div>
-
-<!-- ===================================================== -->
 <!-- JAVASCRIPT - ORIGINAL (UNTOUCHED)                     -->
 <!-- ===================================================== -->
 <script>
@@ -1428,7 +1346,15 @@ body.lang-ar * {
     /* ===== SELECT LANGUAGE ===== */
     function selectLanguage(lang) {
         currentLang = lang;
-        showPage(lang === 'ar' ? 'pageCertAR' : 'pageCertEN');
+        var isAr = lang === 'ar';
+        if (isAr) {
+            document.body.classList.add('lang-ar');
+            document.documentElement.setAttribute('dir', 'rtl');
+        } else {
+            document.body.classList.remove('lang-ar');
+            document.documentElement.removeAttribute('dir');
+        }
+        showPage(isAr ? 'pageCertAR' : 'pageCertEN');
     }
 
     function goBackToLang() {
@@ -1505,9 +1431,6 @@ body.lang-ar * {
             document.body.classList.remove('lang-ar');
             document.documentElement.removeAttribute('dir');
         }
-        // Always keep the user info bar LTR regardless of language
-        var uib = document.getElementById('userInfoBar');
-        if (uib) uib.style.direction = 'ltr';
 
         var tcc = document.getElementById('topbarCertCode');
         if (tcc) tcc.textContent = currentCertCode;
@@ -1875,7 +1798,7 @@ if (isAr) {
 
             // simpleThemePages = pages that show only the circle theme button
             // pageMyResults also uses circle button (no text button in HTML)
-            var simpleThemePages = (pageId === 'pageLang' || pageId === 'pageCertEN' || pageId === 'pageCertAR' || pageId === 'pageMyResults');
+            var simpleThemePages = false;
             var fullFabPages = (pageId === 'page0' || pageId === 'page1' || pageId === 'page1b' || pageId === 'page3');
 
             if (themeOnly) themeOnly.style.display = simpleThemePages ? 'flex' : 'none';
@@ -2342,26 +2265,18 @@ if (isAr) {
         document.querySelectorAll('.page').forEach(function(p){ p.classList.remove('active'); });
         document.getElementById(pageId).classList.add('active');
 
-        var simpleThemePages = (pageId === 'pageLang' || pageId === 'pageCertEN' || pageId === 'pageCertAR');
+        var simpleThemePages = (pageId === 'pageLang' || pageId === 'pageCertEN' || pageId === 'pageCertAR' || pageId === 'pageMyResults');
         if (simpleThemePages) {
             document.body.classList.add('simple-theme-page');
         } else {
             document.body.classList.remove('simple-theme-page');
         }
-
-        // pageCertAR always RTL (fixed — stays RTL regardless of previous page)
-        if (pageId === 'pageCertAR') {
-            document.documentElement.setAttribute('dir', 'rtl');
-            document.body.classList.add('lang-ar');
-            document.body.classList.add('page-cert-ar');
-        } else {
-            document.body.classList.remove('page-cert-ar');
-        }
-
-        // pageLang and pageMyResults always stay LTR
-        if (pageId === 'pageLang' || pageId === 'pageMyResults') {
+        if (pageId === 'pageLang' || pageId === 'pageMyResults' || pageId === 'pageCertEN' || pageId === 'pageAuth') {
             document.documentElement.removeAttribute('dir');
             document.body.classList.remove('lang-ar');
+        } else if (pageId === 'pageCertAR') {
+            document.documentElement.setAttribute('dir', 'rtl');
+            document.body.classList.add('lang-ar');
         }
 
         updatePdfButtonVisibility(pageId);
@@ -2428,7 +2343,7 @@ fbAuth.onAuthStateChanged(function(user) {
         // Only show auth page if not already guest
         if (!fbIsGuest) {
             showPage('pageAuth');
-            document.getElementById('userInfoBar').classList.remove('show');
+            fbSyncSettingsUserPanels();
         }
     }
 });
@@ -2437,65 +2352,13 @@ fbAuth.onAuthStateChanged(function(user) {
    ON USER LOGGED IN
    ================================================================ */
 function fbOnUserLoggedIn(user) {
-    // Update (hidden) user info bar elements — kept for JS compatibility
-    var bar = document.getElementById('userInfoBar');
-    if (bar) bar.classList.add('show');
-
-    var avatar = document.getElementById('userAvatar');
-    var avatarInitials = document.getElementById('userAvatarInitials');
-    var displayName = user.displayName || (user.email ? user.email.split('@')[0] : 'User');
-    var initials = displayName.trim().split(/\s+/).map(function(w){ return w[0]; }).join('').toUpperCase().slice(0,2) || 'U';
-
-    if (user.photoURL) {
-        if (avatar) { avatar.src = user.photoURL; avatar.style.display = 'block'; }
-        if (avatarInitials) avatarInitials.style.display = 'none';
-    } else {
-        if (avatar) { avatar.src = ''; avatar.style.display = 'none'; }
-        if (avatarInitials) { avatarInitials.textContent = initials; avatarInitials.style.display = 'flex'; }
-    }
-
-    var nameEl = document.getElementById('userDisplayName');
-    if (nameEl) nameEl.textContent = displayName;
-
-    // ===== Update FAB user sections =====
-    fbUpdateFabUserUI(user, displayName, initials);
+    fbSyncSettingsUserPanels();
 
     // Load daily attempt count then go to app
     fbLoadDailyAttempts().then(function() {
         fbUpdateAttemptsDisplay();
         showPage('pageLang');
     });
-}
-
-/* Update all FAB user UI elements */
-function fbUpdateFabUserUI(user, displayName, initials) {
-    var photoURL = user ? user.photoURL : null;
-
-    // — Main FAB section
-    var fabSection = document.getElementById('fabUserSection');
-    if (fabSection) fabSection.style.display = user ? 'flex' : 'none';
-    var fabName = document.getElementById('fabUserName');
-    if (fabName) fabName.textContent = displayName || 'User';
-    var fabInitials = document.getElementById('fabMiniInitials');
-    if (fabInitials) fabInitials.textContent = initials || 'U';
-    var fabImg = document.getElementById('fabMiniImg');
-    if (fabImg) {
-        if (photoURL) { fabImg.src = photoURL; fabImg.style.display = 'block'; }
-        else { fabImg.src = ''; fabImg.style.display = 'none'; }
-    }
-
-    // — Topbar section
-    var topSection = document.getElementById('topbarUserSection');
-    if (topSection) topSection.style.display = user ? 'block' : 'none';
-    var topName = document.getElementById('topbarUserName');
-    if (topName) topName.textContent = displayName || 'User';
-    var topInitials = document.getElementById('topbarMiniInitials');
-    if (topInitials) topInitials.textContent = initials || 'U';
-    var topImg = document.getElementById('topbarMiniImg');
-    if (topImg) {
-        if (photoURL) { topImg.src = photoURL; topImg.style.display = 'block'; }
-        else { topImg.src = ''; topImg.style.display = 'none'; }
-    }
 }
 
 /* ================================================================
@@ -2625,13 +2488,9 @@ function authShowLogin() {
 }
 
 function authContinueAsGuest() {
-    fbIsGuest     = true;
+    fbIsGuest = true;
     fbCurrentUser = null;
-    document.getElementById('userInfoBar').classList.remove('show');
-    var fabSection = document.getElementById('fabUserSection');
-    if (fabSection) fabSection.style.display = 'none';
-    var topSection = document.getElementById('topbarUserSection');
-    if (topSection) topSection.style.display = 'none';
+    fbSyncSettingsUserPanels();
     showPage('pageLang');
 }
 
@@ -2640,12 +2499,9 @@ function authSignOut() {
         fbCurrentUser = null;
         fbIsGuest = false;
         fbDailyAttempts = 0;
-        document.getElementById('userInfoBar').classList.remove('show');
-        // Hide fab user sections
-        var fabSection = document.getElementById('fabUserSection');
-        if (fabSection) fabSection.style.display = 'none';
-        var topSection = document.getElementById('topbarUserSection');
-        if (topSection) topSection.style.display = 'none';
+        closeFab();
+        closeTopbarMenu();
+        fbSyncSettingsUserPanels();
         showPage('pageAuth');
     });
 }
@@ -2681,16 +2537,7 @@ function fbLoadDailyAttempts() {
 }
 
 function fbUpdateAttemptsDisplay() {
-    var el = document.getElementById('userAttemptsInfo');
-    if (!el) return;
-    var remaining = Math.max(0, FB_DAILY_LIMIT - fbDailyAttempts);
-    var txt = remaining + ' attempt(s) left today · ' + remaining + ' محاولة متبقية اليوم';
-    el.textContent = txt;
-    // Update fab sections
-    var fabAt = document.getElementById('fabUserAttempts');
-    if (fabAt) fabAt.textContent = txt;
-    var topAt = document.getElementById('topbarUserAttempts');
-    if (topAt) topAt.textContent = txt;
+    fbSyncSettingsUserPanels();
 }
 
 function fbGetEarliestAttemptTimestamp() {
@@ -2788,9 +2635,8 @@ function closeLimitOverlay() {
    Called from calculateResults (added at end of that function)
    ================================================================ */
 function fbSaveResult(resultData) {
-    // Hide all notices first
+    // Hide guest notice first
     document.getElementById('guestNoticeBanner').classList.remove('show');
-    document.getElementById('savedResultNotice').style.display = 'none';
 
     if (fbIsGuest || !fbCurrentUser) {
         // Show guest notice
@@ -2822,17 +2668,9 @@ function fbSaveResult(resultData) {
         .then(function() {
             fbDailyAttempts++;
             fbUpdateAttemptsDisplay();
-            document.getElementById('savedResultNotice').style.display = 'block';
         })
         .catch(function(err) {
             console.warn('Failed to save result:', err);
-            // Show a fallback notice so the user knows
-            var notice = document.getElementById('savedResultNotice');
-            if (notice) {
-                notice.style.display = 'block';
-                notice.textContent = '⚠️ Could not save result. Check Firestore rules. / تعذّر حفظ النتيجة.';
-                notice.style.color = '#e74c3c';
-            }
         });
 }
 
@@ -2891,7 +2729,7 @@ function fbLoadMyResults() {
             document.getElementById('statTotal').textContent  = results.length;
             document.getElementById('statPassed').textContent = totalPassed;
             document.getElementById('statFailed').textContent = totalFailed;
-            document.getElementById('myResultsStatsRow').style.display = 'flex';
+            document.getElementById('myResultsStatsRow').style.display = 'grid';
 
             // Build table
             var tbody = document.getElementById('myResultsBody');
@@ -2927,44 +2765,59 @@ function fbLoadMyResults() {
 }
 
 /* ================================================================
-   USER BAR TOGGLE (slide right to hide, slide back to show)
+   SETTINGS USER PANEL HELPERS
    ================================================================ */
-function toggleUserBar() {
-    var bar = document.getElementById('userInfoBar');
-    if (!bar) return;
-    bar.classList.toggle('collapsed');
-    var arrow = bar.querySelector('.user-bar-toggle-arrow');
-    if (arrow) arrow.textContent = bar.classList.contains('collapsed') ? '◀' : '▶';
+function fbPanelText(isAr) {
+    return {
+        myResults: isAr ? 'نتائجي' : 'My Results',
+        logout: isAr ? 'تسجيل الخروج' : 'Logout'
+    };
 }
 
-/* ================================================================
-   DOMContentLoaded - inject My Results FAB button
-   ================================================================ */
-document.addEventListener('DOMContentLoaded', function() {
-    var fabItemsDiv = document.getElementById('fabItems');
-    if (fabItemsDiv) {
-        var myResItem = document.createElement('div');
-        myResItem.className  = 'fab-item';
-        myResItem.id         = 'fabMyResultsItem';
-        myResItem.style.display = 'none';
-        myResItem.innerHTML =
-            '<span class="fab-item-label" id="fabMyResultsLabel">My Results / نتائجي</span>' +
-            '<button class="fab-item-btn" style="background:linear-gradient(135deg,#2980b9,#8e44ad);color:#fff;" ' +
-            'onclick="showMyResults(); closeFab();">📊</button>';
-        fabItemsDiv.appendChild(myResItem);
-    }
+function fbSyncSingleSettingsPanel(prefix, user, isGuest) {
+    var panel = document.getElementById(prefix + 'UserPanel');
+    if (!panel) return;
 
-    // Override updatePdfButtonVisibility to also handle My Results button
-    var _origUpdatePdf = window.updatePdfButtonVisibility;
-    window.updatePdfButtonVisibility = function(pageId) {
-        _origUpdatePdf(pageId);
-        var myResItem = document.getElementById('fabMyResultsItem');
-        if (myResItem) {
-            var showPages = ['page0','page1','page1b','page3'];
-            var shouldShow = fbCurrentUser && !fbIsGuest && showPages.indexOf(pageId) !== -1;
-            myResItem.style.display = shouldShow ? 'flex' : 'none';
+    var showPanel = !!user && !isGuest;
+    panel.classList.toggle('show', showPanel);
+    if (!showPanel) return;
+
+    var avatar = document.getElementById(prefix + 'UserAvatar');
+    var initialsEl = document.getElementById(prefix + 'UserAvatarInitials');
+    var nameEl = document.getElementById(prefix + 'UserName');
+    var attemptsEl = document.getElementById(prefix + 'UserAttempts');
+    var isAr = currentLang === 'ar';
+    var texts = fbPanelText(isAr);
+
+    var myResultsTextEl = document.getElementById(prefix + 'MyResultsText');
+    var logoutTextEl = document.getElementById(prefix + 'LogoutText');
+    if (myResultsTextEl) myResultsTextEl.textContent = texts.myResults;
+    if (logoutTextEl) logoutTextEl.textContent = texts.logout;
+
+    var displayName = user.displayName || (user.email ? user.email.split('@')[0] : 'User');
+    if (nameEl) nameEl.textContent = displayName;
+    if (attemptsEl) attemptsEl.textContent = isAr ? ('المحاولات اليوم: ' + fbDailyAttempts + '/3') : ('Attempts today: ' + fbDailyAttempts + '/3');
+
+    if (user.photoURL) {
+        if (avatar) { avatar.src = user.photoURL; avatar.style.display = 'block'; }
+        if (initialsEl) initialsEl.style.display = 'none';
+    } else {
+        if (avatar) { avatar.src = ''; avatar.style.display = 'none'; }
+        if (initialsEl) {
+            var initials = displayName.trim().split(/\s+/).map(function(w){ return w[0]; }).join('').toUpperCase().slice(0,2);
+            initialsEl.textContent = initials;
+            initialsEl.style.display = 'flex';
         }
-    };
+    }
+}
+
+function fbSyncSettingsUserPanels() {
+    fbSyncSingleSettingsPanel('fab', fbCurrentUser, fbIsGuest);
+    fbSyncSingleSettingsPanel('topbar', fbCurrentUser, fbIsGuest);
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    fbSyncSettingsUserPanels();
 });
 </script>
 </body>
