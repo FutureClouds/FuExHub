@@ -2475,6 +2475,7 @@ function authSignOut() {
         fbDailyAttempts = 0;
         document.getElementById('userInfoBar').classList.remove('show');
         showPage('pageAuth');
+        updatePdfButtonVisibility('pageAuth');
     });
 }
 
