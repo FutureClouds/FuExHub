@@ -121,6 +121,13 @@ body.lang-ar * {
     direction: rtl;
 }
 
+        /* ===== USER BAR - ALWAYS LTR (overrides lang-ar) ===== */
+        body.lang-ar #userInfoBar,
+        body.lang-ar #userInfoBar * {
+            direction: ltr !important;
+            font-family: 'Montserrat', 'Roboto', sans-serif !important;
+        }
+
         /* ===== PAGES ===== */
         .page { display: none; }
         .page.active { display: block; }
