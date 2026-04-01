@@ -647,6 +647,7 @@ body.lang-ar * {
             box-shadow: 0 -4px 20px rgba(0,0,0,0.45);
             display: none; flex-direction: column;
             transition: transform 0.35s cubic-bezier(0.4,0,0.2,1);
+            direction: ltr !important;
         }
         .user-info-bar.show { display: flex; }
 
@@ -676,6 +677,12 @@ body.lang-ar * {
             transition: height 0.35s cubic-bezier(0.4,0,0.2,1),
                         padding 0.35s cubic-bezier(0.4,0,0.2,1),
                         opacity 0.3s ease;
+            direction: ltr !important;
+        }
+        body.lang-ar .user-info-bar,
+        body.lang-ar .user-info-bar * {
+            direction: ltr !important;
+            font-family: 'Montserrat', 'Roboto', sans-serif !important;
         }
         .user-info-bar.collapsed .user-info-bar-content {
             height: 0; padding-top: 0; padding-bottom: 0; opacity: 0; pointer-events: none;
@@ -1236,6 +1243,7 @@ body.lang-ar * {
                         <tr>
                             <th>#</th>
                             <th>Cert</th>
+                            <th>Code</th>
                             <th>Score</th>
                             <th>%</th>
                             <th>Status</th>
@@ -2749,6 +2757,7 @@ function fbLoadMyResults() {
                 tr.innerHTML =
                     '<td>' + (idx + 1) + '</td>' +
                     '<td>' + certImg + '</td>' +
+                    '<td><strong style="font-size:0.82rem;letter-spacing:0.5px;color:#58a6ff;">' + (r.certCode || '—') + '</strong></td>' +
                     '<td><strong>' + (r.score || 0) + '</strong>/1000</td>' +
                     '<td>' + (r.percentage || 0) + '%</td>' +
                     '<td>' + statusBadge + '</td>' +
