@@ -361,12 +361,13 @@ body.lang-ar * {
         .review-item-body.open { max-height: 2000px; }
         .review-question { padding: 16px 18px 18px; color: var(--result-box-text); text-align: left; direction: ltr; }
         .review-question h4, .review-question p, .review-question label { text-align: left; }
-        body.lang-ar .review-question { text-align: right; direction: rtl; }
+        body.lang-ar .review-question { text-align: right !important; direction: rtl !important; }
         body.lang-ar .review-question h4,
         body.lang-ar .review-question p,
-        body.lang-ar .review-question label { text-align: right; }
+        body.lang-ar .review-question label { text-align: right !important; }
+        body.lang-ar .review-question > div { text-align: right !important; direction: rtl !important; }
         body.lang-ar .review-info-box,
-        body.lang-ar .review-explanation-box { text-align: right; direction: rtl; }
+        body.lang-ar .review-explanation-box { text-align: right !important; direction: rtl !important; }
         .user-correct-label { color: #27ae60; font-weight: 700; }
         .user-wrong-label { color: #e74c3c; font-weight: 700; }
         .user-correct-answer { color: #27ae60; }
@@ -395,8 +396,8 @@ body.lang-ar * {
         }
         body.lang-ar .review-info-box,
         body.lang-ar .review-explanation-box {
-            text-align: right;
-            direction: rtl;
+            text-align: right !important;
+            direction: rtl !important;
         }
 
         /* ===== SUBMIT ===== */
@@ -680,6 +681,77 @@ body.lang-ar * {
             .user-info-avatar, .user-avatar-initials { width: 42px; height: 42px; }
             .user-avatar-wrap { width: 42px; height: 42px; }
             .user-info-btn { font-size: 0.72rem; padding: 8px 10px; }
+        }
+
+        /* Hide the old floating side panel — merged into settings button */
+        .user-info-bar { display: none !important; }
+
+        /* ===== FAB USER SECTION ===== */
+        .fab-user-section {
+            border-top: 1px solid rgba(255,255,255,0.1);
+            margin-top: 4px; padding-top: 4px;
+        }
+        .fab-user-row {
+            display: flex; align-items: center; gap: 10px;
+            padding: 8px 6px; border-radius: 10px;
+            pointer-events: none;
+        }
+        .fab-mini-avatar {
+            width: 32px; height: 32px; border-radius: 50%;
+            background: linear-gradient(135deg, #2980b9, #8e44ad);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 0.75rem; font-weight: 800; color: #fff;
+            flex-shrink: 0; border: 2px solid rgba(255,255,255,0.25);
+            overflow: hidden; position: relative;
+        }
+        .fab-mini-avatar img {
+            width: 100%; height: 100%; object-fit: cover;
+            border-radius: 50%; position: absolute; top:0; left:0;
+        }
+        .fab-user-details { flex: 1; min-width: 0; }
+        .fab-user-name {
+            color: rgba(255,255,255,0.95); font-size: 0.82rem; font-weight: 700;
+            white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+        }
+        .fab-user-attempts {
+            color: rgba(255,255,255,0.45); font-size: 0.68rem; margin-top: 1px;
+            white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+            font-family: 'Tajawal', sans-serif;
+        }
+        .fab-logout-btn {
+            display: flex; align-items: center; gap: 10px;
+            padding: 4px 6px; border-radius: 10px;
+            cursor: pointer; transition: background 0.2s;
+        }
+        .fab-logout-btn:hover { background: rgba(231,76,60,0.18); }
+        .fab-logout-btn:hover .fab-item-label { color: #e74c3c !important; }
+
+        /* ===== MY RESULTS STATS — two-row layout ===== */
+        .my-results-stats-row { flex-direction: column !important; }
+        .my-results-stats-total-row {
+            display: flex; justify-content: center; width: 100%;
+        }
+        .my-results-stats-total-row .my-results-stat {
+            min-width: 200px; max-width: 340px; flex: 1;
+        }
+        .my-results-stats-pf-row {
+            display: flex; gap: 14px; justify-content: center; width: 100%;
+        }
+        .my-results-stats-pf-row .my-results-stat {
+            flex: 1; min-width: 120px; max-width: 200px;
+        }
+
+        /* ===== pageCertAR FAB — left side ===== */
+        body.page-cert-ar.simple-theme-page #fabWrapper {
+            right: auto !important;
+            left: 20px !important;
+            align-items: flex-start !important;
+        }
+        @media (max-width: 768px) {
+            body.page-cert-ar.simple-theme-page #fabWrapper {
+                left: 12px !important;
+                right: auto !important;
+            }
         }
 
         /* Guest notice banner on page3 */
@@ -978,6 +1050,23 @@ body.lang-ar * {
                     <span class="fab-item-label" id="fabTimerToggleLabel">Hide Timer</span>
                     <button class="fab-item-btn fab-btn-timer-hide" id="fabTimerToggleBtn" onclick="event.stopPropagation(); toggleFabTimer(); closeTopbarMenu();">❌</button>
                 </div>
+                <!-- User section in topbar -->
+                <div class="fab-user-section" id="topbarUserSection" style="display:none;">
+                    <div class="fab-user-row">
+                        <div class="fab-mini-avatar" id="topbarMiniAvatar">
+                            <span id="topbarMiniInitials">U</span>
+                            <img id="topbarMiniImg" src="" alt="" style="display:none;" onerror="this.style.display='none';">
+                        </div>
+                        <div class="fab-user-details">
+                            <div class="fab-user-name" id="topbarUserName">User</div>
+                            <div class="fab-user-attempts" id="topbarUserAttempts"></div>
+                        </div>
+                    </div>
+                    <div class="fab-logout-btn fab-item" onclick="authSignOut(); closeTopbarMenu();">
+                        <span class="fab-item-label" style="color:rgba(255,255,255,0.7);">Logout / تسجيل الخروج</span>
+                        <button class="fab-item-btn" style="background:linear-gradient(135deg,#e74c3c,#c0392b);color:#fff;pointer-events:none;">↩</button>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -1000,6 +1089,23 @@ body.lang-ar * {
         <div class="fab-item" id="fabPdfItem" style="display:none;">
             <span class="fab-item-label" id="fabPdfLabel">Open Q&amp;A File</span>
             <button class="fab-item-btn fab-btn-pdf" id="fabPdfBtn" onclick="openQAFile(); closeFab();">&#128196;</button>
+        </div>
+        <!-- User section in main fab -->
+        <div class="fab-user-section" id="fabUserSection" style="display:none; flex-direction:column; gap:0;">
+            <div class="fab-user-row">
+                <div class="fab-mini-avatar" id="fabMiniAvatar">
+                    <span id="fabMiniInitials">U</span>
+                    <img id="fabMiniImg" src="" alt="" style="display:none;" onerror="this.style.display='none';">
+                </div>
+                <div class="fab-user-details">
+                    <div class="fab-user-name" id="fabUserName">User</div>
+                    <div class="fab-user-attempts" id="fabUserAttempts"></div>
+                </div>
+            </div>
+            <div class="fab-logout-btn fab-item" onclick="authSignOut(); closeFab();" style="margin-top:4px;">
+                <span class="fab-item-label" style="color:rgba(255,255,255,0.7);">Logout / تسجيل الخروج</span>
+                <button class="fab-item-btn" style="background:linear-gradient(135deg,#e74c3c,#c0392b);color:#fff;pointer-events:none;">↩</button>
+            </div>
         </div>
         <!-- My Results FAB item - injected by Firebase script -->
     </div>
@@ -1149,10 +1255,8 @@ body.lang-ar * {
             </div>
             <button class="guest-notice-login-btn" onclick="showPage('pageAuth')">🔑 Login / تسجيل الدخول</button>
         </div>
-        <!-- Save success notice (shown for logged in users) -->
-        <div id="savedResultNotice" style="display:none; background:rgba(39,174,96,0.15); border:1px solid rgba(39,174,96,0.3); border-radius:10px; padding:12px 20px; margin:10px 0; color:var(--result-box-text); text-align:center; font-size:0.9rem;">
-            ✅ Result saved to your account · <span style="font-family:'Tajawal',sans-serif;">تم حفظ النتيجة في حسابك</span>
-        </div>
+        <!-- Save success notice removed as requested -->
+        <div id="savedResultNotice" style="display:none;"></div>
         <div id="motivationalMessage" class="motivational-message"></div>
         <div class="result-container">
             <div class="result-box">
@@ -1194,19 +1298,25 @@ body.lang-ar * {
             <div class="my-results-title" id="myResultsTitle" style="text-align:center; margin-bottom:6px;">📊 My Results</div>
             <div class="my-results-subtitle" style="text-align:center;">Last 30 days</div>
 
-            <!-- Stats row: Total wider, Passed/Failed narrower -->
-            <div class="my-results-stats-row" id="myResultsStatsRow" style="display:none; align-items:stretch;">
-                <div class="my-results-stat" style="flex:2; min-width:180px;">
-                    <div class="my-results-stat-val" id="statTotal">0</div>
-                    <div class="my-results-stat-label">Total Exams</div>
+            <!-- Stats: Total in first row, Passed+Failed in second row -->
+            <div class="my-results-stats-row" id="myResultsStatsRow" style="display:none; gap:14px; margin-bottom:24px;">
+                <!-- Row 1: Total Exams -->
+                <div class="my-results-stats-total-row">
+                    <div class="my-results-stat">
+                        <div class="my-results-stat-val" id="statTotal">0</div>
+                        <div class="my-results-stat-label">Total Exams</div>
+                    </div>
                 </div>
-                <div class="my-results-stat" style="flex:1; min-width:100px;">
-                    <div class="my-results-stat-val" id="statPassed" style="color:#27ae60;">0</div>
-                    <div class="my-results-stat-label">Passed</div>
-                </div>
-                <div class="my-results-stat" style="flex:1; min-width:100px;">
-                    <div class="my-results-stat-val" id="statFailed" style="color:#e74c3c;">0</div>
-                    <div class="my-results-stat-label">Failed</div>
+                <!-- Row 2: Passed + Failed -->
+                <div class="my-results-stats-pf-row">
+                    <div class="my-results-stat">
+                        <div class="my-results-stat-val" id="statPassed" style="color:#27ae60;">0</div>
+                        <div class="my-results-stat-label">Passed ✅</div>
+                    </div>
+                    <div class="my-results-stat">
+                        <div class="my-results-stat-val" id="statFailed" style="color:#e74c3c;">0</div>
+                        <div class="my-results-stat-label">Failed ❌</div>
+                    </div>
                 </div>
             </div>
 
@@ -2239,6 +2349,15 @@ if (isAr) {
             document.body.classList.remove('simple-theme-page');
         }
 
+        // pageCertAR always RTL (fixed — stays RTL regardless of previous page)
+        if (pageId === 'pageCertAR') {
+            document.documentElement.setAttribute('dir', 'rtl');
+            document.body.classList.add('lang-ar');
+            document.body.classList.add('page-cert-ar');
+        } else {
+            document.body.classList.remove('page-cert-ar');
+        }
+
         // pageLang and pageMyResults always stay LTR
         if (pageId === 'pageLang' || pageId === 'pageMyResults') {
             document.documentElement.removeAttribute('dir');
@@ -2318,33 +2437,65 @@ fbAuth.onAuthStateChanged(function(user) {
    ON USER LOGGED IN
    ================================================================ */
 function fbOnUserLoggedIn(user) {
-    // Update user info bar
+    // Update (hidden) user info bar elements — kept for JS compatibility
     var bar = document.getElementById('userInfoBar');
     if (bar) bar.classList.add('show');
 
     var avatar = document.getElementById('userAvatar');
     var avatarInitials = document.getElementById('userAvatarInitials');
+    var displayName = user.displayName || (user.email ? user.email.split('@')[0] : 'User');
+    var initials = displayName.trim().split(/\s+/).map(function(w){ return w[0]; }).join('').toUpperCase().slice(0,2) || 'U';
+
     if (user.photoURL) {
         if (avatar) { avatar.src = user.photoURL; avatar.style.display = 'block'; }
         if (avatarInitials) avatarInitials.style.display = 'none';
     } else {
         if (avatar) { avatar.src = ''; avatar.style.display = 'none'; }
-        if (avatarInitials) {
-            var displayName = user.displayName || user.email || 'U';
-            var initials = displayName.trim().split(/\s+/).map(function(w){ return w[0]; }).join('').toUpperCase().slice(0,2);
-            avatarInitials.textContent = initials;
-            avatarInitials.style.display = 'flex';
-        }
+        if (avatarInitials) { avatarInitials.textContent = initials; avatarInitials.style.display = 'flex'; }
     }
 
     var nameEl = document.getElementById('userDisplayName');
-    if (nameEl) nameEl.textContent = user.displayName || user.email.split('@')[0] || 'User';
+    if (nameEl) nameEl.textContent = displayName;
+
+    // ===== Update FAB user sections =====
+    fbUpdateFabUserUI(user, displayName, initials);
 
     // Load daily attempt count then go to app
     fbLoadDailyAttempts().then(function() {
         fbUpdateAttemptsDisplay();
         showPage('pageLang');
     });
+}
+
+/* Update all FAB user UI elements */
+function fbUpdateFabUserUI(user, displayName, initials) {
+    var photoURL = user ? user.photoURL : null;
+
+    // — Main FAB section
+    var fabSection = document.getElementById('fabUserSection');
+    if (fabSection) fabSection.style.display = user ? 'flex' : 'none';
+    var fabName = document.getElementById('fabUserName');
+    if (fabName) fabName.textContent = displayName || 'User';
+    var fabInitials = document.getElementById('fabMiniInitials');
+    if (fabInitials) fabInitials.textContent = initials || 'U';
+    var fabImg = document.getElementById('fabMiniImg');
+    if (fabImg) {
+        if (photoURL) { fabImg.src = photoURL; fabImg.style.display = 'block'; }
+        else { fabImg.src = ''; fabImg.style.display = 'none'; }
+    }
+
+    // — Topbar section
+    var topSection = document.getElementById('topbarUserSection');
+    if (topSection) topSection.style.display = user ? 'block' : 'none';
+    var topName = document.getElementById('topbarUserName');
+    if (topName) topName.textContent = displayName || 'User';
+    var topInitials = document.getElementById('topbarMiniInitials');
+    if (topInitials) topInitials.textContent = initials || 'U';
+    var topImg = document.getElementById('topbarMiniImg');
+    if (topImg) {
+        if (photoURL) { topImg.src = photoURL; topImg.style.display = 'block'; }
+        else { topImg.src = ''; topImg.style.display = 'none'; }
+    }
 }
 
 /* ================================================================
@@ -2477,6 +2628,10 @@ function authContinueAsGuest() {
     fbIsGuest     = true;
     fbCurrentUser = null;
     document.getElementById('userInfoBar').classList.remove('show');
+    var fabSection = document.getElementById('fabUserSection');
+    if (fabSection) fabSection.style.display = 'none';
+    var topSection = document.getElementById('topbarUserSection');
+    if (topSection) topSection.style.display = 'none';
     showPage('pageLang');
 }
 
@@ -2486,6 +2641,11 @@ function authSignOut() {
         fbIsGuest = false;
         fbDailyAttempts = 0;
         document.getElementById('userInfoBar').classList.remove('show');
+        // Hide fab user sections
+        var fabSection = document.getElementById('fabUserSection');
+        if (fabSection) fabSection.style.display = 'none';
+        var topSection = document.getElementById('topbarUserSection');
+        if (topSection) topSection.style.display = 'none';
         showPage('pageAuth');
     });
 }
@@ -2524,7 +2684,13 @@ function fbUpdateAttemptsDisplay() {
     var el = document.getElementById('userAttemptsInfo');
     if (!el) return;
     var remaining = Math.max(0, FB_DAILY_LIMIT - fbDailyAttempts);
-    el.textContent = remaining + ' attempt(s) left today · ' + remaining + ' محاولة متبقية اليوم';
+    var txt = remaining + ' attempt(s) left today · ' + remaining + ' محاولة متبقية اليوم';
+    el.textContent = txt;
+    // Update fab sections
+    var fabAt = document.getElementById('fabUserAttempts');
+    if (fabAt) fabAt.textContent = txt;
+    var topAt = document.getElementById('topbarUserAttempts');
+    if (topAt) topAt.textContent = txt;
 }
 
 function fbGetEarliestAttemptTimestamp() {
