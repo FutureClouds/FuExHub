@@ -610,6 +610,11 @@ body.lang-ar * {
             unicode-bidi: plaintext;
         }
 
+        #pageAuth .auth-error,
+        #pageAuth .auth-success {
+            text-align: center !important;
+        }
+
         #pageAuth .auth-btn-primary,
         #pageAuth .auth-btn-secondary {
             text-align: center !important;
@@ -738,6 +743,33 @@ body.lang-ar * {
         @media (max-width: 600px) {
             .auth-container { padding: 36px 24px; }
             .my-results-table th, .my-results-table td { padding: 10px 8px; font-size: 0.82rem; }
+        }
+
+
+        /* ===== AUTH GOOGLE BUTTON DARK MODE FIX ===== */
+        [data-theme="dark"] #pageAuth .auth-btn-google {
+            background: #161b22;
+            color: #c9d1d9;
+            border-color: #30363d;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        }
+        [data-theme="dark"] #pageAuth .auth-btn-google:hover {
+            background: #1c2333;
+        }
+
+
+        .my-results-cert-badge {
+            width: 42px;
+            height: 42px;
+            object-fit: contain;
+            border-radius: 8px;
+            display: inline-block;
+            vertical-align: middle;
+        }
+
+
+        #pageAuth .auth-subtitle {
+            text-align: center !important;
         }
 
 </style>
@@ -1140,9 +1172,6 @@ body.lang-ar * {
             <button class="guest-notice-login-btn" onclick="showPage('pageAuth')">🔑 Login / تسجيل الدخول</button>
         </div>
         <!-- Save success notice (shown for logged in users) -->
-        <div id="savedResultNotice" style="display:none; background:rgba(39,174,96,0.15); border:1px solid rgba(39,174,96,0.3); border-radius:10px; padding:12px 20px; margin:10px 0; color:var(--result-box-text); text-align:center; font-size:0.9rem;">
-            ✅ Result saved to your account · <span style="font-family:'Tajawal',sans-serif;">تم حفظ النتيجة في حسابك</span>
-        </div>
         <div id="motivationalMessage" class="motivational-message"></div>
         <div class="result-container">
             <div class="result-box">
@@ -2114,7 +2143,38 @@ if (isAr) {
 
         generateReview(timeExpiredParam);
 
-        /* ===== FIREBASE: Save result after calculation ===== */
+    
+    function getCertImageByCode(certCode) {
+        var map = {
+            'AIF-C01': 'AIF.png',
+            'CLF-C02': 'CLF.png',
+            'MLA-C01': 'MLA.png',
+            'SAA-C03': 'SAA.png',
+            'DVA-C02': 'DVA.png',
+            'DEA-C01': 'DEA.png',
+            'SOA-C02': 'SOA2.png',
+            'SOA-C03': 'SOA3.png',
+            'AIP-C01': 'AIP.png',
+            'SAP-C02': 'SAP.png',
+            'DOP-C02': 'DOP.png',
+            'MLS-C01': 'MLS.png',
+            'ANS-C01': 'ANS.png',
+            'SCS-C02': 'SCS2.png',
+            'SCS-C03': 'SCS3.png'
+        };
+        return map[certCode] || '';
+    }
+
+    function renderCertCell(certCode) {
+        var img = getCertImageByCode(certCode);
+        if (img) {
+            return '<img src="' + img + '" alt="' + certCode + '" class="my-results-cert-badge" onerror="this.outerHTML=\'<span>' + certCode + '</span>\';">';
+        }
+        return certCode;
+    }
+
+
+    /* ===== FIREBASE: Save result after calculation ===== */
         fbSaveResult({
             score: score,
             percentage: percentage,
@@ -2645,7 +2705,7 @@ function fbSaveResult(resultData) {
         .then(function() {
             fbDailyAttempts++;
             fbUpdateAttemptsDisplay();
-            document.getElementById('savedResultNotice').style.display = 'block';
+            
         })
         .catch(function(err) {
             console.warn('Failed to save result:', err);
