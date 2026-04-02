@@ -521,6 +521,11 @@ body.lang-ar * {
 }
 
 
+        #pageLang .lang-select-container,
+        #pageLang .lang-select-container * {
+            font-family: 'Tajawal', sans-serif !important;
+        }
+
         body.lang-ar .setup-action-buttons {
             flex-direction: row-reverse !important;
         }
@@ -857,6 +862,9 @@ body.lang-ar * {
     <div class="lang-card-name">US</div>
 </div>
 
+            </div>
+            <div style="text-align:center; margin-top:30px;">
+                <button class="cert-back-btn" onclick="showPage('pageAuth')" style="font-family:'Tajawal',sans-serif;">رجوع | Back ←</button>
             </div>
         </div>
     </div>
@@ -1302,7 +1310,7 @@ body.lang-ar * {
             </div>
         </div>
         <div class="user-info-bar-right">
-            <button class="user-info-btn my-results-btn" onclick="showMyResults()">📊 My Results</button>
+            <button class="user-info-btn my-results-btn" id="userBarMyResultsBtn" onclick="showMyResults()">📊 My Results</button>
             <button class="user-info-btn" onclick="authSignOut()">Logout</button>
         </div>
     </div>
@@ -1734,6 +1742,12 @@ if (isAr) {
         var mrLbl  = document.getElementById('myResultsThemeLabel');
         if (mrIcon) mrIcon.textContent = dark ? '☀️' : '🌙';
         if (mrLbl)  mrLbl.textContent  = dark ? 'Light Mode' : 'Dark Mode';
+        // Update My Results FAB label based on language
+        var myResLabel = document.getElementById('fabMyResultsLabel');
+        if (myResLabel) myResLabel.textContent = isAr ? 'نتائجي' : 'My Results';
+        // Update user info bar My Results button based on language
+        var ubMyRes = document.getElementById('userBarMyResultsBtn');
+        if (ubMyRes) ubMyRes.textContent = '📊 ' + (isAr ? 'نتائجي' : 'My Results');
     }
 
     function openQAFile() {
@@ -2805,7 +2819,7 @@ document.addEventListener('DOMContentLoaded', function() {
         myResItem.id         = 'fabMyResultsItem';
         myResItem.style.display = 'none';
         myResItem.innerHTML =
-            '<span class="fab-item-label" id="fabMyResultsLabel">My Results / نتائجي</span>' +
+            '<span class="fab-item-label" id="fabMyResultsLabel">' + (currentLang === 'ar' ? 'نتائجي' : 'My Results') + '</span>' +
             '<button class="fab-item-btn" style="background:linear-gradient(135deg,#2980b9,#8e44ad);color:#fff;" ' +
             'onclick="showMyResults(); closeFab();">📊</button>';
         fabItemsDiv.appendChild(myResItem);
