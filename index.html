@@ -526,6 +526,17 @@ body.lang-ar * {
             font-family: 'Tajawal', sans-serif !important;
         }
 
+        /* Tajawal on all bilingual/Arabic elements regardless of lang mode */
+        .guest-notice-banner,
+        .guest-notice-banner *,
+        .guest-notice-login-btn,
+        .attempt-limit-box,
+        .attempt-limit-box *,
+        #pageMyResults .my-results-container,
+        #pageMyResults .my-results-container * {
+            font-family: 'Tajawal', sans-serif !important;
+        }
+
         body.lang-ar .setup-action-buttons {
             flex-direction: row-reverse !important;
         }
@@ -864,7 +875,7 @@ body.lang-ar * {
 
             </div>
             <div style="text-align:center; margin-top:30px;">
-                <button class="cert-back-btn" onclick="showPage('pageAuth')" style="font-family:'Tajawal',sans-serif;">رجوع | Back ←</button>
+                <button id="langBackBtn" class="cert-back-btn" onclick="showPage('pageAuth')" style="font-family:'Tajawal',sans-serif; display:none;">رجوع | Back ←</button>
             </div>
         </div>
     </div>
@@ -2373,6 +2384,7 @@ function fbOnUserLoggedIn(user) {
     // Load daily attempt count then go to app
     fbLoadDailyAttempts().then(function() {
         fbUpdateAttemptsDisplay();
+        var lbb = document.getElementById('langBackBtn'); if (lbb) lbb.style.display = 'none';
         showPage('pageLang');
     });
 }
@@ -2507,6 +2519,7 @@ function authContinueAsGuest() {
     fbIsGuest     = true;
     fbCurrentUser = null;
     document.getElementById('userInfoBar').classList.remove('show');
+    var lbb = document.getElementById('langBackBtn'); if (lbb) lbb.style.display = '';
     showPage('pageLang');
 }
 
