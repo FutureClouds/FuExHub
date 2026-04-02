@@ -121,12 +121,7 @@ body.lang-ar * {
     direction: rtl;
 }
 
-        /* ===== USER BAR - ALWAYS LTR (overrides lang-ar) ===== */
-        body.lang-ar #userInfoBar,
-        body.lang-ar #userInfoBar * {
-            direction: ltr !important;
-            font-family: 'Montserrat', 'Roboto', sans-serif !important;
-        }
+        /* ===== USER BAR - ALWAYS LTR (overrides lang-ar) - handled by .user-info-bar CSS ===== */
 
         /* ===== PAGES ===== */
         .page { display: none; }
@@ -662,44 +657,51 @@ body.lang-ar * {
             justify-content: center !important;
         }
 
-        /* ===== USER BAR (collapsible bottom bar for logged-in users) ===== */
+        /* ===== USER BAR (floating card — bottom-right, always LTR) ===== */
         .user-info-bar {
-            position: fixed; bottom: 0; left: 0; right: 0; z-index: 1997;
-            background: var(--topbar-bg); backdrop-filter: blur(16px);
-            border-top: 1px solid rgba(255,255,255,0.08);
-            box-shadow: 0 -4px 20px rgba(0,0,0,0.45);
+            position: fixed; bottom: 20px; right: 20px; left: auto;
+            z-index: 1997;
+            background: linear-gradient(135deg, rgba(15,12,41,0.97) 0%, rgba(48,43,99,0.97) 100%);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255,255,255,0.13);
+            border-radius: 20px;
+            box-shadow: 0 12px 40px rgba(0,0,0,0.55), 0 0 0 1px rgba(255,255,255,0.05);
             display: none; flex-direction: column;
-            transition: transform 0.35s cubic-bezier(0.4,0,0.2,1);
+            transition: box-shadow 0.3s ease;
             direction: ltr !important;
+            min-width: 260px; max-width: 300px;
+            overflow: hidden;
         }
         .user-info-bar.show { display: flex; }
+        .user-info-bar:hover { box-shadow: 0 16px 50px rgba(0,0,0,0.65), 0 0 0 1px rgba(142,68,173,0.3); }
 
-        /* Toggle tab — always visible when bar is shown */
+        /* Header row — always visible, click to collapse */
         .user-bar-toggle {
-            display: flex; align-items: center; justify-content: center;
-            width: 64px; height: 20px;
-            background: var(--topbar-bg);
-            border: 1px solid rgba(255,255,255,0.12);
-            border-bottom: none;
-            border-radius: 10px 10px 0 0;
-            position: absolute; top: -20px; left: 50%; transform: translateX(-50%);
-            cursor: pointer; z-index: 2;
-            box-shadow: 0 -3px 10px rgba(0,0,0,0.3);
+            display: flex; align-items: center; gap: 10px;
+            padding: 13px 16px;
+            cursor: pointer;
+            background: transparent;
+            border-bottom: 1px solid rgba(255,255,255,0.07);
+            transition: background 0.2s;
         }
+        .user-bar-toggle:hover { background: rgba(255,255,255,0.05); }
+        .user-bar-toggle-left { display: flex; align-items: center; gap: 10px; flex: 1; min-width: 0; }
         .user-bar-toggle-arrow {
-            color: rgba(255,255,255,0.6); font-size: 0.65rem;
-            transition: transform 0.3s ease; line-height: 1;
+            color: rgba(255,255,255,0.45); font-size: 0.6rem;
+            transition: transform 0.3s ease; flex-shrink: 0;
         }
         .user-info-bar.collapsed .user-bar-toggle-arrow { transform: rotate(180deg); }
+        .user-info-bar.collapsed .user-bar-toggle { border-bottom: none; }
 
-        /* The actual content row — hidden when collapsed */
+        /* The actual content area — hidden when collapsed */
         .user-info-bar-content {
-            display: flex; align-items: center; justify-content: space-between;
-            gap: 12px; padding: 8px 22px; height: 50px;
+            display: flex; flex-direction: column; gap: 10px;
+            padding: 12px 16px 14px;
             overflow: hidden;
-            transition: height 0.35s cubic-bezier(0.4,0,0.2,1),
+            transition: max-height 0.35s cubic-bezier(0.4,0,0.2,1),
                         padding 0.35s cubic-bezier(0.4,0,0.2,1),
                         opacity 0.3s ease;
+            max-height: 200px; opacity: 1;
             direction: ltr !important;
         }
         body.lang-ar .user-info-bar,
@@ -708,18 +710,37 @@ body.lang-ar * {
             font-family: 'Montserrat', 'Roboto', sans-serif !important;
         }
         .user-info-bar.collapsed .user-info-bar-content {
-            height: 0; padding-top: 0; padding-bottom: 0; opacity: 0; pointer-events: none;
+            max-height: 0; padding-top: 0; padding-bottom: 0; opacity: 0; pointer-events: none;
         }
 
-        .user-info-bar-left { display: flex; align-items: center; gap: 10px; flex: 1; min-width: 0; }
-        .user-info-avatar { width: 30px; height: 30px; border-radius: 50%; object-fit: cover; border: 2px solid rgba(255,255,255,0.25); flex-shrink: 0; }
-        .user-info-name { color: #fff; font-size: 0.88rem; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .user-info-attempts { color: rgba(255,255,255,0.5); font-size: 0.75rem; font-family: 'Tajawal', sans-serif; }
-        .user-info-bar-right { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
-        .user-info-btn { background: transparent; color: rgba(255,255,255,0.75); font-size: 0.8rem; border: 1px solid rgba(255,255,255,0.18); border-radius: 6px; padding: 6px 14px; cursor: pointer; margin: 0; font-weight: 600; transition: all 0.2s; box-shadow: none; white-space: nowrap; }
-        .user-info-btn:hover { background: rgba(255,255,255,0.1); color: #fff; transform: none; }
-        .user-info-btn.my-results-btn { background: linear-gradient(45deg, #2980b9, #8e44ad); color: #fff; border-color: transparent; }
-        .user-info-btn.my-results-btn:hover { background: linear-gradient(45deg, #8e44ad, #2980b9); transform: none; }
+        .user-info-avatar { width: 32px; height: 32px; border-radius: 50%; object-fit: cover; border: 2px solid rgba(142,68,173,0.6); flex-shrink: 0; }
+        .user-info-name { color: #fff; font-size: 0.85rem; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .user-info-attempts {
+            font-size: 0.72rem; font-weight: 600; letter-spacing: 0.3px;
+            color: rgba(255,255,255,0.5);
+            background: rgba(255,255,255,0.06);
+            border-radius: 20px; padding: 4px 10px;
+            text-align: center;
+        }
+        .user-info-bar-right { display: flex; gap: 8px; }
+        .user-info-btn {
+            flex: 1; background: rgba(255,255,255,0.07);
+            color: rgba(255,255,255,0.8); font-size: 0.78rem;
+            border: 1px solid rgba(255,255,255,0.12); border-radius: 10px;
+            padding: 7px 10px; cursor: pointer; margin: 0; font-weight: 600;
+            transition: all 0.2s; box-shadow: none; white-space: nowrap; text-align: center;
+        }
+        .user-info-btn:hover { background: rgba(255,255,255,0.14); color: #fff; transform: none; }
+        .user-info-btn.my-results-btn {
+            background: linear-gradient(135deg, #2980b9, #8e44ad);
+            color: #fff; border-color: transparent;
+            box-shadow: 0 3px 10px rgba(142,68,173,0.35);
+        }
+        .user-info-btn.my-results-btn:hover { background: linear-gradient(135deg, #8e44ad, #2980b9); transform: none; box-shadow: 0 4px 14px rgba(142,68,173,0.5); }
+
+        @media (max-width: 600px) {
+            .user-info-bar { bottom: 12px; right: 12px; min-width: 220px; max-width: 260px; }
+        }
 
         /* Guest notice banner on page3 */
         .guest-notice-banner {
@@ -1184,10 +1205,10 @@ body.lang-ar * {
         <!-- Guest notice banner (shown only for guests) -->
         <div class="guest-notice-banner" id="guestNoticeBanner">
             <div class="guest-notice-banner-text">
-                <strong>🔒 Results not saved / النتائج غير محفوظة</strong>
-                <span class="guest-notice-banner-sub">أنت تتصفح كضيف · You are browsing as a guest</span>
+                <strong id="guestNoticeTitle">🔒 Results not saved</strong>
+                <span class="guest-notice-banner-sub" id="guestNoticeSub">You are browsing as a guest</span>
             </div>
-            <button class="guest-notice-login-btn" onclick="showPage('pageAuth')">🔑 Login / تسجيل الدخول</button>
+            <button class="guest-notice-login-btn" id="guestNoticeBtn" onclick="showPage('pageAuth')">🔑 Login</button>
         </div>
         <div id="motivationalMessage" class="motivational-message"></div>
         <div class="result-container">
@@ -1307,22 +1328,20 @@ body.lang-ar * {
 <!-- USER INFO BAR (collapsible bottom bar)              -->
 <!-- ===================================================== -->
 <div class="user-info-bar" id="userInfoBar">
-    <!-- Toggle tab -->
-    <div class="user-bar-toggle" onclick="toggleUserBar()" title="Toggle bar">
+    <!-- Header (always visible — click to collapse) -->
+    <div class="user-bar-toggle" onclick="toggleUserBar()" title="Toggle">
+        <div class="user-bar-toggle-left">
+            <img class="user-info-avatar" id="userAvatar" src="" alt="" onerror="this.style.display='none'">
+            <div class="user-info-name" id="userDisplayName"></div>
+        </div>
         <span class="user-bar-toggle-arrow">▲</span>
     </div>
-    <!-- Content -->
+    <!-- Collapsible content -->
     <div class="user-info-bar-content">
-        <div class="user-info-bar-left">
-            <img class="user-info-avatar" id="userAvatar" src="" alt="" onerror="this.style.display='none'">
-            <div>
-                <div class="user-info-name" id="userDisplayName"></div>
-                <div class="user-info-attempts" id="userAttemptsInfo"></div>
-            </div>
-        </div>
+        <div class="user-info-attempts" id="userAttemptsInfo"></div>
         <div class="user-info-bar-right">
             <button class="user-info-btn my-results-btn" id="userBarMyResultsBtn" onclick="showMyResults()">📊 My Results</button>
-            <button class="user-info-btn" onclick="authSignOut()">Logout</button>
+            <button class="user-info-btn" onclick="authSignOut()" id="userBarLogoutBtn">⏻ Logout</button>
         </div>
     </div>
 </div>
@@ -1510,6 +1529,13 @@ if (isAr) {
             setText('fabThemeLabelNormal', 'Dark Mode');
             setText('fabTimerToggleLabel', 'Hide Timer');
             setText('backToCertBtn', '← Back to Certifications');
+            // Guest notice banner - English
+            setText('guestNoticeTitle', '🔒 Results not saved');
+            setText('guestNoticeSub', 'You are browsing as a guest');
+            setText('guestNoticeBtn', '🔑 Login');
+            // User bar buttons - English
+            setText('userBarMyResultsBtn', '📊 My Results');
+            setText('userBarLogoutBtn', '⏻ Logout');
         } else {
             setText('page0Subtitle', 'اختر وضع الاختبار المفضل للبدء.');
             setText('mode1Title', 'وضع الترتيب العشوائي الذكي');
@@ -1547,6 +1573,13 @@ if (isAr) {
             setText('fabThemeLabelNormal', 'الوضع الداكن');
             setText('fabTimerToggleLabel', 'إخفاء المؤقت');
             setText('backToCertBtn', 'رجوع إلى الشهادات ←');
+            // Guest notice banner - Arabic
+            setText('guestNoticeTitle', '🔒 النتائج غير محفوظة');
+            setText('guestNoticeSub', 'أنت تتصفح كضيف');
+            setText('guestNoticeBtn', '🔑 تسجيل الدخول');
+            // User bar buttons - Arabic (kept English for usability since bar is LTR)
+            setText('userBarMyResultsBtn', '📊 نتائجي');
+            setText('userBarLogoutBtn', '⏻ خروج');
         }
 
         setSelectDefault('questionCount', String(currentDefaultQCount));
@@ -2568,7 +2601,11 @@ function fbUpdateAttemptsDisplay() {
     var el = document.getElementById('userAttemptsInfo');
     if (!el) return;
     var remaining = Math.max(0, FB_DAILY_LIMIT - fbDailyAttempts);
-    el.textContent = remaining + ' attempt(s) left today · ' + remaining + ' محاولة متبقية اليوم';
+    if (currentLang === 'ar') {
+        el.textContent = remaining + ' محاولة متبقية اليوم';
+    } else {
+        el.textContent = remaining + ' attempt(s) left today';
+    }
 }
 
 function fbGetEarliestAttemptTimestamp() {
@@ -2817,7 +2854,6 @@ function toggleUserBar() {
     if (!bar) return;
     bar.classList.toggle('collapsed');
     var arrow = bar.querySelector('.user-bar-toggle-arrow');
-    // arrow direction: ▲ when expanded (click to collapse), ▼ when collapsed (click to expand)
     if (arrow) arrow.textContent = bar.classList.contains('collapsed') ? '▼' : '▲';
 }
 
