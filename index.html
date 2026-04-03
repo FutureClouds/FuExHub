@@ -2838,8 +2838,8 @@ function fbUpdateAttemptsDisplay() {
     var el = document.getElementById('userAttemptsInfo');
     if (!el) return;
     var remaining = Math.max(0, FB_DAILY_LIMIT - fbDailyAttempts);
-    el.innerHTML = remaining + ' attempt(s) left today<br>' +
-                   '<span style="font-family:\'Tajawal\',sans-serif;">' + remaining + ' محاولة متبقية اليوم</span>';
+    el.innerHTML = '<span style="font-family:\'Tajawal\',sans-serif;">محاولة متبقية اليوم ' + remaining + '</span><br>' +
+                   remaining + ' attempt(s) left today';
 }
 
 function fbGetEarliestAttemptTimestamp() {
