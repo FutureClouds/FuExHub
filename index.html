@@ -2013,7 +2013,7 @@ if (isAr) {
         if (backLangTopbarLabel) backLangTopbarLabel.textContent = isAr ? 'الصفحة الرئيسية' : 'Home Page';
         // User bar My Results button — always English
         var ubMyRes = document.getElementById('userBarMyResultsBtn');
-        if (ubMyRes) ubMyRes.textContent = '📊 My Results';
+        if (ubMyRes) ubMyRes.innerHTML = '📊<br>نتائجي<br>My Results';
     }
 
     function openQAFile() {
