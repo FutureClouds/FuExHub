@@ -2840,6 +2840,7 @@ function fbUpdateAttemptsDisplay() {
     var remaining = Math.max(0, FB_DAILY_LIMIT - fbDailyAttempts);
 el.innerHTML = '<span style="font-family:\'Tajawal\',sans-serif;" dir="ltr">' + remaining + ' محاولات (محاولة) متبقية اليوم</span><br>' +
                remaining + ' attempt(s) left today';
+}
 
 function fbGetEarliestAttemptTimestamp() {
     if (!fbCurrentUser) return Promise.resolve(null);
