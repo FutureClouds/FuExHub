@@ -3293,24 +3293,31 @@ window.addEventListener('popstate', function(e) {
 
     // BLOCK: after exam submit, never allow going back to page2
     if (_examSubmitted && targetPage === 'page2') {
-        // Push page3 back to prevent leaving
         var activePage = (document.querySelector('.page.active') || {}).id || 'page3';
         window.history.pushState({ pageId: activePage }, '', '');
         return;
     }
 
-    // Use original showPage (not wrapped) to avoid double-pushing history
-    var _origShowPage = (function(){
-        // retrieve from closure — call the internal one
-        document.querySelectorAll('.page').forEach(function(p){ p.classList.remove('active'); });
-        var el = document.getElementById(targetPage);
-        if (el) el.classList.add('active');
-        var simpleThemePages = (targetPage === 'pageAuth' || targetPage === 'pageLang' || targetPage === 'pageCertEN' || targetPage === 'pageCertAR' || targetPage === 'pageMyResults');
-        if (simpleThemePages) { document.body.classList.add('simple-theme-page'); }
-        else { document.body.classList.remove('simple-theme-page'); }
-        window.updatePdfButtonVisibility(targetPage);
-        window.scrollTo(0, 0);
-    })();
+    var currentPage = (document.querySelector('.page.active') || {}).id;
+
+    // If navigating AWAY from page2 (back to setup pages), clear exam state cleanly
+    if (currentPage === 'page2' && targetPage !== 'page2') {
+        clearInterval(window.timerInterval);
+        window.userAnswers = {};
+        window.selectedQuestions = [];
+        _examSubmitted = false;
+        _clearExamSession();
+    }
+
+    // Navigate without pushing a new history entry (this IS a popstate)
+    document.querySelectorAll('.page').forEach(function(p){ p.classList.remove('active'); });
+    var el = document.getElementById(targetPage);
+    if (el) el.classList.add('active');
+    var simpleThemePages = (targetPage === 'pageAuth' || targetPage === 'pageLang' || targetPage === 'pageCertEN' || targetPage === 'pageCertAR' || targetPage === 'pageMyResults');
+    if (simpleThemePages) { document.body.classList.add('simple-theme-page'); }
+    else { document.body.classList.remove('simple-theme-page'); }
+    window.updatePdfButtonVisibility(targetPage);
+    window.scrollTo(0, 0);
 
     _saveSession();
 });
