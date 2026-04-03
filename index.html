@@ -3194,6 +3194,11 @@ var _examSubmitted = false;
         var state = { pageId: pageId };
         if (window.history && window.history.pushState) {
             window.history.pushState(state, '', '');
+            // عند دخول صفحة الاختبار، اضغط entry إضافية
+            // حتى يحتاج المستخدم ضغطتين للخروج (الأولى تبقيه، الثانية ترجعه)
+            if (pageId === 'page2') {
+                window.history.pushState({ pageId: 'page2', guard: true }, '', '');
+            }
         }
         // Save session
         _saveSession();
@@ -3298,9 +3303,19 @@ window.addEventListener('popstate', function(e) {
         return;
     }
 
+    // إذا كان الـ target هو page2 (المستخدم يضغط back وما زال داخل الاختبار)
+    // ابقه في page2 — هذه الضغطة الأولى تستهلك الـ guard entry
+    if (targetPage === 'page2') {
+        var curPage = (document.querySelector('.page.active') || {}).id;
+        if (curPage === 'page2') {
+            // لا تفعل شيئاً، فقط ابق في page2
+            return;
+        }
+    }
+
     var currentPage = (document.querySelector('.page.active') || {}).id;
 
-    // عند الخروج من صفحة الاختبار (page2) للصفحة السابقة — امسح حالة الاختبار
+    // عند الخروج الفعلي من صفحة الاختبار — امسح حالة الاختبار
     if (currentPage === 'page2' && targetPage !== 'page2' && !_examSubmitted) {
         clearInterval(window.timerInterval);
         window.timerInterval = null;
