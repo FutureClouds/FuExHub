@@ -650,15 +650,6 @@ body.lang-ar #pageCertEN * {
         .auth-guest-row { margin-top: 24px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.1); }
         .auth-btn-guest { background: transparent; color: rgba(255,255,255,0.55); font-size: 0.88rem; border: none; cursor: pointer; padding: 8px 16px; margin: 0; transition: color 0.2s; text-decoration: underline; font-weight: 600; box-shadow: none; }
         .auth-btn-guest:hover { background: transparent; color: rgba(255,255,255,0.85); transform: none; }
-        /* Guest name input area */
-        .guest-name-area { display: none; margin-top: 12px; animation: fadeInDown 0.3s ease; }
-        .guest-name-area.show { display: block; }
-        @keyframes fadeInDown { from { opacity:0; transform:translateY(-8px); } to { opacity:1; transform:translateY(0); } }
-        .guest-name-input { width: 100%; padding: 13px 16px; font-size: 1rem; background: var(--input-bg); color: var(--input-color); border: 1.5px solid var(--option-border); border-radius: 10px; margin-bottom: 10px; font-family: 'Tajawal', sans-serif; transition: border-color 0.2s; outline: none; box-sizing: border-box; text-align: right; direction: rtl; }
-        .guest-name-input:focus { border-color: #3498db; }
-        .guest-name-error { color: #e74c3c; font-size: 0.85rem; margin: -4px 0 8px 0; text-align: right; font-family: 'Tajawal', sans-serif; min-height: 18px; }
-        .guest-name-confirm-btn { width: 100%; padding: 13px; font-size: 1rem; font-weight: 700; background: linear-gradient(45deg, #636e72, #95a5a6); color: #fff; border: none; border-radius: 10px; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 4px 12px rgba(0,0,0,0.3); font-family: 'Tajawal', sans-serif; }
-        .guest-name-confirm-btn:hover { background: linear-gradient(45deg, #2d3436, #636e72); transform: translateY(-2px); }
 
         .auth-error { color: #e74c3c; font-size: 0.88rem; margin: 8px 0; min-height: 20px; text-align: center !important; direction: rtl; unicode-bidi: plaintext; }
         .auth-loading { display: inline-block; width: 18px; height: 18px; border: 3px solid rgba(255,255,255,0.3); border-top-color: #fff; border-radius: 50%; animation: spin 0.8s linear infinite; vertical-align: middle; margin-left: 8px; }
@@ -1060,13 +1051,13 @@ body.lang-ar #pageCertEN * {
             </div>
 
             <div class="auth-guest-row">
-                <button class="auth-btn-guest" id="authGuestToggleBtn" onclick="authShowGuestNameField()">
+                <button class="auth-btn-guest" id="authGuestToggleBtn" onclick="authToggleGuestNameBox()">
                     دخول كضيف (لن تُحفظ النتائج)<br>Continue as guest (results won't be saved)
                 </button>
-                <div class="guest-name-area" id="guestNameArea">
-                    <input type="text" id="guestFullNameInput" class="guest-name-input" placeholder="اكتب اسمك الثنائي | Enter your full name" autocomplete="off">
-                    <div class="guest-name-error" id="guestNameError"></div>
-                    <button class="guest-name-confirm-btn" onclick="authContinueAsGuestConfirm()">دخول | Enter</button>
+                <div id="authGuestNameBox" style="display:none; margin-top:14px;">
+                    <input type="text" id="authGuestName" class="auth-input" placeholder="اكتب اسمك الثنائي | Enter your full name" autocomplete="off" style="margin-bottom:10px;">
+                    <div class="auth-error" id="authGuestNameError" style="display:none;"></div>
+                    <button class="auth-btn-primary" onclick="authContinueAsGuest()">دخول | Enter</button>
                 </div>
             </div>
         </div>
@@ -2174,6 +2165,7 @@ if (isAr) {
         startTimer();
         generateQuizHTML();
         showPage('page2');
+        fehSaveQuizState();
     }
 
     /* ===== START QUIZ - CUSTOM RANGE ===== */
@@ -2218,6 +2210,7 @@ if (isAr) {
         startTimer();
         generateQuizHTML();
         showPage('page2');
+        fehSaveQuizState();
     }
 
     /* ===== GENERATE QUIZ HTML ===== */
@@ -2284,6 +2277,7 @@ if (isAr) {
         if (!userAnswers[questionIndex]) userAnswers[questionIndex] = {};
         userAnswers[questionIndex][rowIndex] = value;
         if (selectEl) selectEl.classList.toggle('answered', value !== '');
+        try { sessionStorage.setItem('feh_userAnswers', JSON.stringify(userAnswers)); } catch(e){}
     }
 
     function handleOptionChange(questionIndex, optionIndex, inputType) {
@@ -2316,6 +2310,7 @@ if (isAr) {
                 }
             }
         }
+        try { sessionStorage.setItem('feh_userAnswers', JSON.stringify(userAnswers)); } catch(e){}
     }
 
     /* ===== TIMER ===== */
@@ -2386,6 +2381,8 @@ if (isAr) {
         clearInterval(timerInterval);
         calculateResults(timeExpiredParam);
         showPage('page3');
+        // ── مسح حالة الاختبار بعد التسليم ──
+        try { sessionStorage.removeItem('feh_quizState'); sessionStorage.removeItem('feh_userAnswers'); } catch(e){}
     }
 
     /* ===== CALCULATE RESULTS ===== */
@@ -2580,13 +2577,161 @@ if (isAr) {
 
         updatePdfButtonVisibility(pageId);
         window.scrollTo(0, 0);
+
+        // ── حفظ الصفحة الحالية في sessionStorage ──
+        try { sessionStorage.setItem('feh_currentPage', pageId); } catch(e){}
+
+        // ── إدارة history للأزرار الأمامية/الخلفية ──
+        // page2 (أداء الاختبار) و page3 (نتائج): لا يُسمح بالرجوع
+        if (pageId === 'page2' || pageId === 'page3') {
+            // استبدل الحالة الحالية وأضف جديدة لمنع العودة
+            history.replaceState({ page: pageId, locked: true }, '', '');
+            history.pushState({ page: pageId, locked: true }, '', '');
+        } else {
+            history.pushState({ page: pageId, locked: false }, '', '');
+        }
     }
+
+    /* ===== SESSION PERSISTENCE - حفظ وضع الاختبار ===== */
+    function fehSaveQuizState() {
+        try {
+            var state = {
+                currentLang:      currentLang,
+                currentCertCode:  currentCertCode,
+                currentCertName:  currentCertName,
+                currentDefaultTime:   currentDefaultTime,
+                currentDefaultQCount: currentDefaultQCount,
+                currentPassScore: currentPassScore,
+                currentQALink:    currentQALink,
+                timeLimit:        timeLimit,
+                currentMode:      window.currentMode,
+                userAnswers:      userAnswers,
+                startTime:        startTime ? startTime.getTime() : null,
+                selectedQIndices: selectedQuestions.map(function(q,i){
+                    // نحفظ الفهرس الأصلي في مصفوفة questions
+                    return { idx: questions.indexOf(q), orig: q.originalIndex };
+                })
+            };
+            sessionStorage.setItem('feh_quizState', JSON.stringify(state));
+        } catch(e){}
+    }
+
+    function fehRestoreQuizState() {
+        try {
+            var raw = sessionStorage.getItem('feh_quizState');
+            if (!raw) return false;
+            var state = JSON.parse(raw);
+            if (!state || !state.selectedQIndices || !state.currentCertCode) return false;
+
+            currentLang           = state.currentLang || 'en';
+            currentCertCode       = state.currentCertCode;
+            currentCertName       = state.currentCertName || '';
+            currentDefaultTime    = state.currentDefaultTime || 120;
+            currentDefaultQCount  = state.currentDefaultQCount || 65;
+            currentPassScore      = state.currentPassScore || 700;
+            currentQALink         = state.currentQALink || '';
+            timeLimit             = state.timeLimit || '120';
+            window.currentMode    = state.currentMode || 'smart';
+            userAnswers           = state.userAnswers || {};
+
+            // إعادة بناء selectedQuestions
+            if (questions.length === 0) return false; // الأسئلة لم تُحمَّل بعد
+            selectedQuestions = state.selectedQIndices.map(function(item){
+                var q = questions[item.idx];
+                if (!q) return null;
+                var obj = {};
+                for (var k in q) obj[k] = q[k];
+                if (item.orig != null) obj.originalIndex = item.orig;
+                return obj;
+            }).filter(Boolean);
+
+            if (selectedQuestions.length === 0) return false;
+
+            // إعادة بناء الوقت
+            startTime = state.startTime ? new Date(state.startTime) : new Date();
+            return true;
+        } catch(e){ return false; }
+    }
+
+    /* ===== استعادة الإجابات المحددة في DOM بعد إعادة توليد HTML ===== */
+    function fehRestoreAnswersToDOM() {
+        try {
+            var savedAnswers = sessionStorage.getItem('feh_userAnswers');
+            if (savedAnswers) userAnswers = JSON.parse(savedAnswers);
+        } catch(e){}
+
+        if (!userAnswers || !selectedQuestions) return;
+
+        selectedQuestions.forEach(function(q, questionIndex) {
+            var ua = userAnswers[questionIndex];
+            if (!ua) return;
+
+            if (q.isHotspot) {
+                // استعادة الـ hotspot selects
+                if (typeof ua === 'object' && !Array.isArray(ua)) {
+                    Object.keys(ua).forEach(function(ri) {
+                        var sel = document.getElementById('hotspot' + questionIndex + '_' + ri);
+                        if (sel) {
+                            sel.value = ua[ri] || '';
+                            sel.classList.toggle('answered', !!ua[ri]);
+                        }
+                    });
+                }
+            } else {
+                if (!Array.isArray(ua)) return;
+                var inputType = q.isMultipleChoice ? 'checkbox' : 'radio';
+                ua.forEach(function(optIndex) {
+                    var input = document.getElementById('q' + questionIndex + '_' + optIndex);
+                    if (input) {
+                        input.checked = true;
+                        var optionEl = input.parentElement.parentElement;
+                        if (optionEl) optionEl.classList.add('selected');
+                    }
+                });
+            }
+        });
+    }
+
+    /* ===== BROWSER BACK/FORWARD CONTROL ===== */
+    window.addEventListener('popstate', function(e) {
+        var state = e.state;
+        // إذا لم توجد حالة أو الحالة مقفلة (page2/page3)، أعد الدفع لمنع التنقل
+        if (!state || state.locked) {
+            history.pushState(state || { page: 'page2', locked: true }, '', '');
+            return;
+        }
+        var targetPage = state.page;
+        if (!targetPage) return;
+
+        // منع العودة إلى pageAuth من أي صفحة لاحقة
+        if (targetPage === 'pageAuth') {
+            history.pushState(state, '', '');
+            return;
+        }
+
+        // تنفيذ التنقل بدون history.pushState (لتجنب التكرار)
+        document.querySelectorAll('.page').forEach(function(p){ p.classList.remove('active'); });
+        var targetEl = document.getElementById(targetPage);
+        if (targetEl) {
+            targetEl.classList.add('active');
+            var simpleThemePages = (targetPage === 'pageAuth' || targetPage === 'pageLang' || targetPage === 'pageCertEN' || targetPage === 'pageCertAR' || targetPage === 'pageMyResults');
+            document.body.classList[simpleThemePages ? 'add' : 'remove']('simple-theme-page');
+            updatePdfButtonVisibility(targetPage);
+            window.scrollTo(0, 0);
+            try { sessionStorage.setItem('feh_currentPage', targetPage); } catch(e){}
+        }
+    });
 
     /* ===== INIT ===== */
     document.addEventListener('DOMContentLoaded', function() {
         updatePdfButtonVisibility('pageLang');
         updateFabThemeLabel();
         updateThemeLogos();
+
+        // ── استعادة الصفحة عند التحديث (للمستخدمين المسجلين والضيوف) ──
+        // ملاحظة: Firebase auth سيُعيد التوجيه لصفحاته، لذا هذا خاص بالضيف أو ما قبل auth listener
+        // سيتم التنسيق مع Firebase listener بعد تحميل الصفحة
+        history.replaceState({ page: 'pageAuth', locked: false }, '', '');
     });
 </script>
 
@@ -2640,10 +2785,27 @@ fbAuth.onAuthStateChanged(function(user) {
         fbOnUserLoggedIn(user);
     } else {
         fbCurrentUser = null;
-        // Only show auth page if not already guest
+        // إذا كان الضيف قد أدخل اسمه مسبقاً في نفس الجلسة، لا نُعيده لصفحة الدخول
         if (!fbIsGuest) {
-            showPage('pageAuth');
-            document.getElementById('userInfoBar').classList.remove('show');
+            var wasGuest = false;
+            try { wasGuest = sessionStorage.getItem('feh_isGuest') === '1'; } catch(e){}
+            if (wasGuest) {
+                fbIsGuest = true;
+                var lbb = document.getElementById('langBackBtn'); if (lbb) lbb.style.display = '';
+                document.getElementById('userInfoBar').classList.remove('show');
+                // استعادة الصفحة المحفوظة
+                var savedPage2 = null;
+                try { savedPage2 = sessionStorage.getItem('feh_currentPage'); } catch(e){}
+                var safeP = ['pageLang','pageCertEN','pageCertAR','page0','page1','page1b','page3'];
+                if (savedPage2 && safeP.indexOf(savedPage2) !== -1) {
+                    showPage(savedPage2);
+                } else {
+                    showPage('pageLang');
+                }
+            } else {
+                showPage('pageAuth');
+                document.getElementById('userInfoBar').classList.remove('show');
+            }
         }
     }
 });
@@ -2669,7 +2831,31 @@ function fbOnUserLoggedIn(user) {
     fbLoadDailyAttempts().then(function() {
         fbUpdateAttemptsDisplay();
         var lbb = document.getElementById('langBackBtn'); if (lbb) lbb.style.display = 'none';
-        showPage('pageLang');
+
+        // ── استعادة الصفحة المحفوظة عند التحديث ──
+        var savedPage = null;
+        try { savedPage = sessionStorage.getItem('feh_currentPage'); } catch(e){}
+
+        // الصفحات التي يمكن استعادتها مباشرة بدون إعادة تحميل الاختبار
+        var safePages = ['pageLang','pageCertEN','pageCertAR','page0','page1','page1b','page3'];
+        if (savedPage && safePages.indexOf(savedPage) !== -1) {
+            showPage(savedPage);
+        } else if (savedPage === 'page2') {
+            // محاولة استعادة الاختبار الجاري
+            var restored = fehRestoreQuizState();
+            if (restored) {
+                applyLangUI();
+                generateQuizHTML();
+                fehRestoreAnswersToDOM();
+                startTime = startTime || new Date();
+                startTimer();
+                showPage('page2');
+            } else {
+                showPage('pageLang');
+            }
+        } else {
+            showPage('pageLang');
+        }
     });
 }
 
@@ -2799,36 +2985,53 @@ function authShowLogin() {
     document.getElementById('authRegError').textContent = '';
 }
 
-function authShowGuestNameField() {
-    var area = document.getElementById('guestNameArea');
-    if (area) area.classList.add('show');
-    var inp = document.getElementById('guestFullNameInput');
-    if (inp) setTimeout(function(){ inp.focus(); }, 80);
-}
-
-function authContinueAsGuestConfirm() {
-    var inp = document.getElementById('guestFullNameInput');
-    var errEl = document.getElementById('guestNameError');
-    var name = inp ? inp.value.trim() : '';
-    // Validate: must have at least two words
-    var parts = name.split(/\s+/).filter(function(p){ return p.length > 0; });
-    if (parts.length < 2) {
-        if (errEl) errEl.textContent = 'يرجى إدخال الاسم الثنائي كاملاً | Please enter your full name (two words)';
+function authToggleGuestNameBox() {
+    var box = document.getElementById('authGuestNameBox');
+    if (!box) return;
+    box.style.display = (box.style.display === 'none' || box.style.display === '') ? 'block' : 'none';
+    if (box.style.display === 'block') {
+        var inp = document.getElementById('authGuestName');
         if (inp) inp.focus();
-        return;
     }
-    if (errEl) errEl.textContent = '';
-    // Store guest name
-    window._guestDisplayName = name;
-    authContinueAsGuest();
 }
 
 function authContinueAsGuest() {
+    var nameInp = document.getElementById('authGuestName');
+    var nameErr = document.getElementById('authGuestNameError');
+    var guestName = nameInp ? nameInp.value.trim() : '';
+
+    // Only validate if the name box is visible (i.e., user went through the flow)
+    var box = document.getElementById('authGuestNameBox');
+    if (box && box.style.display !== 'none') {
+        if (!guestName) {
+            if (nameErr) { nameErr.textContent = 'يرجى كتابة اسمك الثنائي | Please enter your full name'; nameErr.style.display = 'block'; }
+            return;
+        }
+        var parts = guestName.split(/\s+/).filter(Boolean);
+        if (parts.length < 2) {
+            if (nameErr) { nameErr.textContent = 'يرجى كتابة الاسم الثنائي (الاسم واللقب) | Please enter both first and last name'; nameErr.style.display = 'block'; }
+            return;
+        }
+        if (nameErr) nameErr.style.display = 'none';
+    }
+
     fbIsGuest     = true;
     fbCurrentUser = null;
+    window._guestDisplayName = guestName || 'Guest';
     document.getElementById('userInfoBar').classList.remove('show');
     var lbb = document.getElementById('langBackBtn'); if (lbb) lbb.style.display = '';
-    appNavigate('pageLang');
+    // ── حفظ علامة الضيف في sessionStorage ──
+    try { sessionStorage.setItem('feh_isGuest', '1'); } catch(e){}
+
+    // ── استعادة الصفحة المحفوظة للضيف ──
+    var savedPage = null;
+    try { savedPage = sessionStorage.getItem('feh_currentPage'); } catch(e){}
+    var safeGuestPages = ['pageLang','pageCertEN','pageCertAR','page0','page1','page1b','page3'];
+    if (savedPage && safeGuestPages.indexOf(savedPage) !== -1) {
+        showPage(savedPage);
+    } else {
+        showPage('pageLang');
+    }
 }
 
 function authSignOut() {
@@ -2837,6 +3040,8 @@ function authSignOut() {
         fbIsGuest = false;
         fbDailyAttempts = 0;
         document.getElementById('userInfoBar').classList.remove('show');
+        // ── مسح كامل للـ session عند تسجيل الخروج ──
+        try { sessionStorage.clear(); } catch(e){}
         showPage('pageAuth');
         updatePdfButtonVisibility('pageAuth');
     });
@@ -3163,324 +3368,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     };
 });
-</script>
-
-<!-- ===================================================== -->
-<!-- JAVASCRIPT - SESSION PERSISTENCE + HISTORY NAV        -->
-<!-- ===================================================== -->
-<script>
-/* ================================================================
-   SESSION PERSISTENCE & BROWSER HISTORY NAVIGATION
-   Adds three capabilities without touching existing code:
-   1. Guest name field (handled above in authContinueAsGuestConfirm)
-   2. Session state persisted through refresh (sessionStorage)
-   3. Browser back/forward buttons work correctly
-   ================================================================ */
-
-/* ---------- Page IDs in navigation order ---------- */
-var _navOrder = ['pageAuth','pageLang','pageCertEN','pageCertAR','page0','page1','page1b','page2','page3'];
-
-/* ---------- Pages where back-nav is BLOCKED after exam submit ---------- */
-var _examSubmitted = false;
-
-/* ---------- Wrap showPage to push history + save session ---------- */
-(function() {
-    var _origShowPage = window.showPage;
-
-    window.showPage = function(pageId) {
-        // Call original first
-        _origShowPage(pageId);
-        // Push browser history state
-        var state = { pageId: pageId };
-        if (window.history && window.history.pushState) {
-            window.history.pushState(state, '', '');
-        }
-        // Save session
-        _saveSession();
-    };
-
-    /* Also wrap appNavigate (used by guest flow) to go through showPage */
-    window.appNavigate = function(pageId) {
-        window.showPage(pageId);
-    };
-})();
-
-/* ---------- Mark exam as submitted so back is blocked ---------- */
-(function() {
-    var _origSubmitQuiz = window.submitQuiz;
-    window.submitQuiz = function(timeExpiredParam) {
-        _origSubmitQuiz(timeExpiredParam);
-        _examSubmitted = true;
-        _saveSession();
-    };
-})();
-
-/* ---------- Reset submission flag when restarting ---------- */
-(function() {
-    var _origRestartQuiz = window.restartQuiz;
-    window.restartQuiz = function() {
-        _examSubmitted = false;
-        _clearExamSession();
-        _origRestartQuiz();
-    };
-    var _origGoBackToCert = window.goBackToCert;
-    window.goBackToCert = function() {
-        _examSubmitted = false;
-        _clearExamSession();
-        _origGoBackToCert();
-    };
-})();
-
-/* ---------- Session Save ---------- */
-function _saveSession() {
-    try {
-        var activePage = (document.querySelector('.page.active') || {}).id || 'pageLang';
-        var session = {
-            activePage: activePage,
-            examSubmitted: _examSubmitted,
-            currentLang: window.currentLang,
-            currentCertCode: window.currentCertCode,
-            currentCertName: window.currentCertName,
-            currentDefaultTime: window.currentDefaultTime,
-            currentDefaultQCount: window.currentDefaultQCount,
-            currentPassScore: window.currentPassScore,
-            currentQALink: window.currentQALink,
-            currentMode: window.currentMode,
-            fbIsGuest: window.fbIsGuest,
-            guestDisplayName: window._guestDisplayName || '',
-            theme: document.body.getAttribute('data-theme') || 'light'
-        };
-        // Only save quiz answers if on page2 and exam not submitted
-        if (activePage === 'page2' && !_examSubmitted) {
-            session.userAnswers = JSON.stringify(window.userAnswers || {});
-            session.selectedQuestions = JSON.stringify(window.selectedQuestions || []);
-            session.timeLimit = window.timeLimit;
-            session.startTime = window.startTime ? window.startTime.getTime() : null;
-        }
-        sessionStorage.setItem('fuexhub_session', JSON.stringify(session));
-    } catch(e) { /* ignore */ }
-}
-
-function _clearExamSession() {
-    try {
-        var raw = sessionStorage.getItem('fuexhub_session');
-        if (!raw) return;
-        var s = JSON.parse(raw);
-        delete s.userAnswers;
-        delete s.selectedQuestions;
-        delete s.timeLimit;
-        delete s.startTime;
-        s.examSubmitted = false;
-        sessionStorage.setItem('fuexhub_session', JSON.stringify(s));
-    } catch(e) { /* ignore */ }
-}
-
-/* ---------- Save answers every 3 seconds while on page2 ---------- */
-setInterval(function() {
-    try {
-        var activePage = (document.querySelector('.page.active') || {}).id;
-        if (activePage === 'page2' && !_examSubmitted) {
-            _saveSession();
-        }
-    } catch(e) { /* ignore */ }
-}, 3000);
-
-/* ---------- Browser popstate (back/forward buttons) ---------- */
-window.addEventListener('popstate', function(e) {
-    var state = e.state;
-    if (!state || !state.pageId) return;
-    var targetPage = state.pageId;
-
-    // BLOCK: بعد تسليم الاختبار، امنع العودة لصفحة الاختبار فقط
-    if (_examSubmitted && targetPage === 'page2') {
-        var activePage = (document.querySelector('.page.active') || {}).id || 'page3';
-        window.history.pushState({ pageId: activePage }, '', '');
-        return;
-    }
-
-    var currentPage = (document.querySelector('.page.active') || {}).id;
-
-    // عند الخروج الفعلي من صفحة الاختبار — امسح حالة الاختبار
-    if (currentPage === 'page2' && targetPage !== 'page2' && !_examSubmitted) {
-        clearInterval(window.timerInterval);
-        window.timerInterval = null;
-        window.userAnswers = {};
-        window.selectedQuestions = [];
-        _examSubmitted = false;
-        _clearExamSession();
-        // أعد تهيئة topbar والـ FAB
-        var tb = document.getElementById('quizTopBar');
-        if (tb) tb.classList.remove('active');
-        var fw = document.getElementById('fabWrapper');
-        if (fw) fw.style.display = 'flex';
-    }
-
-    // انتقل للصفحة المطلوبة بدون إضافة history entry جديدة
-    document.querySelectorAll('.page').forEach(function(p){ p.classList.remove('active'); });
-    var el = document.getElementById(targetPage);
-    if (el) el.classList.add('active');
-    var simpleThemePages = (targetPage === 'pageAuth' || targetPage === 'pageLang' || targetPage === 'pageCertEN' || targetPage === 'pageCertAR' || targetPage === 'pageMyResults');
-    if (simpleThemePages) { document.body.classList.add('simple-theme-page'); }
-    else { document.body.classList.remove('simple-theme-page'); }
-    window.updatePdfButtonVisibility(targetPage);
-    window.scrollTo(0, 0);
-
-    _saveSession();
-});
-
-/* ---------- Restore session on page load ---------- */
-document.addEventListener('DOMContentLoaded', function() {
-    // Push initial history state for the current active page
-    var initPage = (document.querySelector('.page.active') || {}).id || 'pageAuth';
-    if (window.history && window.history.replaceState) {
-        window.history.replaceState({ pageId: initPage }, '', '');
-    }
-
-    // Restore session
-    try {
-        var raw = sessionStorage.getItem('fuexhub_session');
-        if (!raw) return;
-        var s = JSON.parse(raw);
-
-        // Restore theme
-        if (s.theme) {
-            document.body.setAttribute('data-theme', s.theme);
-            if (window.updateThemeLogos) window.updateThemeLogos();
-        }
-
-        // Restore guest name
-        if (s.guestDisplayName) window._guestDisplayName = s.guestDisplayName;
-
-        // If session had a logged-in user (not guest), Firebase auth listener
-        // will handle navigation — do NOT override it
-        // Only restore for guest sessions and pre-auth pages
-        if (s.fbIsGuest && s.guestDisplayName) {
-            // Restore guest state
-            window.fbIsGuest = true;
-            window.fbCurrentUser = null;
-
-            // Restore cert state if available
-            if (s.currentCertCode) {
-                window.currentLang = s.currentLang || 'en';
-                window.currentCertCode = s.currentCertCode;
-                window.currentCertName = s.currentCertName;
-                window.currentDefaultTime = s.currentDefaultTime;
-                window.currentDefaultQCount = s.currentDefaultQCount;
-                window.currentPassScore = s.currentPassScore;
-                window.currentQALink = s.currentQALink || '';
-                window.currentMode = s.currentMode || 'smart';
-            }
-
-            var targetPage = s.activePage || 'pageLang';
-
-            // Don't restore to page2 if exam was submitted
-            if (s.examSubmitted && targetPage === 'page2') targetPage = 'page3';
-
-            // Don't restore to pageAuth since they already chose guest
-            if (targetPage === 'pageAuth') targetPage = 'pageLang';
-
-            // Restore answers if we're restoring to page2
-            if (targetPage === 'page2' && s.selectedQuestions && s.userAnswers && !s.examSubmitted) {
-                try {
-                    window.selectedQuestions = JSON.parse(s.selectedQuestions);
-                    window.userAnswers = JSON.parse(s.userAnswers);
-                    window.timeLimit = s.timeLimit || 'unlimited';
-                    window.startTime = s.startTime ? new Date(s.startTime) : new Date();
-                    _examSubmitted = false;
-
-                    // Need to re-apply lang & generate quiz HTML, then recheck answers
-                    if (window.currentCertCode && window.selectedQuestions.length > 0) {
-                        // Load cert questions data if needed
-                        var certKey = '';
-                        if (window.currentLang === 'ar') {
-                            certKey = window.currentCertCode === 'CLF-C02' ? 'CLFAR' :
-                                      window.currentCertCode === 'AIF-C01' ? 'AIFAR' : '';
-                        } else {
-                            certKey = window.currentCertCode.replace('-','').replace('-','');
-                        }
-                        if (window.applyLangUI) window.applyLangUI();
-                        if (window.generateQuizHTML) window.generateQuizHTML();
-                        // Restore checked answers after DOM is built
-                        setTimeout(function() {
-                            _restoreAnswersInDOM();
-                            if (!s.examSubmitted && window.startTimer) {
-                                window.startTimer();
-                            }
-                        }, 100);
-                    }
-                } catch(e) { targetPage = 'pageLang'; }
-            }
-
-            // Navigate to restored page (using the raw function to avoid double-push)
-            document.querySelectorAll('.page').forEach(function(p){ p.classList.remove('active'); });
-            var el = document.getElementById(targetPage);
-            if (el) el.classList.add('active');
-            var simpleThemePages = (targetPage === 'pageAuth' || targetPage === 'pageLang' || targetPage === 'pageCertEN' || targetPage === 'pageCertAR' || targetPage === 'pageMyResults');
-            if (simpleThemePages) document.body.classList.add('simple-theme-page');
-            else document.body.classList.remove('simple-theme-page');
-            if (window.updatePdfButtonVisibility) window.updatePdfButtonVisibility(targetPage);
-            window.scrollTo(0, 0);
-
-            if (window.history && window.history.replaceState) {
-                window.history.replaceState({ pageId: targetPage }, '', '');
-            }
-
-            // Show back button for guest
-            var lbb = document.getElementById('langBackBtn');
-            if (lbb) lbb.style.display = '';
-        }
-    } catch(e) { /* ignore */ }
-});
-
-/* ---------- Restore answer checkboxes/radios in DOM ---------- */
-function _restoreAnswersInDOM() {
-    try {
-        var answers = window.userAnswers || {};
-        Object.keys(answers).forEach(function(qIdx) {
-            var ans = answers[qIdx];
-            var q = window.selectedQuestions[parseInt(qIdx)];
-            if (!q) return;
-            if (q.isHotspot) {
-                Object.keys(ans).forEach(function(ri) {
-                    var sel = document.getElementById('hotspot' + qIdx + '_' + ri);
-                    if (sel) {
-                        sel.value = ans[ri];
-                        sel.classList.toggle('answered', ans[ri] !== '');
-                    }
-                });
-            } else {
-                var inputType = q.isMultipleChoice ? 'checkbox' : 'radio';
-                if (inputType === 'radio') {
-                    if (ans.length > 0) {
-                        var input = document.getElementById('q' + qIdx + '_' + ans[0]);
-                        if (input) {
-                            input.checked = true;
-                            input.parentElement.parentElement.classList.add('selected');
-                        }
-                    }
-                } else {
-                    ans.forEach(function(optIdx) {
-                        var input = document.getElementById('q' + qIdx + '_' + optIdx);
-                        if (input) {
-                            input.checked = true;
-                            input.parentElement.parentElement.classList.add('selected');
-                        }
-                    });
-                }
-            }
-        });
-    } catch(e) { /* ignore */ }
-}
-
-/* ---------- Also save session on showPage calls triggered by Firebase login ---------- */
-(function() {
-    var _origFbOnUserLoggedIn = window.fbOnUserLoggedIn;
-    if (_origFbOnUserLoggedIn) {
-        window.fbOnUserLoggedIn = function(user) {
-            _origFbOnUserLoggedIn(user);
-        };
-    }
-})();
 </script>
 </body>
 </html>
