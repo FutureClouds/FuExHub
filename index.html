@@ -3099,7 +3099,12 @@ document.addEventListener('DOMContentLoaded', function() {
             '<span class="fab-item-label" id="fabMyResultsLabel">' + (currentLang === 'ar' ? 'نتائجي' : 'My Results') + '</span>' +
             '<button class="fab-item-btn" style="background:linear-gradient(135deg,#2980b9,#8e44ad);color:#fff;" ' +
             'onclick="showMyResults(); closeFab();">📊</button>';
-        fabItemsDiv.appendChild(myResItem);
+        var langItem = document.getElementById('fabBackToLangItem');
+        if (langItem) {
+            fabItemsDiv.insertBefore(myResItem, langItem);
+        } else {
+            fabItemsDiv.appendChild(myResItem);
+        }
     }
 
     // Override updatePdfButtonVisibility to also handle My Results button
