@@ -489,6 +489,14 @@ body.simple-theme-page #fabWrapper {
     direction: rtl !important;
 }
 
+#pageCertEN,
+#pageCertEN *,
+body.lang-ar #pageCertEN,
+body.lang-ar #pageCertEN * {
+    direction: ltr !important;
+    font-family: 'Montserrat', 'Roboto', sans-serif !important;
+}
+
 #pageMyResults, #pageMyResults * {
     direction: ltr !important;
     font-family: 'Montserrat', 'Roboto', sans-serif !important;
@@ -875,6 +883,116 @@ body.simple-theme-page #fabWrapper {
         @media (max-width: 600px) {
             .auth-container { padding: 36px 24px; }
             .my-results-table th, .my-results-table td { padding: 10px 8px; font-size: 0.82rem; }
+        }
+
+        /* ===== FIX 3: QUIZ PAGE (page2) MOBILE RESPONSIVE ===== */
+        @media (max-width: 768px) {
+            #page2 > div {
+                width: 97% !important;
+                padding: 12px !important;
+                margin-top: 8px !important;
+                margin-bottom: 16px !important;
+            }
+            .question {
+                padding: 14px 12px !important;
+                margin: 12px 0 !important;
+            }
+            .question h3 {
+                font-size: 1.05rem !important;
+                margin-bottom: 14px !important;
+            }
+            .option {
+                padding: 10px 10px !important;
+                margin: 7px 0 !important;
+                font-size: 0.9rem !important;
+            }
+            .option input[type="checkbox"],
+            .option input[type="radio"] {
+                transform: scale(1.1) !important;
+                margin-right: 8px !important;
+            }
+            body.lang-ar .option input[type="checkbox"],
+            body.lang-ar .option input[type="radio"] {
+                margin-right: 0 !important;
+                margin-left: 8px !important;
+            }
+            #page2.page.active { padding-top: 62px !important; }
+        }
+        @media (max-width: 480px) {
+            #page2 > div {
+                width: 99% !important;
+                padding: 8px !important;
+            }
+            .question {
+                padding: 12px 10px !important;
+                border-radius: 10px !important;
+            }
+            .question h3 {
+                font-size: 0.97rem !important;
+            }
+            .option {
+                padding: 9px 8px !important;
+                font-size: 0.85rem !important;
+                border-radius: 6px !important;
+            }
+        }
+
+        /* ===== FIX 4: MY RESULTS TABLE MOBILE RESPONSIVE ===== */
+        @media (max-width: 768px) {
+            #myResultsTableWrap {
+                overflow-x: auto !important;
+                -webkit-overflow-scrolling: touch !important;
+                border-radius: 10px !important;
+            }
+            .my-results-table {
+                min-width: 560px !important;
+                font-size: 0.78rem !important;
+            }
+            .my-results-table th {
+                padding: 9px 7px !important;
+                font-size: 0.75rem !important;
+                white-space: nowrap !important;
+            }
+            .my-results-table td {
+                padding: 9px 7px !important;
+                font-size: 0.78rem !important;
+            }
+            .my-results-cert-img {
+                width: 38px !important;
+                height: 38px !important;
+            }
+            .result-badge-pass, .result-badge-fail {
+                padding: 3px 7px !important;
+                font-size: 0.72rem !important;
+            }
+            .result-lang-badge {
+                padding: 2px 6px !important;
+                font-size: 0.7rem !important;
+            }
+            .my-results-container {
+                padding: 24px 14px !important;
+            }
+        }
+        @media (max-width: 480px) {
+            .my-results-table {
+                min-width: 520px !important;
+                font-size: 0.72rem !important;
+            }
+            .my-results-table th {
+                padding: 7px 5px !important;
+                font-size: 0.68rem !important;
+            }
+            .my-results-table td {
+                padding: 7px 5px !important;
+                font-size: 0.72rem !important;
+            }
+            .my-results-cert-img {
+                width: 30px !important;
+                height: 30px !important;
+            }
+            .my-results-container {
+                padding: 18px 10px !important;
+            }
         }
 
 </style>
@@ -1420,8 +1538,8 @@ body.simple-theme-page #fabWrapper {
     <div class="user-info-bar-content">
         <div class="user-info-attempts" id="userAttemptsInfo"></div>
         <div class="user-info-bar-right">
-            <button class="user-info-btn my-results-btn" id="userBarMyResultsBtn" onclick="showMyResults()">📊 My Results</button>
             <button class="user-info-btn" onclick="authSignOut()" id="userBarLogoutBtn">⏻ Logout</button>
+            <button class="user-info-btn my-results-btn" id="userBarMyResultsBtn" onclick="showMyResults()">📊 My Results</button>
         </div>
     </div>
 </div>
