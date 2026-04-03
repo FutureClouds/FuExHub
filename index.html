@@ -3291,7 +3291,7 @@ window.addEventListener('popstate', function(e) {
     if (!state || !state.pageId) return;
     var targetPage = state.pageId;
 
-    // BLOCK: after exam submit, never allow going back to page2
+    // BLOCK: بعد تسليم الاختبار، امنع العودة لصفحة الاختبار فقط
     if (_examSubmitted && targetPage === 'page2') {
         var activePage = (document.querySelector('.page.active') || {}).id || 'page3';
         window.history.pushState({ pageId: activePage }, '', '');
@@ -3300,16 +3300,22 @@ window.addEventListener('popstate', function(e) {
 
     var currentPage = (document.querySelector('.page.active') || {}).id;
 
-    // If navigating AWAY from page2 (back to setup pages), clear exam state cleanly
-    if (currentPage === 'page2' && targetPage !== 'page2') {
+    // عند الخروج من صفحة الاختبار (page2) للصفحة السابقة — امسح حالة الاختبار
+    if (currentPage === 'page2' && targetPage !== 'page2' && !_examSubmitted) {
         clearInterval(window.timerInterval);
+        window.timerInterval = null;
         window.userAnswers = {};
         window.selectedQuestions = [];
         _examSubmitted = false;
         _clearExamSession();
+        // أعد تهيئة topbar والـ FAB
+        var tb = document.getElementById('quizTopBar');
+        if (tb) tb.classList.remove('active');
+        var fw = document.getElementById('fabWrapper');
+        if (fw) fw.style.display = 'flex';
     }
 
-    // Navigate without pushing a new history entry (this IS a popstate)
+    // انتقل للصفحة المطلوبة بدون إضافة history entry جديدة
     document.querySelectorAll('.page').forEach(function(p){ p.classList.remove('active'); });
     var el = document.getElementById(targetPage);
     if (el) el.classList.add('active');
