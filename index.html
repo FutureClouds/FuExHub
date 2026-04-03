@@ -211,7 +211,7 @@ body.lang-ar * {
         .fab-dropdown.open { transform: translateY(0) scale(1); opacity: 1; pointer-events: all; }
         .fab-dropdown .fab-item { display: flex; align-items: center; gap: 10px; padding: 4px 6px; border-radius: 10px; transition: background .2s; }
         .fab-dropdown .fab-item:hover { background: rgba(255,255,255,.07); }
-        .fab-dropdown .fab-item-label { color: rgba(255,255,255,.88); font-size: .85rem; font-weight: 600; flex: 1; white-space: nowrap; background: none; box-shadow: none; padding: 0; opacity: 1; transform: none; pointer-events: all; border-radius: 0; }
+        .fab-dropdown .fab-item-label { color: rgba(255,255,255,.88); font-size: .85rem; font-weight: 600; flex: 0 1 auto; white-space: nowrap; background: none; box-shadow: none; padding: 0; opacity: 1; transform: none; pointer-events: all; border-radius: 0; }
         .fab-dropdown .fab-item-btn { width: 38px; height: 38px; font-size: 1rem; flex-shrink: 0; }
         .quiz-topbar.rtl-bar .fab-dropdown { right: auto; left: 0; }
         .quiz-topbar.rtl-bar .fab-dropdown .fab-item { flex-direction: row; }
@@ -812,7 +812,7 @@ body.lang-ar #pageCertEN * {
         .user-info-btn.my-results-btn:hover { background: linear-gradient(135deg, #8e44ad, #2980b9); transform: none; box-shadow: 0 4px 14px rgba(142,68,173,0.5); }
 
         @media (max-width: 600px) {
-            .user-info-bar:not(.collapsed) { bottom: 12px; right: 12px; min-width: 220px; max-width: 260px; }
+            .user-info-bar:not(.collapsed) { bottom: 12px; right: 12px; width: calc(100vw - 24px); max-width: 260px; min-width: 0; }
             .user-info-bar.collapsed { bottom: 12px; right: 12px; }
         }
 
