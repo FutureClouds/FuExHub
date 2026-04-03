@@ -650,6 +650,9 @@ body.lang-ar #pageCertEN * {
         .auth-guest-row { margin-top: 24px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.1); }
         .auth-btn-guest { background: transparent; color: rgba(255,255,255,0.55); font-size: 0.88rem; border: none; cursor: pointer; padding: 8px 16px; margin: 0; transition: color 0.2s; text-decoration: underline; font-weight: 600; box-shadow: none; }
         .auth-btn-guest:hover { background: transparent; color: rgba(255,255,255,0.85); transform: none; }
+        .guest-inline-form { display:none; margin-top:14px; }
+        .guest-inline-form.show { display:block; }
+        .guest-inline-error { color:#e74c3c; font-size:0.88rem; min-height:20px; margin:8px 0 4px; text-align:center !important; direction:rtl; unicode-bidi:plaintext; }
 
         .auth-error { color: #e74c3c; font-size: 0.88rem; margin: 8px 0; min-height: 20px; text-align: center !important; direction: rtl; unicode-bidi: plaintext; }
         .auth-loading { display: inline-block; width: 18px; height: 18px; border: 3px solid rgba(255,255,255,0.3); border-top-color: #fff; border-radius: 50%; animation: spin 0.8s linear infinite; vertical-align: middle; margin-left: 8px; }
@@ -1051,13 +1054,13 @@ body.lang-ar #pageCertEN * {
             </div>
 
             <div class="auth-guest-row">
-                <button class="auth-btn-guest" id="authGuestToggleBtn" onclick="authToggleGuestNameBox()">
+                <button class="auth-btn-guest" onclick="authContinueAsGuest()">
                     دخول كضيف (لن تُحفظ النتائج)<br>Continue as guest (results won't be saved)
                 </button>
-                <div id="authGuestNameBox" style="display:none; margin-top:14px;">
-                    <input type="text" id="authGuestName" class="auth-input" placeholder="اكتب اسمك الثنائي | Enter your full name" autocomplete="off" style="margin-bottom:10px;">
-                    <div class="auth-error" id="authGuestNameError" style="display:none;"></div>
-                    <button class="auth-btn-primary" onclick="authContinueAsGuest()">دخول | Enter</button>
+                <div id="guestInlineForm" class="guest-inline-form">
+                    <input type="text" id="guestFullName" class="auth-input" placeholder="اسمك الثنائي | Full name" autocomplete="name">
+                    <div id="guestNameError" class="guest-inline-error"></div>
+                    <button class="auth-btn-primary" id="guestLoginBtn" onclick="submitGuestLogin()">دخول | Login</button>
                 </div>
             </div>
         </div>
@@ -2165,7 +2168,6 @@ if (isAr) {
         startTimer();
         generateQuizHTML();
         showPage('page2');
-        fehSaveQuizState();
     }
 
     /* ===== START QUIZ - CUSTOM RANGE ===== */
@@ -2210,7 +2212,6 @@ if (isAr) {
         startTimer();
         generateQuizHTML();
         showPage('page2');
-        fehSaveQuizState();
     }
 
     /* ===== GENERATE QUIZ HTML ===== */
@@ -2277,7 +2278,6 @@ if (isAr) {
         if (!userAnswers[questionIndex]) userAnswers[questionIndex] = {};
         userAnswers[questionIndex][rowIndex] = value;
         if (selectEl) selectEl.classList.toggle('answered', value !== '');
-        try { sessionStorage.setItem('feh_userAnswers', JSON.stringify(userAnswers)); } catch(e){}
     }
 
     function handleOptionChange(questionIndex, optionIndex, inputType) {
@@ -2310,7 +2310,6 @@ if (isAr) {
                 }
             }
         }
-        try { sessionStorage.setItem('feh_userAnswers', JSON.stringify(userAnswers)); } catch(e){}
     }
 
     /* ===== TIMER ===== */
@@ -2381,8 +2380,6 @@ if (isAr) {
         clearInterval(timerInterval);
         calculateResults(timeExpiredParam);
         showPage('page3');
-        // ── مسح حالة الاختبار بعد التسليم ──
-        try { sessionStorage.removeItem('feh_quizState'); sessionStorage.removeItem('feh_userAnswers'); } catch(e){}
     }
 
     /* ===== CALCULATE RESULTS ===== */
@@ -2577,161 +2574,13 @@ if (isAr) {
 
         updatePdfButtonVisibility(pageId);
         window.scrollTo(0, 0);
-
-        // ── حفظ الصفحة الحالية في sessionStorage ──
-        try { sessionStorage.setItem('feh_currentPage', pageId); } catch(e){}
-
-        // ── إدارة history للأزرار الأمامية/الخلفية ──
-        // page2 (أداء الاختبار) و page3 (نتائج): لا يُسمح بالرجوع
-        if (pageId === 'page2' || pageId === 'page3') {
-            // استبدل الحالة الحالية وأضف جديدة لمنع العودة
-            history.replaceState({ page: pageId, locked: true }, '', '');
-            history.pushState({ page: pageId, locked: true }, '', '');
-        } else {
-            history.pushState({ page: pageId, locked: false }, '', '');
-        }
     }
-
-    /* ===== SESSION PERSISTENCE - حفظ وضع الاختبار ===== */
-    function fehSaveQuizState() {
-        try {
-            var state = {
-                currentLang:      currentLang,
-                currentCertCode:  currentCertCode,
-                currentCertName:  currentCertName,
-                currentDefaultTime:   currentDefaultTime,
-                currentDefaultQCount: currentDefaultQCount,
-                currentPassScore: currentPassScore,
-                currentQALink:    currentQALink,
-                timeLimit:        timeLimit,
-                currentMode:      window.currentMode,
-                userAnswers:      userAnswers,
-                startTime:        startTime ? startTime.getTime() : null,
-                selectedQIndices: selectedQuestions.map(function(q,i){
-                    // نحفظ الفهرس الأصلي في مصفوفة questions
-                    return { idx: questions.indexOf(q), orig: q.originalIndex };
-                })
-            };
-            sessionStorage.setItem('feh_quizState', JSON.stringify(state));
-        } catch(e){}
-    }
-
-    function fehRestoreQuizState() {
-        try {
-            var raw = sessionStorage.getItem('feh_quizState');
-            if (!raw) return false;
-            var state = JSON.parse(raw);
-            if (!state || !state.selectedQIndices || !state.currentCertCode) return false;
-
-            currentLang           = state.currentLang || 'en';
-            currentCertCode       = state.currentCertCode;
-            currentCertName       = state.currentCertName || '';
-            currentDefaultTime    = state.currentDefaultTime || 120;
-            currentDefaultQCount  = state.currentDefaultQCount || 65;
-            currentPassScore      = state.currentPassScore || 700;
-            currentQALink         = state.currentQALink || '';
-            timeLimit             = state.timeLimit || '120';
-            window.currentMode    = state.currentMode || 'smart';
-            userAnswers           = state.userAnswers || {};
-
-            // إعادة بناء selectedQuestions
-            if (questions.length === 0) return false; // الأسئلة لم تُحمَّل بعد
-            selectedQuestions = state.selectedQIndices.map(function(item){
-                var q = questions[item.idx];
-                if (!q) return null;
-                var obj = {};
-                for (var k in q) obj[k] = q[k];
-                if (item.orig != null) obj.originalIndex = item.orig;
-                return obj;
-            }).filter(Boolean);
-
-            if (selectedQuestions.length === 0) return false;
-
-            // إعادة بناء الوقت
-            startTime = state.startTime ? new Date(state.startTime) : new Date();
-            return true;
-        } catch(e){ return false; }
-    }
-
-    /* ===== استعادة الإجابات المحددة في DOM بعد إعادة توليد HTML ===== */
-    function fehRestoreAnswersToDOM() {
-        try {
-            var savedAnswers = sessionStorage.getItem('feh_userAnswers');
-            if (savedAnswers) userAnswers = JSON.parse(savedAnswers);
-        } catch(e){}
-
-        if (!userAnswers || !selectedQuestions) return;
-
-        selectedQuestions.forEach(function(q, questionIndex) {
-            var ua = userAnswers[questionIndex];
-            if (!ua) return;
-
-            if (q.isHotspot) {
-                // استعادة الـ hotspot selects
-                if (typeof ua === 'object' && !Array.isArray(ua)) {
-                    Object.keys(ua).forEach(function(ri) {
-                        var sel = document.getElementById('hotspot' + questionIndex + '_' + ri);
-                        if (sel) {
-                            sel.value = ua[ri] || '';
-                            sel.classList.toggle('answered', !!ua[ri]);
-                        }
-                    });
-                }
-            } else {
-                if (!Array.isArray(ua)) return;
-                var inputType = q.isMultipleChoice ? 'checkbox' : 'radio';
-                ua.forEach(function(optIndex) {
-                    var input = document.getElementById('q' + questionIndex + '_' + optIndex);
-                    if (input) {
-                        input.checked = true;
-                        var optionEl = input.parentElement.parentElement;
-                        if (optionEl) optionEl.classList.add('selected');
-                    }
-                });
-            }
-        });
-    }
-
-    /* ===== BROWSER BACK/FORWARD CONTROL ===== */
-    window.addEventListener('popstate', function(e) {
-        var state = e.state;
-        // إذا لم توجد حالة أو الحالة مقفلة (page2/page3)، أعد الدفع لمنع التنقل
-        if (!state || state.locked) {
-            history.pushState(state || { page: 'page2', locked: true }, '', '');
-            return;
-        }
-        var targetPage = state.page;
-        if (!targetPage) return;
-
-        // منع العودة إلى pageAuth من أي صفحة لاحقة
-        if (targetPage === 'pageAuth') {
-            history.pushState(state, '', '');
-            return;
-        }
-
-        // تنفيذ التنقل بدون history.pushState (لتجنب التكرار)
-        document.querySelectorAll('.page').forEach(function(p){ p.classList.remove('active'); });
-        var targetEl = document.getElementById(targetPage);
-        if (targetEl) {
-            targetEl.classList.add('active');
-            var simpleThemePages = (targetPage === 'pageAuth' || targetPage === 'pageLang' || targetPage === 'pageCertEN' || targetPage === 'pageCertAR' || targetPage === 'pageMyResults');
-            document.body.classList[simpleThemePages ? 'add' : 'remove']('simple-theme-page');
-            updatePdfButtonVisibility(targetPage);
-            window.scrollTo(0, 0);
-            try { sessionStorage.setItem('feh_currentPage', targetPage); } catch(e){}
-        }
-    });
 
     /* ===== INIT ===== */
     document.addEventListener('DOMContentLoaded', function() {
         updatePdfButtonVisibility('pageLang');
         updateFabThemeLabel();
         updateThemeLogos();
-
-        // ── استعادة الصفحة عند التحديث (للمستخدمين المسجلين والضيوف) ──
-        // ملاحظة: Firebase auth سيُعيد التوجيه لصفحاته، لذا هذا خاص بالضيف أو ما قبل auth listener
-        // سيتم التنسيق مع Firebase listener بعد تحميل الصفحة
-        history.replaceState({ page: 'pageAuth', locked: false }, '', '');
     });
 </script>
 
@@ -2785,27 +2634,10 @@ fbAuth.onAuthStateChanged(function(user) {
         fbOnUserLoggedIn(user);
     } else {
         fbCurrentUser = null;
-        // إذا كان الضيف قد أدخل اسمه مسبقاً في نفس الجلسة، لا نُعيده لصفحة الدخول
+        // Only show auth page if not already guest
         if (!fbIsGuest) {
-            var wasGuest = false;
-            try { wasGuest = sessionStorage.getItem('feh_isGuest') === '1'; } catch(e){}
-            if (wasGuest) {
-                fbIsGuest = true;
-                var lbb = document.getElementById('langBackBtn'); if (lbb) lbb.style.display = '';
-                document.getElementById('userInfoBar').classList.remove('show');
-                // استعادة الصفحة المحفوظة
-                var savedPage2 = null;
-                try { savedPage2 = sessionStorage.getItem('feh_currentPage'); } catch(e){}
-                var safeP = ['pageLang','pageCertEN','pageCertAR','page0','page1','page1b','page3'];
-                if (savedPage2 && safeP.indexOf(savedPage2) !== -1) {
-                    showPage(savedPage2);
-                } else {
-                    showPage('pageLang');
-                }
-            } else {
-                showPage('pageAuth');
-                document.getElementById('userInfoBar').classList.remove('show');
-            }
+            showPage('pageAuth');
+            document.getElementById('userInfoBar').classList.remove('show');
         }
     }
 });
@@ -2831,31 +2663,7 @@ function fbOnUserLoggedIn(user) {
     fbLoadDailyAttempts().then(function() {
         fbUpdateAttemptsDisplay();
         var lbb = document.getElementById('langBackBtn'); if (lbb) lbb.style.display = 'none';
-
-        // ── استعادة الصفحة المحفوظة عند التحديث ──
-        var savedPage = null;
-        try { savedPage = sessionStorage.getItem('feh_currentPage'); } catch(e){}
-
-        // الصفحات التي يمكن استعادتها مباشرة بدون إعادة تحميل الاختبار
-        var safePages = ['pageLang','pageCertEN','pageCertAR','page0','page1','page1b','page3'];
-        if (savedPage && safePages.indexOf(savedPage) !== -1) {
-            showPage(savedPage);
-        } else if (savedPage === 'page2') {
-            // محاولة استعادة الاختبار الجاري
-            var restored = fehRestoreQuizState();
-            if (restored) {
-                applyLangUI();
-                generateQuizHTML();
-                fehRestoreAnswersToDOM();
-                startTime = startTime || new Date();
-                startTimer();
-                showPage('page2');
-            } else {
-                showPage('pageLang');
-            }
-        } else {
-            showPage('pageLang');
-        }
+        showPage('pageLang');
     });
 }
 
@@ -2985,53 +2793,12 @@ function authShowLogin() {
     document.getElementById('authRegError').textContent = '';
 }
 
-function authToggleGuestNameBox() {
-    var box = document.getElementById('authGuestNameBox');
-    if (!box) return;
-    box.style.display = (box.style.display === 'none' || box.style.display === '') ? 'block' : 'none';
-    if (box.style.display === 'block') {
-        var inp = document.getElementById('authGuestName');
-        if (inp) inp.focus();
-    }
-}
-
 function authContinueAsGuest() {
-    var nameInp = document.getElementById('authGuestName');
-    var nameErr = document.getElementById('authGuestNameError');
-    var guestName = nameInp ? nameInp.value.trim() : '';
-
-    // Only validate if the name box is visible (i.e., user went through the flow)
-    var box = document.getElementById('authGuestNameBox');
-    if (box && box.style.display !== 'none') {
-        if (!guestName) {
-            if (nameErr) { nameErr.textContent = 'يرجى كتابة اسمك الثنائي | Please enter your full name'; nameErr.style.display = 'block'; }
-            return;
-        }
-        var parts = guestName.split(/\s+/).filter(Boolean);
-        if (parts.length < 2) {
-            if (nameErr) { nameErr.textContent = 'يرجى كتابة الاسم الثنائي (الاسم واللقب) | Please enter both first and last name'; nameErr.style.display = 'block'; }
-            return;
-        }
-        if (nameErr) nameErr.style.display = 'none';
-    }
-
     fbIsGuest     = true;
     fbCurrentUser = null;
-    window._guestDisplayName = guestName || 'Guest';
     document.getElementById('userInfoBar').classList.remove('show');
     var lbb = document.getElementById('langBackBtn'); if (lbb) lbb.style.display = '';
-    // ── حفظ علامة الضيف في sessionStorage ──
-    try { sessionStorage.setItem('feh_isGuest', '1'); } catch(e){}
-
-    // ── استعادة الصفحة المحفوظة للضيف ──
-    var savedPage = null;
-    try { savedPage = sessionStorage.getItem('feh_currentPage'); } catch(e){}
-    var safeGuestPages = ['pageLang','pageCertEN','pageCertAR','page0','page1','page1b','page3'];
-    if (savedPage && safeGuestPages.indexOf(savedPage) !== -1) {
-        showPage(savedPage);
-    } else {
-        showPage('pageLang');
-    }
+    showPage('pageLang');
 }
 
 function authSignOut() {
@@ -3040,8 +2807,6 @@ function authSignOut() {
         fbIsGuest = false;
         fbDailyAttempts = 0;
         document.getElementById('userInfoBar').classList.remove('show');
-        // ── مسح كامل للـ session عند تسجيل الخروج ──
-        try { sessionStorage.clear(); } catch(e){}
         showPage('pageAuth');
         updatePdfButtonVisibility('pageAuth');
     });
@@ -3369,5 +3134,377 @@ document.addEventListener('DOMContentLoaded', function() {
     };
 });
 </script>
+
+<script>
+/* ================================================================
+   PATCH: Guest full name + session-only progress persistence + browser history control
+   ================================================================ */
+(function(){
+    var APP_SESSION_KEY = 'fuexhub_session_state_v1';
+    var APP_HISTORY_LOCK = false;
+    var APP_IS_RESTORING = false;
+    var APP_LAST_PAGE = null;
+    var APP_CURRENT_CERT_META = null;
+
+    function appSafeParse(json) {
+        try { return JSON.parse(json); } catch (e) { return null; }
+    }
+
+    function appGetSession() {
+        return appSafeParse(sessionStorage.getItem(APP_SESSION_KEY) || 'null') || {};
+    }
+
+    function appSetSession(state) {
+        sessionStorage.setItem(APP_SESSION_KEY, JSON.stringify(state));
+    }
+
+    function appClearSession() {
+        sessionStorage.removeItem(APP_SESSION_KEY);
+    }
+
+    function appGetActivePageId() {
+        var active = document.querySelector('.page.active');
+        return active ? active.id : 'pageAuth';
+    }
+
+    function appIsQuizLockedPage(pageId) {
+        return pageId === 'page2' || pageId === 'page3';
+    }
+
+    function appValidateFullName(name) {
+        name = (name || '').replace(/\s+/g, ' ').trim();
+        if (!name) return false;
+        var parts = name.split(' ');
+        if (parts.length < 2) return false;
+        return parts[0].length >= 2 && parts[1].length >= 2;
+    }
+
+    function appApplyGuestUI() {
+        var form = document.getElementById('guestInlineForm');
+        var err = document.getElementById('guestNameError');
+        if (form) form.classList.add('show');
+        if (err) err.textContent = '';
+        var input = document.getElementById('guestFullName');
+        if (input) {
+            var state = appGetSession();
+            if (state.guestFullName) input.value = state.guestFullName;
+            setTimeout(function(){ try { input.focus(); } catch (e) {} }, 0);
+        }
+    }
+
+    function appPersistState(extra) {
+        var state = appGetSession();
+        var activePageId = appGetActivePageId();
+        state.activePageId = activePageId;
+        state.currentLang = currentLang;
+        state.currentCertCode = currentCertCode;
+        state.currentCertName = currentCertName;
+        state.currentDefaultTime = currentDefaultTime;
+        state.currentDefaultQCount = currentDefaultQCount;
+        state.currentPassScore = currentPassScore;
+        state.currentQALink = currentQALink;
+        state.currentCertMeta = APP_CURRENT_CERT_META;
+        state.fbIsGuest = !!fbIsGuest;
+        state.guestFullName = (sessionStorage.getItem('fuexhub_guest_name') || '').trim();
+        state.theme = document.body.getAttribute('data-theme') || 'light';
+        state.timerVisible = !!timerVisible;
+        state.historyLock = !!APP_HISTORY_LOCK;
+        state.currentMode = window.currentMode || null;
+
+        var qc = document.getElementById('questionCount');
+        var tl = document.getElementById('timeLimit');
+        var rf = document.getElementById('rangeFrom');
+        var rt = document.getElementById('rangeTo');
+        var unlimited = document.getElementById('unlimitedTime');
+        var ctm = document.getElementById('customTimeMinutes');
+        state.setup = {
+            questionCount: qc ? qc.value : null,
+            timeLimit: tl ? tl.value : null,
+            rangeFrom: rf ? rf.value : null,
+            rangeTo: rt ? rt.value : null,
+            unlimitedTime: unlimited ? !!unlimited.checked : false,
+            customTimeMinutes: ctm ? ctm.value : null
+        };
+
+        if (activePageId === 'page2') {
+            state.quizState = {
+                selectedQuestions: selectedQuestions,
+                userAnswers: userAnswers,
+                startTimeMs: startTime ? startTime.getTime() : null,
+                timeLimit: timeLimit,
+                currentMode: window.currentMode || null
+            };
+        }
+
+        if (activePageId === 'page3') {
+            state.resultState = {
+                motivationalMessage: document.getElementById('motivationalMessage') ? document.getElementById('motivationalMessage').innerHTML : '',
+                timeResult: document.getElementById('timeResult') ? document.getElementById('timeResult').innerHTML : '',
+                timeResultSub: document.getElementById('timeResultSub') ? document.getElementById('timeResultSub').innerHTML : '',
+                scoreResult: document.getElementById('scoreResult') ? document.getElementById('scoreResult').innerHTML : '',
+                passResult: document.getElementById('passResult') ? document.getElementById('passResult').innerHTML : '',
+                percentageResult: document.getElementById('percentageResult') ? document.getElementById('percentageResult').innerHTML : '',
+                correctCount: document.getElementById('correctCount') ? document.getElementById('correctCount').innerHTML : '',
+                wrongCount: document.getElementById('wrongCount') ? document.getElementById('wrongCount').innerHTML : '',
+                reviewQuestions: document.getElementById('reviewQuestions') ? document.getElementById('reviewQuestions').innerHTML : ''
+            };
+        }
+
+        if (extra) {
+            for (var key in extra) state[key] = extra[key];
+        }
+        appSetSession(state);
+    }
+
+    function appRestoreAnswerSelections() {
+        Object.keys(userAnswers || {}).forEach(function(key) {
+            var qIndex = parseInt(key, 10);
+            var answer = userAnswers[key];
+            if (Array.isArray(answer)) {
+                answer.forEach(function(optionIndex) {
+                    var input = document.getElementById('q' + qIndex + '_' + optionIndex);
+                    if (input) {
+                        input.checked = true;
+                        var option = input.parentElement && input.parentElement.parentElement;
+                        if (option) option.classList.add('selected');
+                    }
+                });
+            } else if (answer && typeof answer === 'object') {
+                Object.keys(answer).forEach(function(rowKey) {
+                    var select = document.getElementById('hotspot' + qIndex + '_' + rowKey);
+                    if (select) {
+                        select.value = answer[rowKey];
+                        select.classList.toggle('answered', !!answer[rowKey]);
+                    }
+                });
+            }
+        });
+    }
+
+    function appRestoreResultState(resultState) {
+        if (!resultState) return;
+        var ids = ['motivationalMessage','timeResult','timeResultSub','scoreResult','passResult','percentageResult','correctCount','wrongCount','reviewQuestions'];
+        ids.forEach(function(id){
+            var el = document.getElementById(id);
+            if (el && typeof resultState[id] === 'string') el.innerHTML = resultState[id];
+        });
+    }
+
+    function appRestoreSessionIfNeeded() {
+        var state = appGetSession();
+        if (!state || !state.activePageId) return;
+        APP_IS_RESTORING = true;
+        try {
+            if (state.theme) {
+                document.body.setAttribute('data-theme', state.theme);
+                updateThemeLogos();
+                updateFabThemeLabel();
+            }
+            if (typeof state.timerVisible === 'boolean') timerVisible = state.timerVisible;
+            APP_CURRENT_CERT_META = state.currentCertMeta || null;
+
+            if (state.fbIsGuest) {
+                fbIsGuest = true;
+                fbCurrentUser = null;
+                if (state.guestFullName) sessionStorage.setItem('fuexhub_guest_name', state.guestFullName);
+                document.getElementById('userInfoBar').classList.remove('show');
+                var lbb = document.getElementById('langBackBtn'); if (lbb) lbb.style.display = '';
+            }
+
+            if (state.currentCertMeta && state.currentCertMeta.certKey) {
+                loadCert(
+                    state.currentCertMeta.lang,
+                    state.currentCertMeta.certKey,
+                    state.currentCertMeta.certCode,
+                    state.currentCertMeta.certName,
+                    String(state.currentCertMeta.defaultTime),
+                    String(state.currentCertMeta.defaultQCount),
+                    String(state.currentCertMeta.passScore),
+                    state.currentCertMeta.qaLink
+                );
+            }
+
+            if (state.setup) {
+                if (document.getElementById('questionCount') && state.setup.questionCount != null) document.getElementById('questionCount').value = state.setup.questionCount;
+                if (document.getElementById('timeLimit') && state.setup.timeLimit != null) document.getElementById('timeLimit').value = state.setup.timeLimit;
+                if (document.getElementById('rangeFrom') && state.setup.rangeFrom != null) document.getElementById('rangeFrom').value = state.setup.rangeFrom;
+                if (document.getElementById('rangeTo') && state.setup.rangeTo != null) document.getElementById('rangeTo').value = state.setup.rangeTo;
+                if (document.getElementById('customTimeMinutes') && state.setup.customTimeMinutes != null) document.getElementById('customTimeMinutes').value = state.setup.customTimeMinutes;
+                if (document.getElementById('unlimitedTime')) {
+                    document.getElementById('unlimitedTime').checked = !!state.setup.unlimitedTime;
+                    if (typeof toggleUnlimitedTime === 'function') toggleUnlimitedTime();
+                }
+            }
+
+            if (state.activePageId === 'page2' && state.quizState) {
+                selectedQuestions = state.quizState.selectedQuestions || [];
+                userAnswers = state.quizState.userAnswers || {};
+                timeLimit = state.quizState.timeLimit;
+                window.currentMode = state.quizState.currentMode || state.currentMode || null;
+                startTime = state.quizState.startTimeMs ? new Date(state.quizState.startTimeMs) : new Date();
+                generateQuizHTML();
+                appRestoreAnswerSelections();
+                showPage('page2', { replaceHistory: true, skipSave: true });
+                startTimer();
+                if (!timerVisible) toggleFabTimer();
+            } else if (state.activePageId === 'page3' && state.quizState && state.resultState) {
+                selectedQuestions = state.quizState.selectedQuestions || [];
+                userAnswers = state.quizState.userAnswers || {};
+                timeLimit = state.quizState.timeLimit;
+                window.currentMode = state.quizState.currentMode || state.currentMode || null;
+                startTime = state.quizState.startTimeMs ? new Date(state.quizState.startTimeMs) : new Date();
+                showPage('page3', { replaceHistory: true, skipSave: true });
+                appRestoreResultState(state.resultState);
+            } else {
+                showPage(state.activePageId, { replaceHistory: true, skipSave: true });
+            }
+        } finally {
+            APP_IS_RESTORING = false;
+            appPersistState();
+        }
+    }
+
+    var _origLoadCertPatch = window.loadCert;
+    window.loadCert = function(lang, certKey, certCode, certName, defaultTime, defaultQCount, passScore, qaLink) {
+        APP_CURRENT_CERT_META = {
+            lang: lang,
+            certKey: certKey,
+            certCode: certCode,
+            certName: certName,
+            defaultTime: parseInt(defaultTime, 10),
+            defaultQCount: parseInt(defaultQCount, 10),
+            passScore: parseInt(passScore, 10),
+            qaLink: qaLink
+        };
+        window.currentCertKey = certKey;
+        _origLoadCertPatch.apply(this, arguments);
+        appPersistState();
+    };
+
+    var _origAuthContinueAsGuestPatch = window.authContinueAsGuest;
+    window.authContinueAsGuest = function() {
+        appApplyGuestUI();
+    };
+
+    var _origFbOnUserLoggedInPatch = window.fbOnUserLoggedIn;
+    if (typeof _origFbOnUserLoggedInPatch === 'function') {
+        window.fbOnUserLoggedIn = function(user) {
+            var state = appGetSession();
+            if (state && state.activePageId && state.activePageId !== 'pageAuth' && !state.fbIsGuest) {
+                var bar = document.getElementById('userInfoBar');
+                if (bar) bar.classList.add('show');
+                var avatar = document.getElementById('userAvatar');
+                if (avatar) {
+                    avatar.src = user.photoURL || '';
+                    avatar.style.display = user.photoURL ? 'block' : 'none';
+                }
+                var nameEl = document.getElementById('userDisplayName');
+                if (nameEl) nameEl.textContent = user.displayName || user.email || 'User';
+                fbLoadDailyAttempts().then(function() {
+                    fbUpdateAttemptsDisplay();
+                    var lbb = document.getElementById('langBackBtn'); if (lbb) lbb.style.display = 'none';
+                    appPersistState();
+                });
+                return;
+            }
+            _origFbOnUserLoggedInPatch.apply(this, arguments);
+        };
+    }
+
+    window.submitGuestLogin = function() {
+        var input = document.getElementById('guestFullName');
+        var err = document.getElementById('guestNameError');
+        var fullName = (input ? input.value : '').replace(/\s+/g, ' ').trim();
+        if (!appValidateFullName(fullName)) {
+            if (err) err.textContent = 'يرجى كتابة الاسم الثنائي الصحيح | Please enter your full name';
+            return;
+        }
+        if (err) err.textContent = '';
+        sessionStorage.setItem('fuexhub_guest_name', fullName);
+        fbIsGuest = true;
+        fbCurrentUser = null;
+        document.getElementById('userInfoBar').classList.remove('show');
+        var lbb = document.getElementById('langBackBtn'); if (lbb) lbb.style.display = '';
+        appPersistState({ guestFullName: fullName, fbIsGuest: true });
+        showPage('pageLang');
+    };
+
+    var _origShowPagePatch = window.showPage;
+    window.showPage = function(pageId, opts) {
+        opts = opts || {};
+        _origShowPagePatch(pageId);
+        APP_HISTORY_LOCK = appIsQuizLockedPage(pageId);
+        var stateObj = { pageId: pageId };
+        if (!opts.fromHistory) {
+            if (opts.replaceHistory) history.replaceState(stateObj, '', '#'+pageId);
+            else if (APP_LAST_PAGE !== pageId) history.pushState(stateObj, '', '#'+pageId);
+        }
+        APP_LAST_PAGE = pageId;
+        if (!opts.skipSave && !APP_IS_RESTORING) appPersistState();
+    };
+
+    var _origHandleOptionChangePatch = window.handleOptionChange;
+    window.handleOptionChange = function() {
+        _origHandleOptionChangePatch.apply(this, arguments);
+        appPersistState();
+    };
+
+    var _origHandleHotspotChangePatch = window.handleHotspotChange;
+    window.handleHotspotChange = function() {
+        _origHandleHotspotChangePatch.apply(this, arguments);
+        appPersistState();
+    };
+
+    var _origRestartQuizPatch = window.restartQuiz;
+    window.restartQuiz = function() {
+        APP_HISTORY_LOCK = false;
+        _origRestartQuizPatch.apply(this, arguments);
+        appPersistState();
+    };
+
+    var _origGoBackToCertPatch = window.goBackToCert;
+    window.goBackToCert = function() {
+        APP_HISTORY_LOCK = false;
+        _origGoBackToCertPatch.apply(this, arguments);
+        appPersistState();
+    };
+
+    var _origAuthSignOutPatch = window.authSignOut;
+    window.authSignOut = function() {
+        appClearSession();
+        sessionStorage.removeItem('fuexhub_guest_name');
+        _origAuthSignOutPatch.apply(this, arguments);
+    };
+
+    window.addEventListener('popstate', function(ev) {
+        var activePageId = appGetActivePageId();
+        if (APP_HISTORY_LOCK || appIsQuizLockedPage(activePageId)) {
+            history.pushState({ pageId: activePageId }, '', '#'+activePageId);
+            _origShowPagePatch(activePageId);
+            return;
+        }
+        var targetPage = ev.state && ev.state.pageId ? ev.state.pageId : 'pageAuth';
+        window.showPage(targetPage, { fromHistory: true, replaceHistory: true });
+    });
+
+    document.addEventListener('DOMContentLoaded', function() {
+        var guestInput = document.getElementById('guestFullName');
+        if (guestInput) {
+            guestInput.addEventListener('input', function() {
+                var err = document.getElementById('guestNameError');
+                if (err) err.textContent = '';
+            });
+            guestInput.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter') submitGuestLogin();
+            });
+        }
+        var initialPage = appGetActivePageId();
+        history.replaceState({ pageId: initialPage }, '', '#'+initialPage);
+        APP_LAST_PAGE = initialPage;
+        appRestoreSessionIfNeeded();
+    });
+})();
+</script>
+
 </body>
 </html>
