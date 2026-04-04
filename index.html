@@ -2682,7 +2682,21 @@ var fbAuthReadyPromise = fbAuth.setPersistence(firebase.auth.Auth.Persistence.LO
    AUTH STATE
    ================================================================ */
 var fbCurrentUser  = null;   // logged-in user object
-var fbIsGuest      = false;  // true when browsing as guest
+
+// ── Detect guest state SYNCHRONOUSLY before onAuthStateChanged fires ──
+// On GitHub Pages, Firebase resolves auth from cache faster than
+// DOMContentLoaded, causing onAuthStateChanged(null) to run first and
+// redirect to pageAuth before the guest restore can set fbIsGuest=true.
+var fbIsGuest = (function() {
+    try {
+        var gn  = sessionStorage.getItem('guestName');
+        var raw = sessionStorage.getItem('fxhState');
+        if (!gn || !raw) return false;
+        var s = JSON.parse(raw);
+        return !!(s && s.isGuest);
+    } catch(e) { return false; }
+})();
+
 var fbDailyAttempts = 0;     // how many exams taken in last 24h
 var fbPrevPageForResults = 'pageLang'; // where to go back from My Results
 var fbLimitCountdownInterval = null;
@@ -2699,7 +2713,15 @@ fbAuth.onAuthStateChanged(function(user) {
         fbOnUserLoggedIn(user);
     } else {
         fbCurrentUser = null;
-        // Only show auth page if not already guest
+        // Double-check sessionStorage in case fbIsGuest was not yet set
+        if (!fbIsGuest) {
+            try {
+                var gn  = sessionStorage.getItem('guestName');
+                var raw = sessionStorage.getItem('fxhState');
+                var s   = raw ? JSON.parse(raw) : null;
+                if (gn && s && s.isGuest) fbIsGuest = true;
+            } catch(e) {}
+        }
         if (!fbIsGuest) {
             showPage('pageAuth');
             document.getElementById('userInfoBar').classList.remove('show');
@@ -2785,7 +2807,7 @@ function authSubmitGoogleName() {
     }
     var parts = name.split(/\s+/).filter(function(p){ return p.length > 0; });
     if (parts.length < 2) {
-        errEl.textContent = 'يرجى إدخال الاسم الثنائي | Enter first and last name.';
+        errEl.textContent = 'يرجى إدخال الاسم الثنائي (اسم + لقب) | Enter first and last name.';
         return;
     }
 
@@ -2986,7 +3008,7 @@ function authContinueAsGuestSubmit() {
     // Must be at least two words
     var parts = name.split(/\s+/).filter(function(p){ return p.length > 0; });
     if (parts.length < 2) {
-        errEl.textContent = 'يرجى إدخال الاسم الثنائي | Enter first and last name.';
+        errEl.textContent = 'يرجى إدخال الاسم الثنائي (اسم + لقب) | Enter first and last name.';
         return;
     }
 
@@ -3059,6 +3081,23 @@ window.addEventListener('popstate', function(e) {
     if (_examNavLocked) {
         // Push state again to prevent leaving
         history.pushState({ locked: true }, '', window.location.href);
+        return;
+    }
+    // On GitHub Pages, hash changes via back/forward should not navigate pages
+    // (state is managed by sessionStorage restore, not hash)
+    // Prevent accidental page change from hash popstate when not locked
+    var hash = window.location.hash.replace('#', '');
+    var targetPage = HASH_PAGE_MAP[hash];
+    if (targetPage && targetPage !== 'pageAuth') {
+        var activePage = document.querySelector('.page.active');
+        var activeId   = activePage ? activePage.id : '';
+        // Only act if the hash points to a different page than what's shown
+        // and we are NOT in exam/results (those are protected above)
+        if (targetPage !== activeId &&
+            targetPage !== 'page2' && targetPage !== 'page3') {
+            // Suppress: we don't allow hash-driven navigation after restore
+            history.replaceState({ page: activeId }, '', '#' + (PAGE_HASH_MAP[activeId] || ''));
+        }
     }
 });
 
