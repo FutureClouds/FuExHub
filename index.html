@@ -3325,7 +3325,8 @@ document.addEventListener('DOMContentLoaded', function() {
     var originalOnUserLoggedIn = window.fbOnUserLoggedIn;
     if (typeof originalOnUserLoggedIn === 'function') {
         window.fbOnUserLoggedIn = function(user) {
-            if (restoredOnce) {
+            var activePageId = getActivePageId();
+            if (restoredOnce && activePageId !== 'pageAuth') {
                 var bar = document.getElementById('userInfoBar');
                 if (bar) bar.classList.add('show');
                 var avatar = document.getElementById('userAvatar');
