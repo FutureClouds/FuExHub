@@ -4263,15 +4263,16 @@ function fxhPrintResult(data) {
 '  * { box-sizing: border-box; font-family: \'Tajawal\', sans-serif; margin: 0; padding: 0; }\n' +
 /* ── شاشة عادية ── */
 '  html, body {\n' +
-'    width: 100%; min-width: 1050px; overflow-x: hidden; overflow-y: auto;\n' +
+'    width: 100%; overflow-x: hidden; overflow-y: auto;\n' +
 '    background: #0d0626;\n' +
 '    min-height: 100vh;\n' +
 '  }\n' +
 '  .page-wrap {\n' +
-'    width: 100%; max-width: 100%; min-width: 1050px;\n' +
-'    min-height: 100vh;\n' +
+'    width: 1123px; max-width: 1123px;\n' +
+'    min-height: 793px;\n' +
 '    padding: 0;\n' +
 '    position: relative;\n' +
+'    transform-origin: top left;\n' +
 '    background: linear-gradient(135deg, #0d0626 0%, #1a0a4a 30%, #0a1a3a 60%, #16063a 100%);\n' +
 '    display: flex; flex-direction: column;\n' +
 '  }\n' +
@@ -4283,6 +4284,7 @@ function fxhPrintResult(data) {
 '      background: #0d0626 !important;\n' +
 '    }\n' +
 '    .page-wrap {\n' +
+'      transform: none !important;\n' +
 '      width: 297mm !important; height: 210mm !important;\n' +
 '      min-height: unset !important;\n' +
 '      overflow: hidden !important;\n' +
@@ -4320,7 +4322,7 @@ function fxhPrintResult(data) {
 '    position: relative; z-index: 5;\n' +
 '    padding: 10mm 13mm 7mm;\n' +
 '    display: flex; flex-direction: column; min-height: 100vh; gap: 0;\n' +
-'    max-width: 297mm; min-width: 1050px; width: 100%; margin: 0 auto;\n' +
+'    max-width: 297mm; width: 100%; margin: 0 auto;\n' +
 '  }\n' +
 /* الرأس */
 '  .header {\n' +
@@ -4443,11 +4445,38 @@ function fxhPrintResult(data) {
 '  </div>\n' +
 '</div>\n' +
 '<script>\n' +
-'window.onload = function() {\n' +
-'  window.focus();\n' +
-'  document.title = ' + JSON.stringify(fileName) + ';\n' +
-'  setTimeout(function() { window.print(); }, 600);\n' +
-'};\n' +
+'(function() {\n' +
+'  var BASE_W = 1123;\n' +
+'  var BASE_H = 793;\n' +
+'  function scaleWrap() {\n' +
+'    var wrap = document.querySelector(".page-wrap");\n' +
+'    if (!wrap) return;\n' +
+'    var vw = window.innerWidth || document.documentElement.clientWidth;\n' +
+'    var vh = window.innerHeight || document.documentElement.clientHeight;\n' +
+'    var scaleX = vw / BASE_W;\n' +
+'    var scaleY = vh / BASE_H;\n' +
+'    var scale = Math.min(scaleX, scaleY, 1);\n' +
+'    wrap.style.transform = scale < 1 ? "scale(" + scale + ")" : "";\n' +
+'    document.body.style.width = Math.ceil(BASE_W * scale) + "px";\n' +
+'    document.body.style.height = Math.ceil(BASE_H * scale) + "px";\n' +
+'    document.body.style.overflow = "hidden";\n' +
+'  }\n' +
+'  function removeScale() {\n' +
+'    var wrap = document.querySelector(".page-wrap");\n' +
+'    if (wrap) wrap.style.transform = "";\n' +
+'    document.body.style.width = "";\n' +
+'    document.body.style.height = "";\n' +
+'  }\n' +
+'  window.addEventListener("beforeprint", removeScale);\n' +
+'  window.addEventListener("afterprint",  scaleWrap);\n' +
+'  window.addEventListener("resize", scaleWrap);\n' +
+'  window.onload = function() {\n' +
+'    document.title = ' + JSON.stringify(fileName) + ';\n' +
+'    scaleWrap();\n' +
+'    window.focus();\n' +
+'    setTimeout(function() { removeScale(); window.print(); setTimeout(scaleWrap, 300); }, 700);\n' +
+'  };\n' +
+'})();\n' +
 '<\/script>\n' +
 '</body>\n</html>';
 
