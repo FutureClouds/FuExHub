@@ -4254,6 +4254,7 @@ function fxhPrintResult(data) {
 '<html lang="' + (isAr ? 'ar' : 'en') + '" dir="' + dir + '">\n' +
 '<head>\n' +
 '<meta charset="UTF-8">\n' +
+'<meta name="viewport" content="width=1123">\n' +
 '<base href="' + baseHref + '">\n' +
 '<title>' + fileName + '</title>\n' +
 '<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">\n' +
@@ -4262,12 +4263,12 @@ function fxhPrintResult(data) {
 '  * { box-sizing: border-box; font-family: \'Tajawal\', sans-serif; margin: 0; padding: 0; }\n' +
 /* ── شاشة عادية ── */
 '  html, body {\n' +
-'    width: 100%; overflow-x: hidden; overflow-y: auto;\n' +
+'    width: 100%; min-width: 1050px; overflow-x: hidden; overflow-y: auto;\n' +
 '    background: #0d0626;\n' +
 '    min-height: 100vh;\n' +
 '  }\n' +
 '  .page-wrap {\n' +
-'    width: 100%; max-width: 100%;\n' +
+'    width: 100%; max-width: 100%; min-width: 1050px;\n' +
 '    min-height: 100vh;\n' +
 '    padding: 0;\n' +
 '    position: relative;\n' +
@@ -4319,7 +4320,7 @@ function fxhPrintResult(data) {
 '    position: relative; z-index: 5;\n' +
 '    padding: 10mm 13mm 7mm;\n' +
 '    display: flex; flex-direction: column; min-height: 100vh; gap: 0;\n' +
-'    max-width: 297mm; width: 100%; margin: 0 auto;\n' +
+'    max-width: 297mm; min-width: 1050px; width: 100%; margin: 0 auto;\n' +
 '  }\n' +
 /* الرأس */
 '  .header {\n' +
