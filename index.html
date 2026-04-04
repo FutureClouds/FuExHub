@@ -4214,12 +4214,12 @@ function fxhPrintResult(data) {
     var passPhrase;
     if (isAr) {
         passPhrase = data.passed
-            ? 'أتمّ هذا الاختبار <span class=\"pass-word\" style=\"color:#7effc4;\">وحقق النجاح ✅</span>'
+            ? 'أنهى هذا الاختبار بنجاح <span class=\"pass-word\" style=\"color:#7effc4;\">وحقق النجاح ✅</span>'
             : 'أتمّ هذا الاختبار <span class=\"pass-word\" style=\"color:#ff9090;\">ولم يجتزه ❌</span>';
     } else {
         passPhrase = data.passed
             ? 'has <span class=\"pass-word\" style=\"color:#7effc4;\">successfully PASSED ✅</span>'
-            : 'has <span class=\"pass-word\" style=\"color:#ff9090;\">NOT PASSED ❌</span>';
+            : 'has <span class=\"pass-word\" style=\"color:#ff9090;\">not passed ❌</span>';
     }
     var officialDescHTML;
     if (isAr) {
@@ -4254,6 +4254,7 @@ function fxhPrintResult(data) {
 '<html lang="' + (isAr ? 'ar' : 'en') + '" dir="' + dir + '">\n' +
 '<head>\n' +
 '<meta charset="UTF-8">\n' +
+'<meta name="viewport" content="width=1123, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, shrink-to-fit=no">\n' +
 '<base href="' + baseHref + '">\n' +
 '<title>' + fileName + '</title>\n' +
 '<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">\n' +
@@ -4262,13 +4263,13 @@ function fxhPrintResult(data) {
 '  * { box-sizing: border-box; font-family: \'Tajawal\', sans-serif; margin: 0; padding: 0; }\n' +
 /* ── شاشة عادية ── */
 '  html, body {\n' +
-'    width: 100%; overflow-x: hidden; overflow-y: auto;\n' +
+'    width: 297mm; min-width: 297mm; overflow-x: auto; overflow-y: auto;\n' +
 '    background: #0d0626;\n' +
-'    min-height: 100vh;\n' +
+'    min-height: 210mm;\n' +
 '  }\n' +
 '  .page-wrap {\n' +
-'    width: 100%; max-width: 100%;\n' +
-'    min-height: 100vh;\n' +
+'    width: 297mm !important; min-width: 297mm !important; max-width: 297mm !important;\n' +
+'    min-height: 210mm;\n' +
 '    padding: 0;\n' +
 '    position: relative;\n' +
 '    background: linear-gradient(135deg, #0d0626 0%, #1a0a4a 30%, #0a1a3a 60%, #16063a 100%);\n' +
@@ -4318,8 +4319,8 @@ function fxhPrintResult(data) {
 '  .content {\n' +
 '    position: relative; z-index: 5;\n' +
 '    padding: 10mm 13mm 7mm;\n' +
-'    display: flex; flex-direction: column; min-height: 100vh; gap: 0;\n' +
-'    max-width: 297mm; width: 100%; margin: 0 auto;\n' +
+'    display: flex; flex-direction: column; min-height: 210mm; gap: 0;\n' +
+'    width: 297mm; max-width: 297mm; margin: 0 auto;\n' +
 '  }\n' +
 /* الرأس */
 '  .header {\n' +
