@@ -118,7 +118,6 @@ body {
     min-height: 100vh;
     overflow-x: hidden;
     max-width: 100%;
-    transition: all 0.3s ease;
 }
 
         body.lang-ar,
@@ -160,7 +159,7 @@ body.lang-ar * {
             width: 90%; max-width: 1200px; margin: 0 auto; padding: 20px;
             text-align: center; background-color: var(--container-bg);
             border-radius: 15px; box-shadow: 0 8px 16px rgba(0,0,0,0.3);
-            margin-top: 30px; margin-bottom: 30px; transition: all 0.3s ease;
+            margin-top: 30px; margin-bottom: 30px;
         }
 
         h1 { color: var(--text-color); font-size: 2.5rem; margin-bottom: 20px; font-weight: 700; text-shadow: 2px 2px 4px rgba(0,0,0,0.5); }
@@ -2891,25 +2890,37 @@ var _origStartCustomQuiz = window.startCustomQuiz;
 
 window.startQuiz = function() {
     if (!fbCurrentUser || fbIsGuest) { _origStartQuiz(); return; }
-    // Always re-fetch from Firestore to get accurate count
-    fbLoadDailyAttempts().then(function() {
-        if (fbDailyAttempts >= FB_DAILY_LIMIT) {
-            fbShowLimitOverlay();
-        } else {
-            _origStartQuiz();
-        }
-    });
+    // Use cached count for instant response, then verify in background
+    if (fbDailyAttempts >= FB_DAILY_LIMIT) {
+        // Re-fetch to confirm limit before blocking
+        fbLoadDailyAttempts().then(function() {
+            if (fbDailyAttempts >= FB_DAILY_LIMIT) {
+                fbShowLimitOverlay();
+            } else {
+                _origStartQuiz();
+            }
+        });
+    } else {
+        _origStartQuiz();
+        // Refresh count in background silently
+        fbLoadDailyAttempts();
+    }
 };
 
 window.startCustomQuiz = function() {
     if (!fbCurrentUser || fbIsGuest) { _origStartCustomQuiz(); return; }
-    fbLoadDailyAttempts().then(function() {
-        if (fbDailyAttempts >= FB_DAILY_LIMIT) {
-            fbShowLimitOverlay();
-        } else {
-            _origStartCustomQuiz();
-        }
-    });
+    if (fbDailyAttempts >= FB_DAILY_LIMIT) {
+        fbLoadDailyAttempts().then(function() {
+            if (fbDailyAttempts >= FB_DAILY_LIMIT) {
+                fbShowLimitOverlay();
+            } else {
+                _origStartCustomQuiz();
+            }
+        });
+    } else {
+        _origStartCustomQuiz();
+        fbLoadDailyAttempts();
+    }
 };
 
 /* ================================================================
@@ -3458,6 +3469,18 @@ document.addEventListener('DOMContentLoaded', function() {
             } else if (targetPage === 'page3') {
                 window.showPage('page3', { replace: true });
                 restoreResultsSnapshot(state.resultsSnapshot);
+            } else if (targetPage === 'pageMyResults') {
+                window.showPage('pageMyResults', { replace: true });
+                // Auto-load results after auth is ready
+                var myResultsWait = setInterval(function() {
+                    if (window.fbCurrentUser && typeof window.fbLoadMyResults === 'function') {
+                        clearInterval(myResultsWait);
+                        if (typeof window.updateFabThemeLabel === 'function') window.updateFabThemeLabel();
+                        window.fbLoadMyResults();
+                    }
+                }, 150);
+                // Give up after 8 seconds if no user (guest or not logged in)
+                setTimeout(function() { clearInterval(myResultsWait); }, 8000);
             } else {
                 window.showPage(targetPage, { replace: true });
             }
