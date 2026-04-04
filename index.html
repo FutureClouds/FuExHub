@@ -4278,9 +4278,10 @@ function fxhPrintResult(data) {
 /* ── طباعة: A4 landscape محكم ── */
 '  @media print {\n' +
 '    html, body {\n' +
-'      width: 297mm; height: 210mm;\n' +
-'      overflow: hidden;\n' +
+'      width: 297mm !important; height: 210mm !important;\n' +
+'      overflow: hidden !important;\n' +
 '      background: #0d0626 !important;\n' +
+'      -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important;\n' +
 '    }\n' +
 '    .page-wrap {\n' +
 '      width: 297mm !important; height: 210mm !important;\n' +
@@ -4289,9 +4290,8 @@ function fxhPrintResult(data) {
 '      page-break-inside: avoid;\n' +
 '    }\n' +
 '    .content {\n' +
-'      min-height: unset !important; height: 210mm !important;\n' +
+'      width: 297mm !important; height: 210mm !important; min-height: unset !important;\n' +
 '    }\n' +
-'    body { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }\n' +
 '    * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }\n' +
 '  }\n' +
 /* خلفية زخرفية */
@@ -4446,7 +4446,44 @@ function fxhPrintResult(data) {
 'window.onload = function() {\n' +
 '  window.focus();\n' +
 '  document.title = ' + JSON.stringify(fileName) + ';\n' +
-'  setTimeout(function() { window.print(); }, 600);\n' +
+'\n' +
+'  /* ── كشف الجوال ── */\n' +
+'  var isMobile = /iPhone|iPad|iPod|Android|webOS|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);\n' +
+'\n' +
+'  if (isMobile) {\n' +
+'    /*\n' +
+'     * متصفحات الجوال (خاصةً iOS Safari) تتجاهل @page{size:landscape}\n' +
+'     * الحل: نطبع على ورق عمودي A4 لكن ندور المحتوى 90° بحيث يبدو أفقياً\n' +
+'     * الورق العمودي  = 210mm × 297mm\n' +
+'     * المحتوى الأفقي = 297mm × 210mm  →  بعد التدوير يملأ الورق العمودي\n' +
+'     * المعادلة: translateY(297mm) rotate(90deg) مع transform-origin: 0 0\n' +
+'     */\n' +
+'    var mobilePrintStyle = document.createElement("style");\n' +
+'    mobilePrintStyle.id = "fxh-mobile-print";\n' +
+'    mobilePrintStyle.textContent =\n' +
+'      "@page{size:A4 portrait!important;margin:0!important}" +\n' +
+'      "html,body{" +\n' +
+'        "width:210mm!important;height:297mm!important;" +\n' +
+'        "overflow:hidden!important;background:#0d0626!important;" +\n' +
+'        "-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}" +\n' +
+'      ".page-wrap{" +\n' +
+'        "width:297mm!important;height:210mm!important;" +\n' +
+'        "min-height:unset!important;overflow:hidden!important;" +\n' +
+'        "transform:translateY(297mm) rotate(90deg)!important;" +\n' +
+'        "transform-origin:0 0!important;" +\n' +
+'        "position:absolute!important;top:0!important;left:0!important}" +\n' +
+'      ".content{width:297mm!important;height:210mm!important;min-height:unset!important}" +\n' +
+'      ".bg-orb-1,.bg-orb-2,.border-outer,.border-inner,.corner{display:none!important}";\n' +
+'\n' +
+'    window.addEventListener("beforeprint", function() {\n' +
+'      document.head.appendChild(mobilePrintStyle);\n' +
+'    });\n' +
+'    window.addEventListener("afterprint", function() {\n' +
+'      if (mobilePrintStyle.parentNode) mobilePrintStyle.parentNode.removeChild(mobilePrintStyle);\n' +
+'    });\n' +
+'  }\n' +
+'\n' +
+'  setTimeout(function() { window.print(); }, 800);\n' +
 '};\n' +
 '<\/script>\n' +
 '</body>\n</html>';
