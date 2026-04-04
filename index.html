@@ -1040,7 +1040,7 @@ body.lang-ar #pageCertEN * {
 
             <!-- Register Form -->
             <div id="authFormRegister" style="display:none;">
-                <input type="text" id="authRegName" class="auth-input" placeholder="اسمك | Your name" autocomplete="name">
+                <input type="text" id="authRegName" class="auth-input" placeholder="اسمك الثنائي | Full name" autocomplete="name">
                 <input type="email" id="authRegEmail" class="auth-input" placeholder="البريد الإلكتروني | Email" autocomplete="email">
                 <input type="password" id="authRegPassword" class="auth-input" placeholder="كلمة المرور | Password (min 6 chars)" autocomplete="new-password">
                 <div class="auth-error" id="authRegError"></div>
@@ -1051,6 +1051,12 @@ body.lang-ar #pageCertEN * {
                 </div>
                 <button class="auth-btn-primary" id="authRegBtn" onclick="authRegisterEmail()">Create Account / إنشاء حساب</button>
                 <button class="auth-btn-secondary" onclick="authShowLogin()">Back to Login / العودة للدخول</button>
+            </div>
+
+            <div id="authGoogleNameForm" style="display:none;">
+                <input type="text" id="authGoogleFullName" class="auth-input" placeholder="اسمك الثنائي | Full name" autocomplete="name">
+                <div class="auth-error" id="authGoogleNameError"></div>
+                <button class="auth-btn-primary" onclick="authGoogleNameProceed()">حفظ | Save</button>
             </div>
 
             <div class="auth-guest-row">
@@ -2792,6 +2798,7 @@ if (isAr) {
 
             applyLangUI();
             authUpdateGuestBackButton();
+            if (fbIsGuest) fbApplyGuestUserBar();
 
             if (state.setup) {
                 if (document.getElementById('questionCount') && state.setup.questionCount) document.getElementById('questionCount').value = state.setup.questionCount;
@@ -2927,6 +2934,51 @@ var fbIsGuest      = false;  // true when browsing as guest
 var fbDailyAttempts = 0;     // how many exams taken in last 24h
 var fbPrevPageForResults = 'pageLang'; // where to go back from My Results
 var fbLimitCountdownInterval = null;
+var FB_GUEST_RESULTS_KEY = 'fuexhub_guest_results';
+
+function fbGetGuestDisplayName() {
+    var fallback = 'Guest';
+    try {
+        var v = sessionStorage.getItem('fuexhub_guest_full_name');
+        return (v && v.trim()) ? v.trim() : fallback;
+    } catch (e) {
+        return fallback;
+    }
+}
+
+function fbGetGuestResults() {
+    try {
+        var raw = sessionStorage.getItem(FB_GUEST_RESULTS_KEY);
+        if (!raw) return [];
+        var parsed = JSON.parse(raw);
+        return Array.isArray(parsed) ? parsed : [];
+    } catch (e) {
+        return [];
+    }
+}
+
+function fbSetGuestResults(results) {
+    try { sessionStorage.setItem(FB_GUEST_RESULTS_KEY, JSON.stringify(Array.isArray(results) ? results : [])); } catch (e) {}
+}
+
+function fbAddGuestResult(resultData) {
+    var results = fbGetGuestResults();
+    results.unshift(resultData);
+    fbSetGuestResults(results);
+}
+
+function fbApplyGuestUserBar() {
+    var bar = document.getElementById('userInfoBar');
+    if (bar) bar.classList.add('show');
+    var avatar = document.getElementById('userAvatar');
+    if (avatar) {
+        avatar.removeAttribute('src');
+        avatar.style.display = 'none';
+    }
+    var nameEl = document.getElementById('userDisplayName');
+    if (nameEl) nameEl.textContent = fbGetGuestDisplayName();
+    fbUpdateAttemptsDisplay();
+}
 
 /* ================================================================
    AUTH STATE LISTENER
@@ -2950,7 +3002,75 @@ fbAuth.onAuthStateChanged(function(user) {
 /* ================================================================
    ON USER LOGGED IN
    ================================================================ */
+function authIsValidBinaryName(name) {
+    var fullName = (name || '').trim().replace(/\s+/g, ' ');
+    if (!/^[A-Za-z؀-ۿ ]+$/.test(fullName)) return false;
+    var parts = fullName.split(' ').filter(Boolean);
+    if (parts.length < 2) return false;
+    return parts.every(function(part) { return /^[A-Za-z؀-ۿ]+$/.test(part); });
+}
+
+function authShowGoogleNameRequired(prefill) {
+    var loginForm = document.getElementById('authFormLogin');
+    var regForm = document.getElementById('authFormRegister');
+    var guestRow = document.querySelector('#pageAuth .auth-guest-row');
+    var forcedForm = document.getElementById('authGoogleNameForm');
+    var input = document.getElementById('authGoogleFullName');
+    var err = document.getElementById('authGoogleNameError');
+    if (loginForm) loginForm.style.display = 'none';
+    if (regForm) regForm.style.display = 'none';
+    if (guestRow) guestRow.style.display = 'none';
+    if (forcedForm) forcedForm.style.display = 'block';
+    if (err) err.textContent = '';
+    if (input) { input.value = (prefill || '').trim(); input.focus(); }
+}
+
+function authHideGoogleNameRequired() {
+    var forcedForm = document.getElementById('authGoogleNameForm');
+    var guestRow = document.querySelector('#pageAuth .auth-guest-row');
+    var err = document.getElementById('authGoogleNameError');
+    var input = document.getElementById('authGoogleFullName');
+    if (forcedForm) forcedForm.style.display = 'none';
+    if (guestRow) guestRow.style.display = '';
+    if (err) err.textContent = '';
+    if (input) input.value = '';
+}
+
+function authGoogleNameProceed() {
+    var input = document.getElementById('authGoogleFullName');
+    var err = document.getElementById('authGoogleNameError');
+    var fullName = input ? input.value.trim().replace(/\s+/g, ' ') : '';
+    if (err) err.textContent = '';
+    if (!authIsValidBinaryName(fullName)) {
+        if (err) err.textContent = 'يرجى كتابة اسم ثنائي صحيح بالحروف فقط | Please enter a valid first and last name using letters only';
+        return;
+    }
+    if (!fbCurrentUser) {
+        if (err) err.textContent = 'حدث خطأ، حاول تسجيل الدخول مرة أخرى | Something went wrong, please sign in again';
+        return;
+    }
+    fbCurrentUser.updateProfile({ displayName: fullName }).then(function() {
+        if (typeof fbCurrentUser.reload === 'function') return fbCurrentUser.reload();
+    }).then(function() {
+        fbCurrentUser = fbAuth.currentUser || fbCurrentUser;
+        authHideGoogleNameRequired();
+        fbOnUserLoggedIn(fbCurrentUser);
+    }).catch(function(e) {
+        if (err) err.textContent = e && e.message ? e.message : 'تعذر حفظ الاسم | Could not save the name';
+    });
+}
+
 function fbOnUserLoggedIn(user) {
+    var providerId = (user && user.providerData && user.providerData[0] && user.providerData[0].providerId) ? user.providerData[0].providerId : '';
+    if (providerId === 'google.com' && !authIsValidBinaryName(user.displayName || '')) {
+        showPage('pageAuth');
+        authShowGoogleNameRequired(user.displayName || '');
+        document.getElementById('userInfoBar').classList.remove('show');
+        return;
+    }
+
+    authHideGoogleNameRequired();
+
     // Update user info bar
     var bar = document.getElementById('userInfoBar');
     if (bar) bar.classList.add('show');
@@ -2962,7 +3082,7 @@ function fbOnUserLoggedIn(user) {
     }
 
     var nameEl = document.getElementById('userDisplayName');
-    if (nameEl) nameEl.textContent = user.displayName || user.email || 'User';
+    if (nameEl) nameEl.textContent = (user.displayName && user.displayName.trim()) ? user.displayName.trim() : 'User';
 
     // Load daily attempt count then go to app
     fbLoadDailyAttempts().then(function() {
@@ -3056,6 +3176,11 @@ function authRegisterEmail() {
         errEl.textContent = 'Please fill in all fields. | يرجى ملء جميع الحقول.';
         return;
     }
+    name = name.replace(/\s+/g, ' ').trim();
+    if (!authIsValidBinaryName(name)) {
+        errEl.textContent = 'Please enter your full first and last name using letters only. | يرجى كتابة اسم ثنائي صحيح بالحروف فقط.';
+        return;
+    }
     if (password.length < 6) {
         errEl.textContent = 'Password must be at least 6 characters. | كلمة المرور 6 أحرف على الأقل.';
         return;
@@ -3098,6 +3223,7 @@ function authShowRegister() {
 }
 
 function authShowLogin() {
+    authHideGoogleNameRequired();
     document.getElementById('authFormRegister').style.display = 'none';
     document.getElementById('authFormLogin').style.display    = 'block';
     document.getElementById('authRegError').textContent = '';
@@ -3123,7 +3249,7 @@ function authGuestProceed() {
     var input = document.getElementById('authGuestFullName');
     var err   = document.getElementById('authGuestError');
     var fullName = input ? input.value.trim().replace(/\s+/g, ' ') : '';
-    var valid = /^\S+\s+\S+(?:\s.*)?$/.test(fullName);
+    var valid = authIsValidBinaryName(fullName);
     if (err) err.textContent = '';
     if (!valid) {
         if (err) err.textContent = 'يرجى كتابة الاسم الثنائي الصحيح | Please enter your full name';
@@ -3132,12 +3258,33 @@ function authGuestProceed() {
     fbIsGuest     = true;
     fbCurrentUser = null;
     try { sessionStorage.setItem('fuexhub_guest_full_name', fullName); } catch(e) {}
-    document.getElementById('userInfoBar').classList.remove('show');
+    fbApplyGuestUserBar();
     authUpdateGuestBackButton();
     showPage('pageLang');
 }
 
 function authSignOut() {
+    if (fbIsGuest && !fbCurrentUser) {
+        fbCurrentUser = null;
+        fbIsGuest = false;
+        fbDailyAttempts = 0;
+        try { sessionStorage.removeItem('fuexhub_guest_full_name'); } catch(e) {}
+        try { sessionStorage.removeItem(FB_GUEST_RESULTS_KEY); } catch(e) {}
+        document.getElementById('userInfoBar').classList.remove('show');
+        showPage('pageAuth');
+        updatePdfButtonVisibility('pageAuth');
+        authUpdateGuestBackButton();
+        var guestForm = document.getElementById('authGuestForm');
+        var guestErr = document.getElementById('authGuestError');
+        var guestInput = document.getElementById('authGuestFullName');
+        if (guestForm) { guestForm.style.display = 'none'; guestForm.classList.remove('show'); }
+        if (guestErr) guestErr.textContent = '';
+        if (guestInput) guestInput.value = '';
+        authHideGoogleNameRequired();
+        saveSessionState();
+        return;
+    }
+
     fbAuth.signOut().then(function() {
         fbCurrentUser = null;
         fbIsGuest = false;
@@ -3152,6 +3299,7 @@ function authSignOut() {
         if (guestForm) { guestForm.style.display = 'none'; guestForm.classList.remove('show'); }
         if (guestErr) guestErr.textContent = '';
         if (guestInput) guestInput.value = '';
+        authHideGoogleNameRequired();
     });
 }
 
@@ -3188,9 +3336,15 @@ function fbLoadDailyAttempts() {
 function fbUpdateAttemptsDisplay() {
     var el = document.getElementById('userAttemptsInfo');
     if (!el) return;
+    if (fbIsGuest) {
+        var guestResultsCount = fbGetGuestResults().length;
+        el.innerHTML = "<span style=\"font-family:'Tajawal',sans-serif;\">نتائج هذه الجلسة: " + guestResultsCount + "</span><br>" +
+                       'Session results: ' + guestResultsCount;
+        return;
+    }
     var remaining = Math.max(0, FB_DAILY_LIMIT - fbDailyAttempts);
-el.innerHTML = '<span style="font-family:\'Tajawal\',sans-serif;">\u200F' + remaining + ' محاولات (محاولة) متبقية اليوم</span><br>' +
-               remaining + ' attempt(s) left today';
+    el.innerHTML = "<span style=\"font-family:'Tajawal',sans-serif;\">‏" + remaining + " محاولات (محاولة) متبقية اليوم</span><br>" +
+                   remaining + ' attempt(s) left today';
 }
 
 function fbGetEarliestAttemptTimestamp() {
@@ -3221,26 +3375,54 @@ function fbGetEarliestAttemptTimestamp() {
 var _origStartQuiz       = window.startQuiz;
 var _origStartCustomQuiz = window.startCustomQuiz;
 
-window.startQuiz = function() {
-    if (!fbCurrentUser || fbIsGuest) { _origStartQuiz(); return; }
-    // Always re-fetch from Firestore to get accurate count
-    fbLoadDailyAttempts().then(function() {
+function fbRunWithAttemptGuard(onAllowed) {
+    if (!fbCurrentUser || fbIsGuest) {
+        onAllowed();
+        return;
+    }
+
+    var started = false;
+    function allowOnce() {
+        if (started) return;
+        started = true;
+        onAllowed();
+    }
+    function blockIfNeeded() {
+        if (started) return;
+        started = true;
         if (fbDailyAttempts >= FB_DAILY_LIMIT) {
             fbShowLimitOverlay();
         } else {
-            _origStartQuiz();
+            onAllowed();
         }
+    }
+
+    var fallbackTimer = setTimeout(function() {
+        console.warn('Attempt check timed out. Starting exam normally.');
+        allowOnce();
+    }, 1500);
+
+    Promise.resolve(fbLoadDailyAttempts())
+        .then(function() {
+            clearTimeout(fallbackTimer);
+            blockIfNeeded();
+        })
+        .catch(function(err) {
+            clearTimeout(fallbackTimer);
+            console.warn('Attempt check failed. Starting exam normally.', err);
+            allowOnce();
+        });
+}
+
+window.startQuiz = function() {
+    fbRunWithAttemptGuard(function() {
+        _origStartQuiz();
     });
 };
 
 window.startCustomQuiz = function() {
-    if (!fbCurrentUser || fbIsGuest) { _origStartCustomQuiz(); return; }
-    fbLoadDailyAttempts().then(function() {
-        if (fbDailyAttempts >= FB_DAILY_LIMIT) {
-            fbShowLimitOverlay();
-        } else {
-            _origStartCustomQuiz();
-        }
+    fbRunWithAttemptGuard(function() {
+        _origStartCustomQuiz();
     });
 };
 
@@ -3292,8 +3474,33 @@ function fbSaveResult(resultData) {
     document.getElementById('guestNoticeBanner').classList.remove('show');
 
     if (fbIsGuest || !fbCurrentUser) {
-        // Show guest notice
+        fbAddGuestResult({
+            certCode: currentCertCode,
+            certName: currentCertName,
+            lang: currentLang,
+            score: resultData.score,
+            percentage: resultData.percentage,
+            passed: resultData.passed,
+            timeFormatted: resultData.timeFormatted,
+            correctAnswers: resultData.correctAnswers,
+            wrongAnswers: resultData.wrongAnswers,
+            totalQuestions: resultData.totalQuestions,
+            timeExpired: resultData.timeExpired,
+            clientTimestamp: Date.now(),
+            guestName: fbGetGuestDisplayName()
+        });
+        fbUpdateAttemptsDisplay();
         document.getElementById('guestNoticeBanner').classList.add('show');
+        var titleEl = document.getElementById('guestNoticeTitle');
+        var subEl = document.getElementById('guestNoticeSub');
+        var btnEl = document.getElementById('guestNoticeBtn');
+        if (titleEl) titleEl.textContent = currentLang === 'ar' ? '✅ تم حفظ النتائج داخل الجلسة' : '✅ Results saved for this session';
+        if (subEl) subEl.textContent = currentLang === 'ar' ? 'ستجد نتائجك في صفحة نتائجي حتى تغلق الصفحة' : 'You can find them in My Results until the page is closed';
+        if (btnEl) {
+            btnEl.textContent = currentLang === 'ar' ? '📊 نتائجي' : '📊 My Results';
+            btnEl.onclick = function() { showMyResults(); };
+        }
+        saveSessionState();
         return;
     }
 
@@ -3310,11 +3517,10 @@ function fbSaveResult(resultData) {
         totalQuestions: resultData.totalQuestions,
         timeExpired:    resultData.timeExpired,
         timestamp:      firebase.firestore.FieldValue.serverTimestamp(),
-        clientTimestamp: Date.now(),   // fallback for immediate display
+        clientTimestamp: Date.now(),
         uid:            fbCurrentUser.uid
     };
 
-    // Save to user's subcollection (for My Results)
     fbDb.collection('users').doc(fbCurrentUser.uid)
         .collection('results')
         .add(docData)
@@ -3324,7 +3530,6 @@ function fbSaveResult(resultData) {
         })
         .catch(function(err) {
             console.warn('Failed to save result:', err);
-            // Show a fallback notice so the user knows
             console.warn('Could not save result. Check Firestore rules.');
         });
 }
@@ -3340,12 +3545,62 @@ function showMyResults() {
 }
 
 function goBackFromMyResults() {
-    showPage(fbPrevPageForResults || 'pageLang');
+    showPage('pageLang');
+}
+
+function fbRenderMyResults(results) {
+    document.getElementById('myResultsLoading').style.display = 'none';
+
+    if (!results || results.length === 0) {
+        document.getElementById('myResultsEmpty').style.display = 'block';
+        return;
+    }
+
+    var totalPassed = results.filter(function(r){ return r.passed; }).length;
+    var totalFailed = results.length - totalPassed;
+
+    document.getElementById('statTotal').textContent  = results.length;
+    document.getElementById('statPassed').textContent = totalPassed;
+    document.getElementById('statFailed').textContent = totalFailed;
+    document.getElementById('myResultsStatsRow').style.display = 'grid';
+
+    var tbody = document.getElementById('myResultsBody');
+    tbody.innerHTML = '';
+    results.forEach(function(r, idx) {
+        var ts = r._ts || (r.timestamp && r.timestamp.toDate ? r.timestamp.toDate() : (r.clientTimestamp ? new Date(r.clientTimestamp) : new Date()));
+        var dateStr = ts.toLocaleDateString('en-GB', { day:'2-digit', month:'short', year:'numeric' });
+        var timeStr = ts.toLocaleTimeString('en-GB', { hour:'2-digit', minute:'2-digit', second:'2-digit' });
+        var langBadge = '<span class="result-lang-badge">' + (r.lang === 'ar' ? 'AR' : 'EN') + '</span>';
+        var statusBadge = r.passed
+            ? '<span class="result-badge-pass">PASS ✅</span>'
+            : '<span class="result-badge-fail">FAIL ❌</span>';
+        var certImgMap = {
+            'AIF-C01':'AIF.png','CLF-C02':'CLF.png','MLA-C01':'MLA.png',
+            'SAA-C03':'SAA.png','DVA-C02':'DVA.png','DEA-C01':'DEA.png',
+            'SOA-C02':'SOA2.png','SOA-C03':'SOA3.png','AIP-C01':'AIP.png',
+            'SAP-C02':'SAP.png','DOP-C02':'DOP.png','MLS-C01':'MLS.png',
+            'ANS-C01':'ANS.png','SCS-C02':'SCS2.png','SCS-C03':'SCS3.png'
+        };
+        var certImg = r.certCode && certImgMap[r.certCode]
+            ? '<img src="' + certImgMap[r.certCode] + '" alt="' + r.certCode + '" class="my-results-cert-img">'
+            : '<strong>' + (r.certCode || '—') + '</strong>';
+        var tr = document.createElement('tr');
+        tr.innerHTML =
+            '<td>' + (idx + 1) + '</td>' +
+            '<td>' + certImg + '</td>' +
+            '<td><strong style="font-size:0.82rem;letter-spacing:0.5px;color:#58a6ff;">' + (r.certCode || '—') + '</strong></td>' +
+            '<td><strong>' + (r.score || 0) + '</strong>/1000</td>' +
+            '<td>' + (r.percentage || 0) + '%</td>' +
+            '<td>' + statusBadge + '</td>' +
+            '<td>' + langBadge + '</td>' +
+            '<td>' + dateStr + '<br><span style="font-size:0.8rem;opacity:0.7;">' + timeStr + '</span></td>';
+        tbody.appendChild(tr);
+    });
+
+    document.getElementById('myResultsTableWrap').style.display = 'block';
 }
 
 function fbLoadMyResults() {
-    if (!fbCurrentUser) return;
-
     document.getElementById('myResultsLoading').style.display = 'block';
     document.getElementById('myResultsEmpty').style.display   = 'none';
     document.getElementById('myResultsTableWrap').style.display = 'none';
@@ -3353,75 +3608,33 @@ function fbLoadMyResults() {
 
     var thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
 
+    if (fbIsGuest || !fbCurrentUser) {
+        var guestResults = fbGetGuestResults().map(function(d) {
+            d._ts = d.clientTimestamp ? new Date(d.clientTimestamp) : new Date();
+            return d;
+        }).filter(function(d) {
+            return d._ts && d._ts >= thirtyDaysAgo;
+        });
+        fbRenderMyResults(guestResults);
+        return;
+    }
+
     fbDb.collection('users').doc(fbCurrentUser.uid)
         .collection('results')
         .orderBy('timestamp', 'desc')
         .limit(200)
         .get()
         .then(function(snap) {
-            document.getElementById('myResultsLoading').style.display = 'none';
-
-            // Filter client-side to last 30 days (avoids composite index requirement)
             var results = [];
             snap.forEach(function(doc) {
                 var d = doc.data();
-                // Use clientTimestamp fallback if server timestamp not yet set
                 var ts = d.timestamp ? d.timestamp.toDate() : (d.clientTimestamp ? new Date(d.clientTimestamp) : null);
                 if (ts && ts >= thirtyDaysAgo) {
-                    d._ts = ts; // attach resolved date
+                    d._ts = ts;
                     results.push(d);
                 }
             });
-
-            if (results.length === 0) {
-                document.getElementById('myResultsEmpty').style.display = 'block';
-                return;
-            }
-
-            // Stats (no avg)
-            var totalPassed = results.filter(function(r){ return r.passed; }).length;
-            var totalFailed = results.length - totalPassed;
-
-            document.getElementById('statTotal').textContent  = results.length;
-            document.getElementById('statPassed').textContent = totalPassed;
-            document.getElementById('statFailed').textContent = totalFailed;
-            document.getElementById('myResultsStatsRow').style.display = 'grid';
-
-            // Build table
-            var tbody = document.getElementById('myResultsBody');
-            tbody.innerHTML = '';
-            results.forEach(function(r, idx) {
-                var ts = r._ts;
-                var dateStr = ts.toLocaleDateString('en-GB', { day:'2-digit', month:'short', year:'numeric' });
-                var timeStr = ts.toLocaleTimeString('en-GB', { hour:'2-digit', minute:'2-digit', second:'2-digit' });
-                var langBadge = '<span class="result-lang-badge">' + (r.lang === 'ar' ? 'AR' : 'EN') + '</span>';
-                var statusBadge = r.passed
-                    ? '<span class="result-badge-pass">PASS ✅</span>'
-                    : '<span class="result-badge-fail">FAIL ❌</span>';
-                var certImgMap = {
-                    'AIF-C01':'AIF.png','CLF-C02':'CLF.png','MLA-C01':'MLA.png',
-                    'SAA-C03':'SAA.png','DVA-C02':'DVA.png','DEA-C01':'DEA.png',
-                    'SOA-C02':'SOA2.png','SOA-C03':'SOA3.png','AIP-C01':'AIP.png',
-                    'SAP-C02':'SAP.png','DOP-C02':'DOP.png','MLS-C01':'MLS.png',
-                    'ANS-C01':'ANS.png','SCS-C02':'SCS2.png','SCS-C03':'SCS3.png'
-                };
-                var certImg = r.certCode && certImgMap[r.certCode]
-                    ? '<img src="' + certImgMap[r.certCode] + '" alt="' + r.certCode + '" class="my-results-cert-img">'
-                    : '<strong>' + (r.certCode || '—') + '</strong>';
-                var tr = document.createElement('tr');
-                tr.innerHTML =
-                    '<td>' + (idx + 1) + '</td>' +
-                    '<td>' + certImg + '</td>' +
-                    '<td><strong style="font-size:0.82rem;letter-spacing:0.5px;color:#58a6ff;">' + (r.certCode || '—') + '</strong></td>' +
-                    '<td><strong>' + (r.score || 0) + '</strong>/1000</td>' +
-                    '<td>' + (r.percentage || 0) + '%</td>' +
-                    '<td>' + statusBadge + '</td>' +
-                    '<td>' + langBadge + '</td>' +
-                    '<td>' + dateStr + '<br><span style="font-size:0.8rem;opacity:0.7;">' + timeStr + '</span></td>';
-                tbody.appendChild(tr);
-            });
-
-            document.getElementById('myResultsTableWrap').style.display = 'block';
+            fbRenderMyResults(results);
         })
         .catch(function(err) {
             document.getElementById('myResultsLoading').style.display = 'none';
@@ -3471,7 +3684,7 @@ document.addEventListener('DOMContentLoaded', function() {
         var myResItem = document.getElementById('fabMyResultsItem');
         if (myResItem) {
             var showPages = ['page0','page1','page1b','page3'];
-            var shouldShow = fbCurrentUser && !fbIsGuest && showPages.indexOf(pageId) !== -1;
+            var shouldShow = (fbCurrentUser || fbIsGuest) && showPages.indexOf(pageId) !== -1;
             myResItem.style.display = shouldShow ? 'flex' : 'none';
         }
     };
