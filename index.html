@@ -4254,7 +4254,7 @@ function fxhPrintResult(data) {
 '<html lang="' + (isAr ? 'ar' : 'en') + '" dir="' + dir + '">\n' +
 '<head>\n' +
 '<meta charset="UTF-8">\n' +
-'<meta name="viewport" content="width=1123, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, shrink-to-fit=no">\n' +
+'<meta name="viewport" content="width=1123, initial-scale=1, shrink-to-fit=no">\n' +
 '<base href="' + baseHref + '">\n' +
 '<title>' + fileName + '</title>\n' +
 '<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">\n' +
@@ -4263,13 +4263,13 @@ function fxhPrintResult(data) {
 '  * { box-sizing: border-box; font-family: \'Tajawal\', sans-serif; margin: 0; padding: 0; }\n' +
 /* ── شاشة عادية ── */
 '  html, body {\n' +
-'    width: 297mm; min-width: 297mm; overflow-x: auto; overflow-y: auto;\n' +
+'    width: 100%; min-width: 1123px; overflow-x: auto; overflow-y: auto;\n' +
 '    background: #0d0626;\n' +
-'    min-height: 210mm;\n' +
+'    min-height: 100vh;\n' +
 '  }\n' +
 '  .page-wrap {\n' +
-'    width: 297mm !important; min-width: 297mm !important; max-width: 297mm !important;\n' +
-'    min-height: 210mm;\n' +
+'    width: 1123px; min-width: 1123px;\n' +
+'    min-height: 100vh;\n' +
 '    padding: 0;\n' +
 '    position: relative;\n' +
 '    background: linear-gradient(135deg, #0d0626 0%, #1a0a4a 30%, #0a1a3a 60%, #16063a 100%);\n' +
@@ -4278,20 +4278,20 @@ function fxhPrintResult(data) {
 /* ── طباعة: A4 landscape محكم ── */
 '  @media print {\n' +
 '    html, body {\n' +
-'      width: 297mm !important; height: 210mm !important;\n' +
+'      width: 297mm !important; min-width: 297mm !important; height: 210mm !important;\n' +
 '      overflow: hidden !important;\n' +
 '      background: #0d0626 !important;\n' +
-'      -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important;\n' +
 '    }\n' +
 '    .page-wrap {\n' +
-'      width: 297mm !important; height: 210mm !important;\n' +
+'      width: 297mm !important; min-width: 297mm !important; height: 210mm !important;\n' +
 '      min-height: unset !important;\n' +
 '      overflow: hidden !important;\n' +
 '      page-break-inside: avoid;\n' +
 '    }\n' +
 '    .content {\n' +
-'      width: 297mm !important; height: 210mm !important; min-height: unset !important;\n' +
+'      min-height: unset !important; height: 210mm !important;\n' +
 '    }\n' +
+'    body { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }\n' +
 '    * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }\n' +
 '  }\n' +
 /* خلفية زخرفية */
@@ -4319,8 +4319,8 @@ function fxhPrintResult(data) {
 '  .content {\n' +
 '    position: relative; z-index: 5;\n' +
 '    padding: 10mm 13mm 7mm;\n' +
-'    display: flex; flex-direction: column; min-height: 210mm; gap: 0;\n' +
-'    width: 297mm; max-width: 297mm; margin: 0 auto;\n' +
+'    display: flex; flex-direction: column; min-height: 100vh; gap: 0;\n' +
+'    max-width: 297mm; width: 100%; margin: 0 auto;\n' +
 '  }\n' +
 /* الرأس */
 '  .header {\n' +
@@ -4446,43 +4446,16 @@ function fxhPrintResult(data) {
 'window.onload = function() {\n' +
 '  window.focus();\n' +
 '  document.title = ' + JSON.stringify(fileName) + ';\n' +
-'\n' +
-'  /* ── كشف الجوال ── */\n' +
-'  var isMobile = /iPhone|iPad|iPod|Android|webOS|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);\n' +
-'\n' +
-'  if (isMobile) {\n' +
-'    /*\n' +
-'     * متصفحات الجوال (خاصةً iOS Safari) تتجاهل @page{size:landscape}\n' +
-'     * الحل: نطبع على ورق عمودي A4 لكن ندور المحتوى 90° بحيث يبدو أفقياً\n' +
-'     * الورق العمودي  = 210mm × 297mm\n' +
-'     * المحتوى الأفقي = 297mm × 210mm  →  بعد التدوير يملأ الورق العمودي\n' +
-'     * المعادلة: translateY(297mm) rotate(90deg) مع transform-origin: 0 0\n' +
-'     */\n' +
-'    var mobilePrintStyle = document.createElement("style");\n' +
-'    mobilePrintStyle.id = "fxh-mobile-print";\n' +
-'    mobilePrintStyle.textContent =\n' +
-'      "@page{size:A4 portrait!important;margin:0!important}" +\n' +
-'      "html,body{" +\n' +
-'        "width:210mm!important;height:297mm!important;" +\n' +
-'        "overflow:hidden!important;background:#0d0626!important;" +\n' +
-'        "-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}" +\n' +
-'      ".page-wrap{" +\n' +
-'        "width:297mm!important;height:210mm!important;" +\n' +
-'        "min-height:unset!important;overflow:hidden!important;" +\n' +
-'        "transform:translateY(297mm) rotate(90deg)!important;" +\n' +
-'        "transform-origin:0 0!important;" +\n' +
-'        "position:absolute!important;top:0!important;left:0!important}" +\n' +
-'      ".content{width:297mm!important;height:210mm!important;min-height:unset!important}" +\n' +
-'      ".bg-orb-1,.bg-orb-2,.border-outer,.border-inner,.corner{display:none!important}";\n' +
-'\n' +
-'    window.addEventListener("beforeprint", function() {\n' +
-'      document.head.appendChild(mobilePrintStyle);\n' +
-'    });\n' +
-'    window.addEventListener("afterprint", function() {\n' +
-'      if (mobilePrintStyle.parentNode) mobilePrintStyle.parentNode.removeChild(mobilePrintStyle);\n' +
-'    });\n' +
+'  var pw = document.querySelector(\'.page-wrap\');\n' +
+'  var vw = window.innerWidth || document.documentElement.clientWidth || 1123;\n' +
+'  if (pw && vw < 1100) {\n' +
+'    var scale = vw / 1123;\n' +
+'    pw.style.transformOrigin = \'top left\';\n' +
+'    pw.style.transform = \'scale(\' + scale + \')\';\n' +
+'    pw.style.width = \'1123px\';\n' +
+'    document.documentElement.style.overflow = \'hidden\';\n' +
+'    document.body.style.overflow = \'hidden\';\n' +
 '  }\n' +
-'\n' +
 '  setTimeout(function() { window.print(); }, 800);\n' +
 '};\n' +
 '<\/script>\n' +
