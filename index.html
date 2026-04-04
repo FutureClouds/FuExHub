@@ -3145,5 +3145,335 @@ document.addEventListener('DOMContentLoaded', function() {
     };
 });
 </script>
+
+<script>
+(function(){
+    var PAGE_TO_HASH = {
+        pageAuth: 'Login',
+        pageLang: 'Language',
+        pageCertAR: 'CertAR',
+        pageCertEN: 'CertEN',
+        page0: 'Certificate',
+        page1: 'SRM',
+        page1b: 'CRM',
+        page2: 'EXAM',
+        page3: 'ExamResults',
+        pageMyResults: 'MyResults'
+    };
+    var HASH_TO_PAGE = {};
+    Object.keys(PAGE_TO_HASH).forEach(function(k){ HASH_TO_PAGE[PAGE_TO_HASH[k]] = k; });
+
+    var SESSION_KEY = 'fuExHubSessionState';
+    var rawShowPage = window.showPage;
+    var rawLoadCert = window.loadCert;
+    var rawAuthContinueAsGuest = window.authContinueAsGuest;
+    var rawAuthSignOut = window.authSignOut;
+    var restoreLock = false;
+    var restoredOnce = false;
+    var navGuardActive = false;
+
+    function safeSetHash(pageId, replace) {
+        var alias = PAGE_TO_HASH[pageId] || pageId;
+        var newUrl = location.pathname + location.search + '#' + alias;
+        try {
+            if (replace) history.replaceState({ pageId: pageId }, '', newUrl);
+            else history.pushState({ pageId: pageId }, '', newUrl);
+        } catch (e) {
+            location.hash = alias;
+        }
+    }
+
+    function getPageFromHash() {
+        var h = (location.hash || '').replace(/^#/, '');
+        return HASH_TO_PAGE[h] || null;
+    }
+
+    function getActivePageId() {
+        var active = document.querySelector('.page.active');
+        return active ? active.id : 'pageAuth';
+    }
+
+    function captureResultsSnapshot() {
+        if (getActivePageId() !== 'page3') return null;
+        var ids = ['timeResult','timeResultSub','scoreResult','passResult','percentageResult','correctCount','wrongCount','motivationalMessage','reviewQuestions'];
+        var snap = {};
+        ids.forEach(function(id){ var el = document.getElementById(id); snap[id] = el ? el.innerHTML : ''; });
+        return snap;
+    }
+
+    function persistSessionState() {
+        if (restoreLock) return;
+        try {
+            var state = {
+                pageId: getActivePageId(),
+                currentLang: window.currentLang,
+                currentCertCode: window.currentCertCode,
+                currentCertName: window.currentCertName,
+                currentDefaultTime: window.currentDefaultTime,
+                currentDefaultQCount: window.currentDefaultQCount,
+                currentPassScore: window.currentPassScore,
+                currentQALink: window.currentQALink,
+                currentMode: window.currentMode || '',
+                currentCertKey: window.__currentCertKey || '',
+                selectedQuestions: window.selectedQuestions || [],
+                userAnswers: window.userAnswers || {},
+                timeLimit: window.timeLimit,
+                startTimeMs: window.startTime ? window.startTime.getTime() : null,
+                timerVisible: window.timerVisible,
+                theme: document.body.getAttribute('data-theme') || 'light',
+                fbIsGuest: !!window.fbIsGuest,
+                guestName: window.fbIsGuest ? ((document.getElementById('userDisplayName') || {}).textContent || '') : '',
+                authForm: (document.getElementById('authFormRegister') && document.getElementById('authFormRegister').style.display !== 'none') ? 'register' : 'login',
+                resultsSnapshot: captureResultsSnapshot(),
+                questionCountValue: (document.getElementById('questionCount') || {}).value || '',
+                timeLimitValue: (document.getElementById('timeLimit') || {}).value || '',
+                rangeFrom: (document.getElementById('rangeFrom') || {}).value || '',
+                rangeTo: (document.getElementById('rangeTo') || {}).value || '',
+                customTimeMinutes: (document.getElementById('customTimeMinutes') || {}).value || '',
+                unlimitedTime: !!((document.getElementById('unlimitedTime') || {}).checked),
+                fbPrevPageForResults: window.fbPrevPageForResults || 'pageLang'
+            };
+            sessionStorage.setItem(SESSION_KEY, JSON.stringify(state));
+        } catch (e) {
+            console.warn('Session save skipped:', e);
+        }
+    }
+
+    function restoreAnswerSelections() {
+        var answers = window.userAnswers || {};
+        Object.keys(answers).forEach(function(qi) {
+            var q = window.selectedQuestions[qi];
+            if (!q) return;
+            if (q.isHotspot) {
+                var rowMap = answers[qi] || {};
+                Object.keys(rowMap).forEach(function(ri) {
+                    var sel = document.getElementById('hotspot' + qi + '_' + ri);
+                    if (sel) {
+                        sel.value = rowMap[ri];
+                        sel.classList.toggle('answered', !!rowMap[ri]);
+                    }
+                });
+            } else {
+                (answers[qi] || []).forEach(function(optIndex) {
+                    var inp = document.getElementById('q' + qi + '_' + optIndex);
+                    if (inp) {
+                        inp.checked = true;
+                        var opt = inp.closest('.option');
+                        if (opt) opt.classList.add('selected');
+                    }
+                });
+            }
+        });
+    }
+
+    function restoreResultsSnapshot(snapshot) {
+        if (!snapshot) return;
+        Object.keys(snapshot).forEach(function(id) {
+            var el = document.getElementById(id);
+            if (el && typeof snapshot[id] === 'string') el.innerHTML = snapshot[id];
+        });
+    }
+
+    function restoreGuestBar(name) {
+        try {
+            if (!window.fbIsGuest) return;
+            var bar = document.getElementById('userInfoBar');
+            if (bar) bar.classList.add('show');
+            var avatar = document.getElementById('userAvatar');
+            if (avatar) avatar.style.display = 'none';
+            var nameEl = document.getElementById('userDisplayName');
+            if (nameEl) nameEl.textContent = name || 'Guest';
+            var attempts = document.getElementById('userAttemptsInfo');
+            if (attempts) attempts.style.display = 'none';
+        } catch (e) {}
+    }
+
+    function applyNavGuard(pageId) {
+        navGuardActive = (pageId === 'page2' || pageId === 'page3');
+        if (navGuardActive) {
+            safeSetHash(pageId, true);
+        }
+    }
+
+    window.showPage = function(pageId, opts) {
+        opts = opts || {};
+        rawShowPage(pageId);
+        applyNavGuard(pageId);
+        if (!opts.skipHash) {
+            if (opts.replace) safeSetHash(pageId, true);
+            else safeSetHash(pageId, false);
+        }
+        persistSessionState();
+    };
+
+    window.loadCert = function(lang, certKey, certCode, certName, defaultTime, defaultQCount, passScore, qaLink) {
+        window.__currentCertKey = certKey;
+        return rawLoadCert(lang, certKey, certCode, certName, defaultTime, defaultQCount, passScore, qaLink);
+    };
+
+    window.authContinueAsGuest = function() {
+        var result = rawAuthContinueAsGuest.apply(this, arguments);
+        persistSessionState();
+        return result;
+    };
+
+    window.authSignOut = function() {
+        try { sessionStorage.removeItem(SESSION_KEY); } catch (e) {}
+        return rawAuthSignOut.apply(this, arguments);
+    };
+
+    var originalOnUserLoggedIn = window.fbOnUserLoggedIn;
+    if (typeof originalOnUserLoggedIn === 'function') {
+        window.fbOnUserLoggedIn = function(user) {
+            if (restoredOnce) {
+                var bar = document.getElementById('userInfoBar');
+                if (bar) bar.classList.add('show');
+                var avatar = document.getElementById('userAvatar');
+                if (avatar) {
+                    avatar.src = user.photoURL || '';
+                    avatar.style.display = user.photoURL ? 'block' : 'none';
+                }
+                var nameEl = document.getElementById('userDisplayName');
+                if (nameEl) nameEl.textContent = user.displayName || user.email || 'User';
+                if (typeof window.fbLoadDailyAttempts === 'function') {
+                    window.fbLoadDailyAttempts().then(function(){
+                        if (typeof window.fbUpdateAttemptsDisplay === 'function') window.fbUpdateAttemptsDisplay();
+                    });
+                }
+                persistSessionState();
+                return;
+            }
+            return originalOnUserLoggedIn.apply(this, arguments);
+        };
+    }
+
+    ['handleOptionChange','handleHotspotChange','toggleUnlimitedTime','authShowRegister','authShowLogin','showMyResults','goBackFromMyResults','restartQuiz'].forEach(function(fn) {
+        var orig = window[fn];
+        if (typeof orig === 'function') {
+            window[fn] = function() {
+                var result = orig.apply(this, arguments);
+                persistSessionState();
+                return result;
+            };
+        }
+    });
+
+    ['questionCount','timeLimit','rangeFrom','rangeTo','customTimeMinutes','unlimitedTime','authEmail','authPassword','authRegName','authRegEmail'].forEach(function(id){
+        document.addEventListener('change', function(e){ if (e.target && e.target.id === id) persistSessionState(); });
+        document.addEventListener('input', function(e){ if (e.target && e.target.id === id) persistSessionState(); });
+    });
+
+    window.addEventListener('beforeunload', persistSessionState);
+
+    window.addEventListener('popstate', function() {
+        if (navGuardActive) {
+            safeSetHash(getActivePageId(), true);
+            return;
+        }
+        var pageFromHash = getPageFromHash();
+        if (pageFromHash && pageFromHash !== getActivePageId()) {
+            window.showPage(pageFromHash, { skipHash: true, replace: true });
+        }
+    });
+
+    window.addEventListener('hashchange', function() {
+        if (navGuardActive) {
+            safeSetHash(getActivePageId(), true);
+            return;
+        }
+        var pageFromHash = getPageFromHash();
+        if (pageFromHash && pageFromHash !== getActivePageId()) {
+            window.showPage(pageFromHash, { skipHash: true, replace: true });
+        }
+    });
+
+    function restoreSessionState() {
+        var raw = null;
+        try { raw = sessionStorage.getItem(SESSION_KEY); } catch (e) {}
+        var hashPage = getPageFromHash();
+        if (!raw && hashPage) {
+            window.showPage(hashPage, { replace: true });
+            return;
+        }
+        if (!raw) return;
+        try {
+            var state = JSON.parse(raw);
+            if (!state || !state.pageId) return;
+            restoreLock = true;
+            restoredOnce = true;
+
+            if (state.theme) document.body.setAttribute('data-theme', state.theme);
+            if (typeof window.updateThemeLogos === 'function') window.updateThemeLogos();
+
+            window.currentLang = state.currentLang || window.currentLang;
+            window.currentCertCode = state.currentCertCode || '';
+            window.currentCertName = state.currentCertName || '';
+            window.currentDefaultTime = state.currentDefaultTime || window.currentDefaultTime;
+            window.currentDefaultQCount = state.currentDefaultQCount || window.currentDefaultQCount;
+            window.currentPassScore = state.currentPassScore || window.currentPassScore;
+            window.currentQALink = state.currentQALink || '';
+            window.currentMode = state.currentMode || window.currentMode;
+            window.timeLimit = state.timeLimit || window.timeLimit;
+            window.timerVisible = (typeof state.timerVisible === 'boolean') ? state.timerVisible : true;
+            window.__currentCertKey = state.currentCertKey || '';
+            if (typeof window.fbPrevPageForResults !== 'undefined' && state.fbPrevPageForResults) window.fbPrevPageForResults = state.fbPrevPageForResults;
+
+            if (state.currentCertKey) {
+                rawLoadCert(state.currentLang, state.currentCertKey, state.currentCertCode, state.currentCertName, String(state.currentDefaultTime || ''), String(state.currentDefaultQCount || ''), String(state.currentPassScore || ''), state.currentQALink || '');
+            } else if (typeof window.applyLangUI === 'function') {
+                window.applyLangUI();
+            }
+
+            if (document.getElementById('questionCount') && state.questionCountValue) document.getElementById('questionCount').value = state.questionCountValue;
+            if (document.getElementById('timeLimit') && state.timeLimitValue) document.getElementById('timeLimit').value = state.timeLimitValue;
+            if (document.getElementById('rangeFrom') && state.rangeFrom !== '') document.getElementById('rangeFrom').value = state.rangeFrom;
+            if (document.getElementById('rangeTo') && state.rangeTo !== '') document.getElementById('rangeTo').value = state.rangeTo;
+            if (document.getElementById('customTimeMinutes') && state.customTimeMinutes !== '') document.getElementById('customTimeMinutes').value = state.customTimeMinutes;
+            if (document.getElementById('unlimitedTime')) {
+                document.getElementById('unlimitedTime').checked = !!state.unlimitedTime;
+                if (typeof window.toggleUnlimitedTime === 'function') window.toggleUnlimitedTime();
+            }
+            if (state.authForm === 'register' && typeof window.authShowRegister === 'function') window.authShowRegister();
+
+            window.selectedQuestions = Array.isArray(state.selectedQuestions) ? state.selectedQuestions : [];
+            window.userAnswers = state.userAnswers || {};
+            window.startTime = state.startTimeMs ? new Date(state.startTimeMs) : null;
+            if (state.fbIsGuest) {
+                window.fbIsGuest = true;
+                restoreGuestBar(state.guestName);
+            }
+
+            var targetPage = hashPage || state.pageId;
+            if (targetPage === 'page2') {
+                if (window.selectedQuestions.length) {
+                    if (typeof window.generateQuizHTML === 'function') window.generateQuizHTML();
+                    restoreAnswerSelections();
+                    window.showPage('page2', { replace: true });
+                    if (window.startTime && typeof window.startTimer === 'function') window.startTimer();
+                    if (window.timerVisible === false && typeof window.toggleFabTimer === 'function') window.toggleFabTimer();
+                } else {
+                    window.showPage('page0', { replace: true });
+                }
+            } else if (targetPage === 'page3') {
+                window.showPage('page3', { replace: true });
+                restoreResultsSnapshot(state.resultsSnapshot);
+            } else {
+                window.showPage(targetPage, { replace: true });
+            }
+        } catch (e) {
+            console.warn('Session restore failed:', e);
+        } finally {
+            restoreLock = false;
+            persistSessionState();
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        setTimeout(restoreSessionState, 80);
+        setTimeout(restoreSessionState, 350);
+    });
+})();
+</script>
+
 </body>
 </html>
