@@ -2638,6 +2638,48 @@ if (isAr) {
         });
     }
 
+    function getRawTextForCertKey(certKey) {
+        if (!certKey) return null;
+        var rawText = window[certKey]
+                   || window[certKey + '_TEXT']
+                   || window[certKey.toUpperCase()]
+                   || window[certKey.toUpperCase() + '_TEXT']
+                   || window[certKey.toLowerCase()]
+                   || window[certKey.toLowerCase() + '_text']
+                   || null;
+        if (!rawText) {
+            var allWinKeys = Object.keys(window);
+            for (var ki = 0; ki < allWinKeys.length; ki++) {
+                var normalized = allWinKeys[ki].toUpperCase().replace(/_TEXT$/, '');
+                if (normalized === certKey.toUpperCase() && typeof window[allWinKeys[ki]] === 'string' && window[allWinKeys[ki]].length > 10) {
+                    rawText = window[allWinKeys[ki]];
+                    break;
+                }
+            }
+        }
+        return rawText;
+    }
+
+    function rebuildQuestionsFromCurrentCert() {
+        if (!currentCertScriptKey) return;
+        var rawText = getRawTextForCertKey(currentCertScriptKey);
+        if (!rawText) return;
+        questions = [];
+        if (currentLang === 'ar') {
+            parseQuestionsArabic(rawText);
+        } else {
+            parseQuestionsEnglish(rawText);
+        }
+    }
+
+    function getSelectedQuestionIndexes() {
+        return (selectedQuestions || []).map(function(q) {
+            return questions.indexOf(q);
+        }).filter(function(idx) {
+            return idx > -1;
+        });
+    }
+
     function saveSessionState() {
         if (isRestoringSessionState) return;
         try {
@@ -2653,8 +2695,7 @@ if (isAr) {
                 currentPassScore: currentPassScore,
                 currentQALink: currentQALink,
                 currentMode: window.currentMode || '',
-                questions: questions,
-                selectedQuestions: selectedQuestions,
+                selectedQuestionIndexes: getSelectedQuestionIndexes(),
                 userAnswers: userAnswers,
                 startTime: startTime ? startTime.toISOString() : null,
                 timeLimit: timeLimit,
@@ -2728,8 +2769,10 @@ if (isAr) {
             currentPassScore = parseInt(state.currentPassScore || currentPassScore, 10);
             currentQALink = state.currentQALink || '';
             window.currentMode = state.currentMode || '';
-            questions = Array.isArray(state.questions) ? state.questions : [];
-            selectedQuestions = Array.isArray(state.selectedQuestions) ? state.selectedQuestions : [];
+            rebuildQuestionsFromCurrentCert();
+            selectedQuestions = Array.isArray(state.selectedQuestionIndexes)
+                ? state.selectedQuestionIndexes.map(function(idx) { return questions[idx]; }).filter(Boolean)
+                : (Array.isArray(state.selectedQuestions) ? state.selectedQuestions : []);
             userAnswers = state.userAnswers || {};
             timeLimit = state.timeLimit;
             timerVisible = state.timerVisible !== false;
