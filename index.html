@@ -118,6 +118,7 @@ body {
     min-height: 100vh;
     overflow-x: hidden;
     max-width: 100%;
+    transition: all 0.3s ease;
 }
 
         body.lang-ar,
@@ -159,7 +160,7 @@ body.lang-ar * {
             width: 90%; max-width: 1200px; margin: 0 auto; padding: 20px;
             text-align: center; background-color: var(--container-bg);
             border-radius: 15px; box-shadow: 0 8px 16px rgba(0,0,0,0.3);
-            margin-top: 30px; margin-bottom: 30px;
+            margin-top: 30px; margin-bottom: 30px; transition: all 0.3s ease;
         }
 
         h1 { color: var(--text-color); font-size: 2.5rem; margin-bottom: 20px; font-weight: 700; text-shadow: 2px 2px 4px rgba(0,0,0,0.5); }
@@ -1036,25 +1037,40 @@ body.lang-ar #pageCertEN * {
 
             <!-- Register Form -->
             <div id="authFormRegister" style="display:none;">
-                <input type="text" id="authRegName" class="auth-input" placeholder="اسمك | Your name" autocomplete="name">
+                <input type="text" id="authRegName" class="auth-input" placeholder="الاسم الثنائي | Full Name" autocomplete="name">
                 <input type="email" id="authRegEmail" class="auth-input" placeholder="البريد الإلكتروني | Email" autocomplete="email">
                 <input type="password" id="authRegPassword" class="auth-input" placeholder="كلمة المرور | Password (min 6 chars)" autocomplete="new-password">
                 <div class="auth-error" id="authRegError"></div>
                 <div id="authVerifyNotice" class="auth-verify-notice" style="display:none;">
                     ✅ تم إرسال رمز التحقق إلى بريدك الإلكتروني.<br>
                     A verification code has been sent to your email.<br>
-                    <strong style="color:#27ae60;">يرجى التحقق قبل تسجيل الدخول · Please verify before logging in</strong>
+                    <strong style="color:#27ae60;">يرجى التحقق قبل تسجيل الدخول · Please verify before logging in</strong><br><br>
+                    <span style="color:#f39c12; font-size:0.85rem;">⚠️ تحقق من مجلد البريد الغير مرغوب فيه (Spam) إذا لم تجد الرسالة</span><br>
+                    <span style="color:#f39c12; font-size:0.85rem;">Check your Spam / Junk folder if you don't see the email</span>
                 </div>
                 <button class="auth-btn-primary" id="authRegBtn" onclick="authRegisterEmail()">Create Account / إنشاء حساب</button>
                 <button class="auth-btn-secondary" onclick="authShowLogin()">Back to Login / العودة للدخول</button>
             </div>
 
             <div class="auth-guest-row">
-                <button class="auth-btn-guest" onclick="authContinueAsGuest()">
-                    دخول كضيف (لن تُحفظ النتائج)<br>Continue as guest (results won't be saved)
+                <button class="auth-btn-guest" onclick="showGuestNameModal()">
+                    دخول كضيف<br>Continue as guest
                 </button>
             </div>
         </div>
+    </div>
+</div>
+
+<!-- ===== GUEST NAME MODAL ===== -->
+<div id="guestNameModal" style="display:none; position:fixed; inset:0; z-index:9999; background:rgba(0,0,0,0.7); align-items:center; justify-content:center;">
+    <div style="background:var(--container-bg); border-radius:18px; padding:36px 30px; max-width:400px; width:90%; box-shadow:0 20px 60px rgba(0,0,0,0.6); text-align:center; direction:rtl; font-family:'Tajawal',sans-serif;">
+        <div style="font-size:2rem; margin-bottom:10px;">👤</div>
+        <div style="font-size:1.3rem; font-weight:700; color:var(--text-color); margin-bottom:6px;">أدخل اسمك الثنائي</div>
+        <div style="font-size:0.9rem; opacity:0.7; color:var(--text-color); margin-bottom:20px;">Full Name (اسمك الثنائي)</div>
+        <input type="text" id="guestNameInput" class="auth-input" placeholder="اسمك الثنائي | Full Name" autocomplete="off" style="margin-bottom:8px;">
+        <div class="auth-error" id="guestNameError" style="margin-bottom:8px;"></div>
+        <button class="auth-btn-primary" onclick="confirmGuestName()" style="margin-bottom:8px;">دخول | Login</button>
+        <button class="auth-btn-secondary" onclick="closeGuestNameModal()">إلغاء | Cancel</button>
     </div>
 </div>
 
@@ -1086,9 +1102,7 @@ body.lang-ar #pageCertEN * {
 </div>
 
             </div>
-            <div style="text-align:center; margin-top:30px;">
-                <button id="langBackBtn" class="cert-back-btn" onclick="showPage('pageAuth')" style="font-family:'Tajawal',sans-serif; display:none;">رجوع | Back ←</button>
-            </div>
+            <div style="text-align:center; margin-top:30px;"></div>
         </div>
     </div>
 </div>
@@ -2158,7 +2172,16 @@ if (isAr) {
         startTime = new Date();
         startTimer();
         generateQuizHTML();
-        showPage('page2');
+        // Show page without history push, then push exam URL and block back
+        document.querySelectorAll('.page').forEach(function(p){ p.classList.remove('active'); });
+        document.getElementById('page2').classList.add('active');
+        document.body.classList.remove('simple-theme-page');
+        updatePdfButtonVisibility('page2');
+        window.scrollTo(0, 0);
+        var langSeg = currentLang === 'ar' ? 'LangAR' : 'LangEN';
+        var examUrl = '/FuExHub/' + langSeg + '/' + currentCertCode + '/SRM/EXAM';
+        try { history.pushState({ pageId: 'page2', locked: true }, '', examUrl); } catch(e){}
+        try { sessionStorage.setItem('fuexhub_page', 'page2'); } catch(e){}
     }
 
     /* ===== START QUIZ - CUSTOM RANGE ===== */
@@ -2202,7 +2225,16 @@ if (isAr) {
         startTime = new Date();
         startTimer();
         generateQuizHTML();
-        showPage('page2');
+        // Show page without history push, then push exam URL and block back
+        document.querySelectorAll('.page').forEach(function(p){ p.classList.remove('active'); });
+        document.getElementById('page2').classList.add('active');
+        document.body.classList.remove('simple-theme-page');
+        updatePdfButtonVisibility('page2');
+        window.scrollTo(0, 0);
+        var langSeg2 = currentLang === 'ar' ? 'LangAR' : 'LangEN';
+        var examUrl2 = '/FuExHub/' + langSeg2 + '/' + currentCertCode + '/CRM/EXAM';
+        try { history.pushState({ pageId: 'page2', locked: true }, '', examUrl2); } catch(e){}
+        try { sessionStorage.setItem('fuexhub_page', 'page2'); } catch(e){}
     }
 
     /* ===== GENERATE QUIZ HTML ===== */
@@ -2370,7 +2402,17 @@ if (isAr) {
         }
         clearInterval(timerInterval);
         calculateResults(timeExpiredParam);
-        showPage('page3');
+        // Show results page with locked history (no back/forward allowed)
+        document.querySelectorAll('.page').forEach(function(p){ p.classList.remove('active'); });
+        document.getElementById('page3').classList.add('active');
+        document.body.classList.remove('simple-theme-page');
+        updatePdfButtonVisibility('page3');
+        window.scrollTo(0, 0);
+        var langSeg3 = currentLang === 'ar' ? 'LangAR' : 'LangEN';
+        var modeSeg3 = window.currentMode === 'custom' ? 'CRM' : 'SRM';
+        var resultsUrl = '/FuExHub/' + langSeg3 + '/' + currentCertCode + '/' + modeSeg3 + '/EXAM/ExamResults';
+        try { history.pushState({ pageId: 'page3', locked: true }, '', resultsUrl); } catch(e){}
+        try { sessionStorage.setItem('fuexhub_page', 'page3'); } catch(e){}
     }
 
     /* ===== CALCULATE RESULTS ===== */
@@ -2565,13 +2607,73 @@ if (isAr) {
 
         updatePdfButtonVisibility(pageId);
         window.scrollTo(0, 0);
+
+        // ===== URL ROUTING & HISTORY =====
+        var urlMap = {
+            'pageAuth':     '/FuExHub/Login',
+            'pageLang':     '/FuExHub/Language',
+            'pageCertAR':   '/FuExHub/LangAR',
+            'pageCertEN':   '/FuExHub/LangEN',
+            'pageMyResults':'/FuExHub/MyResults'
+        };
+        // Block history push for exam page (page2) and results (page3) — handled separately
+        var noHistoryPages = ['page2', 'page3'];
+        var url = urlMap[pageId] || null;
+        if (!url && pageId === 'page0' && currentCertCode) {
+            var langSeg = currentLang === 'ar' ? 'LangAR' : 'LangEN';
+            var modeSeg = window.currentMode === 'custom' ? 'CRM' : 'SRM';
+            url = '/FuExHub/' + langSeg + '/' + currentCertCode;
+        }
+        if (!url && (pageId === 'page1' || pageId === 'page1b') && currentCertCode) {
+            var langSeg2 = currentLang === 'ar' ? 'LangAR' : 'LangEN';
+            var modeSeg2 = pageId === 'page1b' ? 'CRM' : 'SRM';
+            url = '/FuExHub/' + langSeg2 + '/' + currentCertCode + '/' + modeSeg2;
+        }
+        if (url && noHistoryPages.indexOf(pageId) === -1) {
+            try { history.pushState({ pageId: pageId }, '', url); } catch(e){}
+        }
+
+        // Save session progress
+        try {
+            sessionStorage.setItem('fuexhub_page', pageId);
+            if (currentCertCode) sessionStorage.setItem('fuexhub_cert', currentCertCode);
+            if (currentLang)     sessionStorage.setItem('fuexhub_lang', currentLang);
+        } catch(e){}
     }
+
+    // Handle browser back/forward
+    window.addEventListener('popstate', function(e) {
+        // If currently on exam (page2) or results (page3), block navigation
+        var activePage = document.querySelector('.page.active');
+        if (activePage && (activePage.id === 'page2' || activePage.id === 'page3')) {
+            // Re-push state to prevent leaving
+            history.pushState({ pageId: activePage.id, locked: true }, '', window.location.href);
+            return;
+        }
+        if (e.state && e.state.pageId) {
+            var targetPage = e.state.pageId;
+            // Block navigating TO locked pages via history
+            if (e.state.locked) return;
+            document.querySelectorAll('.page').forEach(function(p){ p.classList.remove('active'); });
+            var el = document.getElementById(targetPage);
+            if (el) {
+                el.classList.add('active');
+                var simpleThemePages = (targetPage === 'pageAuth' || targetPage === 'pageLang' || targetPage === 'pageCertEN' || targetPage === 'pageCertAR' || targetPage === 'pageMyResults');
+                simpleThemePages ? document.body.classList.add('simple-theme-page') : document.body.classList.remove('simple-theme-page');
+                updatePdfButtonVisibility(targetPage);
+                window.scrollTo(0, 0);
+            }
+        }
+    });
 
     /* ===== INIT ===== */
     document.addEventListener('DOMContentLoaded', function() {
         updatePdfButtonVisibility('pageLang');
         updateFabThemeLabel();
         updateThemeLogos();
+        // Restore session on reload (handled after Firebase auth state is known)
+        // Initial history state
+        try { history.replaceState({ pageId: 'pageAuth' }, '', '/FuExHub/Login'); } catch(e){}
     });
 </script>
 
@@ -2614,27 +2716,12 @@ var fbIsGuest      = false;  // true when browsing as guest
 var fbDailyAttempts = 0;     // how many exams taken in last 24h
 var fbPrevPageForResults = 'pageLang'; // where to go back from My Results
 var fbLimitCountdownInterval = null;
-var fbAllowUnverifiedTemp = false; // only during create-account verification send
-
-function fbUsesPasswordProvider(user) {
-    if (!user || !user.providerData) return false;
-    return user.providerData.some(function(p) { return p && p.providerId === 'password'; });
-}
 
 /* ================================================================
    AUTH STATE LISTENER
    ================================================================ */
 fbAuth.onAuthStateChanged(function(user) {
     if (user) {
-        if (fbUsesPasswordProvider(user) && !user.emailVerified && !fbAllowUnverifiedTemp) {
-            fbCurrentUser = null;
-            fbIsGuest = false;
-            document.getElementById('authError').textContent = '⚠️ Please verify your email before logging in. Check your inbox. | يرجى التحقق من بريدك الإلكتروني أولاً.';
-            fbAuth.signOut();
-            document.getElementById('userInfoBar').classList.remove('show');
-            showPage('pageAuth');
-            return;
-        }
         fbCurrentUser = user;
         fbIsGuest     = false;
         fbOnUserLoggedIn(user);
@@ -2665,11 +2752,30 @@ function fbOnUserLoggedIn(user) {
     var nameEl = document.getElementById('userDisplayName');
     if (nameEl) nameEl.textContent = user.displayName || user.email || 'User';
 
-    // Load daily attempt count then go to app
+    // Restore attempts element visibility for real users
+    var attemptsEl = document.getElementById('userAttemptsInfo');
+    if (attemptsEl) attemptsEl.style.display = '';
+
+    // Load daily attempt count then go to app (restore session page if available)
     fbLoadDailyAttempts().then(function() {
         fbUpdateAttemptsDisplay();
         var lbb = document.getElementById('langBackBtn'); if (lbb) lbb.style.display = 'none';
-        showPage('pageLang');
+        // Try restoring session page (but only safe pages, not exam/results)
+        var savedPage = null;
+        try { savedPage = sessionStorage.getItem('fuexhub_page'); } catch(e){}
+        var safePagesToRestore = ['pageLang','pageCertAR','pageCertEN','page0','page1','page1b'];
+        if (savedPage && safePagesToRestore.indexOf(savedPage) !== -1 && document.getElementById(savedPage)) {
+            // Restore cert/lang if available
+            try {
+                var sc = sessionStorage.getItem('fuexhub_cert');
+                var sl = sessionStorage.getItem('fuexhub_lang');
+                if (sc) currentCertCode = sc;
+                if (sl) currentLang = sl;
+            } catch(e){}
+            showPage(savedPage);
+        } else {
+            showPage('pageLang');
+        }
     });
 }
 
@@ -2726,15 +2832,14 @@ function authLoginEmail() {
         return fbAuth.signInWithEmailAndPassword(email, password);
     }).then(function(cred) {
         if (!cred.user.emailVerified) {
-            errEl.textContent = '⚠️ Please verify your email before logging in. Check your inbox. | يرجى التحقق من بريدك الإلكتروني أولاً.';
-            return fbAuth.signOut();
+            fbAuth.signOut();
+            errEl.textContent = '⚠️ لم يتم تأكيد البريد الإلكتروني | Your email has not been verified yet. Please check your inbox (or Spam folder).';
         }
     }).catch(function(err) {
-        var msg = (err.code === 'auth/user-not-found' ||
-                  err.code === 'auth/invalid-login-credentials' ||
-                  err.code === 'auth/invalid-credential') ? 'الحساب غير مسجل | Account not registered' :
+        var msg = err.code === 'auth/user-not-found' ? 'لم يتم تأكيد البريد الإلكتروني | No account found with this email.' :
                   err.code === 'auth/wrong-password' ? 'Wrong password. | كلمة مرور خاطئة.' :
                   err.code === 'auth/invalid-email'  ? 'Invalid email. | بريد إلكتروني غير صالح.' :
+                  err.code === 'auth/invalid-credential' ? 'لم يتم تأكيد البريد الإلكتروني | Invalid email or password — or email not yet verified.' :
                   err.message;
         errEl.textContent = msg;
     });
@@ -2753,6 +2858,17 @@ function authRegisterEmail() {
         errEl.textContent = 'Please fill in all fields. | يرجى ملء جميع الحقول.';
         return;
     }
+    // Validate full name: must have at least 2 words, no diacritics or special symbols
+    var nameParts = name.split(/\s+/).filter(function(p){ return p.length > 0; });
+    if (nameParts.length < 2) {
+        errEl.textContent = 'يرجى إدخال الاسم الثنائي كاملاً (الاسم والكنية) | Please enter your full name (first and last).';
+        return;
+    }
+    // Block Arabic diacritics (tashkeel) and special characters/symbols
+    if (/[\u064B-\u065F\u0610-\u061A\u06D6-\u06DC\u06DF-\u06E4\u06E7\u06E8\u06EA-\u06ED]/.test(name) || /[!@#$%^&*()_+=\[\]{};':"\\|,.<>\/?`~]/.test(name)) {
+        errEl.textContent = 'الاسم يجب أن يكون بدون حركات أو رموز خاصة | Name must not contain diacritics or special characters.';
+        return;
+    }
     if (password.length < 6) {
         errEl.textContent = 'Password must be at least 6 characters. | كلمة المرور 6 أحرف على الأقل.';
         return;
@@ -2760,7 +2876,6 @@ function authRegisterEmail() {
 
     regBtn.disabled = true;
     regBtn.textContent = 'Sending...';
-    fbAllowUnverifiedTemp = true;
 
     fbAuthReadyPromise.then(function() {
         return fbAuth.createUserWithEmailAndPassword(email, password);
@@ -2769,7 +2884,6 @@ function authRegisterEmail() {
             return cred.user.sendEmailVerification();
         }).then(function() {
             // Sign out immediately — user must verify first
-            fbAllowUnverifiedTemp = false;
             return fbAuth.signOut();
         });
     }).then(function() {
@@ -2780,7 +2894,6 @@ function authRegisterEmail() {
         document.getElementById('authRegEmail').value = '';
         document.getElementById('authRegPassword').value = '';
     }).catch(function(err) {
-        fbAllowUnverifiedTemp = false;
         regBtn.disabled = false;
         regBtn.textContent = 'Create Account | إنشاء حساب';
         var msg = err.code === 'auth/email-already-in-use' ? 'Email already in use. | البريد مستخدم بالفعل.' :
@@ -2803,11 +2916,51 @@ function authShowLogin() {
     document.getElementById('authRegError').textContent = '';
 }
 
-function authContinueAsGuest() {
+function showGuestNameModal() {
+    var modal = document.getElementById('guestNameModal');
+    if (modal) { modal.style.display = 'flex'; document.getElementById('guestNameInput').value = ''; document.getElementById('guestNameError').textContent = ''; }
+}
+
+function closeGuestNameModal() {
+    var modal = document.getElementById('guestNameModal');
+    if (modal) modal.style.display = 'none';
+}
+
+function confirmGuestName() {
+    var nameVal = document.getElementById('guestNameInput').value.trim();
+    var errEl   = document.getElementById('guestNameError');
+    errEl.textContent = '';
+    // Must have at least 2 words
+    var parts = nameVal.split(/\s+/).filter(function(p){ return p.length > 0; });
+    if (parts.length < 2) {
+        errEl.textContent = 'يرجى إدخال الاسم الثنائي كاملاً | Please enter your full name (first and last).';
+        return;
+    }
+    // Block diacritics and special symbols
+    if (/[\u064B-\u065F\u0610-\u061A\u06D6-\u06DC\u06DF-\u06E4\u06E7\u06E8\u06EA-\u06ED]/.test(nameVal) || /[!@#$%^&*()_+=\[\]{};':"\\|,.<>\/?`~]/.test(nameVal)) {
+        errEl.textContent = 'الاسم يجب أن يكون بدون حركات أو رموز | Name must not contain diacritics or special symbols.';
+        return;
+    }
+    closeGuestNameModal();
+    authContinueAsGuest(nameVal);
+}
+
+function authContinueAsGuest(guestName) {
     fbIsGuest     = true;
     fbCurrentUser = null;
-    document.getElementById('userInfoBar').classList.remove('show');
-    var lbb = document.getElementById('langBackBtn'); if (lbb) lbb.style.display = '';
+    // Show user bar for guest with name but no attempts element
+    var bar = document.getElementById('userInfoBar');
+    if (bar) {
+        bar.classList.add('show');
+        var nameEl = document.getElementById('userDisplayName');
+        if (nameEl) nameEl.textContent = guestName || 'ضيف | Guest';
+        var avatar = document.getElementById('userAvatar');
+        if (avatar) avatar.style.display = 'none';
+        var attemptsEl = document.getElementById('userAttemptsInfo');
+        if (attemptsEl) attemptsEl.style.display = 'none';
+    }
+    // Store guest results in session
+    window._guestSessionResults = [];
     showPage('pageLang');
 }
 
@@ -2890,37 +3043,25 @@ var _origStartCustomQuiz = window.startCustomQuiz;
 
 window.startQuiz = function() {
     if (!fbCurrentUser || fbIsGuest) { _origStartQuiz(); return; }
-    // Use cached count for instant response, then verify in background
-    if (fbDailyAttempts >= FB_DAILY_LIMIT) {
-        // Re-fetch to confirm limit before blocking
-        fbLoadDailyAttempts().then(function() {
-            if (fbDailyAttempts >= FB_DAILY_LIMIT) {
-                fbShowLimitOverlay();
-            } else {
-                _origStartQuiz();
-            }
-        });
-    } else {
-        _origStartQuiz();
-        // Refresh count in background silently
-        fbLoadDailyAttempts();
-    }
+    // Always re-fetch from Firestore to get accurate count
+    fbLoadDailyAttempts().then(function() {
+        if (fbDailyAttempts >= FB_DAILY_LIMIT) {
+            fbShowLimitOverlay();
+        } else {
+            _origStartQuiz();
+        }
+    });
 };
 
 window.startCustomQuiz = function() {
     if (!fbCurrentUser || fbIsGuest) { _origStartCustomQuiz(); return; }
-    if (fbDailyAttempts >= FB_DAILY_LIMIT) {
-        fbLoadDailyAttempts().then(function() {
-            if (fbDailyAttempts >= FB_DAILY_LIMIT) {
-                fbShowLimitOverlay();
-            } else {
-                _origStartCustomQuiz();
-            }
-        });
-    } else {
-        _origStartCustomQuiz();
-        fbLoadDailyAttempts();
-    }
+    fbLoadDailyAttempts().then(function() {
+        if (fbDailyAttempts >= FB_DAILY_LIMIT) {
+            fbShowLimitOverlay();
+        } else {
+            _origStartCustomQuiz();
+        }
+    });
 };
 
 /* ================================================================
@@ -3156,348 +3297,5 @@ document.addEventListener('DOMContentLoaded', function() {
     };
 });
 </script>
-
-<script>
-(function(){
-    var PAGE_TO_HASH = {
-        pageAuth: 'Login',
-        pageLang: 'Language',
-        pageCertAR: 'CertAR',
-        pageCertEN: 'CertEN',
-        page0: 'Certificate',
-        page1: 'SRM',
-        page1b: 'CRM',
-        page2: 'EXAM',
-        page3: 'ExamResults',
-        pageMyResults: 'MyResults'
-    };
-    var HASH_TO_PAGE = {};
-    Object.keys(PAGE_TO_HASH).forEach(function(k){ HASH_TO_PAGE[PAGE_TO_HASH[k]] = k; });
-
-    var SESSION_KEY = 'fuExHubSessionState';
-    var rawShowPage = window.showPage;
-    var rawLoadCert = window.loadCert;
-    var rawAuthContinueAsGuest = window.authContinueAsGuest;
-    var rawAuthSignOut = window.authSignOut;
-    var restoreLock = false;
-    var restoredOnce = false;
-    var navGuardActive = false;
-
-    function safeSetHash(pageId, replace) {
-        var alias = PAGE_TO_HASH[pageId] || pageId;
-        var newUrl = location.pathname + location.search + '#' + alias;
-        try {
-            if (replace) history.replaceState({ pageId: pageId }, '', newUrl);
-            else history.pushState({ pageId: pageId }, '', newUrl);
-        } catch (e) {
-            location.hash = alias;
-        }
-    }
-
-    function getPageFromHash() {
-        var h = (location.hash || '').replace(/^#/, '');
-        return HASH_TO_PAGE[h] || null;
-    }
-
-    function getActivePageId() {
-        var active = document.querySelector('.page.active');
-        return active ? active.id : 'pageAuth';
-    }
-
-    function captureResultsSnapshot() {
-        if (getActivePageId() !== 'page3') return null;
-        var ids = ['timeResult','timeResultSub','scoreResult','passResult','percentageResult','correctCount','wrongCount','motivationalMessage','reviewQuestions'];
-        var snap = {};
-        ids.forEach(function(id){ var el = document.getElementById(id); snap[id] = el ? el.innerHTML : ''; });
-        return snap;
-    }
-
-    function persistSessionState() {
-        if (restoreLock) return;
-        try {
-            var state = {
-                pageId: getActivePageId(),
-                currentLang: window.currentLang,
-                currentCertCode: window.currentCertCode,
-                currentCertName: window.currentCertName,
-                currentDefaultTime: window.currentDefaultTime,
-                currentDefaultQCount: window.currentDefaultQCount,
-                currentPassScore: window.currentPassScore,
-                currentQALink: window.currentQALink,
-                currentMode: window.currentMode || '',
-                currentCertKey: window.__currentCertKey || '',
-                selectedQuestions: window.selectedQuestions || [],
-                userAnswers: window.userAnswers || {},
-                timeLimit: window.timeLimit,
-                startTimeMs: window.startTime ? window.startTime.getTime() : null,
-                timerVisible: window.timerVisible,
-                theme: document.body.getAttribute('data-theme') || 'light',
-                fbIsGuest: !!window.fbIsGuest,
-                guestName: window.fbIsGuest ? ((document.getElementById('userDisplayName') || {}).textContent || '') : '',
-                authForm: (document.getElementById('authFormRegister') && document.getElementById('authFormRegister').style.display !== 'none') ? 'register' : 'login',
-                resultsSnapshot: captureResultsSnapshot(),
-                questionCountValue: (document.getElementById('questionCount') || {}).value || '',
-                timeLimitValue: (document.getElementById('timeLimit') || {}).value || '',
-                rangeFrom: (document.getElementById('rangeFrom') || {}).value || '',
-                rangeTo: (document.getElementById('rangeTo') || {}).value || '',
-                customTimeMinutes: (document.getElementById('customTimeMinutes') || {}).value || '',
-                unlimitedTime: !!((document.getElementById('unlimitedTime') || {}).checked),
-                fbPrevPageForResults: window.fbPrevPageForResults || 'pageLang'
-            };
-            sessionStorage.setItem(SESSION_KEY, JSON.stringify(state));
-        } catch (e) {
-            console.warn('Session save skipped:', e);
-        }
-    }
-
-    function restoreAnswerSelections() {
-        var answers = window.userAnswers || {};
-        Object.keys(answers).forEach(function(qi) {
-            var q = window.selectedQuestions[qi];
-            if (!q) return;
-            if (q.isHotspot) {
-                var rowMap = answers[qi] || {};
-                Object.keys(rowMap).forEach(function(ri) {
-                    var sel = document.getElementById('hotspot' + qi + '_' + ri);
-                    if (sel) {
-                        sel.value = rowMap[ri];
-                        sel.classList.toggle('answered', !!rowMap[ri]);
-                    }
-                });
-            } else {
-                (answers[qi] || []).forEach(function(optIndex) {
-                    var inp = document.getElementById('q' + qi + '_' + optIndex);
-                    if (inp) {
-                        inp.checked = true;
-                        var opt = inp.closest('.option');
-                        if (opt) opt.classList.add('selected');
-                    }
-                });
-            }
-        });
-    }
-
-    function restoreResultsSnapshot(snapshot) {
-        if (!snapshot) return;
-        Object.keys(snapshot).forEach(function(id) {
-            var el = document.getElementById(id);
-            if (el && typeof snapshot[id] === 'string') el.innerHTML = snapshot[id];
-        });
-    }
-
-    function restoreGuestBar(name) {
-        try {
-            if (!window.fbIsGuest) return;
-            var bar = document.getElementById('userInfoBar');
-            if (bar) bar.classList.add('show');
-            var avatar = document.getElementById('userAvatar');
-            if (avatar) avatar.style.display = 'none';
-            var nameEl = document.getElementById('userDisplayName');
-            if (nameEl) nameEl.textContent = name || 'Guest';
-            var attempts = document.getElementById('userAttemptsInfo');
-            if (attempts) attempts.style.display = 'none';
-        } catch (e) {}
-    }
-
-    function applyNavGuard(pageId) {
-        navGuardActive = (pageId === 'page2' || pageId === 'page3');
-        if (navGuardActive) {
-            safeSetHash(pageId, true);
-        }
-    }
-
-    window.showPage = function(pageId, opts) {
-        opts = opts || {};
-        rawShowPage(pageId);
-        applyNavGuard(pageId);
-        if (!opts.skipHash) {
-            if (opts.replace) safeSetHash(pageId, true);
-            else safeSetHash(pageId, false);
-        }
-        persistSessionState();
-    };
-
-    window.loadCert = function(lang, certKey, certCode, certName, defaultTime, defaultQCount, passScore, qaLink) {
-        window.__currentCertKey = certKey;
-        return rawLoadCert(lang, certKey, certCode, certName, defaultTime, defaultQCount, passScore, qaLink);
-    };
-
-    window.authContinueAsGuest = function() {
-        var result = rawAuthContinueAsGuest.apply(this, arguments);
-        persistSessionState();
-        return result;
-    };
-
-    window.authSignOut = function() {
-        try { sessionStorage.removeItem(SESSION_KEY); } catch (e) {}
-        return rawAuthSignOut.apply(this, arguments);
-    };
-
-    var originalOnUserLoggedIn = window.fbOnUserLoggedIn;
-    if (typeof originalOnUserLoggedIn === 'function') {
-        window.fbOnUserLoggedIn = function(user) {
-            var activePageId = getActivePageId();
-            if (restoredOnce && activePageId !== 'pageAuth') {
-                var bar = document.getElementById('userInfoBar');
-                if (bar) bar.classList.add('show');
-                var avatar = document.getElementById('userAvatar');
-                if (avatar) {
-                    avatar.src = user.photoURL || '';
-                    avatar.style.display = user.photoURL ? 'block' : 'none';
-                }
-                var nameEl = document.getElementById('userDisplayName');
-                if (nameEl) nameEl.textContent = user.displayName || user.email || 'User';
-                if (typeof window.fbLoadDailyAttempts === 'function') {
-                    window.fbLoadDailyAttempts().then(function(){
-                        if (typeof window.fbUpdateAttemptsDisplay === 'function') window.fbUpdateAttemptsDisplay();
-                    });
-                }
-                persistSessionState();
-                return;
-            }
-            return originalOnUserLoggedIn.apply(this, arguments);
-        };
-    }
-
-    ['handleOptionChange','handleHotspotChange','toggleUnlimitedTime','authShowRegister','authShowLogin','showMyResults','goBackFromMyResults','restartQuiz'].forEach(function(fn) {
-        var orig = window[fn];
-        if (typeof orig === 'function') {
-            window[fn] = function() {
-                var result = orig.apply(this, arguments);
-                persistSessionState();
-                return result;
-            };
-        }
-    });
-
-    ['questionCount','timeLimit','rangeFrom','rangeTo','customTimeMinutes','unlimitedTime','authEmail','authPassword','authRegName','authRegEmail'].forEach(function(id){
-        document.addEventListener('change', function(e){ if (e.target && e.target.id === id) persistSessionState(); });
-        document.addEventListener('input', function(e){ if (e.target && e.target.id === id) persistSessionState(); });
-    });
-
-    window.addEventListener('beforeunload', persistSessionState);
-
-    window.addEventListener('popstate', function() {
-        if (navGuardActive) {
-            safeSetHash(getActivePageId(), true);
-            return;
-        }
-        var pageFromHash = getPageFromHash();
-        if (pageFromHash && pageFromHash !== getActivePageId()) {
-            window.showPage(pageFromHash, { skipHash: true, replace: true });
-        }
-    });
-
-    window.addEventListener('hashchange', function() {
-        if (navGuardActive) {
-            safeSetHash(getActivePageId(), true);
-            return;
-        }
-        var pageFromHash = getPageFromHash();
-        if (pageFromHash && pageFromHash !== getActivePageId()) {
-            window.showPage(pageFromHash, { skipHash: true, replace: true });
-        }
-    });
-
-    function restoreSessionState() {
-        var raw = null;
-        try { raw = sessionStorage.getItem(SESSION_KEY); } catch (e) {}
-        var hashPage = getPageFromHash();
-        if (!raw && hashPage) {
-            window.showPage(hashPage, { replace: true });
-            return;
-        }
-        if (!raw) return;
-        try {
-            var state = JSON.parse(raw);
-            if (!state || !state.pageId) return;
-            restoreLock = true;
-            restoredOnce = true;
-
-            if (state.theme) document.body.setAttribute('data-theme', state.theme);
-            if (typeof window.updateThemeLogos === 'function') window.updateThemeLogos();
-
-            window.currentLang = state.currentLang || window.currentLang;
-            window.currentCertCode = state.currentCertCode || '';
-            window.currentCertName = state.currentCertName || '';
-            window.currentDefaultTime = state.currentDefaultTime || window.currentDefaultTime;
-            window.currentDefaultQCount = state.currentDefaultQCount || window.currentDefaultQCount;
-            window.currentPassScore = state.currentPassScore || window.currentPassScore;
-            window.currentQALink = state.currentQALink || '';
-            window.currentMode = state.currentMode || window.currentMode;
-            window.timeLimit = state.timeLimit || window.timeLimit;
-            window.timerVisible = (typeof state.timerVisible === 'boolean') ? state.timerVisible : true;
-            window.__currentCertKey = state.currentCertKey || '';
-            if (typeof window.fbPrevPageForResults !== 'undefined' && state.fbPrevPageForResults) window.fbPrevPageForResults = state.fbPrevPageForResults;
-
-            if (state.currentCertKey) {
-                rawLoadCert(state.currentLang, state.currentCertKey, state.currentCertCode, state.currentCertName, String(state.currentDefaultTime || ''), String(state.currentDefaultQCount || ''), String(state.currentPassScore || ''), state.currentQALink || '');
-            } else if (typeof window.applyLangUI === 'function') {
-                window.applyLangUI();
-            }
-
-            if (document.getElementById('questionCount') && state.questionCountValue) document.getElementById('questionCount').value = state.questionCountValue;
-            if (document.getElementById('timeLimit') && state.timeLimitValue) document.getElementById('timeLimit').value = state.timeLimitValue;
-            if (document.getElementById('rangeFrom') && state.rangeFrom !== '') document.getElementById('rangeFrom').value = state.rangeFrom;
-            if (document.getElementById('rangeTo') && state.rangeTo !== '') document.getElementById('rangeTo').value = state.rangeTo;
-            if (document.getElementById('customTimeMinutes') && state.customTimeMinutes !== '') document.getElementById('customTimeMinutes').value = state.customTimeMinutes;
-            if (document.getElementById('unlimitedTime')) {
-                document.getElementById('unlimitedTime').checked = !!state.unlimitedTime;
-                if (typeof window.toggleUnlimitedTime === 'function') window.toggleUnlimitedTime();
-            }
-            if (state.authForm === 'register' && typeof window.authShowRegister === 'function') window.authShowRegister();
-
-            window.selectedQuestions = Array.isArray(state.selectedQuestions) ? state.selectedQuestions : [];
-            window.userAnswers = state.userAnswers || {};
-            window.startTime = state.startTimeMs ? new Date(state.startTimeMs) : null;
-            if (state.fbIsGuest) {
-                window.fbIsGuest = true;
-                restoreGuestBar(state.guestName);
-            }
-
-            var targetPage = hashPage || state.pageId;
-            if (targetPage === 'page2') {
-                if (window.selectedQuestions.length) {
-                    if (typeof window.generateQuizHTML === 'function') window.generateQuizHTML();
-                    restoreAnswerSelections();
-                    window.showPage('page2', { replace: true });
-                    if (window.startTime && typeof window.startTimer === 'function') window.startTimer();
-                    if (window.timerVisible === false && typeof window.toggleFabTimer === 'function') window.toggleFabTimer();
-                } else {
-                    window.showPage('page0', { replace: true });
-                }
-            } else if (targetPage === 'page3') {
-                window.showPage('page3', { replace: true });
-                restoreResultsSnapshot(state.resultsSnapshot);
-            } else if (targetPage === 'pageMyResults') {
-                window.showPage('pageMyResults', { replace: true });
-                // Auto-load results after auth is ready
-                var myResultsWait = setInterval(function() {
-                    if (window.fbCurrentUser && typeof window.fbLoadMyResults === 'function') {
-                        clearInterval(myResultsWait);
-                        if (typeof window.updateFabThemeLabel === 'function') window.updateFabThemeLabel();
-                        window.fbLoadMyResults();
-                    }
-                }, 150);
-                // Give up after 8 seconds if no user (guest or not logged in)
-                setTimeout(function() { clearInterval(myResultsWait); }, 8000);
-            } else {
-                window.showPage(targetPage, { replace: true });
-            }
-        } catch (e) {
-            console.warn('Session restore failed:', e);
-        } finally {
-            restoreLock = false;
-            persistSessionState();
-        }
-    }
-
-    document.addEventListener('DOMContentLoaded', function() {
-        setTimeout(restoreSessionState, 80);
-        setTimeout(restoreSessionState, 350);
-    });
-})();
-</script>
-
 </body>
 </html>
