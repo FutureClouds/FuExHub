@@ -1585,6 +1585,62 @@ body.lang-ar #pageCertEN * {
 </div>
 
 <!-- ===================================================== -->
+<!-- PRINT RESULT STYLES - ADDED FEATURE                   -->
+<!-- ===================================================== -->
+<style>
+/* ── Print Result Button (page3) ── */
+.fxh-print-btn-wrap {
+    text-align: center;
+    margin: 22px 0 10px;
+}
+.fxh-print-btn {
+    background: linear-gradient(135deg, #2980b9 0%, #3498db 40%, #2471a3 60%, #2980b9 100%);
+    color: #ffffff;
+    border: 2px solid #1a6fa0;
+    border-radius: 12px;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: 700;
+    padding: 13px 32px;
+    font-family: 'Tajawal', sans-serif;
+    box-shadow: 0 4px 16px rgba(52,152,219,0.55), inset 0 1px 0 rgba(255,255,255,0.2);
+    transition: all 0.28s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+    letter-spacing: 0.3px;
+}
+.fxh-print-btn:hover {
+    transform: translateY(-2px) scale(1.03);
+    box-shadow: 0 7px 22px rgba(52,152,219,0.7), inset 0 1px 0 rgba(255,255,255,0.2);
+    background: linear-gradient(135deg, #3498db 0%, #5dade2 40%, #3498db 60%, #2980b9 100%);
+}
+.fxh-print-btn:active {
+    transform: translateY(0) scale(0.99);
+}
+
+/* ── My Results table print btn ── */
+.fxh-row-print-btn {
+    background: linear-gradient(135deg, #2980b9, #3498db, #2980b9);
+    color: #ffffff;
+    border: 1.5px solid #1a6fa0;
+    border-radius: 7px;
+    cursor: pointer;
+    font-size: 0.85rem;
+    padding: 5px 11px;
+    font-weight: 700;
+    font-family: 'Tajawal', sans-serif;
+    box-shadow: 0 2px 7px rgba(52,152,219,0.4);
+    transition: all 0.2s ease;
+    white-space: nowrap;
+}
+.fxh-row-print-btn:hover {
+    transform: scale(1.08);
+    box-shadow: 0 3px 11px rgba(52,152,219,0.65);
+}
+</style>
+
+<!-- ===================================================== -->
 <!-- JAVASCRIPT - ORIGINAL (UNTOUCHED)                     -->
 <!-- ===================================================== -->
 <script>
@@ -2706,8 +2762,9 @@ var fbIsGuest = (function() {
     } catch(e) { return false; }
 })();
 
-var fbDailyAttempts = 0;     // how many exams taken in last 24h
-var fbAttemptsLastFetched = 0; // timestamp of last Firestore fetch
+var fbDailyAttempts = 0;          // how many exams taken in last 24h
+var fbAttemptsLastFetched = 0;    // timestamp of last Firestore fetch
+var fbEarliestAttemptTs = null;   // earliest attempt timestamp in last 24h (cached)
 var fbMyResultsCache = null;  // cached results array for instant display
 var fbPrevPageForResults = 'pageLang'; // where to go back from My Results
 var fbLimitCountdownInterval = null;
@@ -3426,6 +3483,7 @@ function authSignOut() {
         fbCurrentUser = null;
         fbIsGuest = false;
         fbDailyAttempts = 0;
+        fbEarliestAttemptTs = null;
         try {
             sessionStorage.removeItem('guestName');
             sessionStorage.removeItem('guestResults');
@@ -3446,21 +3504,27 @@ var FB_DAILY_LIMIT = 3;
 function fbLoadDailyAttempts() {
     if (!fbCurrentUser) return Promise.resolve();
     var cutoff = new Date(Date.now() - 24 * 60 * 60 * 1000); // 24h ago
+    var cutoffTs = firebase.firestore.Timestamp.fromDate(cutoff);
 
     return fbDb
         .collection('users').doc(fbCurrentUser.uid)
         .collection('results')
-        .orderBy('timestamp', 'desc')
+        .where('timestamp', '>=', cutoffTs)
+        .orderBy('timestamp', 'asc')
         .get()
         .then(function(snap) {
             var count = 0;
+            var earliest = null;
             snap.forEach(function(doc) {
                 var data = doc.data();
-                // Use server timestamp if available, else clientTimestamp fallback
                 var ts = data.timestamp ? data.timestamp.toDate() : (data.clientTimestamp ? new Date(data.clientTimestamp) : null);
-                if (ts && ts > cutoff) count++;
+                if (ts && ts > cutoff) {
+                    count++;
+                    if (!earliest) earliest = ts;
+                }
             });
             fbDailyAttempts = count;
+            fbEarliestAttemptTs = earliest;
             fbAttemptsLastFetched = Date.now();
             fbUpdateAttemptsDisplay();
         })
@@ -3480,21 +3544,19 @@ el.innerHTML = '<span style="font-family:\'Tajawal\',sans-serif;">\u200F' + rema
 function fbGetEarliestAttemptTimestamp() {
     if (!fbCurrentUser) return Promise.resolve(null);
     var cutoff = new Date(Date.now() - 24 * 60 * 60 * 1000);
+    var cutoffTs = firebase.firestore.Timestamp.fromDate(cutoff);
 
     return fbDb
         .collection('users').doc(fbCurrentUser.uid)
         .collection('results')
+        .where('timestamp', '>=', cutoffTs)
         .orderBy('timestamp', 'asc')
+        .limit(1)
         .get()
         .then(function(snap) {
-            var earliest = null;
-            snap.forEach(function(doc) {
-                var data = doc.data();
-                if (data.timestamp && data.timestamp.toDate() > cutoff) {
-                    if (!earliest) earliest = data.timestamp.toDate();
-                }
-            });
-            return earliest;
+            if (snap.empty) return null;
+            var data = snap.docs[0].data();
+            return data.timestamp ? data.timestamp.toDate() : null;
         });
 }
 
@@ -3538,11 +3600,19 @@ window.startCustomQuiz = function() {
    ================================================================ */
 function fbShowLimitOverlay() {
     document.getElementById('attemptLimitOverlay').classList.add('show');
-    fbGetEarliestAttemptTimestamp().then(function(earliest) {
-        if (!earliest) { closeLimitOverlay(); return; }
-        var unlockTime = new Date(earliest.getTime() + 24 * 60 * 60 * 1000);
+    // Use cached earliest timestamp for instant countdown — no extra Firestore call
+    if (fbEarliestAttemptTs) {
+        var unlockTime = new Date(fbEarliestAttemptTs.getTime() + 24 * 60 * 60 * 1000);
         fbStartLimitCountdown(unlockTime);
-    });
+    } else {
+        // Fallback: fetch from Firestore only if cache is missing
+        fbGetEarliestAttemptTimestamp().then(function(earliest) {
+            if (!earliest) { closeLimitOverlay(); return; }
+            fbEarliestAttemptTs = earliest;
+            var unlockTime = new Date(earliest.getTime() + 24 * 60 * 60 * 1000);
+            fbStartLimitCountdown(unlockTime);
+        });
+    }
 }
 
 function fbStartLimitCountdown(unlockTime) {
@@ -3731,6 +3801,16 @@ function fbRenderMyResultsTable(results) {
             '<td>' + statusBadge + '</td>' +
             '<td>' + langBadge + '</td>' +
             '<td>' + dateStr + '<br><span style="font-size:0.8rem;opacity:0.7;">' + timeStr + '</span></td>';
+        /* زر الطباعة للمستخدم المسجل */
+        var tdP = document.createElement('td');
+        tdP.className = 'fxh-print-td';
+        var btnP = document.createElement('button');
+        btnP.className = 'fxh-row-print-btn';
+        btnP.innerHTML = '🖨️';
+        btnP.title = r.lang === 'ar' ? 'طباعة النتيجة' : 'Print Result';
+        btnP.addEventListener('click', (function(rowData){ return function(e){ e.stopPropagation(); fxhPrintRowResult(rowData); }; })(r));
+        tdP.appendChild(btnP);
+        tr.appendChild(tdP);
         tbody.appendChild(tr);
     });
     document.getElementById('myResultsTableWrap').style.display = 'block';
@@ -3795,6 +3875,16 @@ function fbLoadMyResults() {
                 '<td>' + statusBadge + '</td>' +
                 '<td>' + langBadge + '</td>' +
                 '<td>' + dateStr + '<br><span style="font-size:0.8rem;opacity:0.7;">' + timeStr + '</span></td>';
+            /* زر الطباعة للضيف */
+            var tdPrint = document.createElement('td');
+            tdPrint.className = 'fxh-print-td';
+            var btnPrint = document.createElement('button');
+            btnPrint.className = 'fxh-row-print-btn';
+            btnPrint.innerHTML = '🖨️';
+            btnPrint.title = r.lang === 'ar' ? 'طباعة النتيجة' : 'Print Result';
+            btnPrint.addEventListener('click', (function(rowData){ return function(e){ e.stopPropagation(); fxhPrintRowResult(rowData); }; })(r));
+            tdPrint.appendChild(btnPrint);
+            tr.appendChild(tdPrint);
             tbody.appendChild(tr);
         });
         document.getElementById('myResultsTableWrap').style.display = 'block';
@@ -3900,6 +3990,533 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     };
 });
+</script>
+
+<!-- ===================================================== -->
+<!-- PRINT RESULT FEATURE - ADDED FEATURE                  -->
+<!-- ===================================================== -->
+<script>
+/* ================================================================
+   PRINT RESULT FEATURE
+   - فيتشر طباعة / تنزيل النتيجة بتصميم A4 Landscape احترافي
+   - يعمل لكل من المستخدم المسجل والضيف
+   - صفحة النتائج (page3) + صفحة نتائجي (pageMyResults)
+   ================================================================ */
+
+/* ── خريطة أسماء الشهادات - English ────────────────────────────── */
+var fxhCertFullNameEN = {
+    'AIF-C01': 'AWS Certified AI Practitioner',
+    'CLF-C02': 'AWS Certified Cloud Practitioner',
+    'MLA-C01': 'AWS Certified Machine Learning Engineer - Associate',
+    'SAA-C03': 'AWS Certified Solutions Architect - Associate',
+    'DVA-C02': 'AWS Certified Developer - Associate',
+    'DEA-C01': 'AWS Certified Data Engineer - Associate',
+    'SOA-C02': 'AWS Certified SysOps Administrator - Associate',
+    'SOA-C03': 'AWS Certified CloudOps Engineer - Associate',
+    'AIP-C01': 'AWS Certified Generative AI Developer',
+    'SAP-C02': 'AWS Certified Solutions Architect - Professional',
+    'DOP-C02': 'AWS Certified DevOps Engineer - Professional',
+    'MLS-C01': 'AWS Certified Machine Learning - Specialty',
+    'ANS-C01': 'AWS Certified Advanced Networking - Specialty',
+    'SCS-C02': 'AWS Certified Security - Specialty',
+    'SCS-C03': 'AWS Certified Security - Specialty'
+};
+
+/* ── خريطة أسماء الشهادات - عربي ───────────────────────────────── */
+var fxhCertFullNameAR = {
+    'CLF-C02': 'شهادة AWS ممارس الحوسبة السحابية التأسيسية',
+    'AIF-C01': 'شهادة AWS ممارس الذكاء الاصطناعي التأسيسية'
+};
+
+/* ── خريطة صور الشهادات ─────────────────────────────────────────── */
+var fxhPrintCertImgMap = {
+    'AIF-C01':'AIF.png','CLF-C02':'CLF.png','MLA-C01':'MLA.png',
+    'SAA-C03':'SAA.png','DVA-C02':'DVA.png','DEA-C01':'DEA.png',
+    'SOA-C02':'SOA2.png','SOA-C03':'SOA3.png','AIP-C01':'AIP.png',
+    'SAP-C02':'SAP.png','DOP-C02':'DOP.png','MLS-C01':'MLS.png',
+    'ANS-C01':'ANS.png','SCS-C02':'SCS2.png','SCS-C03':'SCS3.png'
+};
+
+/* ── جلب اسم المستخدم الحالي ────────────────────────────────────── */
+function fxhGetUserName() {
+    if (typeof fbCurrentUser !== 'undefined' && fbCurrentUser && fbCurrentUser.displayName) {
+        return fbCurrentUser.displayName;
+    }
+    try { return sessionStorage.getItem('guestName') || ''; } catch(e) { return ''; }
+}
+
+/* ── تنسيق مدة الاختبار من صيغة MM:SS ─────────────────────────── */
+function fxhFormatDuration(timeStr, isAr) {
+    if (!timeStr) return isAr ? '—' : '—';
+    var clean = (timeStr + '').replace(/[^\d:]/g, '');
+    var parts  = clean.split(':');
+    var m = parseInt(parts[0] || 0), s = parseInt(parts[1] || 0);
+    if (isNaN(m)) m = 0; if (isNaN(s)) s = 0;
+    if (isAr) {
+        var str = m + ' دقيقة';
+        if (s > 0) str += ' و' + s + ' ثانية';
+        return str;
+    }
+    var str = m + ' minute' + (m !== 1 ? 's' : '');
+    if (s > 0) str += ' ' + s + ' second' + (s !== 1 ? 's' : '');
+    return str;
+}
+
+/* ── الدالة الرئيسية: توليد وطباعة صفحة النتيجة ──────────────── */
+function fxhPrintResult(data) {
+    var isAr   = (data.lang === 'ar');
+    var dir    = isAr ? 'rtl' : 'ltr';
+    var name   = (data.name || (isAr ? 'مختبر' : 'Examinee')).toUpperCase();
+
+    /* أسماء الشهادة */
+    var enName = fxhCertFullNameEN[data.certCode] || data.certNameEN || data.certName || data.certCode || '';
+    var arName = fxhCertFullNameAR[data.certCode] || (data.lang === 'ar' ? data.certName : '') || '';
+
+    var certCode  = data.certCode || '';
+    var certImg   = fxhPrintCertImgMap[certCode] || '';
+
+    /* مسار الصور */
+    var loc = window.location.href.replace(/[?#].*/, '');
+    var baseHref = loc.replace(/\/[^\/]*$/, '/');
+
+    /* تاريخ ووقت الاختبار */
+    var examDate = data.examDate ? new Date(data.examDate) : new Date();
+    var dateStr, timeStr;
+    try {
+        if (isAr) {
+            dateStr = examDate.toLocaleDateString('ar-SA-u-nu-latn', { day:'2-digit', month:'long', year:'numeric' });
+            timeStr = examDate.toLocaleTimeString('ar-SA-u-nu-latn', { hour:'2-digit', minute:'2-digit' });
+        } else {
+            dateStr = examDate.toLocaleDateString('en-GB', { day:'2-digit', month:'long', year:'numeric' });
+            timeStr = examDate.toLocaleTimeString('en-GB', { hour:'2-digit', minute:'2-digit' });
+        }
+    } catch(e) {
+        dateStr = examDate.toLocaleDateString();
+        timeStr = examDate.toLocaleTimeString();
+    }
+
+    var passColor = data.passed ? '#1e7e34' : '#c0392b';
+    var passText  = isAr
+        ? (data.passed ? 'اجتاز ✅' : 'فشل ❌')
+        : (data.passed ? 'PASS ✅'  : 'FAIL ❌');
+
+    var duration = fxhFormatDuration(data.timeFormatted, isAr);
+    var total    = data.totalQuestions || ((data.correctAnswers || 0) + (data.wrongAnswers || 0)) || 0;
+
+    /* اسم الملف عند التحميل */
+    var rawName = data.name || '';
+    var fileName = isAr
+        ? 'النتيجة العربية - ' + rawName
+        : 'English Result - ' + rawName.toUpperCase();
+
+    /* سطر اسم الشهادة في الرأس */
+    var headerLine1, headerLine2;
+    if (isAr && arName) {
+        headerLine1 = arName + ' (' + certCode + ')';
+        headerLine2 = enName + ' (' + certCode + ') Exam';
+    } else {
+        headerLine1 = enName + ' (' + certCode + ')';
+        headerLine2 = '';
+    }
+
+    /* HTML الإحصائيات */
+    var statsHTML;
+    if (isAr) {
+        statsHTML =
+            '<div class="stat-box"><div class="stat-label">الدرجة</div><div class="stat-value">' + (data.score || 0) + '<span class="stat-small"> / 1000</span></div></div>' +
+            '<div class="stat-box"><div class="stat-label">النسبة المئوية</div><div class="stat-value">' + (data.percentage || 0) + '<span class="stat-small">%</span></div></div>' +
+            '<div class="stat-box correct"><div class="stat-label">الإجابات الصحيحة</div><div class="stat-value">' + (data.correctAnswers || 0) + '</div></div>' +
+            '<div class="stat-box wrong"><div class="stat-label">الإجابات الخاطئة</div><div class="stat-value">' + (data.wrongAnswers || 0) + '</div></div>' +
+            '<div class="stat-box time"><div class="stat-label">مدة الاختبار</div><div class="stat-value time-val">' + duration + '</div></div>';
+    } else {
+        statsHTML =
+            '<div class="stat-box"><div class="stat-label">Score</div><div class="stat-value">' + (data.score || 0) + '<span class="stat-small"> / 1000</span></div></div>' +
+            '<div class="stat-box"><div class="stat-label">Percentage</div><div class="stat-value">' + (data.percentage || 0) + '<span class="stat-small">%</span></div></div>' +
+            '<div class="stat-box correct"><div class="stat-label">Correct Answers</div><div class="stat-value">' + (data.correctAnswers || 0) + '</div></div>' +
+            '<div class="stat-box wrong"><div class="stat-label">Wrong Answers</div><div class="stat-value">' + (data.wrongAnswers || 0) + '</div></div>' +
+            '<div class="stat-box time"><div class="stat-label">Duration</div><div class="stat-value time-val">' + duration + '</div></div>';
+    }
+
+    /* HTML الوصف */
+    var descHTML;
+    if (isAr) {
+        descHTML =
+            '<span><strong>وقت أداء الاختبار:</strong> ' + timeStr + '</span>' +
+            '<span class="desc-sep">|</span>' +
+            '<span><strong>تاريخ الاختبار:</strong> ' + dateStr + '</span>' +
+            '<span class="desc-sep">|</span>' +
+            '<span><strong>الإجابات الصحيحة:</strong> ' + (data.correctAnswers || 0) + ' من ' + total + ' سؤالاً</span>' +
+            '<span class="desc-sep">|</span>' +
+            '<span><strong>حالة النتيجة:</strong> <span style="color:' + passColor + ';font-weight:800;">' + passText + '</span></span>';
+    } else {
+        descHTML =
+            '<span><strong>Exam Time:</strong> ' + timeStr + '</span>' +
+            '<span class="desc-sep">|</span>' +
+            '<span><strong>Exam Date:</strong> ' + dateStr + '</span>' +
+            '<span class="desc-sep">|</span>' +
+            '<span><strong>Correct:</strong> ' + (data.correctAnswers || 0) + ' / ' + total + '</span>' +
+            '<span class="desc-sep">|</span>' +
+            '<span><strong>Status:</strong> <span style="color:' + passColor + ';font-weight:800;">' + passText + '</span></span>';
+    }
+
+    var certImgTag = certImg
+        ? '<img class="cert-badge" src="' + certImg + '" alt="' + certCode + '" onerror="this.style.display=\'none\'">'
+        : '';
+    var line2Tag = headerLine2
+        ? '<div class="cert-name-sub">' + headerLine2 + '</div>'
+        : '';
+    var nameLabel = isAr ? 'المختبر' : 'Examinee';
+
+
+    /* وضع الاختبار */
+    var examMode = data.examMode || '';
+    var modeLabel, modeValue;
+    if (isAr) {
+        modeLabel = 'وضع الاختبار';
+        modeValue = (examMode === 'custom') ? 'نطاق مخصص' : 'ترتيب عشوائي';
+    } else {
+        modeLabel = 'Exam Mode';
+        modeValue = (examMode === 'custom') ? 'Custom Range Mode' : 'Smart Random Mode';
+    }
+    var examTypeLabel = isAr ? 'نوع الاختبار' : 'Exam Type';
+    var examTypeValue = isAr ? 'محاكاة الشهادة' : 'Certification Simulation';
+    var totalQLabel = isAr ? 'عدد الأسئلة' : 'Total Questions';
+    var passPhrase;
+    if (isAr) {
+        passPhrase = data.passed
+            ? 'أنهى هذا الاختبار بنجاح <span class=\"pass-word\" style=\"color:#7effc4;\">وحقق النجاح ✅</span>'
+            : 'أتمّ هذا الاختبار <span class=\"pass-word\" style=\"color:#ff9090;\">ولم يجتزه ❌</span>';
+    } else {
+        passPhrase = data.passed
+            ? 'has <span class=\"pass-word\" style=\"color:#7effc4;\">successfully PASSED ✅</span>'
+            : 'has <span class=\"pass-word\" style=\"color:#ff9090;\">not passed ❌</span>';
+    }
+    var officialDescHTML;
+    if (isAr) {
+        officialDescHTML = 'يُشهد بأن المختبر <span class=\"highlight\">'
+            + name + ' </span> ' + passPhrase
+            + ' في اختبار محاكاة شهادة <span class=\"highlight\">'
+            + headerLine1 + '</span>، الذي أُجري بتاريخ <span class=\"highlight\">'
+            + dateStr + '</span> الساعة <span class=\"highlight\">'
+            + timeStr + '</span>، وحصل على درجة <span class=\"highlight\">'
+            + (data.score || 0) + '</span> من 1000 بنسبة <span class=\"highlight\">'
+            + (data.percentage || 0) + '%</span>.';
+    } else {
+        officialDescHTML = 'This certifies that <span class=\"highlight\">'
+            + name + '</span> ' + passPhrase
+            + ' the <span class=\"highlight\">'
+            + headerLine1 + '</span> certification simulation exam, conducted on <span class=\"highlight\">'
+            + dateStr + '</span> at <span class=\"highlight\">'
+            + timeStr + '</span>, achieving a score of <span class=\"highlight\">'
+            + (data.score || 0) + ' / 1000</span> (<span class=\"highlight\">'
+            + (data.percentage || 0) + '%</span>).';
+    }
+    var examMetaHTML =
+        '<div class=\"meta-item\"><div class=\"meta-label\">'
+        + modeLabel + '</div><div class=\"meta-value\">'
+        + modeValue + '</div></div>'
+        + '<div class=\"meta-item\"><div class=\"meta-label\">'
+        + totalQLabel + '</div><div class=\"meta-value\">'
+        + total + '</div></div>';
+
+    /* ── HTML الكامل لصفحة الطباعة ─────────────────────────────── */
+    var html = '<!DOCTYPE html>\n' +
+'<html lang="' + (isAr ? 'ar' : 'en') + '" dir="' + dir + '">\n' +
+'<head>\n' +
+'<meta charset="UTF-8">\n' +
+'<base href="' + baseHref + '">\n' +
+'<title>' + fileName + '</title>\n' +
+'<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">\n' +
+'<style>\n' +
+'  @page { size: A4 landscape; margin: 0; }\n' +
+'  * { box-sizing: border-box; font-family: \'Tajawal\', sans-serif; margin: 0; padding: 0; }\n' +
+/* ── شاشة عادية ── */
+'  html, body {\n' +
+'    width: 100%; overflow-x: hidden; overflow-y: auto;\n' +
+'    background: #0d0626;\n' +
+'    min-height: 100vh;\n' +
+'  }\n' +
+'  .page-wrap {\n' +
+'    width: 100%; max-width: 100%;\n' +
+'    min-height: 100vh;\n' +
+'    padding: 0;\n' +
+'    position: relative;\n' +
+'    background: linear-gradient(135deg, #0d0626 0%, #1a0a4a 30%, #0a1a3a 60%, #16063a 100%);\n' +
+'    display: flex; flex-direction: column;\n' +
+'  }\n' +
+/* ── طباعة: A4 landscape محكم ── */
+'  @media print {\n' +
+'    html, body {\n' +
+'      width: 297mm; height: 210mm;\n' +
+'      overflow: hidden;\n' +
+'      background: #0d0626 !important;\n' +
+'    }\n' +
+'    .page-wrap {\n' +
+'      width: 297mm !important; height: 210mm !important;\n' +
+'      min-height: unset !important;\n' +
+'      overflow: hidden !important;\n' +
+'      page-break-inside: avoid;\n' +
+'    }\n' +
+'    .content {\n' +
+'      min-height: unset !important; height: 210mm !important;\n' +
+'    }\n' +
+'    body { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }\n' +
+'    * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }\n' +
+'  }\n' +
+/* خلفية زخرفية */
+'  .bg-orb-1 { position: absolute; width: 220mm; height: 220mm; border-radius: 50%; background: radial-gradient(circle, rgba(142,68,173,0.18) 0%, transparent 70%); top: -80mm; left: -60mm; pointer-events:none; z-index:1; }\n' +
+'  .bg-orb-2 { position: absolute; width: 180mm; height: 180mm; border-radius: 50%; background: radial-gradient(circle, rgba(52,152,219,0.15) 0%, transparent 70%); bottom: -70mm; right: -50mm; pointer-events:none; z-index:1; }\n' +
+/* إطار */
+'  .border-outer {\n' +
+'    position: absolute; inset: 5mm;\n' +
+'    border: 2px solid;\n' +
+'    border-image: linear-gradient(135deg,#8e44ad,#3498db,#8e44ad,#3498db) 1;\n' +
+'    pointer-events: none; z-index: 10;\n' +
+'  }\n' +
+'  .border-inner {\n' +
+'    position: absolute; inset: 7.5mm;\n' +
+'    border: 1px solid rgba(142,68,173,0.35);\n' +
+'    pointer-events: none; z-index: 10;\n' +
+'  }\n' +
+/* زوايا */
+'  .corner { position: absolute; width: 22px; height: 22px; z-index: 11; }\n' +
+'  .corner-tl { top: 4.5mm;  left:  4.5mm; }\n' +
+'  .corner-tr { top: 4.5mm;  right: 4.5mm; transform: scaleX(-1); }\n' +
+'  .corner-bl { bottom: 4.5mm; left: 4.5mm; transform: scaleY(-1); }\n' +
+'  .corner-br { bottom: 4.5mm; right: 4.5mm; transform: scale(-1); }\n' +
+/* المحتوى */
+'  .content {\n' +
+'    position: relative; z-index: 5;\n' +
+'    padding: 10mm 13mm 7mm;\n' +
+'    display: flex; flex-direction: column; min-height: 100vh; gap: 0;\n' +
+'    max-width: 297mm; width: 100%; margin: 0 auto;\n' +
+'  }\n' +
+/* الرأس */
+'  .header {\n' +
+'    display: flex; align-items: center; gap: 10px;\n' +
+'    padding-bottom: 4mm;\n' +
+'    border-bottom: 1px solid rgba(142,68,173,0.4);\n' +
+'    margin-bottom: 3mm;\n' +
+'    flex-shrink: 0;\n' +
+'  }\n' +
+'  .cert-badge { width: 52px; height: 52px; object-fit: contain; flex-shrink: 0; }\n' +
+'  .cert-title { display: flex; flex-direction: column; flex: 1; }\n' +
+'  .cert-name-main { font-size: 11.5pt; font-weight: 700; color: #e8d5ff; line-height: 1.35; }\n' +
+'  .cert-name-sub  { font-size: 9pt; color: #a0b4cc; margin-top: 2px; line-height: 1.3; }\n' +
+/* شعار الموقع - أكبر */
+'  .fuex-logo { flex-shrink: 0; }\n' +
+'  .fuex-logo img { width: 88px; height: 88px; object-fit: contain; filter: drop-shadow(0 0 12px rgba(142,68,173,0.7)); }\n' +
+/* قسم الاسم */
+'  .name-section { text-align: center; padding: 1.5mm 0; flex-shrink: 0; }\n' +
+'  .name-label { font-size: 7.5pt; color: #8a9ab8; letter-spacing: 3px; text-transform: uppercase; margin-bottom: 0.5mm; }\n' +
+'  .name-value {\n' +
+'    font-size: 28pt; font-weight: 800; line-height: 1.1;\n' +
+'    background: linear-gradient(135deg, #5dade2 0%, #a855f7 50%, #3498db 100%);\n' +
+'    -webkit-background-clip: text; -webkit-text-fill-color: transparent;\n' +
+'    background-clip: text;\n' +
+'    filter: drop-shadow(0 0 8px rgba(142,68,173,0.4));\n' +
+'  }\n' +
+/* بادج الحالة */
+'  .status-badge {\n' +
+'    display: inline-block; padding: 3px 18px; border-radius: 20px; font-size: 9pt; font-weight: 800;\n' +
+'    margin-top: 3mm; letter-spacing: 1px;\n' +
+'  }\n' +
+'  .status-pass { background: linear-gradient(135deg,#0d5c2e,#1e7e34); color: #7fffb0; border: 1px solid #2ecc7155; }\n' +
+'  .status-fail { background: linear-gradient(135deg,#6e0a0a,#c0392b); color: #ffaaaa; border: 1px solid #e74c3c55; }\n' +
+/* وصف رسمي */
+'  .official-desc {\n' +
+'    background: rgba(142,68,173,0.08); border: 1px solid rgba(142,68,173,0.25);\n' +
+'    border-radius: 8px; padding: 3mm 5mm; margin-bottom: 2.5mm;\n' +
+'    font-size: 10pt; color: #c0d0e8; line-height: 1.8; text-align: center;\n' +
+'    flex-shrink: 0;\n' +
+'  }\n' +
+'  .official-desc .highlight { color: #a78bfa; font-weight: 700; }\n' +
+'  .official-desc .pass-word { font-weight: 800; font-size: 11pt; }\n' +
+/* معلومات الاختبار - صف */
+'  .exam-meta {\n' +
+'    display: flex; gap: 6px; justify-content: center; align-items: stretch;\n' +
+'    margin-bottom: 2.5mm; flex-shrink: 0;\n' +
+'  }\n' +
+'  .meta-item {\n' +
+'    flex: 1; background: rgba(52,152,219,0.08); border: 1px solid rgba(52,152,219,0.2);\n' +
+'    border-radius: 7px; padding: 2.5mm 3mm; text-align: center; max-width: 70mm;\n' +
+'  }\n' +
+'  .meta-label { font-size: 6.5pt; color: #7a9ab8; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 1mm; }\n' +
+'  .meta-value { font-size: 8.5pt; font-weight: 700; color: #c8d8f0; }\n' +
+/* جداول الإحصائيات */
+'  .stats-grid {\n' +
+'    display: flex; gap: 6px; justify-content: center;\n' +
+'    flex: 1; align-items: stretch;\n' +
+'  }\n' +
+'  .stat-box {\n' +
+'    flex: 1; max-width: 100px;\n' +
+'    background: rgba(255,255,255,0.04);\n' +
+'    border: 1px solid rgba(255,255,255,0.1);\n' +
+'    border-radius: 8px;\n' +
+'    padding: 4px 5px; text-align: center;\n' +
+'    display: flex; flex-direction: column; justify-content: center; align-items: center;\n' +
+'  }\n' +
+'  .stat-box.correct { border-color: rgba(46,204,113,0.35); background: rgba(46,204,113,0.07); }\n' +
+'  .stat-box.wrong   { border-color: rgba(231,76,60,0.35);  background: rgba(231,76,60,0.07); }\n' +
+'  .stat-box.time    { border-color: rgba(52,152,219,0.35); background: rgba(52,152,219,0.07); max-width: 130px; }\n' +
+'  .stat-label { font-size: 6.5pt; color: #8a9ab8; font-weight: 600; margin-bottom: 2px; line-height: 1.2; }\n' +
+'  .stat-value { font-size: 18pt; font-weight: 800; color: #d0e4ff; line-height: 1; }\n' +
+'  .stat-small { font-size: 7.5pt; font-weight: 500; color: #8a9ab8; }\n' +
+'  .stat-box.correct .stat-value { color: #7effc4; }\n' +
+'  .stat-box.wrong   .stat-value { color: #ff9090; }\n' +
+'  .stat-box.time    .stat-value { color: #90c8ff; font-size: 11pt; }\n' +
+/* تذييل */
+'  .footer {\n' +
+'    text-align: center; font-size: 6.5pt; color: #5a6a88; margin-top: 2.5mm;\n' +
+'    padding-top: 1.5mm; border-top: 1px solid rgba(142,68,173,0.2); flex-shrink: 0;\n' +
+'  }\n' +
+'</style>\n' +
+'</head>\n' +
+'<body>\n' +
+'<div class="page-wrap">\n' +
+'  <div class="bg-orb-1"></div>\n' +
+'  <div class="bg-orb-2"></div>\n' +
+'  <div class="border-outer"></div>\n' +
+'  <div class="border-inner"></div>\n' +
+'  <!-- زخارف الزوايا -->\n' +
+'  <svg class="corner corner-tl" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2 20 L2 2 L20 2" stroke="url(#g1)" stroke-width="2" stroke-linecap="round"/><circle cx="2" cy="2" r="2" fill="#8e44ad"/><defs><linearGradient id="g1" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#8e44ad"/><stop offset="50%" stop-color="#3498db"/><stop offset="100%" stop-color="#8e44ad"/></linearGradient></defs></svg>\n' +
+'  <svg class="corner corner-tr" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2 20 L2 2 L20 2" stroke="url(#g2)" stroke-width="2" stroke-linecap="round"/><circle cx="2" cy="2" r="2" fill="#8e44ad"/><defs><linearGradient id="g2" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#8e44ad"/><stop offset="50%" stop-color="#3498db"/><stop offset="100%" stop-color="#8e44ad"/></linearGradient></defs></svg>\n' +
+'  <svg class="corner corner-bl" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2 20 L2 2 L20 2" stroke="url(#g3)" stroke-width="2" stroke-linecap="round"/><circle cx="2" cy="2" r="2" fill="#8e44ad"/><defs><linearGradient id="g3" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#8e44ad"/><stop offset="50%" stop-color="#3498db"/><stop offset="100%" stop-color="#8e44ad"/></linearGradient></defs></svg>\n' +
+'  <svg class="corner corner-br" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2 20 L2 2 L20 2" stroke="url(#g4)" stroke-width="2" stroke-linecap="round"/><circle cx="2" cy="2" r="2" fill="#8e44ad"/><defs><linearGradient id="g4" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#8e44ad"/><stop offset="50%" stop-color="#3498db"/><stop offset="100%" stop-color="#8e44ad"/></linearGradient></defs></svg>\n' +
+'  <div class="content">\n' +
+'    <!-- الرأس: شارة الشهادة + اسمها + شعار الموقع -->\n' +
+'    <div class="header">\n' +
+'      ' + certImgTag + '\n' +
+'      <div class="cert-title">\n' +
+'        <div class="cert-name-main">' + headerLine1 + '</div>\n' +
+'        ' + line2Tag + '\n' +
+'      </div>\n' +
+'      <div class="fuex-logo">\n' +
+'        <img src="FUEXHUB.png" alt="FuExHub" onerror="this.style.display=\'none\'">\n' +
+'      </div>\n' +
+'    </div>\n' +
+'    <!-- اسم المختبر -->\n' +
+'    <div class="name-section">\n' +
+'      <div class="name-label">' + nameLabel + '</div>\n' +
+'      <div class="name-value">' + name + '</div>\n' +
+'      <div><span class="status-badge ' + (data.passed ? 'status-pass' : 'status-fail') + ' pass-word">' + passText + '</span></div>\n' +
+'    </div>\n' +
+'    <!-- وصف رسمي -->\n' +
+'    <div class="official-desc">' + officialDescHTML + '</div>\n' +
+'    <!-- معلومات الاختبار -->\n' +
+'    <div class="exam-meta">' + examMetaHTML + '</div>\n' +
+'    <!-- الجداول الإحصائية -->\n' +
+'    <div class="stats-grid">' + statsHTML + '</div>\n' +
+'    <!-- تذييل -->\n' +
+'    <div class="footer">FuExHub — Future Exams Hub</div>\n' +
+'  </div>\n' +
+'</div>\n' +
+'<script>\n' +
+'window.onload = function() {\n' +
+'  window.focus();\n' +
+'  document.title = ' + JSON.stringify(fileName) + ';\n' +
+'  setTimeout(function() { window.print(); }, 600);\n' +
+'};\n' +
+'<\/script>\n' +
+'</body>\n</html>';
+
+    var pw = window.open('', '_blank');
+    if (!pw) {
+        alert(isAr ? '⚠️ الرجاء السماح بالنوافذ المنبثقة في المتصفح ثم حاول مجدداً.' : '⚠️ Please allow popups in your browser and try again.');
+        return;
+    }
+    pw.document.write(html);
+    pw.document.close();
+    pw.document.title = fileName;
+}
+
+/* ── طباعة نتيجة الاختبار الحالي (page3) ─────────────────────── */
+function fxhPrintCurrentResult() {
+    var snap = window.fxhResultsSnapshot;
+    if (!snap) {
+        var isAr = (typeof currentLang !== 'undefined' && currentLang === 'ar');
+        alert(isAr ? 'لا توجد بيانات نتيجة متاحة.' : 'No result data available.');
+        return;
+    }
+
+    /* قراءة وقت الاختبار من DOM مع إزالة HTML tags */
+    var timeEl  = document.getElementById('timeResult');
+    var rawTime = timeEl ? timeEl.innerHTML.replace(/<[^>]+>/g, '').trim() : '';
+    /* الاحتفاظ بالأرقام والنقطتين فقط */
+    var timeFormatted = rawTime.replace(/[^\d:]/g, '') || '00:00';
+
+    /* تاريخ بدء الاختبار */
+    var examDate = snap.startTimeMs ? new Date(snap.startTimeMs) : new Date();
+
+    var totalQ = 0;
+    if (typeof selectedQuestions !== 'undefined' && selectedQuestions) totalQ = selectedQuestions.length;
+
+    fxhPrintResult({
+        name:           fxhGetUserName(),
+        lang:           (typeof currentLang !== 'undefined' ? currentLang : 'en'),
+        certCode:       (typeof currentCertCode !== 'undefined' ? currentCertCode : ''),
+        certNameEN:     fxhCertFullNameEN[typeof currentCertCode !== 'undefined' ? currentCertCode : ''] || (typeof currentCertName !== 'undefined' ? currentCertName : ''),
+        certNameAR:     fxhCertFullNameAR[typeof currentCertCode !== 'undefined' ? currentCertCode : ''] || '',
+        score:          snap.score          || 0,
+        percentage:     snap.percentage     || 0,
+        passed:         snap.passed,
+        correctAnswers: snap.correctAnswers || 0,
+        wrongAnswers:   snap.wrongAnswers   || 0,
+        totalQuestions: totalQ,
+        timeFormatted:  timeFormatted,
+        examDate:       examDate,
+        examMode:       (typeof window.currentMode !== 'undefined' ? window.currentMode : '')
+    });
+}
+
+/* ── طباعة نتيجة من صف في جدول نتائجي ──────────────────────────── */
+function fxhPrintRowResult(r) {
+    if (!r) return;
+    fxhPrintResult({
+        name:           fxhGetUserName(),
+        lang:           r.lang || 'en',
+        certCode:       r.certCode || '',
+        certNameEN:     fxhCertFullNameEN[r.certCode] || r.certName || r.certCode || '',
+        certNameAR:     fxhCertFullNameAR[r.certCode] || (r.lang === 'ar' ? r.certName : '') || '',
+        score:          r.score          || 0,
+        percentage:     r.percentage     || 0,
+        passed:         r.passed,
+        correctAnswers: r.correctAnswers || 0,
+        wrongAnswers:   r.wrongAnswers   || 0,
+        totalQuestions: r.totalQuestions || ((r.correctAnswers || 0) + (r.wrongAnswers || 0)) || 0,
+        timeFormatted:  r.timeFormatted  || '00:00',
+        examDate:       r.clientTimestamp ? new Date(r.clientTimestamp) : new Date(),
+        examMode:       r.mode || ''
+    });
+}
+
+/* ── حقن زر الطباعة في صفحة النتائج (page3) ────────────────────── */
+document.addEventListener('DOMContentLoaded', function() {
+
+    /* --- زر page3: يُحقن قبل عنوان "المراجعة التفصيلية" --- */
+    var reviewH2 = document.getElementById('lbl_detailedReview');
+    if (reviewH2) {
+        var wrap = document.createElement('div');
+        wrap.className = 'fxh-print-btn-wrap';
+        wrap.innerHTML =
+            '<button class="fxh-print-btn" onclick="fxhPrintCurrentResult()">' +
+            '🖨️ <span id="fxhPrintBtnText">طباعة النتيجة<br>Print Result</span>' +
+            '</button>';
+        reviewH2.parentNode.insertBefore(wrap, reviewH2);
+    }
+
+    /* --- إضافة عمود "طباعة" في رأس جدول نتائجي --- */
+    var myResultsHead = document.querySelector('#myResultsTable thead tr');
+    if (myResultsHead && !myResultsHead.querySelector('.fxh-print-th')) {
+        var th = document.createElement('th');
+        th.className = 'fxh-print-th';
+        th.innerHTML = '🖨️';
+        th.title = 'Print Result';
+        th.style.whiteSpace = 'nowrap';
+        myResultsHead.appendChild(th);
+    }
+});
+
 </script>
 </body>
 </html>
