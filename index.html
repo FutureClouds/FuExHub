@@ -2934,6 +2934,7 @@ var fbDailyAttempts = 0;     // how many exams taken in last 24h
 var fbPrevPageForResults = 'pageLang'; // where to go back from My Results
 var fbLimitCountdownInterval = null;
 var FB_GUEST_RESULTS_KEY = 'fuexhub_guest_results';
+var authSuppressAutoLoginRedirect = false;
 
 function fbGetGuestDisplayName() {
     var fallback = 'Guest';
@@ -2986,6 +2987,7 @@ fbAuth.onAuthStateChanged(function(user) {
     if (user) {
         fbCurrentUser = user;
         fbIsGuest     = false;
+        if (authSuppressAutoLoginRedirect) return;
         fbOnUserLoggedIn(user);
     } else {
         fbCurrentUser = null;
@@ -3187,6 +3189,7 @@ function authRegisterEmail() {
 
     regBtn.disabled = true;
     regBtn.textContent = 'Sending...';
+    authSuppressAutoLoginRedirect = true;
 
     fbAuthReadyPromise.then(function() {
         return fbAuth.createUserWithEmailAndPassword(email, password);
@@ -3198,6 +3201,7 @@ function authRegisterEmail() {
             return fbAuth.signOut();
         });
     }).then(function() {
+        authSuppressAutoLoginRedirect = false;
         document.getElementById('authVerifyNotice').style.display = 'block';
         regBtn.disabled = false;
         regBtn.textContent = 'Create Account | إنشاء حساب';
@@ -3205,6 +3209,7 @@ function authRegisterEmail() {
         document.getElementById('authRegEmail').value = '';
         document.getElementById('authRegPassword').value = '';
     }).catch(function(err) {
+        authSuppressAutoLoginRedirect = false;
         regBtn.disabled = false;
         regBtn.textContent = 'Create Account | إنشاء حساب';
         var msg = err.code === 'auth/email-already-in-use' ? 'Email already in use. | البريد مستخدم بالفعل.' :
