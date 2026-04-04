@@ -4263,12 +4263,12 @@ function fxhPrintResult(data) {
 '  * { box-sizing: border-box; font-family: \'Tajawal\', sans-serif; margin: 0; padding: 0; }\n' +
 /* ── شاشة عادية ── */
 '  html, body {\n' +
-'    width: 100%; min-width: 1123px; overflow-x: auto; overflow-y: auto;\n' +
+'    width: 100%; overflow-x: hidden; overflow-y: auto;\n' +
 '    background: #0d0626;\n' +
 '    min-height: 100vh;\n' +
 '  }\n' +
 '  .page-wrap {\n' +
-'    width: 1123px; min-width: 1123px;\n' +
+'    width: 100%; max-width: 100%;\n' +
 '    min-height: 100vh;\n' +
 '    padding: 0;\n' +
 '    position: relative;\n' +
@@ -4276,27 +4276,71 @@ function fxhPrintResult(data) {
 '    display: flex; flex-direction: column;\n' +
 '  }\n' +
 /* ── طباعة: A4 landscape محكم ── */
-'  @media print {\n' +
-'    html, body {\n' +
-'      width: 297mm !important; min-width: 297mm !important; height: 210mm !important;\n' +
-'      overflow: hidden !important;\n' +
-'      background: #0d0626 !important;\n' +
-'    }\n' +
-'    .page-wrap {\n' +
-'      width: 297mm !important; min-width: 297mm !important; height: 210mm !important;\n' +
-'      min-height: unset !important;\n' +
-'      overflow: hidden !important;\n' +
-'      page-break-inside: avoid;\n' +
-'    }\n' +
-'    .content {\n' +
-'      min-height: unset !important; height: 210mm !important;\n' +
-'    }\n' +
-'    body { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }\n' +
-'    * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }\n' +
-'  }\n' +
+'  @media print {
+' +
+'    html, body {
+' +
+'      width: 297mm !important; height: 210mm !important;
+' +
+'      min-width: 297mm !important; max-width: 297mm !important;
+' +
+'      min-height: 210mm !important; max-height: 210mm !important;
+' +
+'      overflow: hidden !important;
+' +
+'      background: #0d0626 !important;
+' +
+'    }
+' +
+'    .page-wrap {
+' +
+'      width: 297mm !important; height: 210mm !important;
+' +
+'      min-width: 297mm !important; max-width: 297mm !important;
+' +
+'      min-height: 210mm !important; max-height: 210mm !important;
+' +
+'      overflow: hidden !important;
+' +
+'      page-break-inside: avoid;
+' +
+'      break-inside: avoid;
+' +
+'    }
+' +
+'    .content {
+' +
+'      width: 100% !important;
+' +
+'      height: 210mm !important;
+' +
+'      min-height: 210mm !important;
+' +
+'      max-height: 210mm !important;
+' +
+'      overflow: hidden !important;
+' +
+'    }
+' +
+'    body { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+' +
+'    * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+' +
+'  }
+' +
 /* خلفية زخرفية */
-'  .bg-orb-1 { position: absolute; width: 220mm; height: 220mm; border-radius: 50%; background: radial-gradient(circle, rgba(142,68,173,0.18) 0%, transparent 70%); top: -80mm; left: -60mm; pointer-events:none; z-index:1; }\n' +
-'  .bg-orb-2 { position: absolute; width: 180mm; height: 180mm; border-radius: 50%; background: radial-gradient(circle, rgba(52,152,219,0.15) 0%, transparent 70%); bottom: -70mm; right: -50mm; pointer-events:none; z-index:1; }\n' +
+'  .bg-orb-1 { position: absolute; width: 220mm; height: 220mm; border-radius: 50%; background: radial-gradient(circle, rgba(142,68,173,0.18) 0%, transparent 70%); top: -80mm; left: -60mm; pointer-events:none; z-index:1; }
+' +
+'  .bg-orb-2 { position: absolute; width: 180mm; height: 180mm; border-radius: 50%; background: radial-gradient(circle, rgba(52,152,219,0.15) 0%, transparent 70%); bottom: -70mm; right: -50mm; pointer-events:none; z-index:1; }
+' +
+'  @media screen and (max-width: 768px), screen and (pointer: coarse), print and (max-width: 768px) {
+' +
+'    .bg-orb-1, .bg-orb-2 { display: none !important; }
+' +
+'    .page-wrap { overflow: hidden !important; }
+' +
+'  }
+' +
 /* إطار */
 '  .border-outer {\n' +
 '    position: absolute; inset: 5mm;\n' +
@@ -4405,8 +4449,8 @@ function fxhPrintResult(data) {
 '</head>\n' +
 '<body>\n' +
 '<div class="page-wrap">\n' +
-'  <div class="bg-orb-1"></div>\n' +
-'  <div class="bg-orb-2"></div>\n' +
+'  <div class="bg-orb-1 fxh-desktop-decor"></div>\n' +
+'  <div class="bg-orb-2 fxh-desktop-decor"></div>\n' +
 '  <div class="border-outer"></div>\n' +
 '  <div class="border-inner"></div>\n' +
 '  <!-- زخارف الزوايا -->\n' +
@@ -4446,17 +4490,7 @@ function fxhPrintResult(data) {
 'window.onload = function() {\n' +
 '  window.focus();\n' +
 '  document.title = ' + JSON.stringify(fileName) + ';\n' +
-'  var pw = document.querySelector(\'.page-wrap\');\n' +
-'  var vw = window.innerWidth || document.documentElement.clientWidth || 1123;\n' +
-'  if (pw && vw < 1100) {\n' +
-'    var scale = vw / 1123;\n' +
-'    pw.style.transformOrigin = \'top left\';\n' +
-'    pw.style.transform = \'scale(\' + scale + \')\';\n' +
-'    pw.style.width = \'1123px\';\n' +
-'    document.documentElement.style.overflow = \'hidden\';\n' +
-'    document.body.style.overflow = \'hidden\';\n' +
-'  }\n' +
-'  setTimeout(function() { window.print(); }, 800);\n' +
+'  setTimeout(function() { window.print(); }, 600);\n' +
 '};\n' +
 '<\/script>\n' +
 '</body>\n</html>';
