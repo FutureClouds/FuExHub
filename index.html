@@ -2354,6 +2354,12 @@ if (isAr) {
         var toggleLabel = document.getElementById('fabTimerToggleLabel');
         if (toggleLabel) toggleLabel.textContent = currentLang === 'ar' ? 'إخفاء المؤقت' : 'Hide Timer';
 
+        // Periodic state save every 15s during exam (mobile doesn't fire beforeunload)
+        if (window._examAutoSaveInterval) clearInterval(window._examAutoSaveInterval);
+        window._examAutoSaveInterval = setInterval(function() {
+            if (typeof fbSaveFullState === 'function') fbSaveFullState('page2');
+        }, 15000);
+
         if (timeLimit === 'unlimited') {
             timerInterval = setInterval(function(){
                 var elapsed = new Date() - startTime;
@@ -2410,6 +2416,7 @@ if (isAr) {
             }
         }
         clearInterval(timerInterval);
+        if (window._examAutoSaveInterval) { clearInterval(window._examAutoSaveInterval); window._examAutoSaveInterval = null; }
         calculateResults(timeExpiredParam);
         showPage('page3');
         // Keep navigation locked on results page too
@@ -2599,11 +2606,13 @@ if (isAr) {
     /* ===== RESTART / BACK ===== */
     function restartQuiz() {
         clearInterval(timerInterval);
+        if (window._examAutoSaveInterval) { clearInterval(window._examAutoSaveInterval); window._examAutoSaveInterval = null; }
         showPage('page0');
     }
 
     function goBackToCert() {
         clearInterval(timerInterval);
+        if (window._examAutoSaveInterval) { clearInterval(window._examAutoSaveInterval); window._examAutoSaveInterval = null; }
         showPage(currentLang === 'ar' ? 'pageCertAR' : 'pageCertEN');
     }
 
@@ -2807,7 +2816,7 @@ function authSubmitGoogleName() {
     }
     var parts = name.split(/\s+/).filter(function(p){ return p.length > 0; });
     if (parts.length < 2) {
-        errEl.textContent = 'يرجى إدخال الاسم الثنائي (اسم + لقب) | Enter first and last name.';
+        errEl.textContent = 'يرجى إدخال الاسم الثنائي | Enter first and last name.';
         return;
     }
 
@@ -3008,7 +3017,7 @@ function authContinueAsGuestSubmit() {
     // Must be at least two words
     var parts = name.split(/\s+/).filter(function(p){ return p.length > 0; });
     if (parts.length < 2) {
-        errEl.textContent = 'يرجى إدخال الاسم الثنائي (اسم + لقب) | Enter first and last name.';
+        errEl.textContent = 'يرجى إدخال الاسم الثنائي | Enter first and last name.';
         return;
     }
 
@@ -3021,6 +3030,9 @@ function authContinueAsGuestSubmit() {
    ================================================================ */
 function fbSaveSessionState(pageId) {
     try { sessionStorage.setItem('currentPage', pageId); } catch(e) {}
+    // Also save full state so mobile back/forward can restore correctly
+    // (mobile browsers don't reliably fire beforeunload)
+    try { fbSaveFullState(pageId); } catch(e) {}
 }
 
 function fbRestoreSessionState() {
@@ -3079,23 +3091,47 @@ function fbUnlockNavigation() {
 
 window.addEventListener('popstate', function(e) {
     if (_examNavLocked) {
-        // Push state again to prevent leaving
+        // Push state again to prevent leaving during exam
         history.pushState({ locked: true }, '', window.location.href);
         return;
     }
-    // On GitHub Pages, hash changes via back/forward should not navigate pages
-    // (state is managed by sessionStorage restore, not hash)
-    // Prevent accidental page change from hash popstate when not locked
+
     var hash = window.location.hash.replace('#', '');
     var targetPage = HASH_PAGE_MAP[hash];
-    if (targetPage && targetPage !== 'pageAuth') {
-        var activePage = document.querySelector('.page.active');
-        var activeId   = activePage ? activePage.id : '';
-        // Only act if the hash points to a different page than what's shown
-        // and we are NOT in exam/results (those are protected above)
-        if (targetPage !== activeId &&
-            targetPage !== 'page2' && targetPage !== 'page3') {
-            // Suppress: we don't allow hash-driven navigation after restore
+    var activePage = document.querySelector('.page.active');
+    var activeId   = activePage ? activePage.id : '';
+
+    // On mobile, back/forward triggers a full page reload (no BFCache).
+    // In that case the page restarts from scratch and onAuthStateChanged
+    // handles restore — nothing to do here.
+    // When the page is already loaded (SPA navigation), handle hash routing:
+    if (targetPage && targetPage !== activeId && targetPage !== 'pageAuth') {
+        // Protect exam and results pages from direct hash navigation
+        if (targetPage === 'page2' || targetPage === 'page3') {
+            history.replaceState({ page: activeId }, '', '#' + (PAGE_HASH_MAP[activeId] || ''));
+            return;
+        }
+        // Try to restore from saved full state for this target page
+        var raw = sessionStorage.getItem('fxhState');
+        if (raw) {
+            try {
+                var s = JSON.parse(raw);
+                if (s && s.page === targetPage) {
+                    // State matches — let fbTryRestoreState handle it fully
+                    if (typeof fbTryRestoreState === 'function') {
+                        fbTryRestoreState(fbIsGuest);
+                        return;
+                    }
+                }
+            } catch(e) {}
+        }
+        // Fallback: just navigate to the target page if it's safe
+        if (targetPage !== 'page2' && targetPage !== 'page3') {
+            showPage(targetPage);
+        }
+    } else if (!targetPage) {
+        // No matching hash — keep the current page
+        if (activeId) {
             history.replaceState({ page: activeId }, '', '#' + (PAGE_HASH_MAP[activeId] || ''));
         }
     }
@@ -3105,10 +3141,10 @@ window.addEventListener('popstate', function(e) {
    FULL STATE SAVE / RESTORE  (Refresh Handling)
    ================================================================ */
 
-// ── Save complete app state before page unload ──────────────────
-window.addEventListener('beforeunload', function() {
+// ── Save complete app state (called on unload AND page transitions) ──
+function fbSaveFullState(forcedPageId) {
     var activeEl = document.querySelector('.page.active');
-    var pageId   = activeEl ? activeEl.id : '';
+    var pageId   = forcedPageId || (activeEl ? activeEl.id : '');
     if (!pageId || pageId === 'pageAuth') return;
 
     // Collect page1 form values
@@ -3155,7 +3191,11 @@ window.addEventListener('beforeunload', function() {
         guestName: sessionStorage.getItem('guestName') || ''
     };
     try { sessionStorage.setItem('fxhState', JSON.stringify(state)); } catch(e) {}
-});
+}
+
+// ── Save on unload: beforeunload (desktop) + pagehide (mobile/iOS) ──
+window.addEventListener('beforeunload', function() { fbSaveFullState(); });
+window.addEventListener('pagehide',     function() { fbSaveFullState(); });
 
 // ── Re-parse questions from the questions JS file ───────────────
 function fbReloadQuestions(certKey, lang) {
