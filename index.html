@@ -2707,6 +2707,8 @@ var fbIsGuest = (function() {
 })();
 
 var fbDailyAttempts = 0;     // how many exams taken in last 24h
+var fbAttemptsLastFetched = 0; // timestamp of last Firestore fetch
+var fbMyResultsCache = null;  // cached results array for instant display
 var fbPrevPageForResults = 'pageLang'; // where to go back from My Results
 var fbLimitCountdownInterval = null;
 
@@ -2742,6 +2744,23 @@ fbAuth.onAuthStateChanged(function(user) {
    ON USER LOGGED IN
    ================================================================ */
 function fbOnUserLoggedIn(user) {
+    // ── Check full name FIRST (catches existing users missing a last name) ──
+    var nameParts = (user.displayName || '').trim().split(/\s+/).filter(function(p){ return p.length > 0; });
+    if (nameParts.length < 2) {
+        fbGoogleNamePending = true;
+        showPage('pageAuth');
+        document.getElementById('googleNameSection').style.display   = 'block';
+        document.getElementById('authFormLogin').style.display       = 'none';
+        document.getElementById('authFormRegister').style.display    = 'none';
+        document.getElementById('authBtnGuest').style.display        = 'none';
+        document.getElementById('guestNameSection').style.display    = 'none';
+        var sep = document.querySelector('.auth-separator');
+        if (sep) sep.style.display = 'none';
+        var inp = document.getElementById('googleDisplayName');
+        if (inp) { inp.value = ''; inp.focus(); }
+        return; // wait until name is set before proceeding
+    }
+
     // Update user info bar
     var bar = document.getElementById('userInfoBar');
     if (bar) bar.classList.add('show');
@@ -3442,6 +3461,7 @@ function fbLoadDailyAttempts() {
                 if (ts && ts > cutoff) count++;
             });
             fbDailyAttempts = count;
+            fbAttemptsLastFetched = Date.now();
             fbUpdateAttemptsDisplay();
         })
         .catch(function(err) {
@@ -3487,25 +3507,30 @@ var _origStartCustomQuiz = window.startCustomQuiz;
 
 window.startQuiz = function() {
     if (!fbCurrentUser || fbIsGuest) { _origStartQuiz(); return; }
-    // Always re-fetch from Firestore to get accurate count
-    fbLoadDailyAttempts().then(function() {
-        if (fbDailyAttempts >= FB_DAILY_LIMIT) {
-            fbShowLimitOverlay();
-        } else {
-            _origStartQuiz();
-        }
-    });
+    var CACHE_TTL = 10 * 60 * 1000; // 10 minutes cache
+    var cacheIsFresh = (Date.now() - fbAttemptsLastFetched) < CACHE_TTL;
+    if (cacheIsFresh) {
+        // Instant: use cached count directly
+        if (fbDailyAttempts >= FB_DAILY_LIMIT) { fbShowLimitOverlay(); } else { _origStartQuiz(); }
+    } else {
+        // Cache is stale — re-fetch, but show limit check only if needed
+        fbLoadDailyAttempts().then(function() {
+            if (fbDailyAttempts >= FB_DAILY_LIMIT) { fbShowLimitOverlay(); } else { _origStartQuiz(); }
+        });
+    }
 };
 
 window.startCustomQuiz = function() {
     if (!fbCurrentUser || fbIsGuest) { _origStartCustomQuiz(); return; }
-    fbLoadDailyAttempts().then(function() {
-        if (fbDailyAttempts >= FB_DAILY_LIMIT) {
-            fbShowLimitOverlay();
-        } else {
-            _origStartCustomQuiz();
-        }
-    });
+    var CACHE_TTL = 10 * 60 * 1000;
+    var cacheIsFresh = (Date.now() - fbAttemptsLastFetched) < CACHE_TTL;
+    if (cacheIsFresh) {
+        if (fbDailyAttempts >= FB_DAILY_LIMIT) { fbShowLimitOverlay(); } else { _origStartCustomQuiz(); }
+    } else {
+        fbLoadDailyAttempts().then(function() {
+            if (fbDailyAttempts >= FB_DAILY_LIMIT) { fbShowLimitOverlay(); } else { _origStartCustomQuiz(); }
+        });
+    }
 };
 
 /* ================================================================
@@ -3608,7 +3633,10 @@ function fbSaveResult(resultData) {
         .add(docData)
         .then(function() {
             fbDailyAttempts++;
+            fbAttemptsLastFetched = Date.now(); // keep cache fresh after new attempt
             fbUpdateAttemptsDisplay();
+            // Also cache the updated My Results so it loads instantly next time
+            fbMyResultsCache = null; // invalidate results cache so next open re-fetches
         })
         .catch(function(err) {
             console.warn('Failed to save result:', err);
@@ -3661,6 +3689,51 @@ function showMyResults() {
 
 function goBackFromMyResults() {
     showPage('pageLang');
+}
+
+// ── Shared render helper (used by cache + live data) ─────────────
+function fbRenderMyResultsTable(results) {
+    var certImgMap = {
+        'AIF-C01':'AIF.png','CLF-C02':'CLF.png','MLA-C01':'MLA.png',
+        'SAA-C03':'SAA.png','DVA-C02':'DVA.png','DEA-C01':'DEA.png',
+        'SOA-C02':'SOA2.png','SOA-C03':'SOA3.png','AIP-C01':'AIP.png',
+        'SAP-C02':'SAP.png','DOP-C02':'DOP.png','MLS-C01':'MLS.png',
+        'ANS-C01':'ANS.png','SCS-C02':'SCS2.png','SCS-C03':'SCS3.png'
+    };
+
+    var totalPassed = results.filter(function(r){ return r.passed; }).length;
+    document.getElementById('statTotal').textContent  = results.length;
+    document.getElementById('statPassed').textContent = totalPassed;
+    document.getElementById('statFailed').textContent = results.length - totalPassed;
+    document.getElementById('myResultsStatsRow').style.display = 'grid';
+    document.getElementById('myResultsEmpty').style.display    = 'none';
+
+    var tbody = document.getElementById('myResultsBody');
+    tbody.innerHTML = '';
+    results.forEach(function(r, idx) {
+        var ts = r._ts || (r.clientTimestamp ? new Date(r.clientTimestamp) : new Date());
+        var dateStr = ts.toLocaleDateString('en-GB', { day:'2-digit', month:'short', year:'numeric' });
+        var timeStr = ts.toLocaleTimeString('en-GB', { hour:'2-digit', minute:'2-digit', second:'2-digit' });
+        var langBadge   = '<span class="result-lang-badge">' + (r.lang === 'ar' ? 'AR' : 'EN') + '</span>';
+        var statusBadge = r.passed
+            ? '<span class="result-badge-pass">PASS ✅</span>'
+            : '<span class="result-badge-fail">FAIL ❌</span>';
+        var certImg = r.certCode && certImgMap[r.certCode]
+            ? '<img src="' + certImgMap[r.certCode] + '" alt="' + r.certCode + '" class="my-results-cert-img">'
+            : '<strong>' + (r.certCode || '—') + '</strong>';
+        var tr = document.createElement('tr');
+        tr.innerHTML =
+            '<td>' + (idx + 1) + '</td>' +
+            '<td>' + certImg + '</td>' +
+            '<td><strong style="font-size:0.82rem;letter-spacing:0.5px;color:#58a6ff;">' + (r.certCode || '—') + '</strong></td>' +
+            '<td><strong>' + (r.score || 0) + '</strong>/1000</td>' +
+            '<td>' + (r.percentage || 0) + '%</td>' +
+            '<td>' + statusBadge + '</td>' +
+            '<td>' + langBadge + '</td>' +
+            '<td>' + dateStr + '<br><span style="font-size:0.8rem;opacity:0.7;">' + timeStr + '</span></td>';
+        tbody.appendChild(tr);
+    });
+    document.getElementById('myResultsTableWrap').style.display = 'block';
 }
 
 function fbLoadMyResults() {
@@ -3733,6 +3806,13 @@ function fbLoadMyResults() {
     if (subtitleElReal) subtitleElReal.style.display = 'block';
     var thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
 
+    // ── Show cached results INSTANTLY if available ────────────────
+    if (fbMyResultsCache && fbMyResultsCache.length > 0) {
+        document.getElementById('myResultsLoading').style.display = 'none';
+        fbRenderMyResultsTable(fbMyResultsCache);
+        // Still refresh from Firestore silently in background
+    }
+
     fbDb.collection('users').doc(fbCurrentUser.uid)
         .collection('results')
         .orderBy('timestamp', 'desc')
@@ -3753,60 +3833,24 @@ function fbLoadMyResults() {
                 }
             });
 
+            // Save to cache for next time
+            fbMyResultsCache = results;
+
             if (results.length === 0) {
                 document.getElementById('myResultsEmpty').style.display = 'block';
+                document.getElementById('myResultsTableWrap').style.display = 'none';
+                document.getElementById('myResultsStatsRow').style.display  = 'none';
                 return;
             }
 
-            // Stats (no avg)
-            var totalPassed = results.filter(function(r){ return r.passed; }).length;
-            var totalFailed = results.length - totalPassed;
-
-            document.getElementById('statTotal').textContent  = results.length;
-            document.getElementById('statPassed').textContent = totalPassed;
-            document.getElementById('statFailed').textContent = totalFailed;
-            document.getElementById('myResultsStatsRow').style.display = 'grid';
-
-            // Build table
-            var tbody = document.getElementById('myResultsBody');
-            tbody.innerHTML = '';
-            results.forEach(function(r, idx) {
-                var ts = r._ts;
-                var dateStr = ts.toLocaleDateString('en-GB', { day:'2-digit', month:'short', year:'numeric' });
-                var timeStr = ts.toLocaleTimeString('en-GB', { hour:'2-digit', minute:'2-digit', second:'2-digit' });
-                var langBadge = '<span class="result-lang-badge">' + (r.lang === 'ar' ? 'AR' : 'EN') + '</span>';
-                var statusBadge = r.passed
-                    ? '<span class="result-badge-pass">PASS ✅</span>'
-                    : '<span class="result-badge-fail">FAIL ❌</span>';
-                var certImgMap = {
-                    'AIF-C01':'AIF.png','CLF-C02':'CLF.png','MLA-C01':'MLA.png',
-                    'SAA-C03':'SAA.png','DVA-C02':'DVA.png','DEA-C01':'DEA.png',
-                    'SOA-C02':'SOA2.png','SOA-C03':'SOA3.png','AIP-C01':'AIP.png',
-                    'SAP-C02':'SAP.png','DOP-C02':'DOP.png','MLS-C01':'MLS.png',
-                    'ANS-C01':'ANS.png','SCS-C02':'SCS2.png','SCS-C03':'SCS3.png'
-                };
-                var certImg = r.certCode && certImgMap[r.certCode]
-                    ? '<img src="' + certImgMap[r.certCode] + '" alt="' + r.certCode + '" class="my-results-cert-img">'
-                    : '<strong>' + (r.certCode || '—') + '</strong>';
-                var tr = document.createElement('tr');
-                tr.innerHTML =
-                    '<td>' + (idx + 1) + '</td>' +
-                    '<td>' + certImg + '</td>' +
-                    '<td><strong style="font-size:0.82rem;letter-spacing:0.5px;color:#58a6ff;">' + (r.certCode || '—') + '</strong></td>' +
-                    '<td><strong>' + (r.score || 0) + '</strong>/1000</td>' +
-                    '<td>' + (r.percentage || 0) + '%</td>' +
-                    '<td>' + statusBadge + '</td>' +
-                    '<td>' + langBadge + '</td>' +
-                    '<td>' + dateStr + '<br><span style="font-size:0.8rem;opacity:0.7;">' + timeStr + '</span></td>';
-                tbody.appendChild(tr);
-            });
-
-            document.getElementById('myResultsTableWrap').style.display = 'block';
+            fbRenderMyResultsTable(results);
         })
         .catch(function(err) {
             document.getElementById('myResultsLoading').style.display = 'none';
-            document.getElementById('myResultsEmpty').style.display   = 'block';
-            document.getElementById('myResultsEmpty').textContent = 'Error loading results. (' + err.message + ')';
+            if (!fbMyResultsCache || fbMyResultsCache.length === 0) {
+                document.getElementById('myResultsEmpty').style.display   = 'block';
+                document.getElementById('myResultsEmpty').textContent = 'Error loading results. (' + err.message + ')';
+            }
             console.warn('Load results error:', err);
         });
 }
