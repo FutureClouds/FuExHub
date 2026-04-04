@@ -786,7 +786,7 @@ body.lang-ar #pageCertEN * {
         body.lang-ar .user-info-bar,
         body.lang-ar .user-info-bar * {
             direction: ltr !important;
-            font-family: 'Montserrat', 'Roboto', sans-serif !important;
+            font-family: 'Tajawal', sans-serif !important;
         }
 
         .user-info-bar.collapsed .user-info-bar-content {
@@ -1102,7 +1102,6 @@ body.lang-ar #pageCertEN * {
 
             </div>
             <div style="text-align:center; margin-top:30px;">
-                <button id="langBackBtn" class="cert-back-btn" onclick="showPage('pageAuth')" style="font-family:'Tajawal',sans-serif; display:none;">رجوع | Back ←</button>
             </div>
         </div>
     </div>
@@ -3337,11 +3336,11 @@ function fbUpdateAttemptsDisplay() {
     var el = document.getElementById('userAttemptsInfo');
     if (!el) return;
     if (fbIsGuest) {
-        var guestResultsCount = fbGetGuestResults().length;
-        el.innerHTML = "<span style=\"font-family:'Tajawal',sans-serif;\">نتائج هذه الجلسة: " + guestResultsCount + "</span><br>" +
-                       'Session results: ' + guestResultsCount;
+        el.style.display = 'none';
+        el.innerHTML = '';
         return;
     }
+    el.style.display = '';
     var remaining = Math.max(0, FB_DAILY_LIMIT - fbDailyAttempts);
     el.innerHTML = "<span style=\"font-family:'Tajawal',sans-serif;\">‏" + remaining + " محاولات (محاولة) متبقية اليوم</span><br>" +
                    remaining + ' attempt(s) left today';
