@@ -111,7 +111,7 @@ html {
 }
 
 body {
-    font-family: 'Montserrat', 'Roboto', sans-serif;
+    font-family: 'Tajawal', 'Montserrat', 'Roboto', sans-serif;
     background: var(--bg-gradient);
     color: var(--text-color);
     margin: 0; padding: 0;
@@ -505,7 +505,7 @@ body.lang-ar #pageCertEN * {
 
 #pageMyResults, #pageMyResults * {
     direction: ltr !important;
-    font-family: 'Montserrat', 'Roboto', sans-serif !important;
+    font-family: 'Tajawal', 'Montserrat', 'Roboto', sans-serif !important;
 }
 
 #pageMyResults .my-results-container {
@@ -692,6 +692,13 @@ body.lang-ar #pageCertEN * {
         #pageAuth .auth-btn-guest {
             text-align: center !important;
             justify-content: center !important;
+        }
+
+        #guestNoticeBtn { display: none !important; }
+        #guestNoticeBanner { display: none !important; }
+
+        #userInfoBar, #userInfoBar * {
+            font-family: 'Tajawal', sans-serif !important;
         }
 
         /* ===== USER BAR (floating card — bottom-right, always LTR, always EN) ===== */
@@ -1021,6 +1028,22 @@ body.lang-ar #pageCertEN * {
                 Continue with Google
             </button>
 
+            <!-- Google Name Prompt (shown after Google sign-in if no valid full name) -->
+            <div id="googleNameSection" style="display:none; margin-top:14px;">
+                <div style="font-family:'Tajawal',sans-serif; color:var(--text-color); font-size:0.95rem; margin-bottom:12px; text-align:center;">
+                    يرجى إدخال اسمك الثنائي للمتابعة<br>
+                    <span style="font-size:0.85rem; opacity:0.75;">Please enter your full name to continue</span>
+                </div>
+                <input type="text" id="googleDisplayName" class="auth-input"
+                    placeholder="اسمك الثنائي | Full Name (First Last)"
+                    autocomplete="off"
+                    oninput="document.getElementById('googleNameError').textContent=''">
+                <div class="auth-error" id="googleNameError"></div>
+                <button class="auth-btn-primary" onclick="authSubmitGoogleName()" style="margin-top:4px;">
+                    متابعة | Continue
+                </button>
+            </div>
+
             <!-- Email / Password form -->
             <div class="auth-separator">or</div>
 
@@ -1037,40 +1060,39 @@ body.lang-ar #pageCertEN * {
 
             <!-- Register Form -->
             <div id="authFormRegister" style="display:none;">
-                <input type="text" id="authRegName" class="auth-input" placeholder="الاسم الثنائي | Full Name" autocomplete="name">
+                <input type="text" id="authRegName" class="auth-input" placeholder="اسمك الثنائي | Full Name (First Last)" autocomplete="name">
                 <input type="email" id="authRegEmail" class="auth-input" placeholder="البريد الإلكتروني | Email" autocomplete="email">
                 <input type="password" id="authRegPassword" class="auth-input" placeholder="كلمة المرور | Password (min 6 chars)" autocomplete="new-password">
                 <div class="auth-error" id="authRegError"></div>
                 <div id="authVerifyNotice" class="auth-verify-notice" style="display:none;">
                     ✅ تم إرسال رمز التحقق إلى بريدك الإلكتروني.<br>
                     A verification code has been sent to your email.<br>
-                    <strong style="color:#27ae60;">يرجى التحقق قبل تسجيل الدخول · Please verify before logging in</strong><br><br>
-                    <span style="color:#f39c12; font-size:0.85rem;">⚠️ تحقق من مجلد البريد الغير مرغوب فيه (Spam) إذا لم تجد الرسالة</span><br>
-                    <span style="color:#f39c12; font-size:0.85rem;">Check your Spam / Junk folder if you don't see the email</span>
+                    <strong style="color:#27ae60;">يرجى التحقق قبل تسجيل الدخول · Please verify before logging in</strong><br>
+                    <span style="font-size:0.85rem; color:#f39c12; margin-top:6px; display:block;">
+                        ⚠️ قد تصل رسالة التحقق إلى البريد غير المرغوب فيه (Spam)<br>
+                        Check your Spam / Junk folder if you don't see it.
+                    </span>
                 </div>
                 <button class="auth-btn-primary" id="authRegBtn" onclick="authRegisterEmail()">Create Account / إنشاء حساب</button>
                 <button class="auth-btn-secondary" onclick="authShowLogin()">Back to Login / العودة للدخول</button>
             </div>
 
             <div class="auth-guest-row">
-                <button class="auth-btn-guest" onclick="showGuestNameModal()">
+                <button class="auth-btn-guest" id="authBtnGuest" onclick="showGuestNameInput()">
                     دخول كضيف<br>Continue as guest
                 </button>
+                <div id="guestNameSection" style="display:none; margin-top:14px;">
+                    <input type="text" id="guestDisplayName" class="auth-input"
+                        placeholder="اسمك الثنائي | Full Name"
+                        autocomplete="off"
+                        oninput="document.getElementById('guestNameError').textContent=''">
+                    <div class="auth-error" id="guestNameError"></div>
+                    <button class="auth-btn-primary" onclick="authContinueAsGuestSubmit()" style="margin-top:4px;">
+                        دخول | Login
+                    </button>
+                </div>
             </div>
         </div>
-    </div>
-</div>
-
-<!-- ===== GUEST NAME MODAL ===== -->
-<div id="guestNameModal" style="display:none; position:fixed; inset:0; z-index:9999; background:rgba(0,0,0,0.7); align-items:center; justify-content:center;">
-    <div style="background:var(--container-bg); border-radius:18px; padding:36px 30px; max-width:400px; width:90%; box-shadow:0 20px 60px rgba(0,0,0,0.6); text-align:center; direction:rtl; font-family:'Tajawal',sans-serif;">
-        <div style="font-size:2rem; margin-bottom:10px;">👤</div>
-        <div style="font-size:1.3rem; font-weight:700; color:var(--text-color); margin-bottom:6px;">أدخل اسمك الثنائي</div>
-        <div style="font-size:0.9rem; opacity:0.7; color:var(--text-color); margin-bottom:20px;">Full Name (اسمك الثنائي)</div>
-        <input type="text" id="guestNameInput" class="auth-input" placeholder="اسمك الثنائي | Full Name" autocomplete="off" style="margin-bottom:8px;">
-        <div class="auth-error" id="guestNameError" style="margin-bottom:8px;"></div>
-        <button class="auth-btn-primary" onclick="confirmGuestName()" style="margin-bottom:8px;">دخول | Login</button>
-        <button class="auth-btn-secondary" onclick="closeGuestNameModal()">إلغاء | Cancel</button>
     </div>
 </div>
 
@@ -1102,7 +1124,6 @@ body.lang-ar #pageCertEN * {
 </div>
 
             </div>
-            <div style="text-align:center; margin-top:30px;"></div>
         </div>
     </div>
 </div>
@@ -1469,7 +1490,7 @@ body.lang-ar #pageCertEN * {
                     <span id="myResultsThemeIcon">🌙</span> <span id="myResultsThemeLabel">Dark Mode</span>
                 </button>
             </div>
-            <div class="my-results-subtitle">Last 30 days | آخر 30 يوم</div>
+            <div class="my-results-subtitle" id="myResultsSubtitle">Last 30 days | آخر 30 يوم</div>
 
             <!-- Stats row — Avg Score removed (Fix 5) -->
             <div class="my-results-stats-row" id="myResultsStatsRow" style="display:none;">
@@ -1488,7 +1509,7 @@ body.lang-ar #pageCertEN * {
             </div>
 
             <!-- Loading -->
-            <div class="my-results-loading" id="myResultsLoading">
+            <div class="my-results-loading" id="myResultsLoading" style="display:none;">
                 <div class="auth-loading" style="width:28px;height:28px;border-width:4px;"></div>
                 <div style="margin-top:12px;">Loading results...</div>
             </div>
@@ -1571,6 +1592,7 @@ body.lang-ar #pageCertEN * {
     var currentLang      = 'en';
     var currentCertCode  = '';
     var currentCertName  = '';
+    var currentCertKey   = '';          // ← key used to find the JS questions variable
     var currentDefaultTime   = 120;
     var currentDefaultQCount = 65;
     var currentPassScore = 700;
@@ -1599,6 +1621,7 @@ body.lang-ar #pageCertEN * {
     /* ===== LOAD CERT ===== */
     function loadCert(lang, certKey, certCode, certName, defaultTime, defaultQCount, passScore, qaLink) {
         currentLang          = lang;
+        currentCertKey       = certKey;          // ← save the key
         currentCertCode      = certCode;
         currentCertName      = certName;
         currentDefaultTime   = parseInt(defaultTime);
@@ -2172,16 +2195,9 @@ if (isAr) {
         startTime = new Date();
         startTimer();
         generateQuizHTML();
-        // Show page without history push, then push exam URL and block back
-        document.querySelectorAll('.page').forEach(function(p){ p.classList.remove('active'); });
-        document.getElementById('page2').classList.add('active');
-        document.body.classList.remove('simple-theme-page');
-        updatePdfButtonVisibility('page2');
-        window.scrollTo(0, 0);
-        var langSeg = currentLang === 'ar' ? 'LangAR' : 'LangEN';
-        var examUrl = '/FuExHub/' + langSeg + '/' + currentCertCode + '/SRM/EXAM';
-        try { history.pushState({ pageId: 'page2', locked: true }, '', examUrl); } catch(e){}
-        try { sessionStorage.setItem('fuexhub_page', 'page2'); } catch(e){}
+        showPage('page2');
+        // Lock browser back/forward during exam
+        if (typeof fbLockNavigation === 'function') fbLockNavigation();
     }
 
     /* ===== START QUIZ - CUSTOM RANGE ===== */
@@ -2225,16 +2241,9 @@ if (isAr) {
         startTime = new Date();
         startTimer();
         generateQuizHTML();
-        // Show page without history push, then push exam URL and block back
-        document.querySelectorAll('.page').forEach(function(p){ p.classList.remove('active'); });
-        document.getElementById('page2').classList.add('active');
-        document.body.classList.remove('simple-theme-page');
-        updatePdfButtonVisibility('page2');
-        window.scrollTo(0, 0);
-        var langSeg2 = currentLang === 'ar' ? 'LangAR' : 'LangEN';
-        var examUrl2 = '/FuExHub/' + langSeg2 + '/' + currentCertCode + '/CRM/EXAM';
-        try { history.pushState({ pageId: 'page2', locked: true }, '', examUrl2); } catch(e){}
-        try { sessionStorage.setItem('fuexhub_page', 'page2'); } catch(e){}
+        showPage('page2');
+        // Lock browser back/forward during exam
+        if (typeof fbLockNavigation === 'function') fbLockNavigation();
     }
 
     /* ===== GENERATE QUIZ HTML ===== */
@@ -2402,17 +2411,9 @@ if (isAr) {
         }
         clearInterval(timerInterval);
         calculateResults(timeExpiredParam);
-        // Show results page with locked history (no back/forward allowed)
-        document.querySelectorAll('.page').forEach(function(p){ p.classList.remove('active'); });
-        document.getElementById('page3').classList.add('active');
-        document.body.classList.remove('simple-theme-page');
-        updatePdfButtonVisibility('page3');
-        window.scrollTo(0, 0);
-        var langSeg3 = currentLang === 'ar' ? 'LangAR' : 'LangEN';
-        var modeSeg3 = window.currentMode === 'custom' ? 'CRM' : 'SRM';
-        var resultsUrl = '/FuExHub/' + langSeg3 + '/' + currentCertCode + '/' + modeSeg3 + '/EXAM/ExamResults';
-        try { history.pushState({ pageId: 'page3', locked: true }, '', resultsUrl); } catch(e){}
-        try { sessionStorage.setItem('fuexhub_page', 'page3'); } catch(e){}
+        showPage('page3');
+        // Keep navigation locked on results page too
+        if (typeof fbLockNavigation === 'function') fbLockNavigation();
     }
 
     /* ===== CALCULATE RESULTS ===== */
@@ -2474,6 +2475,19 @@ if (isAr) {
             : '<div class="failure">' + (isAr ? '😞 لم تنجح هذه المرة. لا تستسلم — راجع المادة وحاول مرة أخرى!' : '😞 You didn\'t pass this time. Don\'t give up — review and try again!') + '</div>';
 
         generateReview(timeExpiredParam);
+
+        /* ===== Save snapshot for refresh restore ===== */
+        window.fxhResultsSnapshot = {
+            timeMain:        timeMain,
+            timeSub:         timeSub,
+            score:           score,
+            percentage:      percentage,
+            passed:          passed,
+            correctAnswers:  correctAnswers,
+            wrongAnswers:    wrongAnswers,
+            timeExpiredParam: timeExpiredParam,
+            startTimeMs:     startTime ? startTime.getTime() : 0
+        };
 
         /* ===== FIREBASE: Save result after calculation ===== */
         fbSaveResult({
@@ -2595,6 +2609,15 @@ if (isAr) {
 
     /* ===== SHOW PAGE ===== */
     function showPage(pageId) {
+        // Unlock exam nav lock when leaving exam/results pages
+        if (typeof fbUnlockNavigation === 'function') {
+            var currentActive = document.querySelector('.page.active');
+            var currentId = currentActive ? currentActive.id : '';
+            if ((currentId === 'page2' || currentId === 'page3') && pageId !== 'page2' && pageId !== 'page3') {
+                fbUnlockNavigation();
+            }
+        }
+
         document.querySelectorAll('.page').forEach(function(p){ p.classList.remove('active'); });
         document.getElementById(pageId).classList.add('active');
 
@@ -2606,74 +2629,21 @@ if (isAr) {
         }
 
         updatePdfButtonVisibility(pageId);
+
+        // Update hash URL
+        if (typeof fbUpdateHash === 'function') fbUpdateHash(pageId);
+
+        // Save session state
+        if (typeof fbSaveSessionState === 'function') fbSaveSessionState(pageId);
+
         window.scrollTo(0, 0);
-
-        // ===== URL ROUTING & HISTORY =====
-        var urlMap = {
-            'pageAuth':     '/FuExHub/Login',
-            'pageLang':     '/FuExHub/Language',
-            'pageCertAR':   '/FuExHub/LangAR',
-            'pageCertEN':   '/FuExHub/LangEN',
-            'pageMyResults':'/FuExHub/MyResults'
-        };
-        // Block history push for exam page (page2) and results (page3) — handled separately
-        var noHistoryPages = ['page2', 'page3'];
-        var url = urlMap[pageId] || null;
-        if (!url && pageId === 'page0' && currentCertCode) {
-            var langSeg = currentLang === 'ar' ? 'LangAR' : 'LangEN';
-            var modeSeg = window.currentMode === 'custom' ? 'CRM' : 'SRM';
-            url = '/FuExHub/' + langSeg + '/' + currentCertCode;
-        }
-        if (!url && (pageId === 'page1' || pageId === 'page1b') && currentCertCode) {
-            var langSeg2 = currentLang === 'ar' ? 'LangAR' : 'LangEN';
-            var modeSeg2 = pageId === 'page1b' ? 'CRM' : 'SRM';
-            url = '/FuExHub/' + langSeg2 + '/' + currentCertCode + '/' + modeSeg2;
-        }
-        if (url && noHistoryPages.indexOf(pageId) === -1) {
-            try { history.pushState({ pageId: pageId }, '', url); } catch(e){}
-        }
-
-        // Save session progress
-        try {
-            sessionStorage.setItem('fuexhub_page', pageId);
-            if (currentCertCode) sessionStorage.setItem('fuexhub_cert', currentCertCode);
-            if (currentLang)     sessionStorage.setItem('fuexhub_lang', currentLang);
-        } catch(e){}
     }
-
-    // Handle browser back/forward
-    window.addEventListener('popstate', function(e) {
-        // If currently on exam (page2) or results (page3), block navigation
-        var activePage = document.querySelector('.page.active');
-        if (activePage && (activePage.id === 'page2' || activePage.id === 'page3')) {
-            // Re-push state to prevent leaving
-            history.pushState({ pageId: activePage.id, locked: true }, '', window.location.href);
-            return;
-        }
-        if (e.state && e.state.pageId) {
-            var targetPage = e.state.pageId;
-            // Block navigating TO locked pages via history
-            if (e.state.locked) return;
-            document.querySelectorAll('.page').forEach(function(p){ p.classList.remove('active'); });
-            var el = document.getElementById(targetPage);
-            if (el) {
-                el.classList.add('active');
-                var simpleThemePages = (targetPage === 'pageAuth' || targetPage === 'pageLang' || targetPage === 'pageCertEN' || targetPage === 'pageCertAR' || targetPage === 'pageMyResults');
-                simpleThemePages ? document.body.classList.add('simple-theme-page') : document.body.classList.remove('simple-theme-page');
-                updatePdfButtonVisibility(targetPage);
-                window.scrollTo(0, 0);
-            }
-        }
-    });
 
     /* ===== INIT ===== */
     document.addEventListener('DOMContentLoaded', function() {
         updatePdfButtonVisibility('pageLang');
         updateFabThemeLabel();
         updateThemeLogos();
-        // Restore session on reload (handled after Firebase auth state is known)
-        // Initial history state
-        try { history.replaceState({ pageId: 'pageAuth' }, '', '/FuExHub/Login'); } catch(e){}
     });
 </script>
 
@@ -2724,6 +2694,8 @@ fbAuth.onAuthStateChanged(function(user) {
     if (user) {
         fbCurrentUser = user;
         fbIsGuest     = false;
+        // If Google name prompt is pending, don't proceed yet
+        if (fbGoogleNamePending) return;
         fbOnUserLoggedIn(user);
     } else {
         fbCurrentUser = null;
@@ -2752,28 +2724,12 @@ function fbOnUserLoggedIn(user) {
     var nameEl = document.getElementById('userDisplayName');
     if (nameEl) nameEl.textContent = user.displayName || user.email || 'User';
 
-    // Restore attempts element visibility for real users
-    var attemptsEl = document.getElementById('userAttemptsInfo');
-    if (attemptsEl) attemptsEl.style.display = '';
-
-    // Load daily attempt count then go to app (restore session page if available)
+    // Load daily attempt count then go to app
     fbLoadDailyAttempts().then(function() {
         fbUpdateAttemptsDisplay();
         var lbb = document.getElementById('langBackBtn'); if (lbb) lbb.style.display = 'none';
-        // Try restoring session page (but only safe pages, not exam/results)
-        var savedPage = null;
-        try { savedPage = sessionStorage.getItem('fuexhub_page'); } catch(e){}
-        var safePagesToRestore = ['pageLang','pageCertAR','pageCertEN','page0','page1','page1b'];
-        if (savedPage && safePagesToRestore.indexOf(savedPage) !== -1 && document.getElementById(savedPage)) {
-            // Restore cert/lang if available
-            try {
-                var sc = sessionStorage.getItem('fuexhub_cert');
-                var sl = sessionStorage.getItem('fuexhub_lang');
-                if (sc) currentCertCode = sc;
-                if (sl) currentLang = sl;
-            } catch(e){}
-            showPage(savedPage);
-        } else {
+        // Try restoring last state (refresh handling)
+        if (!fbTryRestoreState(false)) {
             showPage('pageLang');
         }
     });
@@ -2786,8 +2742,62 @@ function authLoginGoogle() {
     var provider = new firebase.auth.GoogleAuthProvider();
     fbAuthReadyPromise.then(function() {
         return fbAuth.signInWithPopup(provider);
+    }).then(function(result) {
+        var user = result.user;
+        var nameParts = (user.displayName || '').trim().split(/\s+/).filter(function(p){ return p.length > 0; });
+        if (nameParts.length < 2) {
+            // Need to collect a valid full name
+            fbGoogleNamePending = true;
+            document.getElementById('googleNameSection').style.display = 'block';
+            document.getElementById('authFormLogin').style.display = 'none';
+            document.getElementById('authFormRegister').style.display = 'none';
+            document.getElementById('authBtnGuest').style.display = 'none';
+            document.getElementById('guestNameSection').style.display = 'none';
+            var sep = document.querySelector('.auth-separator');
+            if (sep) sep.style.display = 'none';
+            var inp = document.getElementById('googleDisplayName');
+            if (inp) { inp.value = ''; inp.focus(); }
+        }
+        // If name is valid, onAuthStateChanged will handle navigation
     }).catch(function(err) {
         document.getElementById('authError').textContent = err.message;
+    });
+}
+
+var fbGoogleNamePending = false;
+
+function authSubmitGoogleName() {
+    var name  = (document.getElementById('googleDisplayName').value || '').trim();
+    var errEl = document.getElementById('googleNameError');
+    errEl.textContent = '';
+
+    if (!name) {
+        errEl.textContent = 'يرجى إدخال اسمك الثنائي | Please enter your full name.';
+        return;
+    }
+    if (/[\u064B-\u065F\u0670]/.test(name)) {
+        errEl.textContent = 'يرجى كتابة الاسم بدون حركات | No diacritics allowed.';
+        return;
+    }
+    if (/[^\u0621-\u064Aa-zA-Z\s\-']/.test(name)) {
+        errEl.textContent = 'يرجى كتابة الاسم بدون رموز | No special symbols allowed.';
+        return;
+    }
+    var parts = name.split(/\s+/).filter(function(p){ return p.length > 0; });
+    if (parts.length < 2) {
+        errEl.textContent = 'يرجى إدخال الاسم الثنائي | Enter first and last name.';
+        return;
+    }
+
+    var user = fbAuth.currentUser;
+    if (!user) { errEl.textContent = 'Session error. Please try again.'; return; }
+
+    user.updateProfile({ displayName: name }).then(function() {
+        fbGoogleNamePending = false;
+        document.getElementById('googleNameSection').style.display = 'none';
+        fbOnUserLoggedIn(user);
+    }).catch(function(err) {
+        errEl.textContent = err.message;
     });
 }
 
@@ -2833,13 +2843,15 @@ function authLoginEmail() {
     }).then(function(cred) {
         if (!cred.user.emailVerified) {
             fbAuth.signOut();
-            errEl.textContent = '⚠️ لم يتم تأكيد البريد الإلكتروني | Your email has not been verified yet. Please check your inbox (or Spam folder).';
+            errEl.textContent = '⚠️ Please verify your email before logging in. Check your inbox. | يرجى التحقق من بريدك الإلكتروني أولاً.';
         }
     }).catch(function(err) {
-        var msg = err.code === 'auth/user-not-found' ? 'لم يتم تأكيد البريد الإلكتروني | No account found with this email.' :
+        var msg = err.code === 'auth/user-not-found' ? 'البريد الإلكتروني غير مسجل | The email is not registered' :
                   err.code === 'auth/wrong-password' ? 'Wrong password. | كلمة مرور خاطئة.' :
                   err.code === 'auth/invalid-email'  ? 'Invalid email. | بريد إلكتروني غير صالح.' :
-                  err.code === 'auth/invalid-credential' ? 'لم يتم تأكيد البريد الإلكتروني | Invalid email or password — or email not yet verified.' :
+                  err.code === 'auth/invalid-credential' ? 'البريد الإلكتروني غير مسجل | The email is not registered' :
+                  err.code === 'auth/invalid-login-credentials' ? 'البريد الإلكتروني غير مسجل | The email is not registered' :
+                  (err.message && err.message.indexOf('invalid-login-credentials') !== -1) ? 'البريد الإلكتروني غير مسجل | The email is not registered' :
                   err.message;
         errEl.textContent = msg;
     });
@@ -2858,17 +2870,22 @@ function authRegisterEmail() {
         errEl.textContent = 'Please fill in all fields. | يرجى ملء جميع الحقول.';
         return;
     }
-    // Validate full name: must have at least 2 words, no diacritics or special symbols
+
+    // Validate full name: two parts, no diacritics, no symbols
+    if (/[\u064B-\u065F\u0670]/.test(name)) {
+        errEl.textContent = 'الاسم يجب أن يكون بدون حركات | Name must not contain diacritics.';
+        return;
+    }
+    if (/[^\u0621-\u064Aa-zA-Z\s\-']/.test(name)) {
+        errEl.textContent = 'الاسم يجب أن يكون بدون رموز | Name must not contain symbols.';
+        return;
+    }
     var nameParts = name.split(/\s+/).filter(function(p){ return p.length > 0; });
     if (nameParts.length < 2) {
-        errEl.textContent = 'يرجى إدخال الاسم الثنائي كاملاً (الاسم والكنية) | Please enter your full name (first and last).';
+        errEl.textContent = 'يرجى إدخال الاسم الثنائي (الأول والأخير) | Please enter first and last name.';
         return;
     }
-    // Block Arabic diacritics (tashkeel) and special characters/symbols
-    if (/[\u064B-\u065F\u0610-\u061A\u06D6-\u06DC\u06DF-\u06E4\u06E7\u06E8\u06EA-\u06ED]/.test(name) || /[!@#$%^&*()_+=\[\]{};':"\\|,.<>\/?`~]/.test(name)) {
-        errEl.textContent = 'الاسم يجب أن يكون بدون حركات أو رموز خاصة | Name must not contain diacritics or special characters.';
-        return;
-    }
+
     if (password.length < 6) {
         errEl.textContent = 'Password must be at least 6 characters. | كلمة المرور 6 أحرف على الأقل.';
         return;
@@ -2916,59 +2933,407 @@ function authShowLogin() {
     document.getElementById('authRegError').textContent = '';
 }
 
-function showGuestNameModal() {
-    var modal = document.getElementById('guestNameModal');
-    if (modal) { modal.style.display = 'flex'; document.getElementById('guestNameInput').value = ''; document.getElementById('guestNameError').textContent = ''; }
-}
-
-function closeGuestNameModal() {
-    var modal = document.getElementById('guestNameModal');
-    if (modal) modal.style.display = 'none';
-}
-
-function confirmGuestName() {
-    var nameVal = document.getElementById('guestNameInput').value.trim();
-    var errEl   = document.getElementById('guestNameError');
-    errEl.textContent = '';
-    // Must have at least 2 words
-    var parts = nameVal.split(/\s+/).filter(function(p){ return p.length > 0; });
-    if (parts.length < 2) {
-        errEl.textContent = 'يرجى إدخال الاسم الثنائي كاملاً | Please enter your full name (first and last).';
-        return;
-    }
-    // Block diacritics and special symbols
-    if (/[\u064B-\u065F\u0610-\u061A\u06D6-\u06DC\u06DF-\u06E4\u06E7\u06E8\u06EA-\u06ED]/.test(nameVal) || /[!@#$%^&*()_+=\[\]{};':"\\|,.<>\/?`~]/.test(nameVal)) {
-        errEl.textContent = 'الاسم يجب أن يكون بدون حركات أو رموز | Name must not contain diacritics or special symbols.';
-        return;
-    }
-    closeGuestNameModal();
-    authContinueAsGuest(nameVal);
-}
-
 function authContinueAsGuest(guestName) {
     fbIsGuest     = true;
     fbCurrentUser = null;
-    // Show user bar for guest with name but no attempts element
+
+    // Show user info bar for guest (like a real user, but without attempts)
     var bar = document.getElementById('userInfoBar');
-    if (bar) {
-        bar.classList.add('show');
-        var nameEl = document.getElementById('userDisplayName');
-        if (nameEl) nameEl.textContent = guestName || 'ضيف | Guest';
-        var avatar = document.getElementById('userAvatar');
-        if (avatar) avatar.style.display = 'none';
-        var attemptsEl = document.getElementById('userAttemptsInfo');
-        if (attemptsEl) attemptsEl.style.display = 'none';
-    }
-    // Store guest results in session
-    window._guestSessionResults = [];
+    if (bar) bar.classList.add('show');
+
+    var resolvedName = guestName || sessionStorage.getItem('guestName') || 'Guest';
+    var nameEl = document.getElementById('userDisplayName');
+    if (nameEl) nameEl.textContent = resolvedName;
+
+    var avatar = document.getElementById('userAvatar');
+    if (avatar) { avatar.src = ''; avatar.style.display = 'none'; }
+
+    // Hide attempts section for guests
+    var attemptsEl = document.getElementById('userAttemptsInfo');
+    if (attemptsEl) attemptsEl.style.display = 'none';
+
     showPage('pageLang');
 }
+
+function showGuestNameInput() {
+    var section = document.getElementById('guestNameSection');
+    if (section) {
+        section.style.display = 'block';
+        var inp = document.getElementById('guestDisplayName');
+        if (inp) inp.focus();
+    }
+}
+
+function authContinueAsGuestSubmit() {
+    var name  = (document.getElementById('guestDisplayName').value || '').trim();
+    var errEl = document.getElementById('guestNameError');
+    errEl.textContent = '';
+
+    if (!name) {
+        errEl.textContent = 'يرجى إدخال اسمك الثنائي | Please enter your full name.';
+        return;
+    }
+    // No diacritics (harakat)
+    if (/[\u064B-\u065F\u0670]/.test(name)) {
+        errEl.textContent = 'يرجى كتابة الاسم بدون حركات | No diacritics allowed.';
+        return;
+    }
+    // No special symbols
+    if (/[^\u0621-\u064Aa-zA-Z\s\-']/.test(name)) {
+        errEl.textContent = 'يرجى كتابة الاسم بدون رموز | No special symbols allowed.';
+        return;
+    }
+    // Must be at least two words
+    var parts = name.split(/\s+/).filter(function(p){ return p.length > 0; });
+    if (parts.length < 2) {
+        errEl.textContent = 'يرجى إدخال الاسم الثنائي | Enter first and last name.';
+        return;
+    }
+
+    sessionStorage.setItem('guestName', name);
+    authContinueAsGuest(name);
+}
+
+/* ================================================================
+   SESSION STORAGE — persist current page across refresh
+   ================================================================ */
+function fbSaveSessionState(pageId) {
+    try { sessionStorage.setItem('currentPage', pageId); } catch(e) {}
+}
+
+function fbRestoreSessionState() {
+    try {
+        var savedPage = sessionStorage.getItem('currentPage');
+        // Only restore if the user is guest (logged-in users handled by onAuthStateChanged)
+        if (fbIsGuest && savedPage && savedPage !== 'pageAuth') {
+            showPage(savedPage);
+            return true;
+        }
+    } catch(e) {}
+    return false;
+}
+
+/* ================================================================
+   HASH-BASED ROUTING
+   Maps page IDs ↔ URL hashes for bookmarkable URLs
+   ================================================================ */
+var PAGE_HASH_MAP = {
+    'pageAuth':      'Login',
+    'pageLang':      'Language',
+    'pageCertAR':    'LangAR',
+    'pageCertEN':    'LangEN',
+    'page0':         'ModeSelect',
+    'page1':         'SRM',
+    'page1b':        'CRM',
+    'page2':         'EXAM',
+    'page3':         'ExamResults',
+    'pageMyResults': 'MyResults'
+};
+var HASH_PAGE_MAP = {};
+(function(){ for (var k in PAGE_HASH_MAP) { HASH_PAGE_MAP[PAGE_HASH_MAP[k]] = k; } })();
+
+function fbUpdateHash(pageId) {
+    var hash = PAGE_HASH_MAP[pageId];
+    if (hash && window.location.hash !== '#' + hash) {
+        history.replaceState({ page: pageId }, '', '#' + hash);
+    }
+}
+
+/* ================================================================
+   EXAM NAVIGATION LOCK
+   Prevents browser back/forward during exam (page2) and results (page3)
+   ================================================================ */
+var _examNavLocked = false;
+
+function fbLockNavigation() {
+    if (_examNavLocked) return;
+    _examNavLocked = true;
+    history.pushState({ locked: true, page: 'page2' }, '', window.location.href);
+}
+
+function fbUnlockNavigation() {
+    _examNavLocked = false;
+}
+
+window.addEventListener('popstate', function(e) {
+    if (_examNavLocked) {
+        // Push state again to prevent leaving
+        history.pushState({ locked: true }, '', window.location.href);
+    }
+});
+
+/* ================================================================
+   FULL STATE SAVE / RESTORE  (Refresh Handling)
+   ================================================================ */
+
+// ── Save complete app state before page unload ──────────────────
+window.addEventListener('beforeunload', function() {
+    var activeEl = document.querySelector('.page.active');
+    var pageId   = activeEl ? activeEl.id : '';
+    if (!pageId || pageId === 'pageAuth') return;
+
+    // Collect page1 form values
+    var p1Count  = '', p1Time = '';
+    var qcEl = document.getElementById('questionCount');
+    var tlEl = document.getElementById('timeLimit');
+    if (qcEl) p1Count = qcEl.value;
+    if (tlEl) p1Time  = tlEl.value;
+
+    // Collect page1b form values
+    var p1bFrom = '', p1bTo = '', p1bMins = '', p1bUnlim = false;
+    var rfEl  = document.getElementById('rangeFrom');
+    var rtEl  = document.getElementById('rangeTo');
+    var rmEl  = document.getElementById('customTimeMinutes');
+    var ruEl  = document.getElementById('unlimitedTime');
+    if (rfEl)  p1bFrom  = rfEl.value;
+    if (rtEl)  p1bTo    = rtEl.value;
+    if (rmEl)  p1bMins  = rmEl.value;
+    if (ruEl)  p1bUnlim = ruEl.checked;
+
+    var state = {
+        page:          pageId,
+        lang:          currentLang,
+        certKey:       currentCertKey,
+        certCode:      currentCertCode,
+        certName:      currentCertName,
+        defaultTime:   currentDefaultTime,
+        defaultQCount: currentDefaultQCount,
+        passScore:     currentPassScore,
+        qaLink:        currentQALink,
+        mode:          window.currentMode || '',
+        timeLimit:     timeLimit || '',
+        // mid-exam only
+        startTime:     (pageId === 'page2' && startTime) ? startTime.getTime() : null,
+        selectedQ:     (pageId === 'page2' || pageId === 'page3') ? selectedQuestions : null,
+        answers:       (pageId === 'page2' || pageId === 'page3') ? userAnswers       : null,
+        resultsSnap:   (pageId === 'page3') ? (window.fxhResultsSnapshot || null) : null,
+        // setup form values
+        p1Count:  p1Count,  p1Time:   p1Time,
+        p1bFrom:  p1bFrom,  p1bTo:    p1bTo,
+        p1bMins:  p1bMins,  p1bUnlim: p1bUnlim,
+        // identity
+        isGuest:   fbIsGuest,
+        guestName: sessionStorage.getItem('guestName') || ''
+    };
+    try { sessionStorage.setItem('fxhState', JSON.stringify(state)); } catch(e) {}
+});
+
+// ── Re-parse questions from the questions JS file ───────────────
+function fbReloadQuestions(certKey, lang) {
+    if (!certKey) return;
+    questions = [];
+    var rawText = window[certKey]
+               || window[certKey + '_TEXT']
+               || window[certKey.toUpperCase()]
+               || window[certKey.toUpperCase() + '_TEXT']
+               || null;
+    if (!rawText) {
+        // broad search
+        var keys = Object.keys(window);
+        for (var ki = 0; ki < keys.length; ki++) {
+            var norm = keys[ki].toUpperCase().replace(/_TEXT$/, '');
+            if (norm === certKey.toUpperCase() &&
+                typeof window[keys[ki]] === 'string' &&
+                window[keys[ki]].length > 10) {
+                rawText = window[keys[ki]]; break;
+            }
+        }
+    }
+    if (!rawText) return;
+    if (lang === 'ar') parseQuestionsArabic(rawText);
+    else               parseQuestionsEnglish(rawText);
+}
+
+// ── Restore answers to the quiz DOM after generateQuizHTML ──────
+function fbRestoreAnswersToDOM() {
+    Object.keys(userAnswers).forEach(function(idxStr) {
+        var i   = parseInt(idxStr);
+        var q   = selectedQuestions[i];
+        var ans = userAnswers[i];
+        if (!q || ans == null) return;
+
+        if (q.isHotspot) {
+            if (typeof ans === 'object' && !Array.isArray(ans)) {
+                Object.keys(ans).forEach(function(ri) {
+                    var sel = document.getElementById('hotspot' + i + '_' + ri);
+                    if (sel) { sel.value = ans[ri]; sel.classList.toggle('answered', !!ans[ri]); }
+                });
+            }
+        } else {
+            if (Array.isArray(ans)) {
+                ans.forEach(function(optIdx) {
+                    var input = document.getElementById('q' + i + '_' + optIdx);
+                    if (!input) return;
+                    input.checked = true;
+                    // walk up to .option
+                    var el = input;
+                    while (el && !el.classList.contains('option')) el = el.parentElement;
+                    if (el) el.classList.add('selected');
+                });
+            }
+        }
+    });
+}
+
+// ── Main restore function ────────────────────────────────────────
+function fbTryRestoreState(forGuest) {
+    var raw = sessionStorage.getItem('fxhState');
+    if (!raw) return false;
+    var s;
+    try { s = JSON.parse(raw); } catch(e) { return false; }
+    if (!s || !s.page || s.page === 'pageAuth') return false;
+    if ( forGuest && !s.isGuest) return false;
+    if (!forGuest &&  s.isGuest) return false;
+
+    // ── 1. Restore all global variables ──────────────────────────
+    currentLang          = s.lang          || 'en';
+    currentCertKey       = s.certKey       || '';
+    currentCertCode      = s.certCode      || '';
+    currentCertName      = s.certName      || '';
+    currentDefaultTime   = s.defaultTime   || 120;
+    currentDefaultQCount = s.defaultQCount || 65;
+    currentPassScore     = s.passScore     || 700;
+    currentQALink        = s.qaLink        || '';
+    window.currentMode   = s.mode          || '';
+    timeLimit            = s.timeLimit     || '';
+
+    // ── 2. Re-parse questions from JS file ────────────────────────
+    if (currentCertKey) fbReloadQuestions(currentCertKey, currentLang);
+
+    // ── 3. Apply language / UI (titles, direction, etc.) ─────────
+    if (typeof applyLangUI === 'function') applyLangUI();
+
+    var targetPage = s.page;
+
+    // ── 4a. Mid-exam restore (page2) ──────────────────────────────
+    if (targetPage === 'page2' && s.selectedQ && s.selectedQ.length) {
+        selectedQuestions = s.selectedQ;
+        userAnswers       = s.answers || {};
+
+        var elapsed   = s.startTime ? (Date.now() - s.startTime) : 0;
+        startTime     = new Date(Date.now() - elapsed);   // = original startTime
+
+        if (typeof generateQuizHTML === 'function') generateQuizHTML();
+        fbRestoreAnswersToDOM();
+
+        showPage('page2');
+        clearInterval(timerInterval);
+
+        // If timed and time already ran out while page was closed → auto-submit
+        if (s.timeLimit && s.timeLimit !== 'unlimited') {
+            var totalMs   = parseInt(s.timeLimit) * 60000;
+            var remaining = totalMs - elapsed;
+            if (remaining <= 0) {
+                if (typeof submitQuiz === 'function') setTimeout(function(){ submitQuiz(true); }, 100);
+                return true;
+            }
+        }
+        if (typeof startTimer === 'function') startTimer();
+        if (typeof fbLockNavigation === 'function') fbLockNavigation();
+        return true;
+    }
+
+    // ── 4b. Results page — restore fully ─────────────────────────
+    if (targetPage === 'page3') {
+        selectedQuestions = s.selectedQ || [];
+        userAnswers       = s.answers   || {};
+        if (s.resultsSnap && selectedQuestions.length) {
+            var rs   = s.resultsSnap;
+            var isArR = currentLang === 'ar';
+            startTime = rs.startTimeMs ? new Date(rs.startTimeMs) : new Date();
+
+            document.getElementById('timeResult').innerHTML    = rs.timeMain  || '';
+            document.getElementById('timeResultSub').innerHTML = rs.timeSub   || '';
+            document.getElementById('scoreResult').textContent = (rs.score || 0) + '/1000';
+            document.getElementById('passResult').innerHTML = rs.passed
+                ? '<span class="success">'  + (isArR ? 'ناجح 🎉' : 'PASS! 🎉') + '</span>'
+                : '<span class="failure">' + (isArR ? 'راسب 😞' : 'FAIL! 😞') + '</span>';
+            document.getElementById('percentageResult').textContent = (rs.percentage || 0) + '%';
+            document.getElementById('correctCount').innerHTML = isArR
+                ? '<strong>الإجابات الصحيحة:</strong> <span style="color:#27ae60;font-weight:700;">' + rs.correctAnswers + '</span>'
+                : '<strong>Correct answers:</strong> <span style="color:#27ae60;font-weight:700;">' + rs.correctAnswers + '</span>';
+            document.getElementById('wrongCount').innerHTML = isArR
+                ? '<strong>الإجابات الخاطئة:</strong> <span style="color:#e74c3c;font-weight:700;">' + rs.wrongAnswers + '</span>'
+                : '<strong>Wrong answers:</strong> <span style="color:#e74c3c;font-weight:700;">' + rs.wrongAnswers + '</span>';
+            document.getElementById('motivationalMessage').innerHTML = rs.passed
+                ? '<div class="success">'  + (isArR ? '🎉 تهانينا! لقد نجحت في الاختبار. حظاً موفقاً في الاختبار الحقيقي!' : '🎉 Congratulations! You passed the exam. Good luck in the real one!') + '</div>'
+                : '<div class="failure">' + (isArR ? '😞 لم تنجح هذه المرة. لا تستسلم — راجع المادة وحاول مرة أخرى!' : '😞 You didn\'t pass this time. Don\'t give up — review and try again!') + '</div>';
+
+            if (typeof generateReview === 'function') generateReview(rs.timeExpiredParam || false);
+
+            var banner = document.getElementById('guestNoticeBanner');
+            if (banner) banner.style.display = (fbIsGuest && !fbCurrentUser) ? 'flex' : 'none';
+
+            window.fxhResultsSnapshot = rs;
+            showPage('page3');
+            if (typeof fbLockNavigation === 'function') fbLockNavigation();
+            return true;
+        }
+        showPage('pageLang'); return true;
+    }
+
+    // ── 4c. Setup pages — restore form values too ─────────────────
+    showPage(targetPage);
+
+    // If restoring My Results page, trigger data load immediately
+    if (targetPage === 'pageMyResults') {
+        if (typeof fbLoadMyResults === 'function') fbLoadMyResults();
+    }
+
+    // Restore page1 selects
+    if (targetPage === 'page1') {
+        setTimeout(function() {
+            var qcEl2 = document.getElementById('questionCount');
+            var tlEl2 = document.getElementById('timeLimit');
+            if (qcEl2 && s.p1Count) {
+                for (var i = 0; i < qcEl2.options.length; i++) {
+                    if (qcEl2.options[i].value === s.p1Count) { qcEl2.selectedIndex = i; break; }
+                }
+            }
+            if (tlEl2 && s.p1Time) {
+                for (var j = 0; j < tlEl2.options.length; j++) {
+                    if (tlEl2.options[j].value === s.p1Time) { tlEl2.selectedIndex = j; break; }
+                }
+            }
+        }, 50);
+    }
+
+    // Restore page1b inputs
+    if (targetPage === 'page1b') {
+        setTimeout(function() {
+            var rfEl2 = document.getElementById('rangeFrom');
+            var rtEl2 = document.getElementById('rangeTo');
+            var rmEl2 = document.getElementById('customTimeMinutes');
+            var ruEl2 = document.getElementById('unlimitedTime');
+            var hintEl = document.getElementById('totalQuestionsHint');
+            if (rfEl2 && s.p1bFrom) rfEl2.value = s.p1bFrom;
+            if (rtEl2 && s.p1bTo)   rtEl2.value = s.p1bTo;
+            if (rmEl2 && s.p1bMins) rmEl2.value = s.p1bMins;
+            if (ruEl2) {
+                ruEl2.checked = !!s.p1bUnlim;
+                if (rmEl2) { rmEl2.disabled = !!s.p1bUnlim; rmEl2.style.opacity = s.p1bUnlim ? '0.4' : '1'; }
+            }
+            if (hintEl) hintEl.textContent = (currentLang === 'ar')
+                ? 'إجمالي الأسئلة المتاحة: ' + questions.length
+                : 'Total available questions: ' + questions.length;
+        }, 50);
+    }
+
+    return true;
+}
+
 
 function authSignOut() {
     fbAuth.signOut().then(function() {
         fbCurrentUser = null;
         fbIsGuest = false;
         fbDailyAttempts = 0;
+        try {
+            sessionStorage.removeItem('guestName');
+            sessionStorage.removeItem('guestResults');
+            sessionStorage.removeItem('currentPage');
+            sessionStorage.removeItem('fxhState');
+        } catch(e) {}
         document.getElementById('userInfoBar').classList.remove('show');
         showPage('pageAuth');
         updatePdfButtonVisibility('pageAuth');
@@ -3112,8 +3477,32 @@ function fbSaveResult(resultData) {
     document.getElementById('guestNoticeBanner').classList.remove('show');
 
     if (fbIsGuest || !fbCurrentUser) {
-        // Show guest notice
-        document.getElementById('guestNoticeBanner').classList.add('show');
+        // Save guest result to sessionStorage
+        try {
+            var guestResults = JSON.parse(sessionStorage.getItem('guestResults') || '[]');
+            guestResults.push({
+                certCode:       currentCertCode,
+                certName:       currentCertName,
+                lang:           currentLang,
+                score:          resultData.score,
+                percentage:     resultData.percentage,
+                passed:         resultData.passed,
+                timeFormatted:  resultData.timeFormatted,
+                correctAnswers: resultData.correctAnswers,
+                wrongAnswers:   resultData.wrongAnswers,
+                totalQuestions: resultData.totalQuestions,
+                timeExpired:    resultData.timeExpired,
+                clientTimestamp: Date.now()
+            });
+            sessionStorage.setItem('guestResults', JSON.stringify(guestResults));
+        } catch(e) {}
+        // Update guest notice to indicate session-only saving
+        var guestNoticeBanner = document.getElementById('guestNoticeBanner');
+        var guestNoticeTitle  = document.getElementById('guestNoticeTitle');
+        var guestNoticeSub    = document.getElementById('guestNoticeSub');
+        if (guestNoticeTitle) guestNoticeTitle.innerHTML = '💾 النتائج محفوظة في الجلسة';
+        if (guestNoticeSub)   guestNoticeSub.textContent = 'Results saved for this session only';
+        if (guestNoticeBanner) guestNoticeBanner.classList.add('show');
         return;
     }
 
@@ -3150,8 +3539,40 @@ function fbSaveResult(resultData) {
 }
 
 /* ================================================================
-   MY RESULTS PAGE
+   SESSION RESTORE ON PAGE LOAD (for guests)
    ================================================================ */
+document.addEventListener('DOMContentLoaded', function() {
+    // Restore guest session if user had logged in as guest previously
+    try {
+        var savedGuestName = sessionStorage.getItem('guestName');
+        var rawState       = sessionStorage.getItem('fxhState');
+        var parsedState    = rawState ? JSON.parse(rawState) : null;
+        var isGuestState   = parsedState && parsedState.isGuest;
+
+        if (savedGuestName && isGuestState) {
+            fbIsGuest     = true;
+            fbCurrentUser = null;
+
+            var bar = document.getElementById('userInfoBar');
+            if (bar) bar.classList.add('show');
+
+            var nameEl = document.getElementById('userDisplayName');
+            if (nameEl) nameEl.textContent = savedGuestName;
+
+            var avatar = document.getElementById('userAvatar');
+            if (avatar) { avatar.src = ''; avatar.style.display = 'none'; }
+
+            var attemptsEl = document.getElementById('userAttemptsInfo');
+            if (attemptsEl) attemptsEl.style.display = 'none';
+
+            // Restore full state — page, exam-in-progress, etc.
+            if (!fbTryRestoreState(true)) {
+                showPage('pageLang');
+            }
+        }
+    } catch(e) {}
+});
+
 function showMyResults() {
     fbPrevPageForResults = document.querySelector('.page.active') ? document.querySelector('.page.active').id : 'pageLang';
     showPage('pageMyResults');
@@ -3164,13 +3585,73 @@ function goBackFromMyResults() {
 }
 
 function fbLoadMyResults() {
-    if (!fbCurrentUser) return;
-
     document.getElementById('myResultsLoading').style.display = 'block';
     document.getElementById('myResultsEmpty').style.display   = 'none';
     document.getElementById('myResultsTableWrap').style.display = 'none';
     document.getElementById('myResultsStatsRow').style.display  = 'none';
 
+    // ── GUEST: load from sessionStorage ──────────────────────────
+    if (fbIsGuest || !fbCurrentUser) {
+        document.getElementById('myResultsLoading').style.display = 'none';
+        // Hide "Last 30 days" subtitle for guest
+        var subtitleEl = document.getElementById('myResultsSubtitle');
+        if (subtitleEl) subtitleEl.style.display = 'none';
+        var guestResults = [];
+        try { guestResults = JSON.parse(sessionStorage.getItem('guestResults') || '[]'); } catch(e) {}
+
+        if (guestResults.length === 0) {
+            document.getElementById('myResultsEmpty').style.display = 'block';
+            return;
+        }
+
+        // Sort newest first
+        guestResults = guestResults.slice().sort(function(a,b){ return (b.clientTimestamp||0) - (a.clientTimestamp||0); });
+
+        var totalPassed = guestResults.filter(function(r){ return r.passed; }).length;
+        document.getElementById('statTotal').textContent  = guestResults.length;
+        document.getElementById('statPassed').textContent = totalPassed;
+        document.getElementById('statFailed').textContent = guestResults.length - totalPassed;
+        document.getElementById('myResultsStatsRow').style.display = 'grid';
+
+        var certImgMap = {
+            'AIF-C01':'AIF.png','CLF-C02':'CLF.png','MLA-C01':'MLA.png',
+            'SAA-C03':'SAA.png','DVA-C02':'DVA.png','DEA-C01':'DEA.png',
+            'SOA-C02':'SOA2.png','SOA-C03':'SOA3.png','AIP-C01':'AIP.png',
+            'SAP-C02':'SAP.png','DOP-C02':'DOP.png','MLS-C01':'MLS.png',
+            'ANS-C01':'ANS.png','SCS-C02':'SCS2.png','SCS-C03':'SCS3.png'
+        };
+        var tbody = document.getElementById('myResultsBody');
+        tbody.innerHTML = '';
+        guestResults.forEach(function(r, idx) {
+            var ts      = r.clientTimestamp ? new Date(r.clientTimestamp) : new Date();
+            var dateStr = ts.toLocaleDateString('en-GB', { day:'2-digit', month:'short', year:'numeric' });
+            var timeStr = ts.toLocaleTimeString('en-GB', { hour:'2-digit', minute:'2-digit', second:'2-digit' });
+            var langBadge   = '<span class="result-lang-badge">' + (r.lang === 'ar' ? 'AR' : 'EN') + '</span>';
+            var statusBadge = r.passed
+                ? '<span class="result-badge-pass">PASS ✅</span>'
+                : '<span class="result-badge-fail">FAIL ❌</span>';
+            var certImg = r.certCode && certImgMap[r.certCode]
+                ? '<img src="' + certImgMap[r.certCode] + '" alt="' + r.certCode + '" class="my-results-cert-img">'
+                : '<strong>' + (r.certCode || '—') + '</strong>';
+            var tr = document.createElement('tr');
+            tr.innerHTML =
+                '<td>' + (idx + 1) + '</td>' +
+                '<td>' + certImg + '</td>' +
+                '<td><strong style="font-size:0.82rem;letter-spacing:0.5px;color:#58a6ff;">' + (r.certCode || '—') + '</strong></td>' +
+                '<td><strong>' + (r.score || 0) + '</strong>/1000</td>' +
+                '<td>' + (r.percentage || 0) + '%</td>' +
+                '<td>' + statusBadge + '</td>' +
+                '<td>' + langBadge + '</td>' +
+                '<td>' + dateStr + '<br><span style="font-size:0.8rem;opacity:0.7;">' + timeStr + '</span></td>';
+            tbody.appendChild(tr);
+        });
+        document.getElementById('myResultsTableWrap').style.display = 'block';
+        return;
+    }
+
+    // ── REAL USER: load from Firestore ────────────────────────────
+    var subtitleElReal = document.getElementById('myResultsSubtitle');
+    if (subtitleElReal) subtitleElReal.style.display = 'block';
     var thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
 
     fbDb.collection('users').doc(fbCurrentUser.uid)
@@ -3291,7 +3772,7 @@ document.addEventListener('DOMContentLoaded', function() {
         var myResItem = document.getElementById('fabMyResultsItem');
         if (myResItem) {
             var showPages = ['page0','page1','page1b','page3'];
-            var shouldShow = fbCurrentUser && !fbIsGuest && showPages.indexOf(pageId) !== -1;
+            var shouldShow = (fbCurrentUser && !fbIsGuest || fbIsGuest) && showPages.indexOf(pageId) !== -1;
             myResItem.style.display = shouldShow ? 'flex' : 'none';
         }
     };
