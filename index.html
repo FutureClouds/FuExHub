@@ -1638,6 +1638,36 @@ body.lang-ar #pageCertEN * {
     transform: scale(1.08);
     box-shadow: 0 3px 11px rgba(52,152,219,0.65);
 }
+
+/* ── Print btn mobile fix ── */
+@media (max-width: 768px) {
+    .fxh-print-btn-wrap {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin: 18px 0 8px;
+    }
+    .fxh-print-btn {
+        font-size: 0.95rem;
+        padding: 11px 24px;
+        gap: 8px;
+        width: auto;
+        max-width: 90%;
+        white-space: nowrap;
+    }
+}
+@media (max-width: 480px) {
+    .fxh-print-btn {
+        font-size: 0.88rem;
+        padding: 10px 20px;
+        gap: 7px;
+        max-width: 85%;
+    }
+    .fxh-row-print-btn {
+        font-size: 0.78rem;
+        padding: 4px 9px;
+    }
+}
 </style>
 
 <!-- ===================================================== -->
