@@ -281,7 +281,7 @@ body.simple-theme-page #fabWrapper {
             50% { transform: scale(1.06); box-shadow: 0 5px 18px rgba(231,76,60,0.7); }
         }
 
-        #EXAM.page.active { padding-top: 62px; }
+        #page2.page.active { padding-top: 62px; }
 
         @media (max-width: 768px) {
             .fab-wrapper { top: 12px; right: 12px; }
@@ -487,74 +487,74 @@ body.simple-theme-page #fabWrapper {
     font-family: 'Tajawal', sans-serif !important;
 }
 
-#Language, #Language * {
+#pageLang, #pageLang * {
     direction: rtl !important;
 }
 
-#CertAR, #CertAR * {
+#pageCertAR, #pageCertAR * {
     direction: rtl !important;
 }
 
-#CertEN,
-#CertEN *,
-body.lang-ar #CertEN,
-body.lang-ar #CertEN * {
+#pageCertEN,
+#pageCertEN *,
+body.lang-ar #pageCertEN,
+body.lang-ar #pageCertEN * {
     direction: ltr !important;
     font-family: 'Montserrat', 'Roboto', sans-serif !important;
 }
 
-#MyResults, #MyResults * {
+#pageMyResults, #pageMyResults * {
     direction: ltr !important;
     font-family: 'Montserrat', 'Roboto', sans-serif !important;
 }
 
-#MyResults .my-results-container {
+#pageMyResults .my-results-container {
     position: relative;
 }
 
-#MyResults .my-results-header {
+#pageMyResults .my-results-header {
     text-align: center;
     margin-bottom: 8px;
 }
 
-#MyResults .my-results-title {
+#pageMyResults .my-results-title {
     width: 100%;
     text-align: center;
 }
 
-#MyResults .my-results-stats-row {
+#pageMyResults .my-results-stats-row {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 14px;
     margin-bottom: 24px;
 }
 
-#MyResults .my-results-stat:first-child {
+#pageMyResults .my-results-stat:first-child {
     grid-column: 1 / -1;
 }
 
-#MyResults .my-results-stat {
+#pageMyResults .my-results-stat {
     min-width: 0;
     width: 100%;
 }
 
-#MyResults .my-results-inline-theme-btn {
+#pageMyResults .my-results-inline-theme-btn {
     display: none !important;
 }
 
 @media (max-width: 600px) {
-    #MyResults .my-results-stats-row {
+    #pageMyResults .my-results-stats-row {
         grid-template-columns: 1fr;
     }
 
-    #MyResults .my-results-stat:first-child {
+    #pageMyResults .my-results-stat:first-child {
         grid-column: auto;
     }
 }
 
 
-        #Language .lang-select-container,
-        #Language .lang-select-container * {
+        #pageLang .lang-select-container,
+        #pageLang .lang-select-container * {
             font-family: 'Tajawal', sans-serif !important;
         }
 
@@ -564,8 +564,8 @@ body.lang-ar #CertEN * {
         .guest-notice-login-btn,
         .attempt-limit-box,
         .attempt-limit-box *,
-        #MyResults .my-results-container,
-        #MyResults .my-results-container * {
+        #pageMyResults .my-results-container,
+        #pageMyResults .my-results-container * {
             font-family: 'Tajawal', sans-serif !important;
         }
 
@@ -650,49 +650,46 @@ body.lang-ar #CertEN * {
         .auth-guest-row { margin-top: 24px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.1); }
         .auth-btn-guest { background: transparent; color: rgba(255,255,255,0.55); font-size: 0.88rem; border: none; cursor: pointer; padding: 8px 16px; margin: 0; transition: color 0.2s; text-decoration: underline; font-weight: 600; box-shadow: none; }
         .auth-btn-guest:hover { background: transparent; color: rgba(255,255,255,0.85); transform: none; }
-        .guest-inline-form { display:none; margin-top:14px; }
-        .guest-inline-form.show { display:block; }
-        .guest-inline-error { color:#e74c3c; font-size:0.88rem; min-height:20px; margin:8px 0 4px; text-align:center !important; direction:rtl; unicode-bidi:plaintext; }
 
         .auth-error { color: #e74c3c; font-size: 0.88rem; margin: 8px 0; min-height: 20px; text-align: center !important; direction: rtl; unicode-bidi: plaintext; }
         .auth-loading { display: inline-block; width: 18px; height: 18px; border: 3px solid rgba(255,255,255,0.3); border-top-color: #fff; border-radius: 50%; animation: spin 0.8s linear infinite; vertical-align: middle; margin-left: 8px; }
         @keyframes spin { to { transform: rotate(360deg); } }
 
         /* ===== AUTH PAGE RTL/LTR MIX FIX (minimal) ===== */
-        #Login .auth-container,
-        #Login .auth-container * {
+        #pageAuth .auth-container,
+        #pageAuth .auth-container * {
             font-family: 'Tajawal', sans-serif !important;
         }
-        #Login .auth-input,
-        #Login .auth-btn-primary,
-        #Login .auth-btn-secondary,
-        #Login .auth-btn-guest,
-        #Login .auth-verify-notice {
+        #pageAuth .auth-input,
+        #pageAuth .auth-btn-primary,
+        #pageAuth .auth-btn-secondary,
+        #pageAuth .auth-btn-guest,
+        #pageAuth .auth-verify-notice {
             direction: rtl;
             text-align: right;
             unicode-bidi: plaintext;
         }
 
-        #Login .auth-error,
-        #Login .auth-success,
-        #Login .auth-subtitle {
+        #pageAuth .auth-error,
+        #pageAuth .auth-success,
+        #pageAuth .auth-subtitle {
             direction: rtl;
             text-align: center !important;
             unicode-bidi: plaintext;
         }
-        #Login .auth-forgot-link {
+        #pageAuth .auth-forgot-link {
             direction: rtl;
             text-align: center !important;
             unicode-bidi: plaintext;
         }
 
-        #Login .auth-btn-primary,
-        #Login .auth-btn-secondary {
+        #pageAuth .auth-btn-primary,
+        #pageAuth .auth-btn-secondary {
             text-align: center !important;
             justify-content: center !important;
         }
 
-        #Login .auth-btn-guest {
+        #pageAuth .auth-btn-guest {
             text-align: center !important;
             justify-content: center !important;
         }
@@ -825,7 +822,7 @@ body.lang-ar #CertEN * {
             .user-info-bar.collapsed { bottom: 12px; right: 12px; }
         }
 
-        /* Guest notice banner on #ExamRes */
+        /* Guest notice banner on page3 */
         .guest-notice-banner {
             background: linear-gradient(135deg, #2980b9, #8e44ad);
             border: none;
@@ -896,7 +893,7 @@ body.lang-ar #CertEN * {
 
         /* ===== FIX 3: QUIZ PAGE (page2) MOBILE RESPONSIVE ===== */
         @media (max-width: 768px) {
-            #EXAM > div {
+            #page2 > div {
                 width: 97% !important;
                 padding: 12px !important;
                 margin-top: 8px !important;
@@ -925,10 +922,10 @@ body.lang-ar #CertEN * {
                 margin-right: 0 !important;
                 margin-left: 8px !important;
             }
-            #EXAM.page.active { padding-top: 62px !important; }
+            #page2.page.active { padding-top: 62px !important; }
         }
         @media (max-width: 480px) {
-            #EXAM > div {
+            #page2 > div {
                 width: 99% !important;
                 padding: 8px !important;
             }
@@ -1057,11 +1054,6 @@ body.lang-ar #CertEN * {
                 <button class="auth-btn-guest" onclick="authContinueAsGuest()">
                     دخول كضيف (لن تُحفظ النتائج)<br>Continue as guest (results won't be saved)
                 </button>
-                <div id="guestInlineForm" class="guest-inline-form">
-                    <input type="text" id="guestFullName" class="auth-input" placeholder="اسمك الثنائي | Full name" autocomplete="name">
-                    <div id="guestNameError" class="guest-inline-error"></div>
-                    <button class="auth-btn-primary" id="guestLoginBtn" onclick="submitGuestLogin()">دخول | Login</button>
-                </div>
             </div>
         </div>
     </div>
@@ -1280,10 +1272,10 @@ body.lang-ar #CertEN * {
 <!-- ===================================================== -->
 <!-- PAGE 0: MODE SELECTION                                -->
 <!-- ===================================================== -->
-<div id="#Certificate" class="page">
+<div id="page0" class="page">
     <div class="quiz-container">
-        <h1 id="#CertificateTitle">AWS Exam</h1>
-        <p id="#CertificateSubtitle" style="font-size:1.2rem; margin-bottom:40px;">Choose your preferred exam mode to begin.</p>
+        <h1 id="page0Title">AWS Exam</h1>
+        <p id="page0Subtitle" style="font-size:1.2rem; margin-bottom:40px;">Choose your preferred exam mode to begin.</p>
         <div class="mode-selection-container">
             <div class="mode-card">
                 <span class="mode-icon">🔀</span>
@@ -1307,10 +1299,10 @@ body.lang-ar #CertEN * {
 <!-- ===================================================== -->
 <!-- PAGE 1: SETUP - SMART RANDOM                          -->
 <!-- ===================================================== -->
-<div id="#SRM" class="page">
+<div id="page1" class="page">
     <div class="quiz-container">
-        <h1 id="#SRMTitle">AWS Exam</h1>
-        <p id="#SRMSubtitle" style="font-size:1.2rem; margin-bottom:40px;">Smart Random Mode — customize question count and time limit.</p>
+        <h1 id="page1Title">AWS Exam</h1>
+        <p id="page1Subtitle" style="font-size:1.2rem; margin-bottom:40px;">Smart Random Mode — customize question count and time limit.</p>
         <div class="setup-container">
             <div class="setup-box">
                 <h3 id="lbl_numQ">Number of Questions</h3>
@@ -1344,7 +1336,7 @@ body.lang-ar #CertEN * {
             </div>
         </div>
         <div class="setup-action-buttons" style="display:flex; gap:15px; justify-content:center; flex-wrap:wrap;">
-            <button onclick="showPage('#Certificate')" id="backBtn1" style="font-size:1.1rem; padding:15px 30px; background:linear-gradient(45deg,#636e72,#95a5a6);">← Back</button>
+            <button onclick="showPage('page0')" id="backBtn1" style="font-size:1.1rem; padding:15px 30px; background:linear-gradient(45deg,#636e72,#95a5a6);">← Back</button>
             <button onclick="startQuiz()" id="startBtn1" style="font-size:1.5rem; padding:20px 40px;">Start Exam</button>
         </div>
     </div>
@@ -1353,10 +1345,10 @@ body.lang-ar #CertEN * {
 <!-- ===================================================== -->
 <!-- PAGE 1B: SETUP - CUSTOM RANGE                         -->
 <!-- ===================================================== -->
-<div id="#CRM" class="page">
+<div id="page1b" class="page">
     <div class="quiz-container">
-        <h1 id="#CRMTitle">AWS Exam</h1>
-        <p id="#CRMSubtitle" style="font-size:1.2rem; margin-bottom:40px;">Custom Range Mode — Set your question range and time limit.</p>
+        <h1 id="page1bTitle">AWS Exam</h1>
+        <p id="page1bSubtitle" style="font-size:1.2rem; margin-bottom:40px;">Custom Range Mode — Set your question range and time limit.</p>
         <div class="setup-container">
             <div class="setup-box">
                 <h3 id="lbl_qRange">Question Range</h3>
@@ -1384,7 +1376,7 @@ body.lang-ar #CertEN * {
         </div>
         <div id="rangeError" class="warning" style="display:none; margin-top:10px;"></div>
         <div class="setup-action-buttons" style="display:flex; gap:15px; justify-content:center; flex-wrap:wrap;">
-            <button onclick="showPage('#Certificate')" id="backBtn1b" style="font-size:1.1rem; padding:15px 30px; background:linear-gradient(45deg,#636e72,#95a5a6);">← Back</button>
+            <button onclick="showPage('page0')" id="backBtn1b" style="font-size:1.1rem; padding:15px 30px; background:linear-gradient(45deg,#636e72,#95a5a6);">← Back</button>
             <button onclick="startCustomQuiz()" id="startBtn1b" style="font-size:1.5rem; padding:20px 40px;">Start Exam</button>
         </div>
     </div>
@@ -1410,7 +1402,7 @@ body.lang-ar #CertEN * {
 <!-- ===================================================== -->
 <!-- PAGE 3: RESULTS                                       -->
 <!-- ===================================================== -->
-<div id="#ExamRes" class="page">
+<div id="page3" class="page">
     <div class="quiz-container">
         <h1 id="resultsTitle">Exam Results</h1>
         <!-- Guest notice banner (shown only for guests) -->
@@ -1640,7 +1632,7 @@ body.lang-ar #CertEN * {
         }
 
         applyLangUI();
-        showPage('#Certificate');
+        showPage('page0');
     }
 
     /* ===== APPLY LANGUAGE UI ===== */
@@ -1716,27 +1708,27 @@ if (isAr) {
     }
 }
 
-        ['#CertificateTitle','#SRMTitle','#CRMTitle','page2Title'].forEach(function(id) {
+        ['page0Title','page1Title','page1bTitle','page2Title'].forEach(function(id) {
             var el = document.getElementById(id);
             if (el) el.innerHTML = titleHTML;
         });
 
         if (!isAr) {
-            setText('#CertificateSubtitle', 'Choose your preferred exam mode to begin.');
+            setText('page0Subtitle', 'Choose your preferred exam mode to begin.');
             setText('mode1Title', 'Smart Random Mode');
             setText('mode1Desc', 'Questions are randomly shuffled from the full question bank with the standard time and count options — the classic exam experience.');
             setText('mode1Btn', 'Select Mode');
             setText('mode2Title', 'Custom Range Mode');
             setText('mode2Desc', 'Select a specific range of questions by their order in the question bank (e.g., Q20 to Q81). You also set the time limit manually or choose unlimited.');
             setText('mode2Btn', 'Select Mode');
-            setText('#SRMSubtitle', 'Smart Random Mode — customize question count and time limit.');
+            setText('page1Subtitle', 'Smart Random Mode — customize question count and time limit.');
             setText('lbl_numQ', 'Number of Questions');
             setText('lbl_timeLimit', 'Time Limit');
             setText('optAll', 'All Questions');
             setText('optUnlimited', 'Unlimited');
             setText('backBtn1', '← Back');
             setText('startBtn1', 'Start Exam');
-            setText('#CRMSubtitle', 'Custom Range Mode — Set your question range and time limit.');
+            setText('page1bSubtitle', 'Custom Range Mode — Set your question range and time limit.');
             setText('lbl_qRange', 'Question Range');
             setText('lbl_from', 'From Question:');
             setText('lbl_to', 'To Question:');
@@ -1763,21 +1755,21 @@ if (isAr) {
             setText('guestNoticeSub', 'You are browsing as a guest');
             setText('guestNoticeBtn', '🔑 Login');
         } else {
-            setText('#CertificateSubtitle', 'اختر وضع الاختبار المفضل للبدء.');
+            setText('page0Subtitle', 'اختر وضع الاختبار المفضل للبدء.');
             setText('mode1Title', 'وضع الترتيب العشوائي الذكي');
             setText('mode1Desc', 'تُخلط الأسئلة عشوائياً من بنك الأسئلة الكامل مع خيارات الوقت والعدد المعتادة — تجربة الاختبار الكلاسيكية.');
             setText('mode1Btn', 'اختر هذا الوضع');
             setText('mode2Title', 'وضع النطاق المخصص');
             setText('mode2Desc', 'حدد نطاقاً معيناً من الأسئلة حسب ترتيبها في بنك الأسئلة (مثلاً من سؤال 20 إلى سؤال 80). يمكنك أيضاً تحديد الوقت يدوياً أو اختيار وقت غير محدود.');
             setText('mode2Btn', 'اختر هذا الوضع');
-            setText('#SRMSubtitle', 'الوضع العشوائي الذكي — حدد عدد الأسئلة والوقت المسموح.');
+            setText('page1Subtitle', 'الوضع العشوائي الذكي — حدد عدد الأسئلة والوقت المسموح.');
             setText('lbl_numQ', 'عدد الأسئلة');
             setText('lbl_timeLimit', 'الحد الزمني');
             setText('optAll', 'جميع الأسئلة');
             setText('optUnlimited', 'غير محدود');
             setText('backBtn1', 'رجوع ←');
             setText('startBtn1', 'بدء الاختبار');
-            setText('#CRMSubtitle', 'وضع النطاق المخصص — حدد نطاق الأسئلة والوقت.');
+            setText('page1bSubtitle', 'وضع النطاق المخصص — حدد نطاق الأسئلة والوقت.');
             setText('lbl_qRange', 'نطاق الأسئلة');
             setText('lbl_from', 'من السؤال:');
             setText('lbl_to', 'إلى السؤال:');
@@ -2075,7 +2067,7 @@ if (isAr) {
             if (fw) fw.style.display = 'flex';
 
             var simpleThemePages = (pageId === 'pageAuth' || pageId === 'pageLang' || pageId === 'pageCertEN' || pageId === 'pageCertAR' || pageId === 'pageMyResults');
-            var fullFabPages = (pageId === '#Certificate' || pageId === '#SRM' || pageId === '#CRM' || pageId === '#ExamRes');
+            var fullFabPages = (pageId === 'page0' || pageId === 'page1' || pageId === 'page1b' || pageId === 'page3');
 
             if (themeOnly) themeOnly.style.display = simpleThemePages ? 'flex' : 'none';
             if (fabMain) fabMain.style.display = fullFabPages ? 'flex' : 'none';
@@ -2136,9 +2128,9 @@ if (isAr) {
             if (hint) hint.textContent = currentLang === 'ar'
                 ? 'إجمالي الأسئلة المتاحة: ' + questions.length
                 : 'Total available questions: ' + questions.length;
-            showPage('#CRM');
+            showPage('page1b');
         } else {
-            showPage('#SRM');
+            showPage('page1');
         }
     }
 
@@ -2379,7 +2371,7 @@ if (isAr) {
         }
         clearInterval(timerInterval);
         calculateResults(timeExpiredParam);
-        showPage('#ExamRes');
+        showPage('page3');
     }
 
     /* ===== CALCULATE RESULTS ===== */
@@ -2552,12 +2544,59 @@ if (isAr) {
     /* ===== RESTART / BACK ===== */
     function restartQuiz() {
         clearInterval(timerInterval);
-        showPage('#Certificate');
+        showPage('page0');
     }
 
     function goBackToCert() {
         clearInterval(timerInterval);
         showPage(currentLang === 'ar' ? 'pageCertAR' : 'pageCertEN');
+    }
+
+    /* ===== HASH ALIASES (URL ONLY) ===== */
+    var pageHashMap = {
+        pageAuth: 'Login',
+        pageLang: 'Language',
+        pageCertAR: 'CertAR',
+        pageCertEN: 'CertEN',
+        page0: 'Certificate',
+        page1: 'SRM',
+        page1b: 'CRM',
+        page2: 'EXAM',
+        page3: 'ExamResults',
+        pageMyResults: 'MyResults'
+    };
+    var hashPageMap = {
+        Login: 'pageAuth',
+        Language: 'pageLang',
+        CertAR: 'pageCertAR',
+        CertEN: 'pageCertEN',
+        Certificate: 'page0',
+        SRM: 'page1',
+        CRM: 'page1b',
+        EXAM: 'page2',
+        ExamResults: 'page3',
+        MyResults: 'pageMyResults'
+    };
+    var isSyncingHashFromPage = false;
+
+    function getPageIdFromHash() {
+        var rawHash = (window.location.hash || '').replace(/^#/, '');
+        return hashPageMap[rawHash] || rawHash || null;
+    }
+
+    function getHashForPage(pageId) {
+        return pageHashMap[pageId] || pageId;
+    }
+
+    function syncHashWithPage(pageId) {
+        var targetHash = getHashForPage(pageId);
+        if (!targetHash) return;
+        if (window.location.hash === '#' + targetHash) return;
+        isSyncingHashFromPage = true;
+        window.location.hash = targetHash;
+        setTimeout(function() {
+            isSyncingHashFromPage = false;
+        }, 0);
     }
 
     /* ===== SHOW PAGE ===== */
@@ -2573,6 +2612,7 @@ if (isAr) {
         }
 
         updatePdfButtonVisibility(pageId);
+        syncHashWithPage(pageId);
         window.scrollTo(0, 0);
     }
 
@@ -2581,6 +2621,19 @@ if (isAr) {
         updatePdfButtonVisibility('pageLang');
         updateFabThemeLabel();
         updateThemeLogos();
+
+        var initialPageId = getPageIdFromHash();
+        if (initialPageId && document.getElementById(initialPageId)) {
+            showPage(initialPageId);
+        }
+    });
+
+    window.addEventListener('hashchange', function() {
+        if (isSyncingHashFromPage) return;
+        var pageId = getPageIdFromHash();
+        if (pageId && document.getElementById(pageId)) {
+            showPage(pageId);
+        }
     });
 </script>
 
@@ -3127,384 +3180,12 @@ document.addEventListener('DOMContentLoaded', function() {
         _origUpdatePdf(pageId);
         var myResItem = document.getElementById('fabMyResultsItem');
         if (myResItem) {
-            var showPages = ['#Certificate','#SRM','#CRM','#ExamRes'];
+            var showPages = ['page0','page1','page1b','page3'];
             var shouldShow = fbCurrentUser && !fbIsGuest && showPages.indexOf(pageId) !== -1;
             myResItem.style.display = shouldShow ? 'flex' : 'none';
         }
     };
 });
 </script>
-
-<script>
-/* ================================================================
-   PATCH: Guest full name + session-only progress persistence + browser history control
-   ================================================================ */
-(function(){
-    var APP_SESSION_KEY = 'fuexhub_session_state_v1';
-    var APP_HISTORY_LOCK = false;
-    var APP_IS_RESTORING = false;
-    var APP_LAST_PAGE = null;
-    var APP_CURRENT_CERT_META = null;
-
-    function appSafeParse(json) {
-        try { return JSON.parse(json); } catch (e) { return null; }
-    }
-
-    function appGetSession() {
-        return appSafeParse(sessionStorage.getItem(APP_SESSION_KEY) || 'null') || {};
-    }
-
-    function appSetSession(state) {
-        sessionStorage.setItem(APP_SESSION_KEY, JSON.stringify(state));
-    }
-
-    function appClearSession() {
-        sessionStorage.removeItem(APP_SESSION_KEY);
-    }
-
-    function appGetActivePageId() {
-        var active = document.querySelector('.page.active');
-        return active ? active.id : 'pageAuth';
-    }
-
-    function appIsQuizLockedPage(pageId) {
-        return pageId === 'page2' || pageId === '#ExamRes';
-    }
-
-    function appValidateFullName(name) {
-        name = (name || '').replace(/\s+/g, ' ').trim();
-        if (!name) return false;
-        var parts = name.split(' ');
-        if (parts.length < 2) return false;
-        return parts[0].length >= 2 && parts[1].length >= 2;
-    }
-
-    function appApplyGuestUI() {
-        var form = document.getElementById('guestInlineForm');
-        var err = document.getElementById('guestNameError');
-        if (form) form.classList.add('show');
-        if (err) err.textContent = '';
-        var input = document.getElementById('guestFullName');
-        if (input) {
-            var state = appGetSession();
-            if (state.guestFullName) input.value = state.guestFullName;
-            setTimeout(function(){ try { input.focus(); } catch (e) {} }, 0);
-        }
-    }
-
-    function appPersistState(extra) {
-        var state = appGetSession();
-        var activePageId = appGetActivePageId();
-        state.activePageId = activePageId;
-        state.currentLang = currentLang;
-        state.currentCertCode = currentCertCode;
-        state.currentCertName = currentCertName;
-        state.currentDefaultTime = currentDefaultTime;
-        state.currentDefaultQCount = currentDefaultQCount;
-        state.currentPassScore = currentPassScore;
-        state.currentQALink = currentQALink;
-        state.currentCertMeta = APP_CURRENT_CERT_META;
-        state.fbIsGuest = !!fbIsGuest;
-        state.guestFullName = (sessionStorage.getItem('fuexhub_guest_name') || '').trim();
-        state.theme = document.body.getAttribute('data-theme') || 'light';
-        state.timerVisible = !!timerVisible;
-        state.historyLock = !!APP_HISTORY_LOCK;
-        state.currentMode = window.currentMode || null;
-
-        var qc = document.getElementById('questionCount');
-        var tl = document.getElementById('timeLimit');
-        var rf = document.getElementById('rangeFrom');
-        var rt = document.getElementById('rangeTo');
-        var unlimited = document.getElementById('unlimitedTime');
-        var ctm = document.getElementById('customTimeMinutes');
-        state.setup = {
-            questionCount: qc ? qc.value : null,
-            timeLimit: tl ? tl.value : null,
-            rangeFrom: rf ? rf.value : null,
-            rangeTo: rt ? rt.value : null,
-            unlimitedTime: unlimited ? !!unlimited.checked : false,
-            customTimeMinutes: ctm ? ctm.value : null
-        };
-
-        if (activePageId === 'page2') {
-            state.quizState = {
-                selectedQuestions: selectedQuestions,
-                userAnswers: userAnswers,
-                startTimeMs: startTime ? startTime.getTime() : null,
-                timeLimit: timeLimit,
-                currentMode: window.currentMode || null
-            };
-        }
-
-        if (activePageId === '#ExamRes') {
-            state.resultState = {
-                motivationalMessage: document.getElementById('motivationalMessage') ? document.getElementById('motivationalMessage').innerHTML : '',
-                timeResult: document.getElementById('timeResult') ? document.getElementById('timeResult').innerHTML : '',
-                timeResultSub: document.getElementById('timeResultSub') ? document.getElementById('timeResultSub').innerHTML : '',
-                scoreResult: document.getElementById('scoreResult') ? document.getElementById('scoreResult').innerHTML : '',
-                passResult: document.getElementById('passResult') ? document.getElementById('passResult').innerHTML : '',
-                percentageResult: document.getElementById('percentageResult') ? document.getElementById('percentageResult').innerHTML : '',
-                correctCount: document.getElementById('correctCount') ? document.getElementById('correctCount').innerHTML : '',
-                wrongCount: document.getElementById('wrongCount') ? document.getElementById('wrongCount').innerHTML : '',
-                reviewQuestions: document.getElementById('reviewQuestions') ? document.getElementById('reviewQuestions').innerHTML : ''
-            };
-        }
-
-        if (extra) {
-            for (var key in extra) state[key] = extra[key];
-        }
-        appSetSession(state);
-    }
-
-    function appRestoreAnswerSelections() {
-        Object.keys(userAnswers || {}).forEach(function(key) {
-            var qIndex = parseInt(key, 10);
-            var answer = userAnswers[key];
-            if (Array.isArray(answer)) {
-                answer.forEach(function(optionIndex) {
-                    var input = document.getElementById('q' + qIndex + '_' + optionIndex);
-                    if (input) {
-                        input.checked = true;
-                        var option = input.parentElement && input.parentElement.parentElement;
-                        if (option) option.classList.add('selected');
-                    }
-                });
-            } else if (answer && typeof answer === 'object') {
-                Object.keys(answer).forEach(function(rowKey) {
-                    var select = document.getElementById('hotspot' + qIndex + '_' + rowKey);
-                    if (select) {
-                        select.value = answer[rowKey];
-                        select.classList.toggle('answered', !!answer[rowKey]);
-                    }
-                });
-            }
-        });
-    }
-
-    function appRestoreResultState(resultState) {
-        if (!resultState) return;
-        var ids = ['motivationalMessage','timeResult','timeResultSub','scoreResult','passResult','percentageResult','correctCount','wrongCount','reviewQuestions'];
-        ids.forEach(function(id){
-            var el = document.getElementById(id);
-            if (el && typeof resultState[id] === 'string') el.innerHTML = resultState[id];
-        });
-    }
-
-    function appRestoreSessionIfNeeded() {
-        var state = appGetSession();
-        if (!state || !state.activePageId) return;
-        APP_IS_RESTORING = true;
-        try {
-            if (state.theme) {
-                document.body.setAttribute('data-theme', state.theme);
-                updateThemeLogos();
-                updateFabThemeLabel();
-            }
-            if (typeof state.timerVisible === 'boolean') timerVisible = state.timerVisible;
-            APP_CURRENT_CERT_META = state.currentCertMeta || null;
-
-            if (state.fbIsGuest) {
-                fbIsGuest = true;
-                fbCurrentUser = null;
-                if (state.guestFullName) sessionStorage.setItem('fuexhub_guest_name', state.guestFullName);
-                document.getElementById('userInfoBar').classList.remove('show');
-                var lbb = document.getElementById('langBackBtn'); if (lbb) lbb.style.display = '';
-            }
-
-            if (state.currentCertMeta && state.currentCertMeta.certKey) {
-                loadCert(
-                    state.currentCertMeta.lang,
-                    state.currentCertMeta.certKey,
-                    state.currentCertMeta.certCode,
-                    state.currentCertMeta.certName,
-                    String(state.currentCertMeta.defaultTime),
-                    String(state.currentCertMeta.defaultQCount),
-                    String(state.currentCertMeta.passScore),
-                    state.currentCertMeta.qaLink
-                );
-            }
-
-            if (state.setup) {
-                if (document.getElementById('questionCount') && state.setup.questionCount != null) document.getElementById('questionCount').value = state.setup.questionCount;
-                if (document.getElementById('timeLimit') && state.setup.timeLimit != null) document.getElementById('timeLimit').value = state.setup.timeLimit;
-                if (document.getElementById('rangeFrom') && state.setup.rangeFrom != null) document.getElementById('rangeFrom').value = state.setup.rangeFrom;
-                if (document.getElementById('rangeTo') && state.setup.rangeTo != null) document.getElementById('rangeTo').value = state.setup.rangeTo;
-                if (document.getElementById('customTimeMinutes') && state.setup.customTimeMinutes != null) document.getElementById('customTimeMinutes').value = state.setup.customTimeMinutes;
-                if (document.getElementById('unlimitedTime')) {
-                    document.getElementById('unlimitedTime').checked = !!state.setup.unlimitedTime;
-                    if (typeof toggleUnlimitedTime === 'function') toggleUnlimitedTime();
-                }
-            }
-
-            if (state.activePageId === 'page2' && state.quizState) {
-                selectedQuestions = state.quizState.selectedQuestions || [];
-                userAnswers = state.quizState.userAnswers || {};
-                timeLimit = state.quizState.timeLimit;
-                window.currentMode = state.quizState.currentMode || state.currentMode || null;
-                startTime = state.quizState.startTimeMs ? new Date(state.quizState.startTimeMs) : new Date();
-                generateQuizHTML();
-                appRestoreAnswerSelections();
-                showPage('page2', { replaceHistory: true, skipSave: true });
-                startTimer();
-                if (!timerVisible) toggleFabTimer();
-            } else if (state.activePageId === '#ExamRes' && state.quizState && state.resultState) {
-                selectedQuestions = state.quizState.selectedQuestions || [];
-                userAnswers = state.quizState.userAnswers || {};
-                timeLimit = state.quizState.timeLimit;
-                window.currentMode = state.quizState.currentMode || state.currentMode || null;
-                startTime = state.quizState.startTimeMs ? new Date(state.quizState.startTimeMs) : new Date();
-                showPage('#ExamRes', { replaceHistory: true, skipSave: true });
-                appRestoreResultState(state.resultState);
-            } else {
-                showPage(state.activePageId, { replaceHistory: true, skipSave: true });
-            }
-        } finally {
-            APP_IS_RESTORING = false;
-            appPersistState();
-        }
-    }
-
-    var _origLoadCertPatch = window.loadCert;
-    window.loadCert = function(lang, certKey, certCode, certName, defaultTime, defaultQCount, passScore, qaLink) {
-        APP_CURRENT_CERT_META = {
-            lang: lang,
-            certKey: certKey,
-            certCode: certCode,
-            certName: certName,
-            defaultTime: parseInt(defaultTime, 10),
-            defaultQCount: parseInt(defaultQCount, 10),
-            passScore: parseInt(passScore, 10),
-            qaLink: qaLink
-        };
-        window.currentCertKey = certKey;
-        _origLoadCertPatch.apply(this, arguments);
-        appPersistState();
-    };
-
-    var _origAuthContinueAsGuestPatch = window.authContinueAsGuest;
-    window.authContinueAsGuest = function() {
-        appApplyGuestUI();
-    };
-
-    var _origFbOnUserLoggedInPatch = window.fbOnUserLoggedIn;
-    if (typeof _origFbOnUserLoggedInPatch === 'function') {
-        window.fbOnUserLoggedIn = function(user) {
-            var state = appGetSession();
-            if (state && state.activePageId && state.activePageId !== 'pageAuth' && !state.fbIsGuest) {
-                var bar = document.getElementById('userInfoBar');
-                if (bar) bar.classList.add('show');
-                var avatar = document.getElementById('userAvatar');
-                if (avatar) {
-                    avatar.src = user.photoURL || '';
-                    avatar.style.display = user.photoURL ? 'block' : 'none';
-                }
-                var nameEl = document.getElementById('userDisplayName');
-                if (nameEl) nameEl.textContent = user.displayName || user.email || 'User';
-                fbLoadDailyAttempts().then(function() {
-                    fbUpdateAttemptsDisplay();
-                    var lbb = document.getElementById('langBackBtn'); if (lbb) lbb.style.display = 'none';
-                    appPersistState();
-                });
-                return;
-            }
-            _origFbOnUserLoggedInPatch.apply(this, arguments);
-        };
-    }
-
-    window.submitGuestLogin = function() {
-        var input = document.getElementById('guestFullName');
-        var err = document.getElementById('guestNameError');
-        var fullName = (input ? input.value : '').replace(/\s+/g, ' ').trim();
-        if (!appValidateFullName(fullName)) {
-            if (err) err.textContent = 'يرجى كتابة الاسم الثنائي الصحيح | Please enter your full name';
-            return;
-        }
-        if (err) err.textContent = '';
-        sessionStorage.setItem('fuexhub_guest_name', fullName);
-        fbIsGuest = true;
-        fbCurrentUser = null;
-        document.getElementById('userInfoBar').classList.remove('show');
-        var lbb = document.getElementById('langBackBtn'); if (lbb) lbb.style.display = '';
-        appPersistState({ guestFullName: fullName, fbIsGuest: true });
-        showPage('pageLang');
-    };
-
-    var _origShowPagePatch = window.showPage;
-    window.showPage = function(pageId, opts) {
-        opts = opts || {};
-        _origShowPagePatch(pageId);
-        APP_HISTORY_LOCK = appIsQuizLockedPage(pageId);
-        var stateObj = { pageId: pageId };
-        if (!opts.fromHistory) {
-            if (opts.replaceHistory) history.replaceState(stateObj, '', '#'+pageId);
-            else if (APP_LAST_PAGE !== pageId) history.pushState(stateObj, '', '#'+pageId);
-        }
-        APP_LAST_PAGE = pageId;
-        if (!opts.skipSave && !APP_IS_RESTORING) appPersistState();
-    };
-
-    var _origHandleOptionChangePatch = window.handleOptionChange;
-    window.handleOptionChange = function() {
-        _origHandleOptionChangePatch.apply(this, arguments);
-        appPersistState();
-    };
-
-    var _origHandleHotspotChangePatch = window.handleHotspotChange;
-    window.handleHotspotChange = function() {
-        _origHandleHotspotChangePatch.apply(this, arguments);
-        appPersistState();
-    };
-
-    var _origRestartQuizPatch = window.restartQuiz;
-    window.restartQuiz = function() {
-        APP_HISTORY_LOCK = false;
-        _origRestartQuizPatch.apply(this, arguments);
-        appPersistState();
-    };
-
-    var _origGoBackToCertPatch = window.goBackToCert;
-    window.goBackToCert = function() {
-        APP_HISTORY_LOCK = false;
-        _origGoBackToCertPatch.apply(this, arguments);
-        appPersistState();
-    };
-
-    var _origAuthSignOutPatch = window.authSignOut;
-    window.authSignOut = function() {
-        appClearSession();
-        sessionStorage.removeItem('fuexhub_guest_name');
-        _origAuthSignOutPatch.apply(this, arguments);
-    };
-
-    window.addEventListener('popstate', function(ev) {
-        var activePageId = appGetActivePageId();
-        if (APP_HISTORY_LOCK || appIsQuizLockedPage(activePageId)) {
-            history.pushState({ pageId: activePageId }, '', '#'+activePageId);
-            _origShowPagePatch(activePageId);
-            return;
-        }
-        var targetPage = ev.state && ev.state.pageId ? ev.state.pageId : 'pageAuth';
-        window.showPage(targetPage, { fromHistory: true, replaceHistory: true });
-    });
-
-    document.addEventListener('DOMContentLoaded', function() {
-        var guestInput = document.getElementById('guestFullName');
-        if (guestInput) {
-            guestInput.addEventListener('input', function() {
-                var err = document.getElementById('guestNameError');
-                if (err) err.textContent = '';
-            });
-            guestInput.addEventListener('keydown', function(e) {
-                if (e.key === 'Enter') submitGuestLogin();
-            });
-        }
-        var initialPage = appGetActivePageId();
-        history.replaceState({ pageId: initialPage }, '', '#'+initialPage);
-        APP_LAST_PAGE = initialPage;
-        appRestoreSessionIfNeeded();
-    });
-})();
-</script>
-
 </body>
 </html>
