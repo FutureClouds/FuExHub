@@ -1638,36 +1638,6 @@ body.lang-ar #pageCertEN * {
     transform: scale(1.08);
     box-shadow: 0 3px 11px rgba(52,152,219,0.65);
 }
-
-/* ── Print btn mobile fix ── */
-@media (max-width: 768px) {
-    .fxh-print-btn-wrap {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        margin: 18px 0 8px;
-    }
-    .fxh-print-btn {
-        font-size: 0.95rem;
-        padding: 11px 24px;
-        gap: 8px;
-        width: auto;
-        max-width: 90%;
-        white-space: nowrap;
-    }
-}
-@media (max-width: 480px) {
-    .fxh-print-btn {
-        font-size: 0.88rem;
-        padding: 10px 20px;
-        gap: 7px;
-        max-width: 85%;
-    }
-    .fxh-row-print-btn {
-        font-size: 0.78rem;
-        padding: 4px 9px;
-    }
-}
 </style>
 
 <!-- ===================================================== -->
@@ -2792,9 +2762,8 @@ var fbIsGuest = (function() {
     } catch(e) { return false; }
 })();
 
-var fbDailyAttempts = 0;          // how many exams taken in last 24h
-var fbAttemptsLastFetched = 0;    // timestamp of last Firestore fetch
-var fbEarliestAttemptTs = null;   // earliest attempt timestamp in last 24h (cached)
+var fbDailyAttempts = 0;     // how many exams taken in last 24h
+var fbAttemptsLastFetched = 0; // timestamp of last Firestore fetch
 var fbMyResultsCache = null;  // cached results array for instant display
 var fbPrevPageForResults = 'pageLang'; // where to go back from My Results
 var fbLimitCountdownInterval = null;
@@ -3513,7 +3482,6 @@ function authSignOut() {
         fbCurrentUser = null;
         fbIsGuest = false;
         fbDailyAttempts = 0;
-        fbEarliestAttemptTs = null;
         try {
             sessionStorage.removeItem('guestName');
             sessionStorage.removeItem('guestResults');
@@ -3534,27 +3502,21 @@ var FB_DAILY_LIMIT = 3;
 function fbLoadDailyAttempts() {
     if (!fbCurrentUser) return Promise.resolve();
     var cutoff = new Date(Date.now() - 24 * 60 * 60 * 1000); // 24h ago
-    var cutoffTs = firebase.firestore.Timestamp.fromDate(cutoff);
 
     return fbDb
         .collection('users').doc(fbCurrentUser.uid)
         .collection('results')
-        .where('timestamp', '>=', cutoffTs)
-        .orderBy('timestamp', 'asc')
+        .orderBy('timestamp', 'desc')
         .get()
         .then(function(snap) {
             var count = 0;
-            var earliest = null;
             snap.forEach(function(doc) {
                 var data = doc.data();
+                // Use server timestamp if available, else clientTimestamp fallback
                 var ts = data.timestamp ? data.timestamp.toDate() : (data.clientTimestamp ? new Date(data.clientTimestamp) : null);
-                if (ts && ts > cutoff) {
-                    count++;
-                    if (!earliest) earliest = ts;
-                }
+                if (ts && ts > cutoff) count++;
             });
             fbDailyAttempts = count;
-            fbEarliestAttemptTs = earliest;
             fbAttemptsLastFetched = Date.now();
             fbUpdateAttemptsDisplay();
         })
@@ -3574,19 +3536,21 @@ el.innerHTML = '<span style="font-family:\'Tajawal\',sans-serif;">\u200F' + rema
 function fbGetEarliestAttemptTimestamp() {
     if (!fbCurrentUser) return Promise.resolve(null);
     var cutoff = new Date(Date.now() - 24 * 60 * 60 * 1000);
-    var cutoffTs = firebase.firestore.Timestamp.fromDate(cutoff);
 
     return fbDb
         .collection('users').doc(fbCurrentUser.uid)
         .collection('results')
-        .where('timestamp', '>=', cutoffTs)
         .orderBy('timestamp', 'asc')
-        .limit(1)
         .get()
         .then(function(snap) {
-            if (snap.empty) return null;
-            var data = snap.docs[0].data();
-            return data.timestamp ? data.timestamp.toDate() : null;
+            var earliest = null;
+            snap.forEach(function(doc) {
+                var data = doc.data();
+                if (data.timestamp && data.timestamp.toDate() > cutoff) {
+                    if (!earliest) earliest = data.timestamp.toDate();
+                }
+            });
+            return earliest;
         });
 }
 
@@ -3630,19 +3594,11 @@ window.startCustomQuiz = function() {
    ================================================================ */
 function fbShowLimitOverlay() {
     document.getElementById('attemptLimitOverlay').classList.add('show');
-    // Use cached earliest timestamp for instant countdown — no extra Firestore call
-    if (fbEarliestAttemptTs) {
-        var unlockTime = new Date(fbEarliestAttemptTs.getTime() + 24 * 60 * 60 * 1000);
+    fbGetEarliestAttemptTimestamp().then(function(earliest) {
+        if (!earliest) { closeLimitOverlay(); return; }
+        var unlockTime = new Date(earliest.getTime() + 24 * 60 * 60 * 1000);
         fbStartLimitCountdown(unlockTime);
-    } else {
-        // Fallback: fetch from Firestore only if cache is missing
-        fbGetEarliestAttemptTimestamp().then(function(earliest) {
-            if (!earliest) { closeLimitOverlay(); return; }
-            fbEarliestAttemptTs = earliest;
-            var unlockTime = new Date(earliest.getTime() + 24 * 60 * 60 * 1000);
-            fbStartLimitCountdown(unlockTime);
-        });
-    }
+    });
 }
 
 function fbStartLimitCountdown(unlockTime) {
@@ -4250,46 +4206,86 @@ function fxhPrintResult(data) {
         + total + '</div></div>';
 
     /* ── HTML الكامل لصفحة الطباعة ─────────────────────────────── */
-    /* كشف iOS: لا يدعم @page landscape، لذا نستخدم portrait + تدوير CSS */
-    var isIOSDevice = /iPhone|iPad|iPod/i.test(navigator.userAgent) ||
-        (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
     var html = '<!DOCTYPE html>\n' +
 '<html lang="' + (isAr ? 'ar' : 'en') + '" dir="' + dir + '">\n' +
 '<head>\n' +
 '<meta charset="UTF-8">\n' +
-'<meta name="viewport" content="' + (isIOSDevice ? 'width=device-width, initial-scale=1' : 'width=1123, initial-scale=1') + '">\n' +
 '<base href="' + baseHref + '">\n' +
 '<title>' + fileName + '</title>\n' +
 '<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">\n' +
+'<meta name="viewport" content="width=device-width, initial-scale=1.0">\n' +
 '<style>\n' +
-'  @page { size: A4 ' + (isIOSDevice ? 'portrait' : 'landscape') + '; margin: 0; }\n' +
+'  @page { size: auto; margin: 0; }\n' +
 '  * { box-sizing: border-box; font-family: \'Tajawal\', sans-serif; margin: 0; padding: 0; }\n' +
 /* ── شاشة عادية ── */
-(isIOSDevice ?
-'  html, body { width: 210mm; min-width: 210mm; overflow: hidden; background: #0d0626; }\n' +
-'  .page-wrap { width: 297mm; height: 210mm; overflow: hidden; position: relative; background: linear-gradient(135deg, #0d0626 0%, #1a0a4a 30%, #0a1a3a 60%, #16063a 100%); display: flex; flex-direction: column; transform-origin: 0 0; transform: translateX(210mm) rotate(-90deg); }\n'
-:
-'  html, body { width: 100%; min-width: 1123px; overflow-x: auto; overflow-y: auto; background: #0d0626; min-height: 100vh; }\n' +
-'  .page-wrap { width: 1123px; min-width: 1123px; min-height: 100vh; padding: 0; position: relative; background: linear-gradient(135deg, #0d0626 0%, #1a0a4a 30%, #0a1a3a 60%, #16063a 100%); display: flex; flex-direction: column; }\n'
-) +
-/* ── طباعة: محكم (iOS: portrait + تدوير | غير iOS: landscape) ── */
-(isIOSDevice ?
+'  html, body {\n' +
+'    width: 100%; overflow-x: hidden; overflow-y: auto;\n' +
+'    background: #0d0626;\n' +
+'    min-height: 100vh;\n' +
+'  }\n' +
+'  .page-wrap {\n' +
+'    width: 100%; max-width: 100%;\n' +
+'    min-height: 100vh;\n' +
+'    padding: 0;\n' +
+'    position: relative;\n' +
+'    background: linear-gradient(135deg, #0d0626 0%, #1a0a4a 30%, #0a1a3a 60%, #16063a 100%);\n' +
+'    display: flex; flex-direction: column;\n' +
+'  }\n' +
+/* ── تصميم الجوال ── */
+'  @media (max-width: 600px) {\n' +
+'    .header { flex-wrap: wrap; gap: 8px !important; padding-bottom: 3mm !important; }\n' +
+'    .cert-badge { width: 40px !important; height: 40px !important; }\n' +
+'    .cert-name-main { font-size: 9pt !important; }\n' +
+'    .cert-name-sub { font-size: 7.5pt !important; }\n' +
+'    .fuex-logo img { width: 60px !important; height: 60px !important; }\n' +
+'    .name-value { font-size: 18pt !important; }\n' +
+'    .official-desc { font-size: 8.5pt !important; padding: 2mm 3mm !important; line-height: 1.7 !important; }\n' +
+'    .exam-meta { flex-direction: column !important; align-items: center !important; gap: 4px !important; }\n' +
+'    .meta-item { max-width: 100% !important; width: 100% !important; }\n' +
+'    .stats-grid { flex-wrap: wrap !important; gap: 5px !important; }\n' +
+'    .stat-box { flex: 1 1 calc(50% - 5px) !important; max-width: calc(50% - 5px) !important; min-width: 0 !important; }\n' +
+'    .stat-box.time { max-width: 100% !important; flex: 1 1 100% !important; }\n' +
+'    .content { padding: 8mm 5mm 5mm !important; }\n' +
+'    .border-outer { inset: 3mm !important; }\n' +
+'    .border-inner { inset: 5mm !important; }\n' +
+'    .corner-tl { top: 2.5mm !important; left: 2.5mm !important; }\n' +
+'    .corner-tr { top: 2.5mm !important; right: 2.5mm !important; }\n' +
+'    .corner-bl { bottom: 2.5mm !important; left: 2.5mm !important; }\n' +
+'    .corner-br { bottom: 2.5mm !important; right: 2.5mm !important; }\n' +
+'    .stat-value { font-size: 14pt !important; }\n' +
+'    .time-val { font-size: 9pt !important; }\n' +
+'  }\n' +
+/* ── طباعة: يملأ الصفحة كاملاً بدون هوامش ── */
 '  @media print {\n' +
-'    html, body { width: 210mm !important; height: 297mm !important; overflow: hidden !important; background: #0d0626 !important; }\n' +
-'    .page-wrap { width: 297mm !important; height: 210mm !important; min-height: unset !important; overflow: hidden !important; page-break-inside: avoid; transform-origin: 0 0 !important; transform: translateX(210mm) rotate(-90deg) !important; }\n' +
-'    .content { min-height: unset !important; height: 210mm !important; }\n' +
+'    html {\n' +
+'      width: 100% !important; height: 100% !important;\n' +
+'      overflow: hidden !important;\n' +
+'    }\n' +
+'    body {\n' +
+'      width: 100% !important; height: 100% !important;\n' +
+'      margin: 0 !important; padding: 0 !important;\n' +
+'      overflow: hidden !important;\n' +
+'      background: #0d0626 !important;\n' +
+'    }\n' +
+'    .page-wrap {\n' +
+'      position: fixed !important;\n' +
+'      top: 0 !important; left: 0 !important; right: 0 !important; bottom: 0 !important;\n' +
+'      width: 100% !important; height: 100% !important;\n' +
+'      min-height: unset !important;\n' +
+'      overflow: hidden !important;\n' +
+'      display: flex !important; flex-direction: column !important;\n' +
+'    }\n' +
+'    .content {\n' +
+'      flex: 1 !important;\n' +
+'      min-height: unset !important; height: 100% !important;\n' +
+'      display: flex !important; flex-direction: column !important;\n' +
+'      justify-content: space-between !important;\n' +
+'    }\n' +
+'    .stats-grid { flex: 1 !important; align-items: stretch !important; }\n' +
+'    .stat-box { display: flex !important; flex-direction: column !important; justify-content: center !important; }\n' +
 '    body { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }\n' +
 '    * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }\n' +
-'  }\n'
-:
-'  @media print {\n' +
-'    html, body { width: 297mm !important; min-width: 297mm !important; height: 210mm !important; overflow: hidden !important; background: #0d0626 !important; }\n' +
-'    .page-wrap { width: 297mm !important; min-width: 297mm !important; height: 210mm !important; min-height: unset !important; overflow: hidden !important; page-break-inside: avoid; }\n' +
-'    .content { min-height: unset !important; height: 210mm !important; }\n' +
-'    body { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }\n' +
-'    * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }\n' +
-'  }\n'
-) +
+'  }\n' +
 /* خلفية زخرفية */
 '  .bg-orb-1 { position: absolute; width: 220mm; height: 220mm; border-radius: 50%; background: radial-gradient(circle, rgba(142,68,173,0.18) 0%, transparent 70%); top: -80mm; left: -60mm; pointer-events:none; z-index:1; }\n' +
 '  .bg-orb-2 { position: absolute; width: 180mm; height: 180mm; border-radius: 50%; background: radial-gradient(circle, rgba(52,152,219,0.15) 0%, transparent 70%); bottom: -70mm; right: -50mm; pointer-events:none; z-index:1; }\n' +
