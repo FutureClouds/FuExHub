@@ -2611,8 +2611,9 @@ if (isAr) {
     }
 
 
-    var APP_SESSION_KEY = 'fuexhub_session_state_v3';
+    var APP_SESSION_KEY = 'fuexhub_session_state_v4';
     var isRestoringSessionState = false;
+    var appSessionWasRestored = false;
     var lockedHashPages = { EXAM: true, ExamResults: true };
 
     function getCurrentActivePageId() {
@@ -2709,7 +2710,8 @@ if (isAr) {
                     customTimeMinutes: document.getElementById('customTimeMinutes') ? document.getElementById('customTimeMinutes').value : '',
                     unlimitedTime: document.getElementById('unlimitedTime') ? document.getElementById('unlimitedTime').checked : false
                 },
-                resultsSnapshot: getCurrentActivePageId() === 'page3' ? getResultSnapshot() : null
+                resultsSnapshot: getCurrentActivePageId() === 'page3' ? getResultSnapshot() : null,
+                fbIsGuest: typeof fbIsGuest !== 'undefined' ? !!fbIsGuest : false
             };
             sessionStorage.setItem(APP_SESSION_KEY, JSON.stringify(state));
         } catch (e) {}
@@ -2761,6 +2763,7 @@ if (isAr) {
         isRestoringSessionState = true;
         try {
             currentLang = state.currentLang || currentLang;
+            if (typeof fbIsGuest !== 'undefined') fbIsGuest = !!state.fbIsGuest;
             currentCertCode = state.currentCertCode || '';
             currentCertName = state.currentCertName || '';
             currentCertScriptKey = state.currentCertScriptKey || '';
@@ -2806,6 +2809,7 @@ if (isAr) {
 
             updateThemeLogos();
             updateFabThemeLabel();
+            appSessionWasRestored = true;
             saveSessionState();
             return true;
         } finally {
@@ -2924,8 +2928,9 @@ fbAuth.onAuthStateChanged(function(user) {
         fbOnUserLoggedIn(user);
     } else {
         fbCurrentUser = null;
-        // Only show auth page if not already guest
+        var activePageId = (typeof getCurrentActivePageId === 'function') ? getCurrentActivePageId() : null;
         if (!fbIsGuest) {
+            if (appSessionWasRestored && activePageId && activePageId !== 'pageAuth') return;
             showPage('pageAuth');
             document.getElementById('userInfoBar').classList.remove('show');
         }
@@ -2953,6 +2958,11 @@ function fbOnUserLoggedIn(user) {
     fbLoadDailyAttempts().then(function() {
         fbUpdateAttemptsDisplay();
         var lbb = document.getElementById('langBackBtn'); if (lbb) lbb.style.display = 'none';
+        var activePageId = (typeof getCurrentActivePageId === 'function') ? getCurrentActivePageId() : null;
+        if (appSessionWasRestored && activePageId && activePageId !== 'pageAuth') {
+            saveSessionState();
+            return;
+        }
         showPage('pageLang');
     });
 }
