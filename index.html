@@ -4250,50 +4250,46 @@ function fxhPrintResult(data) {
         + total + '</div></div>';
 
     /* ── HTML الكامل لصفحة الطباعة ─────────────────────────────── */
+    /* كشف iOS: لا يدعم @page landscape، لذا نستخدم portrait + تدوير CSS */
+    var isIOSDevice = /iPhone|iPad|iPod/i.test(navigator.userAgent) ||
+        (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
     var html = '<!DOCTYPE html>\n' +
 '<html lang="' + (isAr ? 'ar' : 'en') + '" dir="' + dir + '">\n' +
 '<head>\n' +
 '<meta charset="UTF-8">\n' +
-'<meta name="viewport" content="width=1123, initial-scale=1, shrink-to-fit=no">\n' +
+'<meta name="viewport" content="' + (isIOSDevice ? 'width=device-width, initial-scale=1' : 'width=1123, initial-scale=1') + '">\n' +
 '<base href="' + baseHref + '">\n' +
 '<title>' + fileName + '</title>\n' +
 '<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">\n' +
 '<style>\n' +
-'  @page { size: A4 landscape; margin: 0; }\n' +
+'  @page { size: A4 ' + (isIOSDevice ? 'portrait' : 'landscape') + '; margin: 0; }\n' +
 '  * { box-sizing: border-box; font-family: \'Tajawal\', sans-serif; margin: 0; padding: 0; }\n' +
 /* ── شاشة عادية ── */
-'  html, body {\n' +
-'    width: 100%; min-width: 1123px; overflow-x: auto; overflow-y: auto;\n' +
-'    background: #0d0626;\n' +
-'    min-height: 100vh;\n' +
-'  }\n' +
-'  .page-wrap {\n' +
-'    width: 1123px; min-width: 1123px;\n' +
-'    min-height: 100vh;\n' +
-'    padding: 0;\n' +
-'    position: relative;\n' +
-'    background: linear-gradient(135deg, #0d0626 0%, #1a0a4a 30%, #0a1a3a 60%, #16063a 100%);\n' +
-'    display: flex; flex-direction: column;\n' +
-'  }\n' +
-/* ── طباعة: A4 landscape محكم ── */
+(isIOSDevice ?
+'  html, body { width: 210mm; min-width: 210mm; overflow: hidden; background: #0d0626; }\n' +
+'  .page-wrap { width: 297mm; height: 210mm; overflow: hidden; position: relative; background: linear-gradient(135deg, #0d0626 0%, #1a0a4a 30%, #0a1a3a 60%, #16063a 100%); display: flex; flex-direction: column; transform-origin: 0 0; transform: translateX(210mm) rotate(-90deg); }\n'
+:
+'  html, body { width: 100%; min-width: 1123px; overflow-x: auto; overflow-y: auto; background: #0d0626; min-height: 100vh; }\n' +
+'  .page-wrap { width: 1123px; min-width: 1123px; min-height: 100vh; padding: 0; position: relative; background: linear-gradient(135deg, #0d0626 0%, #1a0a4a 30%, #0a1a3a 60%, #16063a 100%); display: flex; flex-direction: column; }\n'
+) +
+/* ── طباعة: محكم (iOS: portrait + تدوير | غير iOS: landscape) ── */
+(isIOSDevice ?
 '  @media print {\n' +
-'    html, body {\n' +
-'      width: 297mm !important; min-width: 297mm !important; height: 210mm !important;\n' +
-'      overflow: hidden !important;\n' +
-'      background: #0d0626 !important;\n' +
-'    }\n' +
-'    .page-wrap {\n' +
-'      width: 297mm !important; min-width: 297mm !important; height: 210mm !important;\n' +
-'      min-height: unset !important;\n' +
-'      overflow: hidden !important;\n' +
-'      page-break-inside: avoid;\n' +
-'    }\n' +
-'    .content {\n' +
-'      min-height: unset !important; height: 210mm !important;\n' +
-'    }\n' +
+'    html, body { width: 210mm !important; height: 297mm !important; overflow: hidden !important; background: #0d0626 !important; }\n' +
+'    .page-wrap { width: 297mm !important; height: 210mm !important; min-height: unset !important; overflow: hidden !important; page-break-inside: avoid; transform-origin: 0 0 !important; transform: translateX(210mm) rotate(-90deg) !important; }\n' +
+'    .content { min-height: unset !important; height: 210mm !important; }\n' +
 '    body { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }\n' +
 '    * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }\n' +
-'  }\n' +
+'  }\n'
+:
+'  @media print {\n' +
+'    html, body { width: 297mm !important; min-width: 297mm !important; height: 210mm !important; overflow: hidden !important; background: #0d0626 !important; }\n' +
+'    .page-wrap { width: 297mm !important; min-width: 297mm !important; height: 210mm !important; min-height: unset !important; overflow: hidden !important; page-break-inside: avoid; }\n' +
+'    .content { min-height: unset !important; height: 210mm !important; }\n' +
+'    body { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }\n' +
+'    * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }\n' +
+'  }\n'
+) +
 /* خلفية زخرفية */
 '  .bg-orb-1 { position: absolute; width: 220mm; height: 220mm; border-radius: 50%; background: radial-gradient(circle, rgba(142,68,173,0.18) 0%, transparent 70%); top: -80mm; left: -60mm; pointer-events:none; z-index:1; }\n' +
 '  .bg-orb-2 { position: absolute; width: 180mm; height: 180mm; border-radius: 50%; background: radial-gradient(circle, rgba(52,152,219,0.15) 0%, transparent 70%); bottom: -70mm; right: -50mm; pointer-events:none; z-index:1; }\n' +
@@ -4446,17 +4442,7 @@ function fxhPrintResult(data) {
 'window.onload = function() {\n' +
 '  window.focus();\n' +
 '  document.title = ' + JSON.stringify(fileName) + ';\n' +
-'  var pw = document.querySelector(\'.page-wrap\');\n' +
-'  var vw = window.innerWidth || document.documentElement.clientWidth || 1123;\n' +
-'  if (pw && vw < 1100) {\n' +
-'    var scale = vw / 1123;\n' +
-'    pw.style.transformOrigin = \'top left\';\n' +
-'    pw.style.transform = \'scale(\' + scale + \')\';\n' +
-'    pw.style.width = \'1123px\';\n' +
-'    document.documentElement.style.overflow = \'hidden\';\n' +
-'    document.body.style.overflow = \'hidden\';\n' +
-'  }\n' +
-'  setTimeout(function() { window.print(); }, 800);\n' +
+'  setTimeout(function() { window.print(); }, 600);\n' +
 '};\n' +
 '<\/script>\n' +
 '</body>\n</html>';
