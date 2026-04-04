@@ -650,6 +650,9 @@ body.lang-ar #pageCertEN * {
         .auth-guest-row { margin-top: 24px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.1); }
         .auth-btn-guest { background: transparent; color: rgba(255,255,255,0.55); font-size: 0.88rem; border: none; cursor: pointer; padding: 8px 16px; margin: 0; transition: color 0.2s; text-decoration: underline; font-weight: 600; box-shadow: none; }
         .auth-btn-guest:hover { background: transparent; color: rgba(255,255,255,0.85); transform: none; }
+        .auth-guest-form { display:none; margin-top:16px; }
+        .auth-guest-form.show { display:block; }
+        .auth-guest-error { color:#e74c3c; font-size:0.88rem; margin:8px 0 2px; min-height:20px; text-align:center !important; direction:rtl; unicode-bidi:plaintext; }
 
         .auth-error { color: #e74c3c; font-size: 0.88rem; margin: 8px 0; min-height: 20px; text-align: center !important; direction: rtl; unicode-bidi: plaintext; }
         .auth-loading { display: inline-block; width: 18px; height: 18px; border: 3px solid rgba(255,255,255,0.3); border-top-color: #fff; border-radius: 50%; animation: spin 0.8s linear infinite; vertical-align: middle; margin-left: 8px; }
@@ -1054,6 +1057,11 @@ body.lang-ar #pageCertEN * {
                 <button class="auth-btn-guest" onclick="authContinueAsGuest()">
                     دخول كضيف (لن تُحفظ النتائج)<br>Continue as guest (results won't be saved)
                 </button>
+                <div class="auth-guest-form" id="authGuestForm" style="display:none;">
+                    <input type="text" id="authGuestFullName" class="auth-input" placeholder="اسمك الثنائي | Full name" autocomplete="name">
+                    <div class="auth-guest-error" id="authGuestError"></div>
+                    <button class="auth-btn-primary" onclick="authGuestProceed()">دخول | Login</button>
+                </div>
             </div>
         </div>
     </div>
@@ -2783,6 +2791,7 @@ if (isAr) {
             if (state.theme) document.body.setAttribute('data-theme', state.theme);
 
             applyLangUI();
+            authUpdateGuestBackButton();
 
             if (state.setup) {
                 if (document.getElementById('questionCount') && state.setup.questionCount) document.getElementById('questionCount').value = state.setup.questionCount;
@@ -2830,6 +2839,7 @@ if (isAr) {
         }
 
         updatePdfButtonVisibility(pageId);
+        if (pageId === 'pageLang') authUpdateGuestBackButton();
         syncHashWithPage(pageId);
         enforceLockedPageHistory(pageId);
         saveSessionState();
@@ -2957,7 +2967,7 @@ function fbOnUserLoggedIn(user) {
     // Load daily attempt count then go to app
     fbLoadDailyAttempts().then(function() {
         fbUpdateAttemptsDisplay();
-        var lbb = document.getElementById('langBackBtn'); if (lbb) lbb.style.display = 'none';
+        authUpdateGuestBackButton();
         var activePageId = (typeof getCurrentActivePageId === 'function') ? getCurrentActivePageId() : null;
         if (appSessionWasRestored && activePageId && activePageId !== 'pageAuth') {
             saveSessionState();
@@ -3093,11 +3103,37 @@ function authShowLogin() {
     document.getElementById('authRegError').textContent = '';
 }
 
+function authUpdateGuestBackButton() {
+    var lbb = document.getElementById('langBackBtn');
+    if (!lbb) return;
+    lbb.style.display = fbIsGuest ? '' : 'none';
+}
+
 function authContinueAsGuest() {
+    var form = document.getElementById('authGuestForm');
+    var err  = document.getElementById('authGuestError');
+    if (err) err.textContent = '';
+    if (form) {
+        form.style.display = (form.style.display === 'block') ? 'none' : 'block';
+        form.classList.toggle('show', form.style.display === 'block');
+    }
+}
+
+function authGuestProceed() {
+    var input = document.getElementById('authGuestFullName');
+    var err   = document.getElementById('authGuestError');
+    var fullName = input ? input.value.trim().replace(/\s+/g, ' ') : '';
+    var valid = /^\S+\s+\S+(?:\s.*)?$/.test(fullName);
+    if (err) err.textContent = '';
+    if (!valid) {
+        if (err) err.textContent = 'يرجى كتابة الاسم الثنائي الصحيح | Please enter your full name';
+        return;
+    }
     fbIsGuest     = true;
     fbCurrentUser = null;
+    try { sessionStorage.setItem('fuexhub_guest_full_name', fullName); } catch(e) {}
     document.getElementById('userInfoBar').classList.remove('show');
-    var lbb = document.getElementById('langBackBtn'); if (lbb) lbb.style.display = '';
+    authUpdateGuestBackButton();
     showPage('pageLang');
 }
 
@@ -3109,6 +3145,13 @@ function authSignOut() {
         document.getElementById('userInfoBar').classList.remove('show');
         showPage('pageAuth');
         updatePdfButtonVisibility('pageAuth');
+        authUpdateGuestBackButton();
+        var guestForm = document.getElementById('authGuestForm');
+        var guestErr = document.getElementById('authGuestError');
+        var guestInput = document.getElementById('authGuestFullName');
+        if (guestForm) { guestForm.style.display = 'none'; guestForm.classList.remove('show'); }
+        if (guestErr) guestErr.textContent = '';
+        if (guestInput) guestInput.value = '';
     });
 }
 
