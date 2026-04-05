@@ -4310,8 +4310,8 @@ var fxhCertLevelMapEN = {
 };
 
 var fxhCertLevelMapAR = {
-    'AIF-C01': 'تأسيسي',
-    'CLF-C02': 'تأسيسي',
+    'AIF-C01': 'التأسيسية',
+    'CLF-C02': 'التأسيسية',
     'MLA-C01': 'مشارك',
     'SAA-C03': 'مشارك',
     'DVA-C02': 'مشارك',
@@ -4334,7 +4334,7 @@ function fxhGetCertLevel(certCode, isAr) {
 function fxhStripCertLevelFromName(name, isAr) {
     if (!name) return '';
     if (isAr) {
-        return name.replace(/\s+(التأسيسية|تأسيسي|المشارك|مشارك|الاحترافية|احترافي|التخصصية|تخصصي)\s*$/, '').trim();
+        return name.replace(/\s+(التأسيسية|التأسيسية|المشارك|مشارك|الاحترافية|احترافي|التخصصية|تخصصي)\s*$/, '').trim();
     }
     return name.replace(/\s*-\s*(Foundational|Associate|Professional|Specialty)\s*$/i, '').trim();
 }
