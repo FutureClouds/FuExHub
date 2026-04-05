@@ -1782,14 +1782,17 @@ body.lang-ar #pageCertEN * {
 }
 .fxh-user-head {
     display: flex;
+    flex-direction: column;
     align-items: center;
-    justify-content: space-between;
-    gap: 18px;
-    margin-bottom: 10px;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 12px;
+    text-align: center;
 }
 .fxh-user-head-main {
     min-width: 0;
-    flex: 1;
+    flex: 0 1 auto;
+    text-align: center;
 }
 .fxh-user-result-pill {
     padding: 14px 24px;
@@ -1801,14 +1804,15 @@ body.lang-ar #pageCertEN * {
     box-shadow: 0 14px 30px rgba(0,0,0,0.24);
     border: 1px solid rgba(255,255,255,0.12);
 }
-.fxh-pdf-page[dir="rtl"] .fxh-user-head {
-    flex-direction: row-reverse;
-}
-.fxh-pdf-page[dir="rtl"] .fxh-user-head-main {
-    text-align: right;
-}
-.fxh-pdf-page[dir="ltr"] .fxh-user-head-main {
-    text-align: left;
+.fxh-pdf-page[dir="rtl"] .fxh-user-head,
+.fxh-pdf-page[dir="ltr"] .fxh-user-head,
+.fxh-pdf-page[dir="rtl"] .fxh-user-head-main,
+.fxh-pdf-page[dir="ltr"] .fxh-user-head-main,
+.fxh-user-card,
+.fxh-user-label,
+.fxh-user-name,
+.fxh-user-desc {
+    text-align: center;
 }
 .fxh-user-label {
     color: #93c5fd;
