@@ -4101,7 +4101,7 @@ function fbRenderMyResultsTable(results) {
         var btnP = document.createElement('button');
         btnP.className = 'fxh-row-print-btn';
         btnP.innerHTML = '🖨️';
-        btnP.title = r.lang === 'ar' ? 'تحميل PDF' : 'Download PDF';
+        btnP.title = r.lang === 'ar' ? 'تحميل النتيجة' : 'Download Result';
         btnP.addEventListener('click', (function(rowData){ return function(e){ e.stopPropagation(); fxhPrintRowResult(rowData); }; })(r));
         tdP.appendChild(btnP);
         tr.appendChild(tdP);
@@ -4176,7 +4176,7 @@ function fbLoadMyResults() {
             var btnPrint = document.createElement('button');
             btnPrint.className = 'fxh-row-print-btn';
             btnPrint.innerHTML = '🖨️';
-            btnPrint.title = r.lang === 'ar' ? 'تحميل PDF' : 'Download PDF';
+            btnPrint.title = r.lang === 'ar' ? 'تحميل النتيجة' : 'Download Result';
             btnPrint.addEventListener('click', (function(rowData){ return function(e){ e.stopPropagation(); fxhPrintRowResult(rowData); }; })(r));
             tdPrint.appendChild(btnPrint);
             tr.appendChild(tdPrint);
@@ -4731,7 +4731,7 @@ document.addEventListener('DOMContentLoaded', function() {
         wrap.className = 'fxh-print-btn-wrap';
         wrap.innerHTML =
             '<button class="fxh-print-btn" onclick="fxhPrintCurrentResult()">' +
-            '📄 <span id="fxhPrintBtnText">تحميل PDF<br>Download PDF</span>' +
+            '📄 <span id="fxhPrintBtnText">تحميل النتيجة<br>Download Result</span>' +
             '</button>';
         reviewH2.parentNode.insertBefore(wrap, reviewH2);
     }
