@@ -4210,29 +4210,42 @@ function fxhPrintResult(data) {
 '<html lang="' + (isAr ? 'ar' : 'en') + '" dir="' + dir + '">\n' +
 '<head>\n' +
 '<meta charset="UTF-8">\n' +
-'<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">\n' +
 '<base href="' + baseHref + '">\n' +
 '<title>' + fileName + '</title>\n' +
 '<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">\n' +
 '<style>\n' +
 '  @page { size: A4 landscape; margin: 0; }\n' +
 '  * { box-sizing: border-box; font-family: \'Tajawal\', sans-serif; margin: 0; padding: 0; }\n' +
+/* ── شاشة عادية ── */
 '  html, body {\n' +
-'    width: 1122px; height: 794px;\n' +
-'    overflow: hidden;\n' +
+'    width: 100%; overflow-x: hidden; overflow-y: auto;\n' +
 '    background: #0d0626;\n' +
+'    min-height: 100vh;\n' +
 '  }\n' +
 '  .page-wrap {\n' +
-'    width: 1122px; height: 794px;\n' +
+'    width: 100%; max-width: 100%;\n' +
+'    min-height: 100vh;\n' +
+'    padding: 0;\n' +
 '    position: relative;\n' +
 '    background: linear-gradient(135deg, #0d0626 0%, #1a0a4a 30%, #0a1a3a 60%, #16063a 100%);\n' +
 '    display: flex; flex-direction: column;\n' +
-'    overflow: hidden;\n' +
 '  }\n' +
-/* ── طباعة ── */
+/* ── طباعة: A4 landscape محكم ── */
 '  @media print {\n' +
-'    html, body { width: 297mm; height: 210mm; background: #0d0626 !important; overflow: hidden; }\n' +
-'    .page-wrap { width: 297mm !important; height: 210mm !important; }\n' +
+'    html, body {\n' +
+'      width: 297mm; height: 210mm;\n' +
+'      overflow: hidden;\n' +
+'      background: #0d0626 !important;\n' +
+'    }\n' +
+'    .page-wrap {\n' +
+'      width: 297mm !important; height: 210mm !important;\n' +
+'      min-height: unset !important;\n' +
+'      overflow: hidden !important;\n' +
+'      page-break-inside: avoid;\n' +
+'    }\n' +
+'    .content {\n' +
+'      min-height: unset !important; height: 210mm !important;\n' +
+'    }\n' +
 '    body { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }\n' +
 '    * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }\n' +
 '  }\n' +
@@ -4260,9 +4273,9 @@ function fxhPrintResult(data) {
 /* المحتوى */
 '  .content {\n' +
 '    position: relative; z-index: 5;\n' +
-'    padding: 38px 49px 26px;\n' +
-'    display: flex; flex-direction: column; height: 794px; gap: 0;\n' +
-'    width: 1122px; margin: 0 auto; overflow: hidden;\n' +
+'    padding: 10mm 13mm 7mm;\n' +
+'    display: flex; flex-direction: column; min-height: 100vh; gap: 0;\n' +
+'    max-width: 297mm; width: 100%; margin: 0 auto;\n' +
 '  }\n' +
 /* الرأس */
 '  .header {\n' +
@@ -4346,15 +4359,7 @@ function fxhPrintResult(data) {
 '</style>\n' +
 '</head>\n' +
 '<body>\n' +
-'<!-- شاشة الانتظار -->\n' +
-'<div id="gen-screen" style="position:fixed;inset:0;background:#0d0626;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:9999;font-family:Tajawal,sans-serif;">\n' +
-'  <div style="width:48px;height:48px;border:4px solid #8e44ad;border-top-color:transparent;border-radius:50%;animation:spin 0.8s linear infinite;margin-bottom:18px;"></div>\n' +
-'  <div id="gen-msg" style="color:#c0d0e8;font-size:14pt;font-weight:600;">جارٍ توليد الملف… Generating PDF…</div>\n' +
-'  <style>@keyframes spin{to{transform:rotate(360deg)}}</style>\n' +
-'</div>\n' +
-'<!-- الصفحة المخفية للرسم -->\n' +
-'<div style="position:fixed;top:0;left:0;width:1122px;height:794px;overflow:hidden;z-index:-1;pointer-events:none;">\n' +
-'<div id="page-wrap-inner">\n' +
+'<div class="page-wrap">\n' +
 '  <div class="bg-orb-1"></div>\n' +
 '  <div class="bg-orb-2"></div>\n' +
 '  <div class="border-outer"></div>\n' +
@@ -4392,33 +4397,29 @@ function fxhPrintResult(data) {
 '    <div class="footer">FuExHub — Future Exams Hub</div>\n' +
 '  </div>\n' +
 '</div>\n' +
-'</div>\n' +
-'</div>\n' +
-'<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"><\/script>\n' +
-'<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"><\/script>\n' +
+'<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"><\/script>\n' +
 '<script>\n' +
 'window.onload = function() {\n' +
 '  document.title = ' + JSON.stringify(fileName) + ';\n' +
-'  var wrap = document.getElementById("page-wrap-inner");\n' +
-'  var msg  = document.getElementById("gen-msg");\n' +
-'  html2canvas(wrap, {\n' +
-'    scale: 3,\n' +
-'    useCORS: true,\n' +
-'    backgroundColor: null,\n' +
-'    width: 1122,\n' +
-'    height: 794,\n' +
-'    windowWidth: 1122\n' +
-'  }).then(function(canvas) {\n' +
-'    var imgData = canvas.toDataURL("image/jpeg", 0.98);\n' +
-'    var jsPDF   = window.jspdf.jsPDF;\n' +
-'    var pdf     = new jsPDF({ orientation: "landscape", unit: "mm", format: "a4" });\n' +
-'    pdf.addImage(imgData, "JPEG", 0, 0, 297, 210);\n' +
-'    var pdfBlob = pdf.output("blob");\n' +
-'    var url     = URL.createObjectURL(pdfBlob);\n' +
-'    window.location.replace(url);\n' +
-'  }).catch(function(e) {\n' +
-'    if (msg) msg.textContent = "حدث خطأ أثناء التوليد. Error generating PDF.";\n' +
-'  });\n' +
+'  var element = document.querySelector(".page-wrap");\n' +
+'  var opt = {\n' +
+'    margin: 0,\n' +
+'    filename: ' + JSON.stringify(fileName) + ' + ".pdf",\n' +
+'    image: { type: "jpeg", quality: 1 },\n' +
+'    html2canvas: {\n' +
+'      scale: 2,\n' +
+'      useCORS: true,\n' +
+'      allowTaint: true,\n' +
+'      backgroundColor: "#0d0626",\n' +
+'      width: 1122,\n' +
+'      windowWidth: 1122\n' +
+'    },\n' +
+'    jsPDF: { unit: "mm", format: "a4", orientation: "landscape" },\n' +
+'    pagebreak: { mode: "avoid-all" }\n' +
+'  };\n' +
+'  setTimeout(function() {\n' +
+'    html2pdf().set(opt).from(element).save();\n' +
+'  }, 800);\n' +
 '};\n' +
 '<\/script>\n' +
 '</body>\n</html>';
