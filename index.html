@@ -1227,13 +1227,13 @@ body.lang-ar #pageCertEN * {
             <img src="FUEXHUB.png" alt="FuExHub" class="site-logo-img site-logo-lg site-logo-theme">
             <div class="cert-select-title" style="font-family:'Tajawal',sans-serif;">اختر شهادتك من AWS</div>
             <div class="cert-select-subtitle" style="font-family:'Tajawal',sans-serif;">اختر الاختبار الذي تريد أن تختبره</div>
-            <div class="cert-level-title" style="font-family:'Tajawal',sans-serif;">⚫️ التأسيسية</div>
+            <div class="cert-level-title" style="font-family:'Tajawal',sans-serif;">⚫️ تأسيسي</div>
             <div class="cert-grid">
-                <div class="cert-card" onclick="loadCert('ar','CLFAR','CLF-C02','شهادة AWS ممارس الحوسبة السحابية التأسيسية','120','65','700','BOOKAWSCLFAR.com')">
+                <div class="cert-card" onclick="loadCert('ar','CLFAR','CLF-C02','شهادة AWS ممارس الحوسبة السحابية تأسيسي','120','65','700','BOOKAWSCLFAR.com')">
                     <img src="CLF.png" alt="CLF-AR" onerror="this.style.background='#27ae60';this.style.borderRadius='50%';">
                     <div class="cert-card-code">CLF-C02</div>
                 </div>
-                <div class="cert-card" onclick="loadCert('ar','AIFAR','AIF-C01','شهادة AWS ممارس الذكاء الاصطناعي التأسيسية','120','65','700','BOOKAWSAIFAR.com')">
+                <div class="cert-card" onclick="loadCert('ar','AIFAR','AIF-C01','شهادة AWS ممارس الذكاء الاصطناعي تأسيسي','120','65','700','BOOKAWSAIFAR.com')">
                     <img src="AIF.png" alt="AIF-AR" onerror="this.style.background='#2980b9';this.style.borderRadius='50%';">
                     <div class="cert-card-code">AIF-C01</div>
                 </div>
@@ -1752,9 +1752,9 @@ body.lang-ar #pageCertEN * {
 .fxh-level-line {
     display: inline-flex;
     align-items: center;
-    gap: 10px;
-    margin: 14px 0 12px;
-    padding-top: 14px;
+    gap: 8px;
+    margin: 6px 0 8px;
+    padding-top: 8px;
     border-top: 1px solid rgba(255,255,255,0.18);
     color: #f5f3ff;
     font-size: 22px;
@@ -2047,37 +2047,29 @@ body.lang-ar #pageCertEN * {
         }
 
 var titleHTML;
+var pageLevelText = fxhGetCertLevel(currentCertCode, isAr);
 
 if (isAr) {
     if (currentCertName.startsWith('شهادة AWS')) {
-        var rest = currentCertName.replace('شهادة AWS', '').trim();
-
-        // فصل كلمة "التأسيسية" لو موجودة
-        if (rest.endsWith('التأسيسية')) {
-            var mainPart = rest.replace('التأسيسية', '').trim();
-            titleHTML =
-                'شهادة AWS<br>' +
-                mainPart + '<br>' +
-                'التأسيسية<br>' +
-                '(' + currentCertCode + ')';
-        } else {
-            titleHTML =
-                'شهادة AWS<br>' +
-                rest + '<br>' +
-                '(' + currentCertCode + ')';
-        }
+        var rest = fxhStripCertLevelFromName(currentCertName.replace('شهادة AWS', '').trim(), true);
+        titleHTML =
+            'شهادة AWS<br>' +
+            rest + '<br>' +
+            (pageLevelText ? (' ' + pageLevelText + '<br>') : '') +
+            '(' + currentCertCode + ')';
     } else {
-        titleHTML = currentCertName + '<br>(' + currentCertCode + ')';
+        titleHTML = currentCertName + (pageLevelText ? ('<br> ' + pageLevelText) : '') + '<br>(' + currentCertCode + ')';
     }
 } else {
     if (currentCertName.startsWith('AWS Certified')) {
-        var restEn = currentCertName.replace('AWS Certified', '').trim();
+        var restEn = fxhStripCertLevelFromName(currentCertName.replace('AWS Certified', '').trim(), false);
         titleHTML =
             'AWS Certified<br>' +
             restEn + '<br>' +
+            (pageLevelText ? (pageLevelText + '<br>') : '') +
             '(' + currentCertCode + ') Exam';
     } else {
-        titleHTML = currentCertName + '<br>(' + currentCertCode + ') Exam';
+        titleHTML = currentCertName + (pageLevelText ? ('<br>' + pageLevelText) : '') + '<br>(' + currentCertCode + ') Exam';
     }
 }
 
@@ -4293,8 +4285,8 @@ var fxhCertFullNameEN = {
 
 /* ── خريطة أسماء الشهادات - عربي ───────────────────────────────── */
 var fxhCertFullNameAR = {
-    'CLF-C02': 'شهادة AWS ممارس الحوسبة السحابية التأسيسية',
-    'AIF-C01': 'شهادة AWS ممارس الذكاء الاصطناعي التأسيسية'
+    'CLF-C02': 'شهادة AWS ممارس الحوسبة السحابية تأسيسي',
+    'AIF-C01': 'شهادة AWS ممارس الذكاء الاصطناعي تأسيسي'
 };
 
 
@@ -4318,21 +4310,21 @@ var fxhCertLevelMapEN = {
 };
 
 var fxhCertLevelMapAR = {
-    'AIF-C01': 'التأسيسية',
-    'CLF-C02': 'التأسيسية',
-    'MLA-C01': 'المشارك',
-    'SAA-C03': 'المشارك',
-    'DVA-C02': 'المشارك',
-    'DEA-C01': 'المشارك',
-    'SOA-C02': 'المشارك',
-    'SOA-C03': 'المشارك',
-    'AIP-C01': 'الاحترافية',
-    'SAP-C02': 'الاحترافية',
-    'DOP-C02': 'الاحترافية',
-    'MLS-C01': 'التخصصية',
-    'ANS-C01': 'التخصصية',
-    'SCS-C02': 'التخصصية',
-    'SCS-C03': 'التخصصية'
+    'AIF-C01': 'تأسيسي',
+    'CLF-C02': 'تأسيسي',
+    'MLA-C01': 'مشارك',
+    'SAA-C03': 'مشارك',
+    'DVA-C02': 'مشارك',
+    'DEA-C01': 'مشارك',
+    'SOA-C02': 'مشارك',
+    'SOA-C03': 'مشارك',
+    'AIP-C01': 'احترافي',
+    'SAP-C02': 'احترافي',
+    'DOP-C02': 'احترافي',
+    'MLS-C01': 'تخصصي',
+    'ANS-C01': 'تخصصي',
+    'SCS-C02': 'تخصصي',
+    'SCS-C03': 'تخصصي'
 };
 
 function fxhGetCertLevel(certCode, isAr) {
@@ -4342,9 +4334,9 @@ function fxhGetCertLevel(certCode, isAr) {
 function fxhStripCertLevelFromName(name, isAr) {
     if (!name) return '';
     if (isAr) {
-        return name.replace(/\s+التأسيسية\s*$/, '').trim();
+        return name.replace(/\s+(التأسيسية|تأسيسي|المشارك|مشارك|الاحترافية|احترافي|التخصصية|تخصصي)\s*$/, '').trim();
     }
-    return name.replace(/\s*-\s*(Associate|Professional|Specialty)\s*$/i, '').trim();
+    return name.replace(/\s*-\s*(Foundational|Associate|Professional|Specialty)\s*$/i, '').trim();
 }
 
 /* ── خريطة صور الشهادات ─────────────────────────────────────────── */
@@ -4436,13 +4428,17 @@ function fxhFormatTime12(dateObj, isAr) {
         var time = parts[0] || raw;
         var meridiem = (parts[1] || '').toUpperCase();
         var meridiemClass = meridiem === 'PM' ? 'pm' : 'am';
-        var meridiemText = meridiem;
         if (isAr && meridiem) {
-            meridiemText = meridiem === 'PM' ? 'مساءً' : 'صباحاً';
+            var meridiemTextAr = meridiem === 'PM' ? 'مساءً' : 'صباحًا';
+            var merged = time + ' ' + meridiemTextAr;
+            return {
+                text: merged,
+                html: fxhEscapeHtml(merged)
+            };
         }
         return {
-            text: time + (meridiemText ? ' ' + meridiemText : ''),
-            html: time + (meridiemText ? '<span class="fxh-time-meridiem ' + meridiemClass + '">' + meridiemText + '</span>' : '')
+            text: time + (meridiem ? ' ' + meridiem : ''),
+            html: time + (meridiem ? '<span class="fxh-time-meridiem ' + meridiemClass + '">' + meridiem + '</span>' : '')
         };
     } catch(e) {
         var fallback = d.toLocaleTimeString();
@@ -4452,17 +4448,18 @@ function fxhFormatTime12(dateObj, isAr) {
 
 function fxhFormatDateTimeForTable(dateObj, isAr) {
     var d = dateObj ? new Date(dateObj) : new Date();
-    var dateStr;
+    var dateStr, timeStr;
     try {
         dateStr = d.toLocaleDateString('en-GB', { day:'2-digit', month:'short', year:'numeric' });
+        timeStr = d.toLocaleTimeString('en-GB', { hour:'2-digit', minute:'2-digit', second:'2-digit' });
     } catch(e) {
         dateStr = d.toLocaleDateString('en-GB');
+        timeStr = d.toLocaleTimeString('en-GB');
     }
-    var timeObj = fxhFormatTime12(d, !!isAr);
     return {
         date: dateStr,
-        timeText: timeObj.text,
-        timeHtml: timeObj.html
+        timeText: timeStr,
+        timeHtml: fxhEscapeHtml(timeStr)
     };
 }
 
@@ -4494,7 +4491,7 @@ function fxhBuildPdfMarkup(data) {
     var mainTitle = fxhStripCertLevelFromName(isAr && arName ? arName : enName, isAr);
     var subTitle = isAr && arName ? enName : certCode;
     var levelText = fxhGetCertLevel(certCode, isAr);
-    var levelLine = levelText ? ((isAr ? 'المستوى: ' : 'Level: ') + levelText) : '';
+    var levelLine = levelText ? ((isAr ? ' ' : 'Level: ') + levelText) : '';
 
     var stats = isAr ? [
         ['الدرجة', (data.score || 0) + ' / 1000'],
