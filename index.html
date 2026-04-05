@@ -4218,30 +4218,21 @@ function fxhPrintResult(data) {
 '  @page { size: A4 landscape; margin: 0; }\n' +
 '  * { box-sizing: border-box; font-family: \'Tajawal\', sans-serif; margin: 0; padding: 0; }\n' +
 '  html, body {\n' +
-'    width: 100%; height: 100%;\n' +
+'    width: 1122px; height: 794px;\n' +
 '    overflow: hidden;\n' +
 '    background: #0d0626;\n' +
 '  }\n' +
-/* ── الصفحة الثابتة بمقاس A4 landscape تتكيف مع أي شاشة ── */
-'  .page-outer {\n' +
-'    width: 100vw; height: 100vh;\n' +
-'    display: flex; align-items: center; justify-content: center;\n' +
-'    background: #060318;\n' +
-'    overflow: hidden;\n' +
-'  }\n' +
 '  .page-wrap {\n' +
-'    width: 297mm; height: 210mm;\n' +
+'    width: 1122px; height: 794px;\n' +
 '    position: relative;\n' +
 '    background: linear-gradient(135deg, #0d0626 0%, #1a0a4a 30%, #0a1a3a 60%, #16063a 100%);\n' +
 '    display: flex; flex-direction: column;\n' +
-'    flex-shrink: 0;\n' +
-'    transform-origin: center center;\n' +
+'    overflow: hidden;\n' +
 '  }\n' +
 /* ── طباعة ── */
 '  @media print {\n' +
 '    html, body { width: 297mm; height: 210mm; background: #0d0626 !important; overflow: hidden; }\n' +
-'    .page-outer { width: 297mm; height: 210mm; display: block; background: transparent; }\n' +
-'    .page-wrap { transform: none !important; width: 297mm !important; height: 210mm !important; }\n' +
+'    .page-wrap { width: 297mm !important; height: 210mm !important; }\n' +
 '    body { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }\n' +
 '    * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }\n' +
 '  }\n' +
@@ -4269,9 +4260,9 @@ function fxhPrintResult(data) {
 /* المحتوى */
 '  .content {\n' +
 '    position: relative; z-index: 5;\n' +
-'    padding: 10mm 13mm 7mm;\n' +
-'    display: flex; flex-direction: column; height: 210mm; gap: 0;\n' +
-'    width: 297mm; margin: 0 auto; overflow: hidden;\n' +
+'    padding: 38px 49px 26px;\n' +
+'    display: flex; flex-direction: column; height: 794px; gap: 0;\n' +
+'    width: 1122px; margin: 0 auto; overflow: hidden;\n' +
 '  }\n' +
 /* الرأس */
 '  .header {\n' +
@@ -4355,8 +4346,15 @@ function fxhPrintResult(data) {
 '</style>\n' +
 '</head>\n' +
 '<body>\n' +
-'<div class="page-outer">\n' +
-'<div class="page-wrap">\n' +
+'<!-- شاشة الانتظار -->\n' +
+'<div id="gen-screen" style="position:fixed;inset:0;background:#0d0626;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:9999;font-family:Tajawal,sans-serif;">\n' +
+'  <div style="width:48px;height:48px;border:4px solid #8e44ad;border-top-color:transparent;border-radius:50%;animation:spin 0.8s linear infinite;margin-bottom:18px;"></div>\n' +
+'  <div id="gen-msg" style="color:#c0d0e8;font-size:14pt;font-weight:600;">جارٍ توليد الملف… Generating PDF…</div>\n' +
+'  <style>@keyframes spin{to{transform:rotate(360deg)}}</style>\n' +
+'</div>\n' +
+'<!-- الصفحة المخفية للرسم -->\n' +
+'<div style="position:fixed;top:0;left:0;width:1122px;height:794px;overflow:hidden;z-index:-1;pointer-events:none;">\n' +
+'<div id="page-wrap-inner">\n' +
 '  <div class="bg-orb-1"></div>\n' +
 '  <div class="bg-orb-2"></div>\n' +
 '  <div class="border-outer"></div>\n' +
@@ -4395,19 +4393,33 @@ function fxhPrintResult(data) {
 '  </div>\n' +
 '</div>\n' +
 '</div>\n' +
+'</div>\n' +
+'<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"><\/script>\n' +
+'<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"><\/script>\n' +
 '<script>\n' +
-'function scaleToFit() {\n' +
-'  var wrap = document.querySelector(".page-wrap");\n' +
-'  var outer = document.querySelector(".page-outer");\n' +
-'  if (!wrap || !outer) return;\n' +
-'  var scaleX = outer.clientWidth  / wrap.offsetWidth;\n' +
-'  var scaleY = outer.clientHeight / wrap.offsetHeight;\n' +
-'  var scale  = Math.min(scaleX, scaleY);\n' +
-'  wrap.style.transform = "scale(" + scale + ")";\n' +
-'}\n' +
-'window.addEventListener("load",   scaleToFit);\n' +
-'window.addEventListener("resize", scaleToFit);\n' +
-'document.title = ' + JSON.stringify(fileName) + ';\n' +
+'window.onload = function() {\n' +
+'  document.title = ' + JSON.stringify(fileName) + ';\n' +
+'  var wrap = document.getElementById("page-wrap-inner");\n' +
+'  var msg  = document.getElementById("gen-msg");\n' +
+'  html2canvas(wrap, {\n' +
+'    scale: 3,\n' +
+'    useCORS: true,\n' +
+'    backgroundColor: null,\n' +
+'    width: 1122,\n' +
+'    height: 794,\n' +
+'    windowWidth: 1122\n' +
+'  }).then(function(canvas) {\n' +
+'    var imgData = canvas.toDataURL("image/jpeg", 0.98);\n' +
+'    var jsPDF   = window.jspdf.jsPDF;\n' +
+'    var pdf     = new jsPDF({ orientation: "landscape", unit: "mm", format: "a4" });\n' +
+'    pdf.addImage(imgData, "JPEG", 0, 0, 297, 210);\n' +
+'    var pdfBlob = pdf.output("blob");\n' +
+'    var url     = URL.createObjectURL(pdfBlob);\n' +
+'    window.location.replace(url);\n' +
+'  }).catch(function(e) {\n' +
+'    if (msg) msg.textContent = "حدث خطأ أثناء التوليد. Error generating PDF.";\n' +
+'  });\n' +
+'};\n' +
 '<\/script>\n' +
 '</body>\n</html>';
 
