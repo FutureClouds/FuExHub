@@ -4210,12 +4210,15 @@ function fxhPrintResult(data) {
 '<html lang="' + (isAr ? 'ar' : 'en') + '" dir="' + dir + '">\n' +
 '<head>\n' +
 '<meta charset="UTF-8">\n' +
+'<meta name="viewport" content="width=1200">\n' +
 '<base href="' + baseHref + '">\n' +
 '<title>' + fileName + '</title>\n' +
 '<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">\n' +
 '<style>\n' +
 '  @page { size: A4 landscape; margin: 0; }\n' +
 '  * { box-sizing: border-box; font-family: \'Tajawal\', sans-serif; margin: 0; padding: 0; }\n' +
+'  html { min-width: 1200px !important; overflow-x: auto !important; }\n' +
+'  body { min-width: 1200px !important; width: 1200px !important; }\n' +
 /* ── شاشة عادية ── */
 '  html, body {\n' +
 '    width: 100%; overflow-x: hidden; overflow-y: auto;\n' +
@@ -4397,29 +4400,11 @@ function fxhPrintResult(data) {
 '    <div class="footer">FuExHub — Future Exams Hub</div>\n' +
 '  </div>\n' +
 '</div>\n' +
-'<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"><\/script>\n' +
 '<script>\n' +
 'window.onload = function() {\n' +
+'  window.focus();\n' +
 '  document.title = ' + JSON.stringify(fileName) + ';\n' +
-'  var element = document.querySelector(".page-wrap");\n' +
-'  var opt = {\n' +
-'    margin: 0,\n' +
-'    filename: ' + JSON.stringify(fileName) + ' + ".pdf",\n' +
-'    image: { type: "jpeg", quality: 1 },\n' +
-'    html2canvas: {\n' +
-'      scale: 2,\n' +
-'      useCORS: true,\n' +
-'      allowTaint: true,\n' +
-'      backgroundColor: "#0d0626",\n' +
-'      width: 1122,\n' +
-'      windowWidth: 1122\n' +
-'    },\n' +
-'    jsPDF: { unit: "mm", format: "a4", orientation: "landscape" },\n' +
-'    pagebreak: { mode: "avoid-all" }\n' +
-'  };\n' +
-'  setTimeout(function() {\n' +
-'    html2pdf().set(opt).from(element).save();\n' +
-'  }, 800);\n' +
+'  setTimeout(function() { window.print(); }, 600);\n' +
 '};\n' +
 '<\/script>\n' +
 '</body>\n</html>';
