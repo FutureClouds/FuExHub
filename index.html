@@ -1009,6 +1009,10 @@ body.lang-ar #pageCertEN * {
         }
 
 </style>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
 </head>
 <body data-theme="light">
 
@@ -4321,7 +4325,7 @@ async function fxhPrintResult(data) {
     }
 }
 
-/* ── طباعة نتيجة الاختبار الحالي (page3) ─────────────────────── */ (page3) ─────────────────────── */
+/* ── طباعة نتيجة الاختبار الحالي (page3) ─────────────────────── */
 function fxhPrintCurrentResult() {
     var snap = window.fxhResultsSnapshot;
     if (!snap) {
