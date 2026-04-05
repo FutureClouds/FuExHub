@@ -1698,17 +1698,17 @@ body.lang-ar #pageCertEN * {
     display: flex;
     align-items: center;
     justify-content: flex-end;
-    gap: 14px;
-    padding: 14px 18px;
-    border-radius: 18px;
+    gap: 16px;
+    padding: 16px 22px;
+    border-radius: 20px;
     background: rgba(255,255,255,0.07);
     border: 1px solid rgba(255,255,255,0.12);
     box-shadow: 0 12px 28px rgba(0,0,0,0.22);
     backdrop-filter: blur(10px);
 }
 .fxh-brand-logo {
-    width: 68px;
-    height: 68px;
+    width: 96px;
+    height: 96px;
     object-fit: contain;
     filter: drop-shadow(0 8px 20px rgba(0,0,0,0.28));
 }
@@ -1748,6 +1748,17 @@ body.lang-ar #pageCertEN * {
     color: #c7d2fe;
     font-size: 26px;
     font-weight: 600;
+}
+.fxh-level-line {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    margin: 14px 0 12px;
+    padding-top: 14px;
+    border-top: 1px solid rgba(255,255,255,0.18);
+    color: #f5f3ff;
+    font-size: 22px;
+    font-weight: 700;
 }
 .fxh-result-pill {
     padding: 18px 30px;
@@ -4038,7 +4049,7 @@ function fbRenderMyResultsTable(results) {
     tbody.innerHTML = '';
     results.forEach(function(r, idx) {
         var ts = r._ts || (r.clientTimestamp ? new Date(r.clientTimestamp) : new Date());
-        var tableDateTime = fxhFormatDateTimeForTable(ts);
+        var tableDateTime = fxhFormatDateTimeForTable(ts, r.lang === 'ar');
         var dateStr = tableDateTime.date;
         var timeStr = tableDateTime.timeHtml;
         var langBadge   = '<span class="result-lang-badge">' + (r.lang === 'ar' ? 'AR' : 'EN') + '</span>';
@@ -4113,7 +4124,7 @@ function fbLoadMyResults() {
         tbody.innerHTML = '';
         guestResults.forEach(function(r, idx) {
             var ts      = r.clientTimestamp ? new Date(r.clientTimestamp) : new Date();
-            var tableDateTime = fxhFormatDateTimeForTable(ts);
+            var tableDateTime = fxhFormatDateTimeForTable(ts, r.lang === 'ar');
             var dateStr = tableDateTime.date;
             var timeStr = tableDateTime.timeHtml;
             var langBadge   = '<span class="result-lang-badge">' + (r.lang === 'ar' ? 'AR' : 'EN') + '</span>';
@@ -4286,6 +4297,56 @@ var fxhCertFullNameAR = {
     'AIF-C01': 'شهادة AWS ممارس الذكاء الاصطناعي التأسيسية'
 };
 
+
+/* ── خريطة مستويات الشهادات ───────────────────────────────────── */
+var fxhCertLevelMapEN = {
+    'AIF-C01': 'Foundational',
+    'CLF-C02': 'Foundational',
+    'MLA-C01': 'Associate',
+    'SAA-C03': 'Associate',
+    'DVA-C02': 'Associate',
+    'DEA-C01': 'Associate',
+    'SOA-C02': 'Associate',
+    'SOA-C03': 'Associate',
+    'AIP-C01': 'Professional',
+    'SAP-C02': 'Professional',
+    'DOP-C02': 'Professional',
+    'MLS-C01': 'Specialty',
+    'ANS-C01': 'Specialty',
+    'SCS-C02': 'Specialty',
+    'SCS-C03': 'Specialty'
+};
+
+var fxhCertLevelMapAR = {
+    'AIF-C01': 'التأسيسية',
+    'CLF-C02': 'التأسيسية',
+    'MLA-C01': 'المشارك',
+    'SAA-C03': 'المشارك',
+    'DVA-C02': 'المشارك',
+    'DEA-C01': 'المشارك',
+    'SOA-C02': 'المشارك',
+    'SOA-C03': 'المشارك',
+    'AIP-C01': 'الاحترافية',
+    'SAP-C02': 'الاحترافية',
+    'DOP-C02': 'الاحترافية',
+    'MLS-C01': 'التخصصية',
+    'ANS-C01': 'التخصصية',
+    'SCS-C02': 'التخصصية',
+    'SCS-C03': 'التخصصية'
+};
+
+function fxhGetCertLevel(certCode, isAr) {
+    return (isAr ? fxhCertLevelMapAR[certCode] : fxhCertLevelMapEN[certCode]) || '';
+}
+
+function fxhStripCertLevelFromName(name, isAr) {
+    if (!name) return '';
+    if (isAr) {
+        return name.replace(/\s+التأسيسية\s*$/, '').trim();
+    }
+    return name.replace(/\s*-\s*(Associate|Professional|Specialty)\s*$/i, '').trim();
+}
+
 /* ── خريطة صور الشهادات ─────────────────────────────────────────── */
 var fxhPrintCertImgMap = {
     'AIF-C01':'AIF.png','CLF-C02':'CLF.png','MLA-C01':'MLA.png',
@@ -4375,9 +4436,13 @@ function fxhFormatTime12(dateObj, isAr) {
         var time = parts[0] || raw;
         var meridiem = (parts[1] || '').toUpperCase();
         var meridiemClass = meridiem === 'PM' ? 'pm' : 'am';
+        var meridiemText = meridiem;
+        if (isAr && meridiem) {
+            meridiemText = meridiem === 'PM' ? 'مساءً' : 'صباحاً';
+        }
         return {
-            text: time + (meridiem ? ' ' + meridiem : ''),
-            html: time + (meridiem ? '<span class="fxh-time-meridiem ' + meridiemClass + '">' + meridiem + '</span>' : '')
+            text: time + (meridiemText ? ' ' + meridiemText : ''),
+            html: time + (meridiemText ? '<span class="fxh-time-meridiem ' + meridiemClass + '">' + meridiemText + '</span>' : '')
         };
     } catch(e) {
         var fallback = d.toLocaleTimeString();
@@ -4385,7 +4450,7 @@ function fxhFormatTime12(dateObj, isAr) {
     }
 }
 
-function fxhFormatDateTimeForTable(dateObj) {
+function fxhFormatDateTimeForTable(dateObj, isAr) {
     var d = dateObj ? new Date(dateObj) : new Date();
     var dateStr;
     try {
@@ -4393,7 +4458,7 @@ function fxhFormatDateTimeForTable(dateObj) {
     } catch(e) {
         dateStr = d.toLocaleDateString('en-GB');
     }
-    var timeObj = fxhFormatTime12(d, false);
+    var timeObj = fxhFormatTime12(d, !!isAr);
     return {
         date: dateStr,
         timeText: timeObj.text,
@@ -4426,8 +4491,10 @@ function fxhBuildPdfMarkup(data) {
     var modeValue = (data.examMode === 'custom')
         ? (isAr ? 'نطاق مخصص' : 'Custom Range Mode')
         : (isAr ? 'ترتيب عشوائي' : 'Smart Random Mode');
-    var mainTitle = isAr && arName ? arName : enName;
+    var mainTitle = fxhStripCertLevelFromName(isAr && arName ? arName : enName, isAr);
     var subTitle = isAr && arName ? enName : certCode;
+    var levelText = fxhGetCertLevel(certCode, isAr);
+    var levelLine = levelText ? ((isAr ? 'المستوى: ' : 'Level: ') + levelText) : '';
 
     var stats = isAr ? [
         ['الدرجة', (data.score || 0) + ' / 1000'],
@@ -4491,8 +4558,10 @@ function fxhBuildPdfMarkup(data) {
             '        <div class="fxh-title-wrap">' +
             '          <div class="fxh-eyebrow">FuExHub - Future Exams Hub</div>' +
             '          <div class="fxh-title">' + fxhEscapeHtml(mainTitle) + '</div>' +
+            (levelLine ? '          <div class="fxh-level-line">' + fxhEscapeHtml(levelLine) + '</div>' : '') +
             '          <div class="fxh-subtitle">' + fxhEscapeHtml(subTitle) + '</div>' +
             '        </div>' +
+            '        <div class="fxh-result-pill" style="background:' + passColor + ';">' + fxhEscapeHtml(passText) + '</div>' +
             '        <div class="fxh-brand-mark">' +
             '          <img class="fxh-brand-logo" src="FUEXHUB.png" alt="FuExHub Logo">' +
             '          <div class="fxh-brand-text">' +
@@ -4500,7 +4569,6 @@ function fxhBuildPdfMarkup(data) {
             '            <div class="fxh-brand-subtitle">Future Exams Hub</div>' +
             '          </div>' +
             '        </div>' +
-            '        <div class="fxh-result-pill" style="background:' + passColor + ';">' + fxhEscapeHtml(passText) + '</div>' +
             '      </div>' +
             '      <div class="fxh-user-card">' +
             '        <div class="fxh-user-label">' + fxhEscapeHtml(isAr ? 'اسم المختبر' : 'Examinee') + '</div>' +
