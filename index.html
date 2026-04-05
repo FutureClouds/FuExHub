@@ -5,8 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Future Exams Hub</title>
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Roboto:wght@400;500&family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
-    <!-- ===== html2pdf: توليد PDF مباشرة على جميع الأجهزة ===== -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <!-- ===== ملفات أسئلة الشهادات - English ===== -->
     <script src="AIF.js"></script>
     <script src="CLF.js"></script>
@@ -4399,131 +4397,40 @@ function fxhPrintResult(data) {
 '    <div class="footer">FuExHub — Future Exams Hub</div>\n' +
 '  </div>\n' +
 '</div>\n' +
+'<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"><\/script>\n' +
 '<script>\n' +
 'window.onload = function() {\n' +
 '  document.title = ' + JSON.stringify(fileName) + ';\n' +
+'  var element = document.querySelector(".page-wrap");\n' +
+'  var opt = {\n' +
+'    margin: 0,\n' +
+'    filename: ' + JSON.stringify(fileName + '.pdf') + ',\n' +
+'    image: { type: "jpeg", quality: 0.98 },\n' +
+'    html2canvas: {\n' +
+'      scale: 2,\n' +
+'      useCORS: true,\n' +
+'      logging: false,\n' +
+'      width: 1122,\n' +
+'      windowWidth: 1122\n' +
+'    },\n' +
+'    jsPDF: { unit: "mm", format: "a4", orientation: "landscape" },\n' +
+'    pagebreak: { mode: "avoid-all" }\n' +
+'  };\n' +
+'  setTimeout(function() {\n' +
+'    html2pdf().set(opt).from(element).save();\n' +
+'  }, 800);\n' +
 '};\n' +
 '<\/script>\n' +
 '</body>\n</html>';
 
-    /* ══════════════════════════════════════════════════════════════
-       توليد PDF حقيقي بمقاس A4 أفقي - يعمل على جميع الأجهزة
-       ══════════════════════════════════════════════════════════════ */
-
-    /* --- استخراج CSS ومحتوى الصفحة من نص HTML --- */
-    var cssMatch    = html.match(/<style>([\s\S]*?)<\/style>/);
-    var cssText     = cssMatch ? cssMatch[1] : '';
-    var bodyMatch   = html.match(/<body>([\s\S]*?)<\/body>/);
-    var bodyContent = bodyMatch ? bodyMatch[1] : '';
-    bodyContent     = bodyContent.replace(/<script[\s\S]*?<\/script>/gi, '');
-
-    /* --- إضافة base href داخل الـ CSS لتحميل الصور --- */
-    var baseHrefForImages = (function() {
-        var loc = window.location.href;
-        return loc.substring(0, loc.lastIndexOf('/') + 1);
-    })();
-
-    /* --- مؤشر التحميل --- */
-    var overlay = document.createElement('div');
-    overlay.id  = 'fxh-pdf-overlay';
-    overlay.style.cssText = [
-        'position:fixed','inset:0','background:rgba(0,0,0,0.75)',
-        'z-index:999999','display:flex','align-items:center',
-        'justify-content:center','flex-direction:column','gap:14px'
-    ].join(';');
-    overlay.innerHTML =
-        '<div style="width:52px;height:52px;border:4px solid rgba(255,255,255,0.15);'
-        + 'border-top-color:#a855f7;border-radius:50%;animation:fxhSpin 0.8s linear infinite;"></div>'
-        + '<div style="color:#e8d5ff;font-size:16px;font-family:Tajawal,sans-serif;font-weight:700;text-align:center;">'
-        + (isAr ? '⏳ جاري إنشاء ملف PDF...' : '⏳ Generating PDF...') + '</div>'
-        + '<style>@keyframes fxhSpin{to{transform:rotate(360deg)}}</style>';
-    document.body.appendChild(overlay);
-
-    /* --- حاوية مخفية لعرض المحتوى قبل التحويل --- */
-    var tempStyle  = document.createElement('style');
-    tempStyle.id   = 'fxh-pdf-tmp-style';
-    tempStyle.textContent = cssText
-        + '\n#fxh-pdf-wrap * { font-family: Tajawal, sans-serif !important; }'
-        + '\n#fxh-pdf-wrap { direction:' + dir + '; }';
-    document.head.appendChild(tempStyle);
-
-    var wrap = document.createElement('div');
-    wrap.id  = 'fxh-pdf-wrap';
-    wrap.style.cssText = [
-        'position:fixed','left:-9999px','top:0',
-        'width:297mm','height:210mm',
-        'overflow:hidden','z-index:-999',
-        'background:#0d0626','pointer-events:none'
-    ].join(';');
-    wrap.innerHTML = bodyContent;
-    document.body.appendChild(wrap);
-
-    /* --- دالة التنظيف --- */
-    var fxhCleanup = function() {
-        ['fxh-pdf-overlay','fxh-pdf-wrap'].forEach(function(id) {
-            var el = document.getElementById(id);
-            if (el && el.parentNode) el.parentNode.removeChild(el);
-        });
-        var ts = document.getElementById('fxh-pdf-tmp-style');
-        if (ts && ts.parentNode) ts.parentNode.removeChild(ts);
-    };
-
-    /* --- Fallback: Blob URL + طباعة (للمتصفحات القديمة) --- */
-    var fxhFallbackBlob = function() {
-        fxhCleanup();
-        try {
-            var blob = new Blob([html], { type: 'text/html; charset=utf-8' });
-            var bUrl = URL.createObjectURL(blob);
-            var a    = document.createElement('a');
-            a.href = bUrl; a.target = '_blank'; a.rel = 'noopener noreferrer';
-            document.body.appendChild(a); a.click(); document.body.removeChild(a);
-            setTimeout(function() { URL.revokeObjectURL(bUrl); }, 60000);
-        } catch(e2) {
-            alert(isAr
-                ? '⚠️ تعذّر فتح الملف. الرجاء تحديث المتصفح والمحاولة مجدداً.'
-                : '⚠️ Could not open the file. Please update your browser and try again.');
-        }
-    };
-
-    /* --- تشغيل html2pdf بعد لحظة لاكتمال تحميل المحتوى --- */
-    setTimeout(function() {
-
-        if (typeof html2pdf === 'undefined') { fxhFallbackBlob(); return; }
-
-        var pdfEl = wrap.querySelector('.page-wrap') || wrap;
-
-        var opt = {
-            margin:   0,
-            filename: fileName + '.pdf',
-            image:    { type: 'jpeg', quality: 0.98 },
-            html2canvas: {
-                scale:           2,
-                useCORS:         true,
-                allowTaint:      true,
-                backgroundColor: '#0d0626',
-                width:           1122,
-                height:          794,
-                logging:         false,
-                windowWidth:     1122,
-                windowHeight:    794
-            },
-            jsPDF: { unit: 'mm', format: 'a4', orientation: 'landscape' }
-        };
-
-        html2pdf().set(opt).from(pdfEl).outputPdf('bloburl')
-        .then(function(pdfUrl) {
-            fxhCleanup();
-            var a = document.createElement('a');
-            a.href = pdfUrl; a.target = '_blank'; a.rel = 'noopener noreferrer';
-            document.body.appendChild(a); a.click(); document.body.removeChild(a);
-            setTimeout(function() { URL.revokeObjectURL(pdfUrl); }, 60000);
-        })
-        .catch(function(err) {
-            console.error('[FuExHub] html2pdf error:', err);
-            fxhFallbackBlob();
-        });
-
-    }, 800);
+    var pw = window.open('', '_blank');
+    if (!pw) {
+        alert(isAr ? '⚠️ الرجاء السماح بالنوافذ المنبثقة في المتصفح ثم حاول مجدداً.' : '⚠️ Please allow popups in your browser and try again.');
+        return;
+    }
+    pw.document.write(html);
+    pw.document.close();
+    pw.document.title = fileName;
 }
 
 /* ── طباعة نتيجة الاختبار الحالي (page3) ─────────────────────── */
