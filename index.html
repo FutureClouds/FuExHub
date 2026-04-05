@@ -1009,6 +1009,8 @@ body.lang-ar #pageCertEN * {
         }
 
 </style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 </head>
 <body data-theme="light">
 
@@ -1617,6 +1619,179 @@ body.lang-ar #pageCertEN * {
 }
 .fxh-print-btn:active {
     transform: translateY(0) scale(0.99);
+}
+
+
+.fxh-pdf-stage {
+    position: fixed;
+    left: -99999px;
+    top: 0;
+    width: 1600px;
+    height: 1131px;
+    overflow: hidden;
+    pointer-events: none;
+    z-index: -1;
+}
+.fxh-pdf-page {
+    width: 1600px;
+    height: 1131px;
+    background: #0b1220;
+    color: #e5eefc;
+    font-family: 'Tajawal', sans-serif;
+}
+.fxh-pdf-shell {
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, #0b1220 0%, #111a2f 48%, #0f172a 100%);
+    padding: 54px 62px;
+    position: relative;
+}
+.fxh-top-accent {
+    position: absolute;
+    inset: 0 0 auto 0;
+    height: 16px;
+    background: linear-gradient(90deg, #2563eb, #7c3aed, #06b6d4);
+}
+.fxh-header {
+    display: flex;
+    align-items: center;
+    gap: 28px;
+    margin-bottom: 28px;
+}
+.fxh-badge-wrap {
+    width: 132px;
+    height: 132px;
+    border-radius: 28px;
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.14);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+.fxh-badge-fallback {
+    color: #93c5fd;
+    font-size: 42px;
+    font-weight: 800;
+}
+.fxh-badge {
+    width: 100px;
+    height: 100px;
+    object-fit: contain;
+}
+.fxh-title-wrap { flex: 1; }
+.fxh-eyebrow {
+    color: #93c5fd;
+    font-size: 24px;
+    font-weight: 700;
+    margin-bottom: 10px;
+}
+.fxh-title {
+    font-size: 48px;
+    line-height: 1.2;
+    font-weight: 800;
+    color: #f8fbff;
+    margin-bottom: 8px;
+}
+.fxh-subtitle {
+    color: #c7d2fe;
+    font-size: 26px;
+    font-weight: 600;
+}
+.fxh-result-pill {
+    padding: 18px 30px;
+    border-radius: 999px;
+    color: #fff;
+    font-size: 28px;
+    font-weight: 800;
+    flex-shrink: 0;
+}
+.fxh-user-card {
+    background: rgba(255,255,255,0.055);
+    border: 1px solid rgba(255,255,255,0.10);
+    border-radius: 26px;
+    padding: 28px 32px;
+    margin-bottom: 24px;
+}
+.fxh-user-label {
+    color: #93c5fd;
+    font-size: 22px;
+    font-weight: 700;
+    margin-bottom: 10px;
+}
+.fxh-user-name {
+    color: #fff;
+    font-size: 42px;
+    font-weight: 800;
+    margin-bottom: 14px;
+}
+.fxh-user-desc {
+    font-size: 24px;
+    line-height: 1.8;
+    color: #dbeafe;
+}
+.fxh-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 18px;
+    margin-bottom: 24px;
+}
+.fxh-stat {
+    background: rgba(255,255,255,0.055);
+    border: 1px solid rgba(255,255,255,0.10);
+    border-radius: 22px;
+    padding: 24px 18px;
+    text-align: center;
+}
+.fxh-stat.good { border-color: rgba(16,185,129,0.35); }
+.fxh-stat.bad { border-color: rgba(239,68,68,0.35); }
+.fxh-stat.time { border-color: rgba(59,130,246,0.35); }
+.fxh-stat-label {
+    color: #93c5fd;
+    font-size: 22px;
+    font-weight: 700;
+    margin-bottom: 12px;
+}
+.fxh-stat-value {
+    color: #fff;
+    font-size: 34px;
+    font-weight: 800;
+    line-height: 1.25;
+}
+.fxh-meta-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 18px;
+}
+.fxh-meta-item {
+    background: rgba(255,255,255,0.045);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 18px;
+    padding: 20px 22px;
+}
+.fxh-meta-label {
+    color: #93c5fd;
+    font-size: 20px;
+    font-weight: 700;
+    margin-bottom: 10px;
+}
+.fxh-meta-value {
+    color: #f8fbff;
+    font-size: 28px;
+    font-weight: 700;
+    line-height: 1.45;
+}
+.fxh-meta-value.fxh-status { color: #fde68a; }
+.fxh-footer {
+    position: absolute;
+    left: 62px;
+    right: 62px;
+    bottom: 34px;
+    color: #94a3b8;
+    font-size: 18px;
+    text-align: center;
+    border-top: 1px solid rgba(255,255,255,0.08);
+    padding-top: 16px;
 }
 
 /* ── My Results table print btn ── */
@@ -3793,7 +3968,7 @@ function fbRenderMyResultsTable(results) {
         var btnP = document.createElement('button');
         btnP.className = 'fxh-row-print-btn';
         btnP.innerHTML = '🖨️';
-        btnP.title = r.lang === 'ar' ? 'طباعة النتيجة' : 'Print Result';
+        btnP.title = r.lang === 'ar' ? 'تحميل PDF' : 'Download PDF';
         btnP.addEventListener('click', (function(rowData){ return function(e){ e.stopPropagation(); fxhPrintRowResult(rowData); }; })(r));
         tdP.appendChild(btnP);
         tr.appendChild(tdP);
@@ -3867,7 +4042,7 @@ function fbLoadMyResults() {
             var btnPrint = document.createElement('button');
             btnPrint.className = 'fxh-row-print-btn';
             btnPrint.innerHTML = '🖨️';
-            btnPrint.title = r.lang === 'ar' ? 'طباعة النتيجة' : 'Print Result';
+            btnPrint.title = r.lang === 'ar' ? 'تحميل PDF' : 'Download PDF';
             btnPrint.addEventListener('click', (function(rowData){ return function(e){ e.stopPropagation(); fxhPrintRowResult(rowData); }; })(r));
             tdPrint.appendChild(btnPrint);
             tr.appendChild(tdPrint);
@@ -4048,20 +4223,45 @@ function fxhFormatDuration(timeStr, isAr) {
     return str;
 }
 
-/* ── الدالة الرئيسية: توليد PDF نقي بدون مكتبات خارجية ──────────── */
-function fxhPrintResult(data) {
-    var isAr  = (data.lang === 'ar');
-    var dir   = isAr ? 'rtl' : 'ltr';
-    var name  = (data.name || (isAr ? 'مختبر' : 'Examinee')).toUpperCase();
 
-    var enName   = fxhCertFullNameEN[data.certCode] || data.certNameEN || data.certName || data.certCode || '';
-    var arName   = fxhCertFullNameAR[data.certCode] || (data.lang === 'ar' ? data.certName : '') || '';
+/* ── أدوات PDF مستقرة بدل window.print ───────────────────────── */
+function fxhEscapeHtml(value) {
+    return String(value == null ? '' : value)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+}
+
+function fxhSafeFileName(name) {
+    return String(name || 'result')
+        .replace(/[\/:*?"<>|]+/g, '-')
+        .replace(/\s+/g, ' ')
+        .trim();
+}
+
+function fxhWaitForImages(root) {
+    var imgs = Array.prototype.slice.call(root.querySelectorAll('img'));
+    if (!imgs.length) return Promise.resolve();
+    return Promise.all(imgs.map(function(img) {
+        if (img.complete) return Promise.resolve();
+        return new Promise(function(resolve) {
+            img.onload = resolve;
+            img.onerror = resolve;
+            setTimeout(resolve, 2500);
+        });
+    }));
+}
+
+function fxhBuildPdfMarkup(data) {
+    var isAr   = (data.lang === 'ar');
+    var dir    = isAr ? 'rtl' : 'ltr';
+    var name   = (data.name || (isAr ? 'مختبر' : 'Examinee')).toUpperCase();
+    var enName = fxhCertFullNameEN[data.certCode] || data.certNameEN || data.certName || data.certCode || '';
+    var arName = fxhCertFullNameAR[data.certCode] || (data.lang === 'ar' ? data.certName : '') || '';
     var certCode = data.certCode || '';
     var certImg  = fxhPrintCertImgMap[certCode] || '';
-
-    var loc      = window.location.href.replace(/[?#].*/, '');
-    var baseHref = loc.replace(/\/[^\/]*$/, '/');
-
     var examDate = data.examDate ? new Date(data.examDate) : new Date();
     var dateStr, timeStr;
     try {
@@ -4072,482 +4272,151 @@ function fxhPrintResult(data) {
             dateStr = examDate.toLocaleDateString('en-GB', { day:'2-digit', month:'long', year:'numeric' });
             timeStr = examDate.toLocaleTimeString('en-GB', { hour:'2-digit', minute:'2-digit' });
         }
-    } catch(e) { dateStr = examDate.toLocaleDateString(); timeStr = examDate.toLocaleTimeString(); }
-
-    var passColor = data.passed ? '#1e7e34' : '#c0392b';
-    var passText  = isAr ? (data.passed ? 'اجتاز ✅' : 'فشل ❌') : (data.passed ? 'PASS ✅' : 'FAIL ❌');
-    var duration  = fxhFormatDuration(data.timeFormatted, isAr);
-    var total     = data.totalQuestions || ((data.correctAnswers || 0) + (data.wrongAnswers || 0)) || 0;
-    var rawName   = data.name || '';
-    var fileName  = (isAr ? 'النتيجة - ' + rawName : 'Result - ' + rawName.toUpperCase()) + '.pdf';
-
-    var headerLine1, headerLine2;
-    if (isAr && arName) {
-        headerLine1 = arName + ' (' + certCode + ')';
-        headerLine2 = enName + ' (' + certCode + ') Exam';
-    } else {
-        headerLine1 = enName + ' (' + certCode + ')';
-        headerLine2 = '';
+    } catch(e) {
+        dateStr = examDate.toLocaleDateString();
+        timeStr = examDate.toLocaleTimeString();
     }
 
-    var examMode  = data.examMode || '';
-    var modeLabel = isAr ? 'وضع الاختبار' : 'Exam Mode';
-    var modeValue = isAr
-        ? ((examMode === 'custom') ? 'نطاق مخصص' : 'ترتيب عشوائي')
-        : ((examMode === 'custom') ? 'Custom Range Mode' : 'Smart Random Mode');
-    var totalQLabel = isAr ? 'عدد الأسئلة' : 'Total Questions';
-    var nameLabel   = isAr ? 'المختبر' : 'Examinee';
+    var fileName = isAr
+        ? 'نتيجة ' + (data.name || 'FuExHub') + ' - ' + certCode
+        : 'Result - ' + (data.name || 'FuExHub').toUpperCase() + ' - ' + certCode;
 
-    var passPhrase, officialDesc;
-    if (isAr) {
-        passPhrase   = data.passed ? 'وحقق النجاح ✅' : 'ولم يجتزه ❌';
-        officialDesc = 'يُشهد بأن المختبر ' + name + ' ' + (data.passed ? 'أنهى هذا الاختبار بنجاح ' : 'أتمّ هذا الاختبار ') + passPhrase +
-            ' في اختبار محاكاة شهادة ' + headerLine1 + '، الذي أُجري بتاريخ ' + dateStr + ' الساعة ' + timeStr +
-            '، وحصل على درجة ' + (data.score || 0) + ' من 1000 بنسبة ' + (data.percentage || 0) + '%.';
-    } else {
-        passPhrase   = data.passed ? 'successfully PASSED ✅' : 'not passed ❌';
-        officialDesc = 'This certifies that ' + name + ' has ' + passPhrase + ' the ' + headerLine1 +
-            ' certification simulation exam, conducted on ' + dateStr + ' at ' + timeStr +
-            ', achieving a score of ' + (data.score || 0) + ' / 1000 (' + (data.percentage || 0) + '%).';
-    }
+    var duration = fxhFormatDuration(data.timeFormatted, isAr);
+    var total = data.totalQuestions || ((data.correctAnswers || 0) + (data.wrongAnswers || 0)) || 0;
+    var passColor = data.passed ? '#10b981' : '#ef4444';
+    var passText = isAr ? (data.passed ? 'ناجح' : 'راسب') : (data.passed ? 'PASS' : 'FAIL');
+    var modeValue = (data.examMode === 'custom')
+        ? (isAr ? 'نطاق مخصص' : 'Custom Range Mode')
+        : (isAr ? 'ترتيب عشوائي' : 'Smart Random Mode');
+    var mainTitle = isAr && arName ? arName : enName;
+    var subTitle = isAr && arName ? enName : certCode;
 
-    /* ── إنشاء نافذة الـ PDF المُولَّدة ──────────────────────────── */
-    /* نستخدم صفحة HTML تُحوَّل فورياً لـ PDF عبر Canvas+Blob داخلها  */
-    /* بدون أي مكتبة خارجية — كل شيء مبني من الصفر بـ Canvas 2D API  */
+    var stats = isAr ? [
+        ['الدرجة', (data.score || 0) + ' / 1000'],
+        ['النسبة', (data.percentage || 0) + '%'],
+        ['الصحيحة', String(data.correctAnswers || 0)],
+        ['الخاطئة', String(data.wrongAnswers || 0)],
+        ['المدة', duration]
+    ] : [
+        ['Score', (data.score || 0) + ' / 1000'],
+        ['Percentage', (data.percentage || 0) + '%'],
+        ['Correct', String(data.correctAnswers || 0)],
+        ['Wrong', String(data.wrongAnswers || 0)],
+        ['Duration', duration]
+    ];
 
-    var certImgSrc = certImg ? (baseHref + certImg) : '';
-    var logoSrc    = baseHref + 'FUEXHUB.png';
+    var meta = isAr ? [
+        ['رمز الشهادة', certCode],
+        ['تاريخ الاختبار', dateStr],
+        ['وقت الاختبار', timeStr],
+        ['عدد الأسئلة', String(total)],
+        ['وضع الاختبار', modeValue],
+        ['الحالة', passText]
+    ] : [
+        ['Certification Code', certCode],
+        ['Exam Date', dateStr],
+        ['Exam Time', timeStr],
+        ['Total Questions', String(total)],
+        ['Exam Mode', modeValue],
+        ['Status', passText]
+    ];
 
-    var htmlPage = '<!DOCTYPE html>\n<html lang="' + (isAr?'ar':'en') + '" dir="' + dir + '">\n<head>\n' +
-'<meta charset="UTF-8">\n' +
-'<meta name="viewport" content="width=device-width,initial-scale=1">\n' +
-'<title>' + (isAr ? 'جاري توليد PDF...' : 'Generating PDF...') + '</title>\n' +
-'<style>\n' +
-'*{margin:0;padding:0;box-sizing:border-box;}\n' +
-'body{background:#0d0626;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;font-family:Arial,sans-serif;}\n' +
-'#loader{color:#a78bfa;font-size:18px;text-align:center;padding:40px;}\n' +
-'#loader .spin{display:inline-block;width:50px;height:50px;border:4px solid rgba(167,139,250,0.3);border-top-color:#a78bfa;border-radius:50%;animation:spin 0.8s linear infinite;margin-bottom:16px;}\n' +
-'@keyframes spin{to{transform:rotate(360deg);}}\n' +
-'#preview{display:none;flex-direction:column;align-items:center;gap:12px;padding:16px;}\n' +
-'canvas{max-width:100%;height:auto;border-radius:8px;box-shadow:0 0 40px rgba(142,68,173,0.5);}\n' +
-'#btnRow{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;}\n' +
-'.btn{padding:12px 28px;border:none;border-radius:30px;font-size:15px;font-weight:700;cursor:pointer;letter-spacing:1px;transition:opacity .2s;}\n' +
-'.btn:hover{opacity:.85;}\n' +
-'.btn-dl{background:linear-gradient(135deg,#8e44ad,#3498db);color:#fff;}\n' +
-'.btn-pr{background:linear-gradient(135deg,#1e7e34,#27ae60);color:#fff;}\n' +
-'</style></head><body>\n' +
-'<div id="loader"><div class="spin"></div><br>' + (isAr ? 'جارٍ توليد ملف PDF...' : 'Generating PDF...') + '</div>\n' +
-'<div id="preview">\n' +
-'  <canvas id="c"></canvas>\n' +
-'  <div id="btnRow">\n' +
-'    <button class="btn btn-dl" id="btnDl">' + (isAr ? '⬇️ تحميل PDF' : '⬇️ Download PDF') + '</button>\n' +
-'    <button class="btn btn-pr" id="btnPr">' + (isAr ? '🖨️ طباعة' : '🖨️ Print') + '</button>\n' +
-'  </div>\n' +
-'</div>\n' +
-'<script>\n' +
-'(function(){\n' +
-/* ── ثوابت الصفحة: A4 landscape بدقة 150dpi ── */
-'var PW=1684,PH=1191;\n' + /* A4 landscape @150dpi: 297mm × 210mm */
-'var isAr=' + (isAr?'true':'false') + ';\n' +
-'var dir="' + dir + '";\n' +
-'var certCode=' + JSON.stringify(certCode) + ';\n' +
-'var certImgSrc=' + JSON.stringify(certImgSrc) + ';\n' +
-'var logoSrc=' + JSON.stringify(logoSrc) + ';\n' +
-'var name=' + JSON.stringify(name) + ';\n' +
-'var headerLine1=' + JSON.stringify(headerLine1) + ';\n' +
-'var headerLine2=' + JSON.stringify(headerLine2) + ';\n' +
-'var nameLabel=' + JSON.stringify(nameLabel) + ';\n' +
-'var passed=' + (data.passed ? 'true' : 'false') + ';\n' +
-'var passText=' + JSON.stringify(passText) + ';\n' +
-'var officialDesc=' + JSON.stringify(officialDesc) + ';\n' +
-'var score=' + JSON.stringify(data.score || 0) + ';\n' +
-'var pct=' + JSON.stringify(data.percentage || 0) + ';\n' +
-'var correct=' + JSON.stringify(data.correctAnswers || 0) + ';\n' +
-'var wrong=' + JSON.stringify(data.wrongAnswers || 0) + ';\n' +
-'var duration=' + JSON.stringify(duration) + ';\n' +
-'var dateStr=' + JSON.stringify(dateStr) + ';\n' +
-'var timeStr=' + JSON.stringify(timeStr) + ';\n' +
-'var modeLabel=' + JSON.stringify(modeLabel) + ';\n' +
-'var modeValue=' + JSON.stringify(modeValue) + ';\n' +
-'var totalQLabel=' + JSON.stringify(totalQLabel) + ';\n' +
-'var total=' + JSON.stringify(total) + ';\n' +
-'var fileName=' + JSON.stringify(fileName) + ';\n' +
-'\n' +
-'var cv=document.getElementById("c");\n' +
-'cv.width=PW; cv.height=PH;\n' +
-'var ctx=cv.getContext("2d");\n' +
-'\n' +
-'/* تحميل الصور ثم الرسم */\n' +
-'var certImgObj=new Image();\n' +
-'var logoObj=new Image();\n' +
-'var loaded=0;\n' +
-'function tryDraw(){loaded++;if(loaded>=2)drawAll();}\n' +
-'certImgObj.onload=tryDraw;\n' +
-'certImgObj.onerror=tryDraw;\n' +
-'logoObj.onload=tryDraw;\n' +
-'logoObj.onerror=tryDraw;\n' +
-'if(certImgSrc){certImgObj.crossOrigin="anonymous";certImgObj.src=certImgSrc;}else{tryDraw();}\n' +
-'logoObj.crossOrigin="anonymous";logoObj.src=logoSrc;\n' +
-'\n' +
-'function wrapText(ctx,text,x,y,maxW,lineH,align){\n' +
-'  var words=text.split(" ");\n' +
-'  var line="";\n' +
-'  ctx.textAlign=align||"center";\n' +
-'  for(var i=0;i<words.length;i++){\n' +
-'    var test=line+words[i]+" ";\n' +
-'    if(ctx.measureText(test).width>maxW&&line){\n' +
-'      ctx.fillText(line.trim(),x,y);\n' +
-'      line=words[i]+" ";\n' +
-'      y+=lineH;\n' +
-'    }else{line=test;}\n' +
-'  }\n' +
-'  ctx.fillText(line.trim(),x,y);\n' +
-'  return y;\n' +
-'}\n' +
-'\n' +
-'function roundRect(ctx,x,y,w,h,r,fill,stroke,sw){\n' +
-'  ctx.beginPath();\n' +
-'  ctx.moveTo(x+r,y);\n' +
-'  ctx.lineTo(x+w-r,y);ctx.arcTo(x+w,y,x+w,y+r,r);\n' +
-'  ctx.lineTo(x+w,y+h-r);ctx.arcTo(x+w,y+h,x+w-r,y+h,r);\n' +
-'  ctx.lineTo(x+r,y+h);ctx.arcTo(x,y+h,x,y+h-r,r);\n' +
-'  ctx.lineTo(x,y+r);ctx.arcTo(x,y,x+r,y,r);\n' +
-'  ctx.closePath();\n' +
-'  if(fill){ctx.fillStyle=fill;ctx.fill();}\n' +
-'  if(stroke){ctx.strokeStyle=stroke;ctx.lineWidth=sw||1;ctx.stroke();}\n' +
-'}\n' +
-'\n' +
-'function drawAll(){\n' +
-'  var W=PW,H=PH;\n' +
-'  /* ── خلفية متدرجة ── */\n' +
-'  var bg=ctx.createLinearGradient(0,0,W,H);\n' +
-'  bg.addColorStop(0,"#0d0626");\n' +
-'  bg.addColorStop(0.3,"#1a0a4a");\n' +
-'  bg.addColorStop(0.6,"#0a1a3a");\n' +
-'  bg.addColorStop(1,"#16063a");\n' +
-'  ctx.fillStyle=bg;\n' +
-'  ctx.fillRect(0,0,W,H);\n' +
-'\n' +
-'  /* ── دوائر زخرفية (orbs) ── */\n' +
-'  var orb1=ctx.createRadialGradient(-100,50,0,-100,50,520);\n' +
-'  orb1.addColorStop(0,"rgba(142,68,173,0.22)");\n' +
-'  orb1.addColorStop(1,"transparent");\n' +
-'  ctx.fillStyle=orb1;ctx.beginPath();ctx.arc(-100,50,520,0,Math.PI*2);ctx.fill();\n' +
-'  var orb2=ctx.createRadialGradient(W+100,H+80,0,W+100,H+80,440);\n' +
-'  orb2.addColorStop(0,"rgba(52,152,219,0.18)");\n' +
-'  orb2.addColorStop(1,"transparent");\n' +
-'  ctx.fillStyle=orb2;ctx.beginPath();ctx.arc(W+100,H+80,440,0,Math.PI*2);ctx.fill();\n' +
-'\n' +
-'  /* ── إطار خارجي متدرج ── */\n' +
-'  var M=28,T=38;\n' +
-'  var brd=ctx.createLinearGradient(M,M,W-M,H-M);\n' +
-'  brd.addColorStop(0,"#8e44ad");brd.addColorStop(0.5,"#3498db");\n' +
-'  brd.addColorStop(0.75,"#8e44ad");brd.addColorStop(1,"#3498db");\n' +
-'  roundRect(ctx,M,M,W-2*M,H-2*M,6,null,brd,2.5);\n' +
-'  /* إطار داخلي */\n' +
-'  roundRect(ctx,T,T,W-2*T,H-2*T,4,null,"rgba(142,68,173,0.35)",1);\n' +
-'\n' +
-'  /* ── زوايا الإطار ── */\n' +
-'  function drawCorner(cx,cy,sx,sy){\n' +
-'    ctx.save();\n' +
-'    ctx.translate(cx,cy);\n' +
-'    ctx.scale(sx,sy);\n' +
-'    var g=ctx.createLinearGradient(0,0,18,18);\n' +
-'    g.addColorStop(0,"#8e44ad");g.addColorStop(0.5,"#3498db");g.addColorStop(1,"#8e44ad");\n' +
-'    ctx.strokeStyle=g;ctx.lineWidth=2.5;ctx.lineCap="round";\n' +
-'    ctx.beginPath();ctx.moveTo(0,16);ctx.lineTo(0,0);ctx.lineTo(16,0);ctx.stroke();\n' +
-'    ctx.fillStyle="#8e44ad";\n' +
-'    ctx.beginPath();ctx.arc(0,0,3.5,0,Math.PI*2);ctx.fill();\n' +
-'    ctx.restore();\n' +
-'  }\n' +
-'  drawCorner(M+1,M+1,1,1);\n' +
-'  drawCorner(W-M-1,M+1,-1,1);\n' +
-'  drawCorner(M+1,H-M-1,1,-1);\n' +
-'  drawCorner(W-M-1,H-M-1,-1,-1);\n' +
-'\n' +
-'  /* ── منطقة المحتوى ── */\n' +
-'  var padX=75,padTop=60,padBot=46;\n' +
-'  var cX=padX,cY=padTop,cW=W-2*padX;\n' +
-'  var y=cY;\n' +
-'\n' +
-'  /* ── الهيدر: شارة + اسم الشهادة + شعار ── */\n' +
-'  var hdrH=100;\n' +
-'  /* شارة الشهادة */\n' +
-'  if(certImgObj.complete&&certImgObj.naturalWidth>0){\n' +
-'    try{ctx.drawImage(certImgObj,cX,y+2,78,78);}catch(e){}\n' +
-'  }\n' +
-'  /* اسم الشهادة */\n' +
-'  var titleX=isAr?cX+cW-90:cX+90;\n' +
-'  var titleW=cW-180;\n' +
-'  ctx.textAlign=isAr?"right":"left";\n' +
-'  ctx.font="bold 22px Arial";\n' +
-'  ctx.fillStyle="#e8d5ff";\n' +
-'  ctx.fillText(headerLine1,titleX,y+36,titleW);\n' +
-'  if(headerLine2){\n' +
-'    ctx.font="17px Arial";\n' +
-'    ctx.fillStyle="#a0b4cc";\n' +
-'    ctx.fillText(headerLine2,titleX,y+60,titleW);\n' +
-'  }\n' +
-'  /* شعار الموقع */\n' +
-'  var logoW=80,logoH=80;\n' +
-'  var logoX=isAr?cX:cX+cW-logoW;\n' +
-'  if(logoObj.complete&&logoObj.naturalWidth>0){\n' +
-'    try{\n' +
-'      ctx.save();\n' +
-'      ctx.shadowColor="rgba(142,68,173,0.8)";ctx.shadowBlur=20;\n' +
-'      ctx.drawImage(logoObj,logoX,y+5,logoW,logoH);\n' +
-'      ctx.restore();\n' +
-'    }catch(e){}\n' +
-'  }\n' +
-'  y+=hdrH;\n' +
-'\n' +
-'  /* فاصل */\n' +
-'  var sepG=ctx.createLinearGradient(cX,0,cX+cW,0);\n' +
-'  sepG.addColorStop(0,"rgba(142,68,173,0)");sepG.addColorStop(0.3,"rgba(142,68,173,0.6)");\n' +
-'  sepG.addColorStop(0.7,"rgba(52,152,219,0.6)");sepG.addColorStop(1,"rgba(52,152,219,0)");\n' +
-'  ctx.strokeStyle=sepG;ctx.lineWidth=1.5;\n' +
-'  ctx.beginPath();ctx.moveTo(cX,y);ctx.lineTo(cX+cW,y);ctx.stroke();\n' +
-'  y+=18;\n' +
-'\n' +
-'  /* ── قسم الاسم ── */\n' +
-'  ctx.textAlign="center";\n' +
-'  ctx.font="12px Arial";\n' +
-'  ctx.fillStyle="#8a9ab8";\n' +
-'  ctx.fillText(nameLabel.toUpperCase(),W/2,y+14);\n' +
-'  y+=22;\n' +
-'  /* الاسم بتدرج */\n' +
-'  var nameGrd=ctx.createLinearGradient(W/2-200,0,W/2+200,0);\n' +
-'  nameGrd.addColorStop(0,"#5dade2");nameGrd.addColorStop(0.5,"#a855f7");nameGrd.addColorStop(1,"#3498db");\n' +
-'  ctx.font="bold 52px Arial";\n' +
-'  ctx.fillStyle=nameGrd;\n' +
-'  ctx.textAlign="center";\n' +
-'  ctx.fillText(name,W/2,y+50,cW);\n' +
-'  y+=62;\n' +
-'  /* بادج النجاح/الفشل */\n' +
-'  var badgeW=160,badgeH=34,badgeX=W/2-badgeW/2;\n' +
-'  var badgeBg=ctx.createLinearGradient(badgeX,0,badgeX+badgeW,0);\n' +
-'  if(passed){\n' +
-'    badgeBg.addColorStop(0,"#0d5c2e");badgeBg.addColorStop(1,"#1e7e34");\n' +
-'    roundRect(ctx,badgeX,y,badgeW,badgeH,17,badgeBg,"rgba(46,204,113,0.4)",1.5);\n' +
-'    ctx.fillStyle="#7fffb0";\n' +
-'  }else{\n' +
-'    badgeBg.addColorStop(0,"#6e0a0a");badgeBg.addColorStop(1,"#c0392b");\n' +
-'    roundRect(ctx,badgeX,y,badgeW,badgeH,17,badgeBg,"rgba(231,76,60,0.4)",1.5);\n' +
-'    ctx.fillStyle="#ffaaaa";\n' +
-'  }\n' +
-'  ctx.font="bold 17px Arial";\n' +
-'  ctx.textAlign="center";\n' +
-'  ctx.fillText(passText,W/2,y+22);\n' +
-'  y+=50;\n' +
-'\n' +
-'  /* ── صندوق الوصف الرسمي ── */\n' +
-'  var descH=68;\n' +
-'  roundRect(ctx,cX,y,cW,descH,10,"rgba(142,68,173,0.09)","rgba(142,68,173,0.28)",1.2);\n' +
-'  ctx.font="15px Arial";\n' +
-'  ctx.fillStyle="#c0d0e8";\n' +
-'  ctx.textAlign="center";\n' +
-'  /* رسم النص مع كسر الأسطر */\n' +
-'  var words=officialDesc.split(" ");\n' +
-'  var lineH=22,lineY=y+20,lineX=W/2,maxLineW=cW-40,line="";\n' +
-'  for(var i=0;i<words.length;i++){\n' +
-'    var test=line+words[i]+" ";\n' +
-'    if(ctx.measureText(test).width>maxLineW&&line){ctx.fillText(line.trim(),lineX,lineY);line=words[i]+" ";lineY+=lineH;}else{line=test;}\n' +
-'  }\n' +
-'  ctx.fillText(line.trim(),lineX,lineY);\n' +
-'  y+=descH+14;\n' +
-'\n' +
-'  /* ── معلومات الاختبار (Meta) ── */\n' +
-'  var metaItems=[\n' +
-'    {l:modeLabel,v:modeValue},\n' +
-'    {l:totalQLabel,v:String(total)}\n' +
-'  ];\n' +
-'  var metaBoxW=(cW-10)/metaItems.length,metaH=52;\n' +
-'  for(var i=0;i<metaItems.length;i++){\n' +
-'    var mx=cX+(isAr?(metaItems.length-1-i)*(metaBoxW+10):i*(metaBoxW+10));\n' +
-'    roundRect(ctx,mx,y,metaBoxW,metaH,8,"rgba(52,152,219,0.09)","rgba(52,152,219,0.22)",1);\n' +
-'    ctx.font="11px Arial";ctx.fillStyle="#7a9ab8";ctx.textAlign="center";\n' +
-'    ctx.fillText(metaItems[i].l.toUpperCase(),mx+metaBoxW/2,y+17);\n' +
-'    ctx.font="bold 16px Arial";ctx.fillStyle="#c8d8f0";\n' +
-'    ctx.fillText(metaItems[i].v,mx+metaBoxW/2,y+38,metaBoxW-10);\n' +
-'  }\n' +
-'  y+=metaH+14;\n' +
-'\n' +
-'  /* ── جداول الإحصائيات ── */\n' +
-'  var stats=[\n' +
-'    {l:isAr?"الدرجة":"Score",v:String(score),s:"/1000",color:"#d0e4ff",bc:"rgba(255,255,255,0.1)",bg:"rgba(255,255,255,0.04)"},\n' +
-'    {l:isAr?"النسبة المئوية":"Percentage",v:String(pct),s:"%",color:"#d0e4ff",bc:"rgba(255,255,255,0.1)",bg:"rgba(255,255,255,0.04)"},\n' +
-'    {l:isAr?"الإجابات الصحيحة":"Correct",v:String(correct),s:"",color:"#7effc4",bc:"rgba(46,204,113,0.35)",bg:"rgba(46,204,113,0.07)"},\n' +
-'    {l:isAr?"الإجابات الخاطئة":"Wrong",v:String(wrong),s:"",color:"#ff9090",bc:"rgba(231,76,60,0.35)",bg:"rgba(231,76,60,0.07)"},\n' +
-'    {l:isAr?"مدة الاختبار":"Duration",v:duration,s:"",color:"#90c8ff",bc:"rgba(52,152,219,0.35)",bg:"rgba(52,152,219,0.07)"}\n' +
-'  ];\n' +
-'  var rem=H-y-padBot;\n' +
-'  var sbW=(cW-4*(stats.length-1))/stats.length;\n' +
-'  var sbH=Math.min(rem-30,90);\n' +
-'  for(var i=0;i<stats.length;i++){\n' +
-'    var si=isAr?(stats.length-1-i):i;\n' +
-'    var sx=cX+si*(sbW+4);\n' +
-'    var sy=y;\n' +
-'    roundRect(ctx,sx,sy,sbW,sbH,9,stats[i].bg,stats[i].bc,1.2);\n' +
-'    ctx.textAlign="center";\n' +
-'    ctx.font="11px Arial";ctx.fillStyle="#8a9ab8";\n' +
-'    ctx.fillText(stats[i].l,sx+sbW/2,sy+16,sbW-8);\n' +
-'    ctx.font="bold 32px Arial";ctx.fillStyle=stats[i].color;\n' +
-'    ctx.fillText(stats[i].v,sx+sbW/2,sy+sbH*0.62,sbW-8);\n' +
-'    if(stats[i].s){\n' +
-'      ctx.font="12px Arial";ctx.fillStyle="#8a9ab8";\n' +
-'      ctx.fillText(stats[i].s,sx+sbW/2,sy+sbH*0.62+18);\n' +
-'    }\n' +
-'  }\n' +
-'  y+=sbH+12;\n' +
-'\n' +
-'  /* ── تذييل ── */\n' +
-'  var footerY=H-padBot+10;\n' +
-'  var sepG2=ctx.createLinearGradient(cX,0,cX+cW,0);\n' +
-'  sepG2.addColorStop(0,"rgba(142,68,173,0)");sepG2.addColorStop(0.5,"rgba(142,68,173,0.3)");sepG2.addColorStop(1,"rgba(142,68,173,0)");\n' +
-'  ctx.strokeStyle=sepG2;ctx.lineWidth=1;\n' +
-'  ctx.beginPath();ctx.moveTo(cX,footerY-8);ctx.lineTo(cX+cW,footerY-8);ctx.stroke();\n' +
-'  ctx.font="12px Arial";ctx.fillStyle="#5a6a88";ctx.textAlign="center";\n' +
-'  ctx.fillText("FuExHub — Future Exams Hub  |  " + dateStr + "  " + timeStr,W/2,footerY+8);\n' +
-'\n' +
-'  /* ── تحويل Canvas إلى PDF (data URI) عبر Blob ── */\n' +
-'  cv.toBlob(function(blob){\n' +
-'    /* بناء PDF بسيط يحتوي على صورة الـ Canvas */\n' +
-'    var reader=new FileReader();\n' +
-'    reader.onload=function(e){\n' +
-'      var imgData=e.target.result; /* data:image/png;base64,... */\n' +
-'      var b64=imgData.split(",")[1];\n' +
-'      /* بناء PDF يدوياً (PDF 1.4) - A4 landscape: 841.89 x 595.28 pt */\n' +
-'      var pw=841.89,ph=595.28;\n' +
-'      var imgW=pw,imgH=ph;\n' +
-'      var now=new Date().toISOString().replace(/[-:]/g,"").replace(/\\.\\d+/,"");\n' +
-'      /* حساب حجم صورة base64 */\n' +
-'      var imgLen=b64.length*3/4;\n' +
-'      /* كائنات PDF */\n' +
-'      var objs=[];\n' +
-'      var xrefs=[];\n' +
-'      var pdfStr="";\n' +
-'      function addObj(content){\n' +
-'        xrefs.push(pdfStr.length);\n' +
-'        pdfStr+=content;\n' +
-'        return xrefs.length;\n' +
-'      }\n' +
-'      pdfStr="%PDF-1.4\\n";\n' +
-'      /* 1: Catalog */\n' +
-'      addObj("1 0 obj\\n<< /Type /Catalog /Pages 2 0 R >>\\nendobj\\n");\n' +
-'      /* 2: Pages */\n' +
-'      addObj("2 0 obj\\n<< /Type /Pages /Kids [3 0 R] /Count 1 >>\\nendobj\\n");\n' +
-'      /* 3: Page */\n' +
-'      addObj("3 0 obj\\n<< /Type /Page /Parent 2 0 R /MediaBox [0 0 "+pw+" "+ph+"] /Contents 4 0 R /Resources << /XObject << /Img 5 0 R >> >> >>\\nendobj\\n");\n' +
-'      /* 4: Content stream */\n' +
-'      var stream="q "+imgW+" 0 0 "+imgH+" 0 0 cm /Img Do Q";\n' +
-'      addObj("4 0 obj\\n<< /Length "+stream.length+" >>\\nstream\\n"+stream+"\\nendstream\\nendobj\\n");\n' +
-'      /* 5: Image XObject (PNG بدون decode - نرسل كـ raw base64 stream) */\n' +
-'      /* نستخدم DCTDecode لـ JPEG أو FlateDecode - لكن بما أننا نبني يدوياً، نستخدم PNG كـ raw stream */\n' +
-'      /* الطريقة الأبسط: تحويل canvas إلى JPEG ثم DCTDecode */\n' +
-'      /* هذا يتم في المرحلة التالية - نستخدم data URI مباشرة كـ embedded stream */\n' +
-'      var imgStream=atob(b64);\n' +
-'      var imgBytes="";\n' +
-'      for(var i=0;i<imgStream.length;i++){imgBytes+=imgStream.charCodeAt(i).toString(16).padStart(2,"0")+" ";}\n' +
-'      /* بناء XObject بطريقة أبسط: استخدام JavaScript URL مباشر */\n' +
-'      /* ✅ الأبسط: فتح نافذة بـ canvas كصورة + print CSS */\n' +
-'      buildSimplePdf(b64,blob);\n' +
-'    };\n' +
-'    reader.readAsDataURL(blob);\n' +
-'  },"image/jpeg",0.97);\n' +
-'}\n' +
-'\n' +
-'function buildSimplePdf(b64jpeg,jpegBlob){\n' +
-'  /* ── بناء PDF حقيقي يدوياً بـ JavaScript خالص ── */\n' +
-'  /* A4 landscape: 841.89 x 595.28 pt */\n' +
-'  var pw=841.89,ph=595.28;\n' +
-'  /* سطر المحتوى: رسم الصورة على كامل الصفحة */\n' +
-'  var stream="q "+pw.toFixed(2)+" 0 0 "+ph.toFixed(2)+" 0 0 cm /Im0 Do Q\\n";\n' +
-'  /* بيانات الصورة JPEG */\n' +
-'  var raw=atob(b64jpeg);\n' +
-'  var len=raw.length;\n' +
-'\n' +
-'  /* نبني PDF كـ binary string ثم نحوله إلى Uint8Array */\n' +
-'  var parts=[];\n' +
-'  var offsets=[];\n' +
-'  var pos=0;\n' +
-'  function pushStr(s){\n' +
-'    for(var i=0;i<s.length;i++){parts.push(s.charCodeAt(i)&0xff);}\n' +
-'    pos+=s.length;\n' +
-'  }\n' +
-'  function pushRaw(s){\n' +
-'    for(var i=0;i<s.length;i++){parts.push(s.charCodeAt(i)&0xff);}\n' +
-'    pos+=s.length;\n' +
-'  }\n' +
-'  function obj(n,content){\n' +
-'    offsets[n]=pos;\n' +
-'    pushStr(n+" 0 obj\\n"+content+"\\nendobj\\n");\n' +
-'  }\n' +
-'\n' +
-'  pushStr("%PDF-1.4\\n%\\xE2\\xE3\\xCF\\xD3\\n");\n' +
-'  obj(1,"<< /Type /Catalog /Pages 2 0 R >>");\n' +
-'  obj(2,"<< /Type /Pages /Kids [3 0 R] /Count 1 >>");\n' +
-'  obj(3,"<< /Type /Page /Parent 2 0 R /MediaBox [0 0 "+pw.toFixed(2)+" "+ph.toFixed(2)+"]\\n   /Contents 4 0 R /Resources << /XObject << /Im0 5 0 R >> >> >>");\n' +
-'  obj(4,"<< /Length "+stream.length+" >>\\nstream\\n"+stream+"endstream");\n' +
-'  /* كائن الصورة JPEG */\n' +
-'  offsets[5]=pos;\n' +
-'  pushStr("5 0 obj\\n<< /Type /XObject /Subtype /Image\\n   /Width 1684 /Height 1191\\n   /ColorSpace /DeviceRGB /BitsPerComponent 8\\n   /Filter /DCTDecode /Length "+len+" >>\\nstream\\n");\n' +
-'  pushRaw(raw);\n' +
-'  pushStr("\\nendstream\\nendobj\\n");\n' +
-'\n' +
-'  /* xref table */\n' +
-'  var xrefPos=pos;\n' +
-'  pushStr("xref\\n0 6\\n0000000000 65535 f \\n");\n' +
-'  for(var i=1;i<=5;i++){\n' +
-'    var o=offsets[i];\n' +
-'    var s=""+(o);while(s.length<10)s="0"+s;\n' +
-'    pushStr(s+" 00000 n \\n");\n' +
-'  }\n' +
-'  pushStr("trailer\\n<< /Size 6 /Root 1 0 R >>\\n");\n' +
-'  pushStr("startxref\\n"+xrefPos+"\\n%%EOF\\n");\n' +
-'\n' +
-'  var arr=new Uint8Array(parts);\n' +
-'  var blob=new Blob([arr],{type:"application/pdf"});\n' +
-'  var url=URL.createObjectURL(blob);\n' +
-'\n' +
-'  /* إخفاء المؤشر وعرض الخيارات */\n' +
-'  document.getElementById("loader").style.display="none";\n' +
-'  var prev=document.getElementById("preview");\n' +
-'  prev.style.display="flex";\n' +
-'\n' +
-'  /* تحميل تلقائي فوري */\n' +
-'  var a=document.createElement("a");\n' +
-'  a.href=url;a.download=fileName;\n' +
-'  document.body.appendChild(a);a.click();document.body.removeChild(a);\n' +
-'\n' +
-'  /* أزرار */\n' +
-'  document.getElementById("btnDl").onclick=function(){\n' +
-'    var a2=document.createElement("a");a2.href=url;a2.download=fileName;\n' +
-'    document.body.appendChild(a2);a2.click();document.body.removeChild(a2);\n' +
-'  };\n' +
-'  document.getElementById("btnPr").onclick=function(){\n' +
-'    /* طباعة عبر iframe مخفي يحمل الـ PDF */\n' +
-'    var ifrm=document.createElement("iframe");\n' +
-'    ifrm.style.cssText="position:fixed;top:-9999px;left:-9999px;width:1px;height:1px;";\n' +
-'    ifrm.src=url;\n' +
-'    document.body.appendChild(ifrm);\n' +
-'    ifrm.onload=function(){ifrm.contentWindow.print();};\n' +
-'  };\n' +
-'}\n' +
-'\n' +
-'})();\n' +
-'<\/script>\n</body></html>';
+    var statsHtml = stats.map(function(item, idx) {
+        var extra = '';
+        if (idx === 2) extra = ' good';
+        if (idx === 3) extra = ' bad';
+        if (idx === 4) extra = ' time';
+        return '<div class="fxh-stat' + extra + '"><div class="fxh-stat-label">' + fxhEscapeHtml(item[0]) + '</div><div class="fxh-stat-value">' + fxhEscapeHtml(item[1]) + '</div></div>';
+    }).join('');
 
-    var pw = window.open('', '_blank');
-    if (!pw) {
-        alert(isAr ? '⚠️ الرجاء السماح بالنوافذ المنبثقة في المتصفح ثم حاول مجدداً.' : '⚠️ Please allow popups in your browser and try again.');
-        return;
-    }
-    pw.document.write(htmlPage);
-    pw.document.close();
+    var metaHtml = meta.map(function(item) {
+        var valueClass = item[0] === (isAr ? 'الحالة' : 'Status') ? ' fxh-status' : '';
+        return '<div class="fxh-meta-item"><div class="fxh-meta-label">' + fxhEscapeHtml(item[0]) + '</div><div class="fxh-meta-value' + valueClass + '">' + fxhEscapeHtml(item[1]) + '</div></div>';
+    }).join('');
+
+    var desc = isAr
+        ? 'تم إصدار هذه النتيجة بواسطة FuExHub للمختبر <strong>' + fxhEscapeHtml(name) + '</strong> في اختبار محاكاة <strong>' + fxhEscapeHtml(mainTitle) + '</strong>.'
+        : 'This result was issued by FuExHub for <strong>' + fxhEscapeHtml(name) + '</strong> in the <strong>' + fxhEscapeHtml(mainTitle) + '</strong> simulation exam.';
+
+    return {
+        fileName: fileName,
+        html:
+            '<div class="fxh-pdf-stage" aria-hidden="true">' +
+            '  <div class="fxh-pdf-page" dir="' + dir + '">' +
+            '    <div class="fxh-pdf-shell">' +
+            '      <div class="fxh-top-accent"></div>' +
+            '      <div class="fxh-header">' +
+            (certImg ? '        <div class="fxh-badge-wrap"><img class="fxh-badge" src="' + fxhEscapeHtml(certImg) + '" alt="' + fxhEscapeHtml(certCode) + '"></div>' : '        <div class="fxh-badge-wrap fxh-badge-fallback">AWS</div>') +
+            '        <div class="fxh-title-wrap">' +
+            '          <div class="fxh-eyebrow">FuExHub - Future Exams Hub</div>' +
+            '          <div class="fxh-title">' + fxhEscapeHtml(mainTitle) + '</div>' +
+            '          <div class="fxh-subtitle">' + fxhEscapeHtml(subTitle) + '</div>' +
+            '        </div>' +
+            '        <div class="fxh-result-pill" style="background:' + passColor + ';">' + fxhEscapeHtml(passText) + '</div>' +
+            '      </div>' +
+            '      <div class="fxh-user-card">' +
+            '        <div class="fxh-user-label">' + fxhEscapeHtml(isAr ? 'اسم المختبر' : 'Examinee') + '</div>' +
+            '        <div class="fxh-user-name">' + fxhEscapeHtml(name) + '</div>' +
+            '        <div class="fxh-user-desc">' + desc + '</div>' +
+            '      </div>' +
+            '      <div class="fxh-stats-grid">' + statsHtml + '</div>' +
+            '      <div class="fxh-meta-grid">' + metaHtml + '</div>' +
+            '      <div class="fxh-footer">' + fxhEscapeHtml(isAr ? 'تم توليد هذا الملف بصيغة PDF للحصول على عرض ثابت ومتطابق بين الأجهزة.' : 'This file was generated as PDF for a fixed, device-consistent layout.') + '</div>' +
+            '    </div>' +
+            '  </div>' +
+            '</div>'
+    };
 }
 
-/* ── طباعة نتيجة الاختبار الحالي (page3) ─────────────────────── */
-function fxhPrintCurrentResult() {
+async function fxhGeneratePdfResult(data) {
+    var isAr = (data.lang === 'ar');
+    if (!window.html2canvas || !(window.jspdf && window.jspdf.jsPDF)) {
+        alert(isAr ? 'تعذر تحميل أدوات PDF. تحقق من الاتصال بالإنترنت ثم حاول مجدداً.' : 'Could not load PDF tools. Check your internet connection and try again.');
+        return;
+    }
+
+    var payload = fxhBuildPdfMarkup(data);
+    var holder = document.createElement('div');
+    holder.innerHTML = payload.html;
+    document.body.appendChild(holder.firstChild);
+    var stage = document.body.lastElementChild;
+    var page = stage.querySelector('.fxh-pdf-page');
+
+    try {
+        if (document.fonts && document.fonts.ready) {
+            try { await document.fonts.ready; } catch(e) {}
+        }
+        await fxhWaitForImages(page);
+        await new Promise(function(resolve) { setTimeout(resolve, 120); });
+
+        var canvas = await window.html2canvas(page, {
+            scale: Math.max(2, window.devicePixelRatio || 1),
+            useCORS: true,
+            backgroundColor: '#0b1220',
+            logging: false,
+            width: page.offsetWidth,
+            height: page.offsetHeight,
+            windowWidth: page.scrollWidth,
+            windowHeight: page.scrollHeight,
+            scrollX: 0,
+            scrollY: 0
+        });
+
+        var imgData = canvas.toDataURL('image/jpeg', 0.98);
+        var jsPDF = window.jspdf.jsPDF;
+        var pdf = new jsPDF({ orientation: 'landscape', unit: 'mm', format: 'a4', compress: true });
+        pdf.addImage(imgData, 'JPEG', 0, 0, 297, 210, undefined, 'FAST');
+        pdf.save(fxhSafeFileName(payload.fileName) + '.pdf');
+    } catch (err) {
+        console.error('PDF generation failed:', err);
+        alert(isAr ? 'حدث خطأ أثناء توليد ملف PDF.' : 'An error occurred while generating the PDF file.');
+    } finally {
+        if (stage && stage.parentNode) stage.parentNode.removeChild(stage);
+    }
+}
+
+/* ── توليد PDF لنتيجة الاختبار الحالي (page3) ─────────────────── */
+async function fxhPrintCurrentResult() {
     var snap = window.fxhResultsSnapshot;
     if (!snap) {
         var isAr = (typeof currentLang !== 'undefined' && currentLang === 'ar');
@@ -4555,19 +4424,14 @@ function fxhPrintCurrentResult() {
         return;
     }
 
-    /* قراءة وقت الاختبار من DOM مع إزالة HTML tags */
     var timeEl  = document.getElementById('timeResult');
     var rawTime = timeEl ? timeEl.innerHTML.replace(/<[^>]+>/g, '').trim() : '';
-    /* الاحتفاظ بالأرقام والنقطتين فقط */
     var timeFormatted = rawTime.replace(/[^\d:]/g, '') || '00:00';
-
-    /* تاريخ بدء الاختبار */
     var examDate = snap.startTimeMs ? new Date(snap.startTimeMs) : new Date();
-
     var totalQ = 0;
     if (typeof selectedQuestions !== 'undefined' && selectedQuestions) totalQ = selectedQuestions.length;
 
-    fxhPrintResult({
+    await fxhGeneratePdfResult({
         name:           fxhGetUserName(),
         lang:           (typeof currentLang !== 'undefined' ? currentLang : 'en'),
         certCode:       (typeof currentCertCode !== 'undefined' ? currentCertCode : ''),
@@ -4585,10 +4449,10 @@ function fxhPrintCurrentResult() {
     });
 }
 
-/* ── طباعة نتيجة من صف في جدول نتائجي ──────────────────────────── */
-function fxhPrintRowResult(r) {
+/* ── توليد PDF من صف في جدول نتائجي ───────────────────────────── */
+async function fxhPrintRowResult(r) {
     if (!r) return;
-    fxhPrintResult({
+    await fxhGeneratePdfResult({
         name:           fxhGetUserName(),
         lang:           r.lang || 'en',
         certCode:       r.certCode || '',
@@ -4616,7 +4480,7 @@ document.addEventListener('DOMContentLoaded', function() {
         wrap.className = 'fxh-print-btn-wrap';
         wrap.innerHTML =
             '<button class="fxh-print-btn" onclick="fxhPrintCurrentResult()">' +
-            '🖨️ <span id="fxhPrintBtnText">طباعة النتيجة<br>Print Result</span>' +
+            '📄 <span id="fxhPrintBtnText">تحميل PDF<br>Download PDF</span>' +
             '</button>';
         reviewH2.parentNode.insertBefore(wrap, reviewH2);
     }
