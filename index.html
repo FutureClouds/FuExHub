@@ -1635,16 +1635,28 @@ body.lang-ar #pageCertEN * {
 .fxh-pdf-page {
     width: 1600px;
     height: 1131px;
-    background: #0b1220;
+    background: linear-gradient(135deg, #0f0c29 0%, #302b63 52%, #24243e 100%);
     color: #e5eefc;
     font-family: 'Tajawal', sans-serif;
 }
 .fxh-pdf-shell {
     width: 100%;
     height: 100%;
-    background: linear-gradient(135deg, #0b1220 0%, #111a2f 48%, #0f172a 100%);
+    background:
+        radial-gradient(circle at top right, rgba(168, 85, 247, 0.30) 0%, rgba(168, 85, 247, 0) 32%),
+        radial-gradient(circle at bottom left, rgba(59, 130, 246, 0.24) 0%, rgba(59, 130, 246, 0) 36%),
+        linear-gradient(135deg, #0f0c29 0%, #302b63 52%, #24243e 100%);
     padding: 54px 62px;
     position: relative;
+}
+.fxh-pdf-shell::before {
+    content: '';
+    position: absolute;
+    inset: 26px;
+    border-radius: 34px;
+    border: 1px solid rgba(255,255,255,0.08);
+    box-shadow: inset 0 0 0 1px rgba(255,255,255,0.02);
+    pointer-events: none;
 }
 .fxh-top-accent {
     position: absolute;
@@ -1657,17 +1669,20 @@ body.lang-ar #pageCertEN * {
     align-items: center;
     gap: 28px;
     margin-bottom: 28px;
+    position: relative;
+    z-index: 1;
 }
 .fxh-badge-wrap {
     width: 132px;
     height: 132px;
     border-radius: 28px;
-    background: rgba(255,255,255,0.08);
-    border: 1px solid rgba(255,255,255,0.14);
+    background: linear-gradient(135deg, rgba(255,255,255,0.16), rgba(255,255,255,0.06));
+    border: 1px solid rgba(255,255,255,0.16);
     display: flex;
     align-items: center;
     justify-content: center;
     flex-shrink: 0;
+    box-shadow: 0 18px 40px rgba(0,0,0,0.26);
 }
 .fxh-badge-fallback {
     color: #93c5fd;
@@ -1678,6 +1693,42 @@ body.lang-ar #pageCertEN * {
     width: 100px;
     height: 100px;
     object-fit: contain;
+}
+.fxh-brand-mark {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 14px;
+    padding: 14px 18px;
+    border-radius: 18px;
+    background: rgba(255,255,255,0.07);
+    border: 1px solid rgba(255,255,255,0.12);
+    box-shadow: 0 12px 28px rgba(0,0,0,0.22);
+    backdrop-filter: blur(10px);
+}
+.fxh-brand-logo {
+    width: 68px;
+    height: 68px;
+    object-fit: contain;
+    filter: drop-shadow(0 8px 20px rgba(0,0,0,0.28));
+}
+.fxh-brand-text {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    text-align: left;
+}
+.fxh-brand-title {
+    color: #ffffff;
+    font-size: 24px;
+    font-weight: 800;
+    line-height: 1.1;
+}
+.fxh-brand-subtitle {
+    color: #c7d2fe;
+    font-size: 15px;
+    font-weight: 600;
+    letter-spacing: 0.3px;
 }
 .fxh-title-wrap { flex: 1; }
 .fxh-eyebrow {
@@ -1705,13 +1756,18 @@ body.lang-ar #pageCertEN * {
     font-size: 28px;
     font-weight: 800;
     flex-shrink: 0;
+    box-shadow: 0 14px 30px rgba(0,0,0,0.24);
+    border: 1px solid rgba(255,255,255,0.12);
 }
 .fxh-user-card {
-    background: rgba(255,255,255,0.055);
-    border: 1px solid rgba(255,255,255,0.10);
+    background: linear-gradient(135deg, rgba(255,255,255,0.09), rgba(255,255,255,0.05));
+    border: 1px solid rgba(255,255,255,0.12);
     border-radius: 26px;
     padding: 28px 32px;
     margin-bottom: 24px;
+    position: relative;
+    z-index: 1;
+    box-shadow: 0 16px 36px rgba(0,0,0,0.18);
 }
 .fxh-user-label {
     color: #93c5fd;
@@ -1737,15 +1793,25 @@ body.lang-ar #pageCertEN * {
     margin-bottom: 24px;
 }
 .fxh-stat {
-    background: rgba(255,255,255,0.055);
-    border: 1px solid rgba(255,255,255,0.10);
+    background: linear-gradient(135deg, rgba(255,255,255,0.09), rgba(255,255,255,0.05));
+    border: 1px solid rgba(255,255,255,0.12);
     border-radius: 22px;
     padding: 24px 18px;
     text-align: center;
+    box-shadow: 0 14px 30px rgba(0,0,0,0.16);
 }
-.fxh-stat.good { border-color: rgba(16,185,129,0.35); }
-.fxh-stat.bad { border-color: rgba(239,68,68,0.35); }
-.fxh-stat.time { border-color: rgba(59,130,246,0.35); }
+.fxh-stat.good {
+    border-color: rgba(34,197,94,0.42);
+    background: linear-gradient(135deg, rgba(22,163,74,0.28), rgba(20,83,45,0.18));
+}
+.fxh-stat.bad {
+    border-color: rgba(239,68,68,0.42);
+    background: linear-gradient(135deg, rgba(239,68,68,0.28), rgba(127,29,29,0.18));
+}
+.fxh-stat.time {
+    border-color: rgba(59,130,246,0.38);
+    background: linear-gradient(135deg, rgba(59,130,246,0.22), rgba(30,64,175,0.16));
+}
 .fxh-stat-label {
     color: #93c5fd;
     font-size: 22px;
@@ -1764,10 +1830,11 @@ body.lang-ar #pageCertEN * {
     gap: 18px;
 }
 .fxh-meta-item {
-    background: rgba(255,255,255,0.045);
-    border: 1px solid rgba(255,255,255,0.08);
+    background: linear-gradient(135deg, rgba(255,255,255,0.08), rgba(255,255,255,0.04));
+    border: 1px solid rgba(255,255,255,0.10);
     border-radius: 18px;
     padding: 20px 22px;
+    box-shadow: 0 10px 24px rgba(0,0,0,0.14);
 }
 .fxh-meta-label {
     color: #93c5fd;
@@ -1781,16 +1848,44 @@ body.lang-ar #pageCertEN * {
     font-weight: 700;
     line-height: 1.45;
 }
-.fxh-meta-value.fxh-status { color: #fde68a; }
+.fxh-meta-value.fxh-status { color: #ffffff; }
+.fxh-meta-value.fxh-status.pass {
+    color: #86efac;
+    text-shadow: 0 0 18px rgba(34,197,94,0.28);
+}
+.fxh-meta-value.fxh-status.fail {
+    color: #fca5a5;
+    text-shadow: 0 0 18px rgba(239,68,68,0.24);
+}
+.fxh-time-meridiem {
+    display: inline-block;
+    margin-left: 8px;
+    padding: 4px 10px;
+    border-radius: 999px;
+    font-size: 0.72em;
+    font-weight: 800;
+    letter-spacing: 0.8px;
+    vertical-align: middle;
+    background: rgba(255,255,255,0.10);
+    border: 1px solid rgba(255,255,255,0.16);
+}
+.fxh-time-meridiem.am {
+    color: #bfdbfe;
+    background: rgba(59,130,246,0.16);
+}
+.fxh-time-meridiem.pm {
+    color: #ddd6fe;
+    background: rgba(124,58,237,0.18);
+}
 .fxh-footer {
     position: absolute;
     left: 62px;
     right: 62px;
     bottom: 34px;
-    color: #94a3b8;
+    color: #cbd5e1;
     font-size: 18px;
     text-align: center;
-    border-top: 1px solid rgba(255,255,255,0.08);
+    border-top: 1px solid rgba(255,255,255,0.10);
     padding-top: 16px;
 }
 
@@ -2699,8 +2794,8 @@ if (isAr) {
         document.getElementById('timeResultSub').innerHTML = timeSub;
         document.getElementById('scoreResult').textContent = score + '/1000';
         document.getElementById('passResult').innerHTML    = passed
-            ? '<span class="success">' + (isAr ? 'ناجح 🎉' : 'PASS! 🎉') + '</span>'
-            : '<span class="failure">' + (isAr ? 'راسب 😞' : 'FAIL! 😞') + '</span>';
+            ? '<span class="success">' + (isAr ? 'ناجح 🎉' : 'PASS 🎉') + '</span>'
+            : '<span class="failure">' + (isAr ? 'راسب 😞' : 'FAIL 😞') + '</span>';
         document.getElementById('percentageResult').textContent = percentage + '%';
         document.getElementById('correctCount').innerHTML = isAr
             ? '<strong>الإجابات الصحيحة:</strong> <span style="color:#27ae60; font-weight:700;">' + correctAnswers + '</span>'
@@ -3575,8 +3670,8 @@ function fbTryRestoreState(forGuest) {
             document.getElementById('timeResultSub').innerHTML = rs.timeSub   || '';
             document.getElementById('scoreResult').textContent = (rs.score || 0) + '/1000';
             document.getElementById('passResult').innerHTML = rs.passed
-                ? '<span class="success">'  + (isArR ? 'ناجح 🎉' : 'PASS! 🎉') + '</span>'
-                : '<span class="failure">' + (isArR ? 'راسب 😞' : 'FAIL! 😞') + '</span>';
+                ? '<span class="success">'  + (isArR ? 'ناجح 🎉' : 'PASS 🎉') + '</span>'
+                : '<span class="failure">' + (isArR ? 'راسب 😞' : 'FAIL 😞') + '</span>';
             document.getElementById('percentageResult').textContent = (rs.percentage || 0) + '%';
             document.getElementById('correctCount').innerHTML = isArR
                 ? '<strong>الإجابات الصحيحة:</strong> <span style="color:#27ae60;font-weight:700;">' + rs.correctAnswers + '</span>'
@@ -3943,12 +4038,13 @@ function fbRenderMyResultsTable(results) {
     tbody.innerHTML = '';
     results.forEach(function(r, idx) {
         var ts = r._ts || (r.clientTimestamp ? new Date(r.clientTimestamp) : new Date());
-        var dateStr = ts.toLocaleDateString('en-GB', { day:'2-digit', month:'short', year:'numeric' });
-        var timeStr = ts.toLocaleTimeString('en-GB', { hour:'2-digit', minute:'2-digit', second:'2-digit' });
+        var tableDateTime = fxhFormatDateTimeForTable(ts);
+        var dateStr = tableDateTime.date;
+        var timeStr = tableDateTime.timeHtml;
         var langBadge   = '<span class="result-lang-badge">' + (r.lang === 'ar' ? 'AR' : 'EN') + '</span>';
         var statusBadge = r.passed
-            ? '<span class="result-badge-pass">PASS ✅</span>'
-            : '<span class="result-badge-fail">FAIL ❌</span>';
+            ? '<span class="result-badge-pass">PASS</span>'
+            : '<span class="result-badge-fail">FAIL</span>';
         var certImg = r.certCode && certImgMap[r.certCode]
             ? '<img src="' + certImgMap[r.certCode] + '" alt="' + r.certCode + '" class="my-results-cert-img">'
             : '<strong>' + (r.certCode || '—') + '</strong>';
@@ -4017,12 +4113,13 @@ function fbLoadMyResults() {
         tbody.innerHTML = '';
         guestResults.forEach(function(r, idx) {
             var ts      = r.clientTimestamp ? new Date(r.clientTimestamp) : new Date();
-            var dateStr = ts.toLocaleDateString('en-GB', { day:'2-digit', month:'short', year:'numeric' });
-            var timeStr = ts.toLocaleTimeString('en-GB', { hour:'2-digit', minute:'2-digit', second:'2-digit' });
+            var tableDateTime = fxhFormatDateTimeForTable(ts);
+            var dateStr = tableDateTime.date;
+            var timeStr = tableDateTime.timeHtml;
             var langBadge   = '<span class="result-lang-badge">' + (r.lang === 'ar' ? 'AR' : 'EN') + '</span>';
             var statusBadge = r.passed
-                ? '<span class="result-badge-pass">PASS ✅</span>'
-                : '<span class="result-badge-fail">FAIL ❌</span>';
+                ? '<span class="result-badge-pass">PASS</span>'
+                : '<span class="result-badge-fail">FAIL</span>';
             var certImg = r.certCode && certImgMap[r.certCode]
                 ? '<img src="' + certImgMap[r.certCode] + '" alt="' + r.certCode + '" class="my-results-cert-img">'
                 : '<strong>' + (r.certCode || '—') + '</strong>';
@@ -4254,6 +4351,56 @@ function fxhWaitForImages(root) {
     }));
 }
 
+function fxhFormatGregorianDate(dateObj, isAr) {
+    var d = dateObj ? new Date(dateObj) : new Date();
+    try {
+        if (isAr) {
+            return d.toLocaleDateString('ar-EG-u-ca-gregory-nu-latn', { day:'2-digit', month:'long', year:'numeric' });
+        }
+        return d.toLocaleDateString('en-GB', { day:'2-digit', month:'long', year:'numeric' });
+    } catch(e) {
+        return d.toLocaleDateString('en-GB', { day:'2-digit', month:'long', year:'numeric' });
+    }
+}
+
+function fxhFormatTime12(dateObj, isAr) {
+    var d = dateObj ? new Date(dateObj) : new Date();
+    try {
+        var raw = d.toLocaleTimeString('en-US', {
+            hour:'2-digit',
+            minute:'2-digit',
+            hour12:true
+        });
+        var parts = raw.split(' ');
+        var time = parts[0] || raw;
+        var meridiem = (parts[1] || '').toUpperCase();
+        var meridiemClass = meridiem === 'PM' ? 'pm' : 'am';
+        return {
+            text: time + (meridiem ? ' ' + meridiem : ''),
+            html: time + (meridiem ? '<span class="fxh-time-meridiem ' + meridiemClass + '">' + meridiem + '</span>' : '')
+        };
+    } catch(e) {
+        var fallback = d.toLocaleTimeString();
+        return { text: fallback, html: fxhEscapeHtml(fallback) };
+    }
+}
+
+function fxhFormatDateTimeForTable(dateObj) {
+    var d = dateObj ? new Date(dateObj) : new Date();
+    var dateStr;
+    try {
+        dateStr = d.toLocaleDateString('en-GB', { day:'2-digit', month:'short', year:'numeric' });
+    } catch(e) {
+        dateStr = d.toLocaleDateString('en-GB');
+    }
+    var timeObj = fxhFormatTime12(d, false);
+    return {
+        date: dateStr,
+        timeText: timeObj.text,
+        timeHtml: timeObj.html
+    };
+}
+
 function fxhBuildPdfMarkup(data) {
     var isAr   = (data.lang === 'ar');
     var dir    = isAr ? 'rtl' : 'ltr';
@@ -4263,19 +4410,10 @@ function fxhBuildPdfMarkup(data) {
     var certCode = data.certCode || '';
     var certImg  = fxhPrintCertImgMap[certCode] || '';
     var examDate = data.examDate ? new Date(data.examDate) : new Date();
-    var dateStr, timeStr;
-    try {
-        if (isAr) {
-            dateStr = examDate.toLocaleDateString('ar-SA-u-nu-latn', { day:'2-digit', month:'long', year:'numeric' });
-            timeStr = examDate.toLocaleTimeString('ar-SA-u-nu-latn', { hour:'2-digit', minute:'2-digit' });
-        } else {
-            dateStr = examDate.toLocaleDateString('en-GB', { day:'2-digit', month:'long', year:'numeric' });
-            timeStr = examDate.toLocaleTimeString('en-GB', { hour:'2-digit', minute:'2-digit' });
-        }
-    } catch(e) {
-        dateStr = examDate.toLocaleDateString();
-        timeStr = examDate.toLocaleTimeString();
-    }
+    var dateStr = fxhFormatGregorianDate(examDate, isAr);
+    var timeObj = fxhFormatTime12(examDate, isAr);
+    var timeStr = timeObj.text;
+    var timeHtml = timeObj.html;
 
     var fileName = isAr
         ? 'نتيجة ' + (data.name || 'FuExHub') + ' - ' + certCode
@@ -4330,8 +4468,11 @@ function fxhBuildPdfMarkup(data) {
     }).join('');
 
     var metaHtml = meta.map(function(item) {
-        var valueClass = item[0] === (isAr ? 'الحالة' : 'Status') ? ' fxh-status' : '';
-        return '<div class="fxh-meta-item"><div class="fxh-meta-label">' + fxhEscapeHtml(item[0]) + '</div><div class="fxh-meta-value' + valueClass + '">' + fxhEscapeHtml(item[1]) + '</div></div>';
+        var isStatus = item[0] === (isAr ? 'الحالة' : 'Status');
+        var isTime = item[0] === (isAr ? 'وقت الاختبار' : 'Exam Time');
+        var valueClass = isStatus ? (' fxh-status ' + (data.passed ? 'pass' : 'fail')) : '';
+        var valueHtml = isTime ? timeHtml : fxhEscapeHtml(item[1]);
+        return '<div class="fxh-meta-item"><div class="fxh-meta-label">' + fxhEscapeHtml(item[0]) + '</div><div class="fxh-meta-value' + valueClass + '">' + valueHtml + '</div></div>';
     }).join('');
 
     var desc = isAr
@@ -4351,6 +4492,13 @@ function fxhBuildPdfMarkup(data) {
             '          <div class="fxh-eyebrow">FuExHub - Future Exams Hub</div>' +
             '          <div class="fxh-title">' + fxhEscapeHtml(mainTitle) + '</div>' +
             '          <div class="fxh-subtitle">' + fxhEscapeHtml(subTitle) + '</div>' +
+            '        </div>' +
+            '        <div class="fxh-brand-mark">' +
+            '          <img class="fxh-brand-logo" src="FUEXHUB.png" alt="FuExHub Logo">' +
+            '          <div class="fxh-brand-text">' +
+            '            <div class="fxh-brand-title">FuExHub</div>' +
+            '            <div class="fxh-brand-subtitle">Future Exams Hub</div>' +
+            '          </div>' +
             '        </div>' +
             '        <div class="fxh-result-pill" style="background:' + passColor + ';">' + fxhEscapeHtml(passText) + '</div>' +
             '      </div>' +
