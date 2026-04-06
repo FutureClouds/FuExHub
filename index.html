@@ -4436,13 +4436,33 @@ function fxhFormatDuration(timeStr, isAr) {
     var m = parseInt(parts[0] || 0), s = parseInt(parts[1] || 0);
     if (isNaN(m)) m = 0; if (isNaN(s)) s = 0;
     if (isAr) {
-        var str = m + ' دقيقة';
-        if (s > 0) str += ' و' + s + ' ثانية';
-        return str;
+        // ── صياغة الدقائق ──────────────────────────────
+        var mStr;
+        if      (m === 0)  mStr = '٠ دقيقة';
+        else if (m === 1)  mStr = '١ دقيقة';
+        else if (m === 2)  mStr = 'دقيقتين';
+        else if (m <= 10)  mStr = fxhToArabicNumerals(m) + ' دقائق';
+        else               mStr = fxhToArabicNumerals(m) + ' دقيقة';
+        // ── صياغة الثواني ──────────────────────────────
+        var sStr;
+        if      (s === 0)  sStr = '٠ ثانية';
+        else if (s === 1)  sStr = '١ ثانية';
+        else if (s === 2)  sStr = 'ثانيتان';
+        else if (s <= 10)  sStr = fxhToArabicNumerals(s) + ' ثوانٍ';
+        else               sStr = fxhToArabicNumerals(s) + ' ثانية';
+        // ── سطران منفصلان بدون (و) ─────────────────────
+        return mStr + '\n' + sStr;
     }
-    var str = m + ' minute' + (m !== 1 ? 's' : '');
-    if (s > 0) str += ' ' + s + ' second' + (s !== 1 ? 's' : '');
-    return str;
+    // ── English: two separate lines ────────────────────
+    var mStrEn = (m === 1) ? '1 minute' : m + ' minutes';
+    var sStrEn = (s === 1) ? '1 second' : s + ' seconds';
+    return mStrEn + '\n' + sStrEn;
+}
+
+function fxhToArabicNumerals(n) {
+    return String(n).replace(/[0-9]/g, function(d) {
+        return '٠١٢٣٤٥٦٧٨٩'[parseInt(d)];
+    });
 }
 
 
@@ -4600,7 +4620,11 @@ function fxhBuildPdfMarkup(data) {
         if (idx === 2) extra = ' good';
         if (idx === 3) extra = ' bad';
         if (idx === 4) extra = ' time';
-        return '<div class="fxh-stat' + extra + '"><div class="fxh-stat-label">' + fxhEscapeHtml(item[0]) + '</div><div class="fxh-stat-value">' + fxhEscapeHtml(item[1]) + '</div></div>';
+        // Duration (idx===4) may contain \n — convert to <br> for HTML display
+        var valueHtml = (idx === 4)
+            ? fxhEscapeHtml(item[1]).replace(/\n/g, '<br>')
+            : fxhEscapeHtml(item[1]);
+        return '<div class="fxh-stat' + extra + '"><div class="fxh-stat-label">' + fxhEscapeHtml(item[0]) + '</div><div class="fxh-stat-value">' + valueHtml + '</div></div>';
     }).join('');
 
     var metaHtml = meta.map(function(item) {
