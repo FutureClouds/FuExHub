@@ -4582,12 +4582,14 @@ function fxhBuildPdfMarkup(data) {
         : (isAr ? 'ترتيب عشوائي' : 'Smart Random Mode');
     var mainTitle = fxhStripCertLevelFromName(isAr && arName ? arName : enName, isAr);
     var subTitle = certCode;
-    var levelText = fxhGetCertLevel(certCode, isAr);
-    var levelTextPdf = isAr ? levelText
-        .replace('التأسيسية','تأسيسي')
-        .replace('الاحترافية','احترافي')
-        .replace('التخصصية','تخصصي') : levelText;
-    var levelLine = levelTextPdf ? (isAr ? ('المستوى: ' + levelTextPdf) : ('Level: ' + levelTextPdf)) : '';
+    var fxhPdfLevelMapAR = {
+        'AIF-C01':'تأسيسي','CLF-C02':'تأسيسي',
+        'MLA-C01':'مشارك','SAA-C03':'مشارك','DVA-C02':'مشارك','DEA-C01':'مشارك','SOA-C02':'مشارك','SOA-C03':'مشارك',
+        'AIP-C01':'احترافي','SAP-C02':'احترافي','DOP-C02':'احترافي',
+        'MLS-C01':'تخصصي','ANS-C01':'تخصصي','SCS-C02':'تخصصي','SCS-C03':'تخصصي'
+    };
+    var levelText = isAr ? (fxhPdfLevelMapAR[certCode] || '') : (fxhCertLevelMapEN[certCode] || '');
+    var levelLine = levelText ? (isAr ? ('المستوى: ' + levelText) : ('Level: ' + levelText)) : '';
 
     var stats = isAr ? [
         ['الدرجة', (data.score || 0) + ' / 1000'],
