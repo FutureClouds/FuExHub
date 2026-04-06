@@ -4583,7 +4583,11 @@ function fxhBuildPdfMarkup(data) {
     var mainTitle = fxhStripCertLevelFromName(isAr && arName ? arName : enName, isAr);
     var subTitle = certCode;
     var levelText = fxhGetCertLevel(certCode, isAr);
-    var levelLine = levelText ? (isAr ? ('المستوى: ' + levelText) : ('Level: ' + levelText)) : '';
+    var levelTextPdf = isAr ? levelText
+        .replace('التأسيسية','تأسيسي')
+        .replace('الاحترافية','احترافي')
+        .replace('التخصصية','تخصصي') : levelText;
+    var levelLine = levelTextPdf ? (isAr ? ('المستوى: ' + levelTextPdf) : ('Level: ' + levelTextPdf)) : '';
 
     var stats = isAr ? [
         ['الدرجة', (data.score || 0) + ' / 1000'],
