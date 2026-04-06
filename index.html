@@ -4621,14 +4621,10 @@ function fxhBuildPdfMarkup(data) {
 
 async function fxhGeneratePdfResult(data) {
     var isAr = (data.lang === 'ar');
-    if (!window.html2canvas || !(window.jspdf && window.jspdf.jsPDF)) {
-        alert(isAr ? 'تعذر تحميل أدوات PDF. تحقق من الاتصال بالإنترنت ثم حاول مجدداً.' : 'Could not load PDF tools. Check your internet connection and try again.');
-        return;
-    }
 
     var payload = fxhBuildPdfMarkup(data);
 
-    /* ── جمع CSS المضمّن من الصفحة الحالية لحقنه في الـ iframe ── */
+    /* ── جمع CSS المضمّن من الصفحة الحالية ── */
     var inlineCss = '';
     try {
         var styleTags = document.querySelectorAll('style');
@@ -4637,71 +4633,51 @@ async function fxhGeneratePdfResult(data) {
         }
     } catch(e) {}
 
-    /* ── إنشاء iframe مخفي بعرض Desktop ثابت (1600px) ── */
-    var iframe = document.createElement('iframe');
-    iframe.setAttribute('aria-hidden', 'true');
-    iframe.style.cssText =
-        'position:fixed;left:-99999px;top:0;' +
-        'width:1600px;height:1131px;' +
-        'border:none;visibility:hidden;' +
-        'pointer-events:none;z-index:-9999;';
-    document.body.appendChild(iframe);
+    /* ── CSS خاص بالطباعة: A4 أفقي، بدون هوامش المتصفح، بعرض Desktop ثابت ── */
+    var printCss =
+        '@page { size: A4 landscape; margin: 0; }' +
+        'html, body { margin: 0 !important; padding: 0 !important; background: #0b1220 !important; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; color-adjust: exact !important; }' +
+        '.fxh-pdf-stage { width: 297mm !important; height: 210mm !important; overflow: hidden !important; }' +
+        '.fxh-pdf-page { width: 297mm !important; height: 210mm !important; overflow: hidden !important; page-break-after: avoid !important; break-after: avoid !important; }';
 
-    var iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+    /* ── فتح نافذة مخفية بعرض Desktop ثابت (1123px = تقريب 297mm عند 96dpi) ── */
+    var printWin = window.open('', '_blank',
+        'width=1123,height=794,menubar=no,toolbar=no,location=no,status=no,scrollbars=no,resizable=no,left=-99999,top=0'
+    );
 
-    /* ── كتابة HTML كامل داخل الـ iframe بـ viewport ثابت 1600px ── */
-    iframeDoc.open();
-    iframeDoc.write(
+    if (!printWin) {
+        alert(isAr
+            ? 'تعذر فتح نافذة الطباعة. يرجى السماح بالنوافذ المنبثقة ثم المحاولة مجدداً.'
+            : 'Could not open print window. Please allow popups and try again.');
+        return;
+    }
+
+    /* ── كتابة HTML كامل داخل النافذة بـ viewport ثابت 1123px (Desktop) ── */
+    printWin.document.open();
+    printWin.document.write(
         '<!DOCTYPE html><html data-theme="dark"><head>' +
         '<meta charset="UTF-8">' +
-        '<meta name="viewport" content="width=1600,initial-scale=1">' +
+        '<meta name="viewport" content="width=1123,initial-scale=1">' +
         '<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Roboto:wght@400;500&family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">' +
-        '<style>' + inlineCss + '</style>' +
+        '<style>' + inlineCss + printCss + '</style>' +
+        '<script>' +
+        'window.addEventListener("load", function() {' +
+        '  document.title = ' + JSON.stringify(fxhSafeFileName(payload.fileName)) + ';' +
+        '  if (document.fonts && document.fonts.ready) {' +
+        '    document.fonts.ready.then(function() {' +
+        '      setTimeout(function() { window.print(); setTimeout(function(){ window.close(); }, 1000); }, 300);' +
+        '    });' +
+        '  } else {' +
+        '    setTimeout(function() { window.print(); setTimeout(function(){ window.close(); }, 1000); }, 800);' +
+        '  }' +
+        '});' +
+        '<\/script>' +
         '</head>' +
-        '<body style="margin:0;padding:0;background:#0b1220;overflow:hidden;">' +
+        '<body style="margin:0;padding:0;background:#0b1220;">' +
         payload.html +
         '</body></html>'
     );
-    iframeDoc.close();
-
-    try {
-        /* ── انتظار تحميل الخطوط والصور داخل الـ iframe ── */
-        var iframeWin = iframe.contentWindow;
-        if (iframeWin.document.fonts && iframeWin.document.fonts.ready) {
-            try { await iframeWin.document.fonts.ready; } catch(e) {}
-        }
-        var page = iframeDoc.querySelector('.fxh-pdf-page');
-        if (!page) throw new Error('fxh-pdf-page not found in iframe');
-        await fxhWaitForImages(page);
-        await new Promise(function(resolve) { setTimeout(resolve, 250); });
-
-        /* ── التقاط بـ scale ثابت = 2 بغض النظر عن الجهاز ── */
-        var canvas = await window.html2canvas(page, {
-            scale: 2,
-            useCORS: true,
-            backgroundColor: '#0b1220',
-            logging: false,
-            width: 1600,
-            height: 1131,
-            windowWidth: 1600,
-            windowHeight: 1131,
-            scrollX: 0,
-            scrollY: 0
-        });
-
-        /* ── ضغط الصورة لتقليل حجم الملف ── */
-        var imgData = canvas.toDataURL('image/jpeg', 0.82);
-        var jsPDF = window.jspdf.jsPDF;
-        var pdf = new jsPDF({ orientation: 'landscape', unit: 'mm', format: 'a4', compress: true });
-        pdf.addImage(imgData, 'JPEG', 0, 0, 297, 210, undefined, 'FAST');
-        pdf.save(fxhSafeFileName(payload.fileName) + '.pdf');
-    } catch (err) {
-        console.error('PDF generation failed:', err);
-        alert(isAr ? 'حدث خطأ أثناء توليد ملف PDF.' : 'An error occurred while generating the PDF file.');
-    } finally {
-        /* ── إزالة الـ iframe المخفي بعد الانتهاء ── */
-        if (iframe && iframe.parentNode) iframe.parentNode.removeChild(iframe);
-    }
+    printWin.document.close();
 }
 
 /* ── توليد PDF لنتيجة الاختبار الحالي (page3) ─────────────────── */
