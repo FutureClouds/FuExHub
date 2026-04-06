@@ -4100,7 +4100,7 @@ function fbRenderMyResultsTable(results) {
         tdP.className = 'fxh-print-td';
         var btnP = document.createElement('button');
         btnP.className = 'fxh-row-print-btn';
-        btnP.innerHTML = 'Print';
+        btnP.innerHTML = '🖨️';
         btnP.title = r.lang === 'ar' ? 'تحميل النتيجة' : 'Download Result';
         btnP.addEventListener('click', (function(rowData){ return function(e){ e.stopPropagation(); fxhPrintRowResult(rowData); }; })(r));
         tdP.appendChild(btnP);
@@ -4741,7 +4741,7 @@ document.addEventListener('DOMContentLoaded', function() {
     if (myResultsHead && !myResultsHead.querySelector('.fxh-print-th')) {
         var th = document.createElement('th');
         th.className = 'fxh-print-th';
-        th.innerHTML = '🖨️';
+        th.innerHTML = 'Print';
         th.title = 'Print Result';
         th.style.whiteSpace = 'nowrap';
         myResultsHead.appendChild(th);
