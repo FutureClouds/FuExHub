@@ -4749,5 +4749,193 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 </script>
+
+<script>
+/* ===================================================== */
+/* LIVE PDF OVERRIDE - appended without deleting old code */
+/* ===================================================== */
+(function(){
+  function fxhFormatPdfDate(date, isAr){
+    try {
+      var d = date instanceof Date ? date : new Date(date);
+      if (isNaN(d.getTime())) d = new Date();
+      return d.toLocaleString(isAr ? 'ar-SA' : 'en-US', {
+        year: 'numeric', month: 'long', day: 'numeric',
+        hour: 'numeric', minute: '2-digit'
+      });
+    } catch(e) {
+      return '' + (date || '');
+    }
+  }
+
+  function fxhPickPdfFont(doc, isAr){
+    try {
+      doc.setFont('helvetica', 'normal');
+    } catch(e) {}
+    return 'helvetica';
+  }
+
+  function fxhMaybeProcessArabic(text){
+    if (!text) return '';
+    try {
+      if (window.jspdf && window.jspdf.jsPDF && window.jspdf.jsPDF.API && window.jspdf.jsPDF.API.processArabic) {
+        return window.jspdf.jsPDF.API.processArabic(String(text));
+      }
+    } catch(e) {}
+    return String(text);
+  }
+
+  function fxhPdfText(doc, txt, x, y, opts, isAr){
+    var out = isAr ? fxhMaybeProcessArabic(txt) : String(txt);
+    doc.text(out, x, y, opts || {});
+  }
+
+  function fxhPdfKeyValue(doc, key, value, x, y, width, isAr){
+    var gap = 32;
+    doc.setFontSize(11);
+    doc.setTextColor(70, 85, 110);
+    fxhPdfText(doc, key, x, y, {align: isAr ? 'right' : 'left', maxWidth: gap - 4}, isAr);
+    doc.setTextColor(20, 24, 35);
+    doc.setFontSize(14);
+    var valueX = isAr ? (x - gap) : (x + gap);
+    fxhPdfText(doc, value, valueX, y, {align: isAr ? 'right' : 'left', maxWidth: width - gap}, isAr);
+  }
+
+  window.fxhGeneratePdfResult = async function(data) {
+    var isAr = (data.lang === 'ar');
+    if (!(window.jspdf && window.jspdf.jsPDF)) {
+      alert(isAr ? 'تعذر تحميل أدوات PDF. تحقق من الاتصال بالإنترنت ثم حاول مجدداً.' : 'Could not load PDF tools. Check your internet connection and try again.');
+      return;
+    }
+
+    var payload = fxhBuildPdfMarkup(data);
+    var jsPDF = window.jspdf.jsPDF;
+    var doc = new jsPDF({ orientation: 'landscape', unit: 'mm', format: 'a4', compress: true });
+    fxhPickPdfFont(doc, isAr);
+
+    var pageW = doc.internal.pageSize.getWidth();
+    var pageH = doc.internal.pageSize.getHeight();
+    var margin = 14;
+    var contentW = pageW - (margin * 2);
+    var dirRight = pageW - margin;
+
+    doc.setFillColor(244, 247, 251);
+    doc.rect(0, 0, pageW, pageH, 'F');
+    doc.setFillColor(41, 128, 185);
+    doc.rect(0, 0, pageW, 8, 'F');
+
+    doc.setDrawColor(210, 218, 230);
+    doc.setFillColor(255, 255, 255);
+    doc.roundedRect(margin, 14, contentW, pageH - 28, 6, 6, 'FD');
+
+    var titleMain = isAr ? (data.certNameAR || data.certNameEN || data.certCode || 'نتيجة الاختبار') : (data.certNameEN || data.certNameAR || data.certCode || 'Exam Result');
+    var badgeText = data.certCode || (isAr ? 'شهادة' : 'CERT');
+    var statusText = data.passed ? (isAr ? 'ناجح' : 'PASS') : (isAr ? 'راسب' : 'FAIL');
+    var statusFill = data.passed ? [39, 174, 96] : [231, 76, 60];
+    var examDateText = fxhFormatPdfDate(data.examDate, isAr);
+    var modeText = data.examMode === 'custom' ? (isAr ? 'نطاق مخصص' : 'Custom Range') : (isAr ? 'عشوائي ذكي' : 'Smart Random');
+    var userName = data.name || (isAr ? 'مستخدم' : 'User');
+    var timeText = data.timeFormatted || '00:00';
+    var totalQ = Number(data.totalQuestions || 0);
+    var correct = Number(data.correctAnswers || 0);
+    var wrong = Number(data.wrongAnswers || 0);
+    var scoreText = String(data.score || 0) + ' / 1000';
+    var pctText = String(data.percentage || 0) + '%';
+
+    var headY = 28;
+    doc.setFillColor(236, 240, 245);
+    if (isAr) {
+      doc.roundedRect(dirRight - 34, headY - 6, 34, 18, 4, 4, 'F');
+      doc.setTextColor(41, 128, 185);
+      doc.setFontSize(16);
+      fxhPdfText(doc, badgeText, dirRight - 17, headY + 5, {align: 'center'}, isAr);
+    } else {
+      doc.roundedRect(margin + 4, headY - 6, 34, 18, 4, 4, 'F');
+      doc.setTextColor(41, 128, 185);
+      doc.setFontSize(16);
+      fxhPdfText(doc, badgeText, margin + 21, headY + 5, {align: 'center'}, isAr);
+    }
+
+    doc.setTextColor(25, 31, 45);
+    doc.setFontSize(10);
+    fxhPdfText(doc, isAr ? 'FuExHub - Future Exams Hub' : 'FuExHub - Future Exams Hub', isAr ? dirRight - 40 : margin + 44, 24, {align: isAr ? 'right' : 'left'}, isAr);
+    doc.setFontSize(20);
+    fxhPdfText(doc, titleMain, isAr ? dirRight - 40 : margin + 44, 32, {align: isAr ? 'right' : 'left', maxWidth: 160}, isAr);
+    doc.setTextColor(90, 104, 130);
+    doc.setFontSize(11);
+    fxhPdfText(doc, isAr ? 'نتيجة اختبار مع ملف PDF حي' : 'Live, selectable PDF result', isAr ? dirRight - 40 : margin + 44, 39, {align: isAr ? 'right' : 'left'}, isAr);
+
+    doc.setFillColor.apply(doc, statusFill);
+    var pillW = 30;
+    var pillX = isAr ? (margin + 6) : (pageW - margin - pillW - 6);
+    doc.roundedRect(pillX, 22, pillW, 12, 6, 6, 'F');
+    doc.setTextColor(255,255,255);
+    doc.setFontSize(14);
+    fxhPdfText(doc, statusText, pillX + (pillW/2), 30, {align:'center'}, isAr);
+
+    doc.setFillColor(248, 250, 252);
+    doc.setDrawColor(225, 230, 236);
+    doc.roundedRect(margin + 8, 48, contentW - 16, 28, 4, 4, 'FD');
+    doc.setTextColor(110, 120, 140);
+    doc.setFontSize(10);
+    fxhPdfText(doc, isAr ? 'اسم المختبر' : 'Examinee', isAr ? pageW - margin - 14 : margin + 14, 57, {align: isAr ? 'right' : 'left'}, isAr);
+    doc.setTextColor(20,24,35);
+    doc.setFontSize(18);
+    fxhPdfText(doc, userName, isAr ? pageW - margin - 14 : margin + 14, 67, {align: isAr ? 'right' : 'left', maxWidth: contentW - 30}, isAr);
+
+    var cardsY = 84;
+    var cardGap = 6;
+    var cardW = (contentW - (cardGap * 4)) / 5;
+    var labels = isAr
+      ? ['النتيجة', 'النسبة', 'الصحيح', 'الخطأ', 'الوقت']
+      : ['Score', 'Percentage', 'Correct', 'Wrong', 'Time'];
+    var values = [scoreText, pctText, String(correct), String(wrong), timeText];
+    for (var i = 0; i < 5; i++) {
+      var x = margin + (i * (cardW + cardGap));
+      doc.setFillColor(255,255,255);
+      doc.setDrawColor(220,226,235);
+      doc.roundedRect(x, cardsY, cardW, 28, 4, 4, 'FD');
+      doc.setTextColor(100,110,130);
+      doc.setFontSize(10);
+      fxhPdfText(doc, labels[i], x + (cardW/2), cardsY + 9, {align:'center'}, isAr);
+      doc.setTextColor(25,31,45);
+      doc.setFontSize(15);
+      fxhPdfText(doc, values[i], x + (cardW/2), cardsY + 20, {align:'center'}, isAr);
+    }
+
+    var infoY = 122;
+    var boxH = 58;
+    var leftW = (contentW - 10) * 0.58;
+    var rightW = (contentW - 10) - leftW;
+    var leftX = margin + 8;
+    var rightX = leftX + leftW + 10;
+
+    doc.setFillColor(255,255,255);
+    doc.setDrawColor(220,226,235);
+    doc.roundedRect(leftX, infoY, leftW, boxH, 4, 4, 'FD');
+    doc.roundedRect(rightX, infoY, rightW, boxH, 4, 4, 'FD');
+
+    doc.setTextColor(41,128,185);
+    doc.setFontSize(12);
+    fxhPdfText(doc, isAr ? 'تفاصيل الاختبار' : 'Exam details', isAr ? leftX + leftW - 6 : leftX + 6, infoY + 10, {align: isAr ? 'right' : 'left'}, isAr);
+    fxhPdfText(doc, isAr ? 'بيانات إضافية' : 'Additional info', isAr ? rightX + rightW - 6 : rightX + 6, infoY + 10, {align: isAr ? 'right' : 'left'}, isAr);
+
+    fxhPdfKeyValue(doc, isAr ? 'الشهادة' : 'Certificate', badgeText, isAr ? leftX + leftW - 6 : leftX + 6, infoY + 22, leftW - 12, isAr);
+    fxhPdfKeyValue(doc, isAr ? 'الوضع' : 'Mode', modeText, isAr ? leftX + leftW - 6 : leftX + 6, infoY + 34, leftW - 12, isAr);
+    fxhPdfKeyValue(doc, isAr ? 'الأسئلة' : 'Questions', String(totalQ), isAr ? leftX + leftW - 6 : leftX + 6, infoY + 46, leftW - 12, isAr);
+
+    fxhPdfKeyValue(doc, isAr ? 'التاريخ' : 'Date', examDateText, isAr ? rightX + rightW - 6 : rightX + 6, infoY + 22, rightW - 12, isAr);
+    fxhPdfKeyValue(doc, isAr ? 'الحالة' : 'Status', statusText, isAr ? rightX + rightW - 6 : rightX + 6, infoY + 34, rightW - 12, isAr);
+    fxhPdfKeyValue(doc, isAr ? 'الملف' : 'Format', isAr ? 'PDF حي' : 'Live PDF', isAr ? rightX + rightW - 6 : rightX + 6, infoY + 46, rightW - 12, isAr);
+
+    doc.setTextColor(120,130,150);
+    doc.setFontSize(9);
+    fxhPdfText(doc, isAr ? 'تم إنشاء هذا الملف بنص قابل للتحديد والنسخ والبحث.' : 'This file was generated as selectable, searchable text.', pageW / 2, pageH - 12, {align:'center'}, isAr);
+
+    doc.save(fxhSafeFileName(payload.fileName) + '-live.pdf');
+  };
+})();
+</script>
+
 </body>
 </html>
