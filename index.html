@@ -4816,693 +4816,329 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 
-</script>
 
 
-<style>
-.fxh-detailed-pdf-btn-wrap {
-    text-align: center;
-    margin: 12px 0 22px;
-}
-.fxh-detailed-pdf-btn {
-    background: linear-gradient(135deg, #6d28d9 0%, #2563eb 55%, #3b82f6 100%);
-    color: #fff;
-    border: 2px solid rgba(255,255,255,0.16);
-    border-radius: 12px;
-    cursor: pointer;
-    font-size: 1rem;
-    font-weight: 800;
-    padding: 13px 28px;
-    font-family: 'Tajawal', sans-serif;
-    box-shadow: 0 4px 18px rgba(79,70,229,0.35);
-    transition: all 0.25s ease;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
-}
-.fxh-detailed-pdf-btn:hover {
-    transform: translateY(-2px) scale(1.02);
-    box-shadow: 0 8px 24px rgba(59,130,246,0.40);
-}
-</style>
-
-<script>
-/* ===================================================== */
-/* DETAILED PDF REPORT - ADDITIVE ONLY                   */
-/* ===================================================== */
+/* ===== DETAILED TEST PDF - ADDITIVE PATCH ===== */
 (function(){
-    var fxhPdfFontCache = {};
+    if (window.__fxhDetailedPdfPatchApplied) return;
+    window.__fxhDetailedPdfPatchApplied = true;
 
-    function fxhGetSiteLogoSrc(){
-        var img = document.querySelector('.site-logo-theme') || document.querySelector('.site-logo-img');
-        return img ? (img.getAttribute('src') || '') : 'FUEXHUB.png';
-    }
+    var style = document.createElement('style');
+    style.textContent = `
+    .fxh-detailed-pdf-btn-wrap{ text-align:center; margin:12px 0 18px; }
+    .fxh-detailed-pdf-btn{ background:linear-gradient(135deg,#4f46e5,#2563eb); color:#fff; border:1px solid rgba(255,255,255,.16); border-radius:12px; cursor:pointer; font-size:1rem; font-weight:800; padding:13px 28px; font-family:'Tajawal',sans-serif; box-shadow:0 8px 24px rgba(37,99,235,.28); display:inline-flex; align-items:center; gap:10px; }
+    .fxh-detailed-pdf-btn:hover{ transform:translateY(-1px); box-shadow:0 12px 28px rgba(79,70,229,.34); }
+    `;
+    document.head.appendChild(style);
 
-    function fxhGetCertLogoSrc(certCode){
-        var certImgMap = {
-            'AIF-C01':'AIF.png','CLF-C02':'CLF.png','MLA-C01':'MLA.png',
-            'SAA-C03':'SAA.png','DVA-C02':'DVA.png','DEA-C01':'DEA.png',
-            'SOA-C02':'SOA2.png','SOA-C03':'SOA3.png','AIP-C01':'AIP.png',
-            'SAP-C02':'SAP.png','DOP-C02':'DOP.png','MLS-C01':'MLS.png',
-            'ANS-C01':'ANS.png','SCS-C02':'SCS2.png','SCS-C03':'SCS3.png'
-        };
-        return certImgMap[certCode] || '';
-    }
-
-    function fxhSafeText(v){
-        if (v == null) return '';
-        return String(v).replace(/\s+/g, ' ').trim();
-    }
-
-    function fxhHtmlToPlain(html){
-        if (html == null) return '';
-        var div = document.createElement('div');
-        div.innerHTML = String(html);
-        return (div.textContent || div.innerText || '').replace(/\s+/g, ' ').trim();
-    }
-
-    function fxhQuestionDisplayNo(q, index, isAr){
-        if (window.currentMode === 'custom' && q && q.originalIndex != null) return q.originalIndex;
-        return index + 1;
-    }
-
-    function fxhFormatClockForPdf(dateObj, isAr){
-        var d = (dateObj instanceof Date) ? dateObj : new Date(dateObj || Date.now());
-        var hours = d.getHours();
-        var mins = d.getMinutes();
-        var secs = d.getSeconds();
-        var am = hours < 12;
-        var h12 = hours % 12 || 12;
-        if (isAr) {
-            var mer = am ? 'صباحًا' : 'مساءً';
-            return h12 + ':' + String(mins).padStart(2,'0') + ':' + String(secs).padStart(2,'0') + ' ' + mer;
+    function fxhIsAr(){ return typeof currentLang !== 'undefined' && currentLang === 'ar'; }
+    function fxhPad(n){ return String(n).padStart(2,'0'); }
+    function fxhFmtDateTime(date, isAr){
+        if (!(date instanceof Date) || isNaN(date)) return '-';
+        try {
+            return new Intl.DateTimeFormat(isAr ? 'ar-SA' : 'en-US', {
+                year:'numeric', month:'2-digit', day:'2-digit', hour:'numeric', minute:'2-digit', second:'2-digit'
+            }).format(date);
+        } catch(e){
+            return date.toLocaleString();
         }
-        return h12 + ':' + String(mins).padStart(2,'0') + ':' + String(secs).padStart(2,'0') + ' ' + (am ? 'AM' : 'PM');
     }
-
-    function fxhFormatDurationLong(totalSeconds, isAr){
-        totalSeconds = Math.max(0, parseInt(totalSeconds || 0, 10));
-        var hours = Math.floor(totalSeconds / 3600);
-        var mins = Math.floor((totalSeconds % 3600) / 60);
-        var secs = totalSeconds % 60;
+    function fxhFmtDuration(ms, isAr){
+        ms = Math.max(0, Number(ms)||0);
+        var total = Math.floor(ms/1000), h=Math.floor(total/3600), m=Math.floor((total%3600)/60), s=total%60;
         if (isAr) {
-            var parts = [];
-            if (hours) parts.push(hours + ' ساعة');
-            if (mins) parts.push(mins + ' دقيقة');
-            if (secs || !parts.length) parts.push(secs + ' ثانية');
+            var parts=[]; if(h) parts.push(h+' ساعة'); if(m) parts.push(m+' دقيقة'); if(s || !parts.length) parts.push(s+' ثانية');
             return parts.join(' و');
         }
-        var partsEn = [];
-        if (hours) partsEn.push(hours + ' hour' + (hours === 1 ? '' : 's'));
-        if (mins) partsEn.push(mins + ' minute' + (mins === 1 ? '' : 's'));
-        if (secs || !partsEn.length) partsEn.push(secs + ' second' + (secs === 1 ? '' : 's'));
-        return partsEn.join(', ');
+        var partsEn=[]; if(h) partsEn.push(h+' hour'+(h!==1?'s':'')); if(m) partsEn.push(m+' minute'+(m!==1?'s':'')); if(s || !partsEn.length) partsEn.push(s+' second'+(s!==1?'s':''));
+        return partsEn.join(' and ');
     }
-
-    function fxhGetUserAnswerTextForPdf(q, index, isAr){
-        var ua = userAnswers[index];
-        if (q && q.isHotspot) {
-            var rows = q.hotspotRows || [];
-            if (!ua || typeof ua !== 'object') return isAr ? 'لا توجد إجابة' : 'No answer';
-            var out = [];
-            rows.forEach(function(row, ri){
-                var rowLabel = row && (row.label || row.text || row.statement || row.left || ('Row ' + (ri + 1)));
-                var ans = ua[ri] || (isAr ? '—' : '—');
-                out.push(fxhSafeText(rowLabel) + ': ' + fxhSafeText(ans));
-            });
-            return out.join(' | ');
+    function fxhSafe(v){ return v == null ? '' : String(v); }
+    function fxhArray(v){ return Array.isArray(v) ? v : (v == null ? [] : [v]); }
+    function fxhQuestionText(q){ return fxhSafe(q && (q.question || q.text || q.title || q.prompt)); }
+    function fxhSourceUrl(q){ return fxhSafe(q && (q.sourceUrl || q.source || q.reference || q.link)); }
+    function fxhOptions(q){
+        if (!q) return [];
+        if (Array.isArray(q.options)) return q.options;
+        if (Array.isArray(q.answers)) return q.answers;
+        if (q.choices && Array.isArray(q.choices)) return q.choices;
+        return [];
+    }
+    function fxhOptionLabel(opt, idx, isAr){
+        if (opt && typeof opt === 'object') {
+            return fxhSafe(opt.text || opt.label || opt.value || opt.option || '');
         }
-        if (!Array.isArray(ua) || ua.length === 0) return isAr ? 'لا توجد إجابة' : 'No answer';
-        return ua.map(function(i){ return fxhSafeText((q.options || [])[i]); }).filter(Boolean).join(' | ');
+        return fxhSafe(opt);
     }
-
-    function fxhGetCorrectAnswerTextForPdf(q, isAr){
-        if (q && q.isHotspot) {
-            var rows = q.hotspotRows || [];
-            return rows.map(function(row, ri){
-                var rowLabel = row && (row.label || row.text || row.statement || row.left || ('Row ' + (ri + 1)));
-                var ans = row && row.correct ? row.correct : '—';
-                return fxhSafeText(rowLabel) + ': ' + fxhSafeText(ans);
-            }).join(' | ');
+    function fxhCorrectAnswers(q){
+        if (!q) return [];
+        var ca = q.correctAnswers != null ? q.correctAnswers : (q.correctAnswer != null ? q.correctAnswer : q.answer);
+        return fxhArray(ca).map(function(v){ return typeof v === 'object' ? fxhSafe(v.text || v.label || v.value) : fxhSafe(v); }).filter(Boolean);
+    }
+    function fxhUserAnswerFor(qIndex){
+        if (typeof userAnswers === 'undefined' || !userAnswers) return [];
+        var raw = userAnswers[qIndex];
+        if (raw == null) return [];
+        if (Array.isArray(raw)) return raw.map(function(v){ return typeof v === 'object' ? fxhSafe(v.text || v.label || v.value) : fxhSafe(v); });
+        if (typeof raw === 'object') {
+            if (Array.isArray(raw.selected)) return raw.selected.map(String);
+            return Object.keys(raw).filter(function(k){ return raw[k]; });
         }
-        var ca = Array.isArray(q.correct) ? q.correct : [];
-        if (!ca.length) return isAr ? 'غير متاح' : 'N/A';
-        return ca.map(function(i){ return fxhSafeText((q.options || [])[i]); }).filter(Boolean).join(' | ');
+        return [fxhSafe(raw)];
     }
-
-    function fxhIsAnswerCorrectForPdf(q, index){
-        if (!q) return false;
-        if (q.isHotspot) {
-            var ua = userAnswers[index] || {};
-            return (q.hotspotRows || []).every(function(row, ri){ return ua[ri] && ua[ri] === row.correct; });
-        }
-        var ua2 = userAnswers[index] || [];
-        var ca = q.correct || [];
-        if (!ua2.length) return false;
-        return ua2.length === ca.length && ua2.every(function(v){ return ca.indexOf(v) !== -1; }) && ca.every(function(v){ return ua2.indexOf(v) !== -1; });
+    function fxhNormalizeArr(arr){ return fxhArray(arr).map(function(v){ return fxhSafe(v).trim(); }).filter(Boolean).sort(); }
+    function fxhIsCorrect(q, qIndex){
+        var a = fxhNormalizeArr(fxhUserAnswerFor(qIndex));
+        var b = fxhNormalizeArr(fxhCorrectAnswers(q));
+        if (!a.length && !b.length) return false;
+        if (a.length !== b.length) return false;
+        for (var i=0;i<a.length;i++) if (a[i] !== b[i]) return false;
+        return true;
     }
-
-    async function fxhBlobToDataUrl(blob){
-        return await new Promise(function(resolve, reject){
-            var reader = new FileReader();
-            reader.onload = function(){ resolve(reader.result); };
-            reader.onerror = reject;
-            reader.readAsDataURL(blob);
-        });
-    }
-
-    async function fxhLoadImageDataUrl(src, quality){
-        if (!src) return null;
-        try {
-            var abs = new URL(src, location.href).href;
+    function fxhLoadImageData(src){
+        return new Promise(function(resolve){
+            if (!src) return resolve(null);
             var img = new Image();
             img.crossOrigin = 'anonymous';
-            var loaded = await new Promise(function(resolve, reject){
-                img.onload = function(){ resolve(true); };
-                img.onerror = reject;
-                img.src = abs;
-            });
-            if (!loaded) return null;
-            var canvas = document.createElement('canvas');
-            var maxW = src.indexOf('FUEXHUB') !== -1 ? 900 : 520;
-            var scale = Math.min(1, maxW / Math.max(1, img.width));
-            canvas.width = Math.max(1, Math.round(img.width * scale));
-            canvas.height = Math.max(1, Math.round(img.height * scale));
-            var ctx = canvas.getContext('2d');
-            ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-            return canvas.toDataURL('image/jpeg', quality || 0.72);
-        } catch (e) {
-            return null;
-        }
+            img.onload = function(){
+                try {
+                    var c=document.createElement('canvas');
+                    c.width=img.naturalWidth; c.height=img.naturalHeight;
+                    c.getContext('2d').drawImage(img,0,0);
+                    resolve({data:c.toDataURL('image/png'), w:img.naturalWidth, h:img.naturalHeight});
+                } catch(e){ resolve(null); }
+            };
+            img.onerror = function(){ resolve(null); };
+            img.src = src;
+        });
     }
-
-    async function fxhFetchArrayBuffer(url){
-        var res = await fetch(url, { mode: 'cors' });
-        if (!res.ok) throw new Error('Font fetch failed');
-        return await res.arrayBuffer();
-    }
-
-    function fxhArrayBufferToBase64(buf){
-        var binary = '';
-        var bytes = new Uint8Array(buf);
-        var chunk = 0x8000;
-        for (var i = 0; i < bytes.length; i += chunk) {
-            var sub = bytes.subarray(i, i + chunk);
-            binary += String.fromCharCode.apply(null, sub);
-        }
-        return btoa(binary);
-    }
-
-    async function fxhEnsurePdfFont(doc, lang){
-        var fontName = lang === 'ar' ? 'TajawalPDF' : 'Helvetica';
-        if (lang !== 'ar') {
-            doc.setFont('helvetica', 'normal');
-            return 'helvetica';
-        }
-        if (!fxhPdfFontCache[fontName]) {
-            var cssText = await fetch('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap').then(function(r){ return r.text(); });
-            var match = cssText.match(/url\((https:[^)]+\.woff2)\)/i) || cssText.match(/url\((https:[^)]+)\)/i);
-            if (!match) throw new Error('Tajawal font URL not found');
-            var fontBuffer = await fxhFetchArrayBuffer(match[1]);
-            fxhPdfFontCache[fontName] = fxhArrayBufferToBase64(fontBuffer);
-        }
-        if (!doc.getFontList()[fontName]) {
-            doc.addFileToVFS(fontName + '.woff2', fxhPdfFontCache[fontName]);
-            doc.addFont(fontName + '.woff2', fontName, 'normal', 'Identity-H');
-        }
-        doc.setFont(fontName, 'normal');
-        return fontName;
-    }
-
-    function fxhSetFont(doc, lang, style){
-        var fontName = (lang === 'ar') ? 'TajawalPDF' : 'helvetica';
-        try { doc.setFont(fontName, style || 'normal'); }
-        catch (e) { doc.setFont('helvetica', style || 'normal'); }
-    }
-
-    function fxhMakeLabels(isAr){
+    function fxhGetTexts(isAr){
         return isAr ? {
-            title: 'تحميل تفاصيل الاختبار',
-            coverSub: 'تقرير الاختبار التفصيلي',
-            certName: 'اسم الشهادة', level: 'مستوى الشهادة', certCode: 'رمز الشهادة', lang: 'لغة الشهادة',
-            index: 'الفهرس', titleCol: 'العنوان', pageCol: 'الصفحة',
-            details: 'تفاصيل الاختبار', status: 'نتيجة الاختبار', score: 'الدرجة', percentage: 'النسبة', examCode: 'رمز الاختبار', mode: 'وضع الاختبار', total: 'عدد الأسئلة الكلية', correct: 'عدد الأسئلة الصحيحة', wrong: 'عدد الأسئلة الخاطئة', start: 'بداية الاختبار', end: 'نهاية الاختبار', duration: 'الزمن الذي قضيته',
-            summary: 'ملخص الأسئلة', qNo: 'رقم السؤال', result: 'النتيجة', qPage: 'صفحة السؤال',
-            questionDetails: 'تفاصيل الأسئلة', question: 'السؤال', options: 'الخيارات', yourAnswer: 'إجابة المستخدم', correctAnswer: 'الإجابة الصحيحة', source: 'المصدر', page: 'الصفحة',
-            pass: 'PASS', fail: 'FAIL', smart: 'Smart Random Mode', custom: 'CustomRange Mode',
-            cover: 'الغلاف', closing: 'الصفحة الختامية', userGuide: 'تم إنشاء هذا الملف محليًا داخل المتصفح بدون أي حفظ في Firebase.',
-            headerSite: 'مركز اختبارات المستقبل'
+            btn:'تحميل تفاصيل الاختبار', file:'تفاصيل الاختبار', toc:'الفهرس', title:'العنوان', page:'الصفحة', details:'تفاصيل الاختبار',
+            result:'نتيجة الاختبار', pass:'PASS', fail:'FAIL', score:'الدرجة', percentage:'النسبة', examCode:'رمز الاختبار', mode:'وضع الاختبار',
+            total:'عدد الأسئلة الكلية', correct:'عدد الأسئلة الصحيحة', wrong:'عدد الأسئلة الخاطئة', start:'بداية الاختبار', end:'نهاية الاختبار', duration:'الزمن الذي قضيته',
+            summary:'ملخص الأسئلة', qNo:'رقم السؤال', status:'صحيح / خطأ', qPage:'صفحة السؤال', correctTxt:'صحيح', wrongTxt:'خطأ',
+            userAnswer:'إجابة المستخدم', correctAnswer:'الإجابة الصحيحة', source:'المصدر', noSource:'لا يوجد', site:'منصة Future Exams Hub', cover:'تقرير الاختبار التفصيلي'
         } : {
-            title: 'Download Test Details',
-            coverSub: 'Detailed Exam Report',
-            certName: 'Certificate Name', level: 'Certificate Level', certCode: 'Certificate Code', lang: 'Certificate Language',
-            index: 'Index', titleCol: 'Title', pageCol: 'Page(s)',
-            details: 'Exam Details', status: 'Exam Result', score: 'Score', percentage: 'Percentage', examCode: 'Exam Code', mode: 'Exam Mode', total: 'Total Questions', correct: 'Correct Answers', wrong: 'Wrong Answers', start: 'Start Time', end: 'End Time', duration: 'Time Spent',
-            summary: 'Question Summary', qNo: 'Question #', result: 'Result', qPage: 'Question Page',
-            questionDetails: 'Question Details', question: 'Question', options: 'Options', yourAnswer: 'User Answer', correctAnswer: 'Correct Answer', source: 'Source', page: 'Page',
-            pass: 'PASS', fail: 'FAIL', smart: 'Smart Random Mode', custom: 'CustomRange Mode',
-            cover: 'Cover', closing: 'Closing Page', userGuide: 'This file is generated locally in the browser without any Firebase storage.',
-            headerSite: 'Future Exams Hub'
+            btn:'Download Test Details', file:'Test Details', toc:'Table of Contents', title:'Title', page:'Page', details:'Exam Details',
+            result:'Result', pass:'PASS', fail:'FAIL', score:'Score', percentage:'Percentage', examCode:'Exam Code', mode:'Exam Mode',
+            total:'Total Questions', correct:'Correct Answers', wrong:'Wrong Answers', start:'Start Time', end:'End Time', duration:'Time Spent',
+            summary:'Question Summary', qNo:'Question #', status:'Correct / Wrong', qPage:'Question Page', correctTxt:'Correct', wrongTxt:'Wrong',
+            userAnswer:'User Answer', correctAnswer:'Correct Answer', source:'Source', noSource:'N/A', site:'Future Exams Hub', cover:'Detailed Exam Report'
         };
     }
-
-    function fxhAddHeader(doc, ctx){
-        if (ctx.pageNumber === 1 || ctx.pageNumber === ctx.totalPages) return;
-        var isAr = ctx.isAr;
-        var pageW = doc.internal.pageSize.getWidth();
-        doc.setFillColor(109,40,217);
-        doc.rect(0, 0, pageW, 7, 'F');
-        if (ctx.siteLogo) {
-            try { doc.addImage(ctx.siteLogo, 'JPEG', isAr ? pageW - 24 : 10, 10, 14, 10, undefined, 'FAST'); } catch (e) {}
-        }
-        if (ctx.certLogo) {
-            try { doc.addImage(ctx.certLogo, 'JPEG', isAr ? pageW - 42 : 26, 10, 14, 10, undefined, 'FAST'); } catch (e) {}
-        }
-        fxhSetFont(doc, ctx.lang, 'bold');
-        doc.setTextColor(38, 99, 235);
-        doc.setFontSize(10);
-        var headerTitle = (ctx.certName + ' (' + ctx.certCode + ')');
-        if (isAr) doc.text(headerTitle, pageW - 48, 16, { align: 'right' });
-        else doc.text(headerTitle, 44, 16);
-        fxhSetFont(doc, ctx.lang, 'normal');
-        doc.setTextColor(90, 95, 110);
-        doc.setFontSize(8.5);
-        if (isAr) doc.text(ctx.labels.headerSite, pageW - 48, 21, { align: 'right' });
-        else doc.text(ctx.labels.headerSite, 44, 21);
-        doc.setDrawColor(220, 228, 240);
-        doc.line(10, 25, pageW - 10, 25);
+    function fxhAddHeader(pdf, isAr, pageW, logoData, certData, certName, certCode){
+        if (logoData) { try { pdf.addImage(logoData.data, 'PNG', isAr ? pageW-26 : 10, 7, 16, 16); } catch(e){} }
+        if (certData) { try { pdf.addImage(certData.data, 'PNG', isAr ? 10 : pageW-26, 7, 16, 16); } catch(e){} }
+        pdf.setFillColor(79,70,229); pdf.rect(0,0,pageW,4,'F');
+        pdf.setTextColor(37,99,235); pdf.setFontSize(13); pdf.setFont(undefined,'bold');
+        pdf.text(certName + (certCode ? ' (' + certCode + ')' : ''), pageW/2, 14, {align:'center'});
+        pdf.setDrawColor(203,213,225); pdf.line(10,24,pageW-10,24);
+    }
+    function fxhAddFooter(pdf, pageNum, pageW, pageH){
+        pdf.setDrawColor(203,213,225); pdf.line(10,pageH-10,pageW-10,pageH-10);
+        pdf.setTextColor(100,116,139); pdf.setFontSize(9); pdf.setFont(undefined,'normal');
+        pdf.text(String(pageNum), pageW/2, pageH-4, {align:'center'});
+    }
+    function fxhAddKvBox(pdf, x,y,w,h,label,value,fill){
+        pdf.setFillColor.apply(pdf, fill || [248,250,252]); pdf.roundedRect(x,y,w,h,3,3,'F');
+        pdf.setDrawColor(226,232,240); pdf.roundedRect(x,y,w,h,3,3,'S');
+        pdf.setTextColor(71,85,105); pdf.setFontSize(9); pdf.setFont(undefined,'bold'); pdf.text(label, x+3, y+6);
+        pdf.setTextColor(15,23,42); pdf.setFontSize(12); pdf.setFont(undefined,'normal');
+        var lines = pdf.splitTextToSize(fxhSafe(value), w-6);
+        pdf.text(lines, x+3, y+13);
     }
 
-    function fxhAddFooter(doc, ctx){
-        if (ctx.pageNumber === 1 || ctx.pageNumber === ctx.totalPages) return;
-        var pageW = doc.internal.pageSize.getWidth();
-        var pageH = doc.internal.pageSize.getHeight();
-        doc.setDrawColor(220, 228, 240);
-        doc.line(10, pageH - 14, pageW - 10, pageH - 14);
-        fxhSetFont(doc, ctx.lang, 'normal');
-        doc.setTextColor(100, 110, 130);
-        doc.setFontSize(8.5);
-        var pageLabel = ctx.isAr ? ('الصفحة ' + ctx.pageNumber + ' / ' + ctx.totalPages) : ('Page ' + ctx.pageNumber + ' / ' + ctx.totalPages);
-        doc.text(pageLabel, pageW / 2, pageH - 8, { align: 'center' });
-    }
-
-    function fxhAddWrappedText(doc, text, x, y, maxWidth, lineHeight, opts){
-        opts = opts || {};
-        var lines = doc.splitTextToSize(fxhSafeText(text), maxWidth);
-        if (opts.maxLines && lines.length > opts.maxLines) lines = lines.slice(0, opts.maxLines);
-        for (var i = 0; i < lines.length; i++) {
-            if (opts.align === 'right') doc.text(lines[i], x, y + i * lineHeight, { align: 'right' });
-            else doc.text(lines[i], x, y + i * lineHeight);
-        }
-        return y + (lines.length * lineHeight);
-    }
-
-    function fxhDrawInfoRow(doc, label, value, x, y, w, isAr, lang){
-        doc.setFillColor(245, 247, 255);
-        doc.roundedRect(x, y, w, 11.5, 2, 2, 'F');
-        fxhSetFont(doc, lang, 'bold');
-        doc.setTextColor(109, 40, 217);
-        doc.setFontSize(9.2);
-        if (isAr) doc.text(label, x + w - 3, y + 7.5, { align: 'right' });
-        else doc.text(label, x + 3, y + 7.5);
-        fxhSetFont(doc, lang, 'normal');
-        doc.setTextColor(25, 35, 55);
-        doc.setFontSize(9.2);
-        var valX = isAr ? x + w - 45 : x + 45;
-        var align = isAr ? 'right' : 'left';
-        doc.text(fxhSafeText(value), valX, y + 7.5, align === 'right' ? { align: 'right' } : undefined);
-        return y + 14;
-    }
-
-    async function fxhGenerateDetailedPdf(){
-        var isAr = currentLang === 'ar';
-        var labels = fxhMakeLabels(isAr);
-        var snap = window.fxhResultsSnapshot || {};
+    window.fxhGenerateDetailedPdf = async function(){
+        var isAr = fxhIsAr();
+        var t = fxhGetTexts(isAr);
         if (!(window.jspdf && window.jspdf.jsPDF)) {
-            alert(isAr ? 'تعذر تحميل مكتبة PDF.' : 'PDF library could not be loaded.');
+            alert(isAr ? 'تعذر تحميل مكتبة PDF.' : 'Could not load PDF library.');
             return;
         }
-        if (!selectedQuestions || !selectedQuestions.length) {
-            alert(isAr ? 'لا توجد بيانات اختبار متاحة.' : 'No exam data available.');
+        var snap = window.fxhResultsSnapshot;
+        var qs = (typeof selectedQuestions !== 'undefined' && Array.isArray(selectedQuestions)) ? selectedQuestions : [];
+        if (!snap || !qs.length) {
+            alert(isAr ? 'لا توجد بيانات كافية لتوليد الملف.' : 'Not enough data to generate the file.');
             return;
         }
+
+        var start = snap.startTimeMs ? new Date(snap.startTimeMs) : (typeof startTime !== 'undefined' ? new Date(startTime) : new Date());
+        var end = new Date();
+        var durationMs = Math.max(0, end - start);
+        var certMap = {
+            'AIF-C01':'AIF.png','CLF-C02':'CLF.png','MLA-C01':'MLA.png','SAA-C03':'SAA.png','DVA-C02':'DVA.png','DEA-C01':'DEA.png',
+            'SOA-C02':'SOA2.png','SOA-C03':'SOA3.png','AIP-C01':'AIP.png','SAP-C02':'SAP.png','DOP-C02':'DOP.png','MLS-C01':'MLS.png','ANS-C01':'ANS.png','SCS-C02':'SCS2.png','SCS-C03':'SCS3.png'
+        };
+        var certName = (typeof currentCertName !== 'undefined' && currentCertName) ? currentCertName : (typeof currentCertCode !== 'undefined' ? currentCertCode : '');
+        var certCode = (typeof currentCertCode !== 'undefined' ? currentCertCode : '');
+        var logoPromise = fxhLoadImageData('FUEXHUB.png');
+        var certPromise = fxhLoadImageData(certMap[certCode] || '');
+        var logoData = await logoPromise; var certData = await certPromise;
 
         var jsPDF = window.jspdf.jsPDF;
-        var doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4', compress: true, putOnlyUsedFonts: true });
-        await fxhEnsurePdfFont(doc, currentLang);
+        var pdf = new jsPDF({orientation:'p', unit:'mm', format:'a4', compress:true});
+        var pageW = pdf.internal.pageSize.getWidth(), pageH = pdf.internal.pageSize.getHeight();
+        var pageNum = 1;
+        var questionPageNumbers = [];
+        var statusRows = [];
 
-        var siteLogo = await fxhLoadImageDataUrl(fxhGetSiteLogoSrc(), 0.68);
-        var certLogo = await fxhLoadImageDataUrl(fxhGetCertLogoSrc(currentCertCode), 0.74);
-        var pageW = doc.internal.pageSize.getWidth();
-        var pageH = doc.internal.pageSize.getHeight();
-        var margin = 12;
-        var contentTop = 30;
-        var contentBottom = 18;
-        var usableHeight = pageH - contentTop - contentBottom;
+        // Cover
+        pdf.setFillColor(15,23,42); pdf.rect(0,0,pageW,pageH,'F');
+        pdf.setFillColor(79,70,229); pdf.rect(0,0,pageW,18,'F');
+        pdf.setFillColor(37,99,235); pdf.rect(0,18,pageW,8,'F');
+        if (logoData) { try { pdf.addImage(logoData.data,'PNG', pageW/2-22, 30, 44, 44); } catch(e){} }
+        if (certData) { try { pdf.addImage(certData.data,'PNG', pageW/2-18, 78, 36, 36); } catch(e){} }
+        pdf.setTextColor(255,255,255); pdf.setFontSize(20); pdf.setFont(undefined,'bold'); pdf.text(t.cover, pageW/2, 125, {align:'center'});
+        pdf.setFontSize(16); pdf.text(certName, pageW/2, 138, {align:'center', maxWidth: 170});
+        pdf.setFontSize(13); pdf.setTextColor(191,219,254); pdf.text(certCode, pageW/2, 148, {align:'center'});
+        pdf.setFontSize(11); pdf.setTextColor(226,232,240);
+        pdf.text((isAr ? 'لغة الاختبار: العربية' : 'Exam Language: English'), pageW/2, 160, {align:'center'});
+        var level = (typeof fxhGetCertLevel === 'function') ? fxhGetCertLevel(certCode, isAr) : '';
+        if (level) pdf.text((isAr ? 'مستوى الشهادة: ' : 'Certification Level: ') + level, pageW/2, 168, {align:'center'});
+        pdf.text((isAr ? 'اسم الشهادة: ' : 'Certification: ') + certName, pageW/2, 176, {align:'center', maxWidth:170});
+        pdf.text(t.site, pageW/2, pageH-20, {align:'center'});
+        fxhAddFooter(pdf, pageNum, pageW, pageH);
 
-        var totalQuestions = selectedQuestions.length;
-        var correctAnswers = 0;
-        var wrongAnswers = 0;
-        selectedQuestions.forEach(function(q, idx){ if (fxhIsAnswerCorrectForPdf(q, idx)) correctAnswers++; else wrongAnswers++; });
-        var score = snap.score != null ? snap.score : Math.round(correctAnswers * (1000 / Math.max(1, totalQuestions)));
-        var percentage = snap.percentage != null ? snap.percentage : Math.round((correctAnswers / Math.max(1, totalQuestions)) * 100);
-        var passed = snap.passed != null ? !!snap.passed : score >= currentPassScore;
-        var startMs = snap.startTimeMs || (startTime ? startTime.getTime() : Date.now());
-        var endMs = snap.endTimeMs || Date.now();
-        if (endMs < startMs) endMs = Date.now();
-        var durationSeconds = snap.durationSeconds != null ? snap.durationSeconds : Math.max(0, Math.round((endMs - startMs) / 1000));
-        var certName = isAr ? (fxhCertFullNameAR[currentCertCode] || currentCertName || currentCertCode) : (fxhCertFullNameEN[currentCertCode] || currentCertName || currentCertCode);
-        var certLevel = fxhGetCertLevel(currentCertCode, isAr) || '';
-        var examMode = (window.currentMode === 'custom') ? labels.custom : labels.smart;
-        var certLang = isAr ? 'العربية' : 'English';
-        var questionRecords = [];
-        var detailPageStarts = [];
-        var summaryStartPage = 4;
-        var currentPageNo = 3;
-
-        // Reserve pages 1 and 2.
-        doc.addPage();
-        doc.addPage();
-        doc.setPage(3);
-
-        // Page 3: exam details
-        fxhSetFont(doc, currentLang, 'bold');
-        doc.setTextColor(42, 52, 90);
-        doc.setFontSize(18);
-        doc.text(labels.details, isAr ? pageW - margin : margin, contentTop, isAr ? { align: 'right' } : undefined);
-
-        doc.setFillColor(passed ? 22 : 220, passed ? 163 : 38, passed ? 74 : 38);
-        doc.roundedRect(margin, contentTop + 8, pageW - margin * 2, 16, 4, 4, 'F');
-        fxhSetFont(doc, currentLang, 'bold');
-        doc.setTextColor(255,255,255);
-        doc.setFontSize(20);
-        doc.text(labels.status + ': ' + (passed ? labels.pass : labels.fail), pageW / 2, contentTop + 18.5, { align: 'center' });
-
-        var y = contentTop + 30;
-        var colW = (pageW - (margin * 2) - 6) / 2;
-        var leftX = margin;
-        var rightX = margin + colW + 6;
-        var rows = [
-            [labels.score, score + ' / 1000'],
-            [labels.percentage, percentage + '%'],
-            [labels.examCode, currentCertCode],
-            [labels.mode, examMode],
-            [labels.total, totalQuestions],
-            [labels.correct, correctAnswers],
-            [labels.wrong, wrongAnswers],
-            [labels.start, fxhFormatClockForPdf(startMs, isAr)],
-            [labels.end, fxhFormatClockForPdf(endMs, isAr)],
-            [labels.duration, fxhFormatDurationLong(durationSeconds, isAr)]
-        ];
-        for (var r = 0; r < rows.length; r += 2) {
-            y = fxhDrawInfoRow(doc, rows[r][0], rows[r][1], leftX, y, colW, isAr, currentLang) - 0;
-            if (rows[r + 1]) fxhDrawInfoRow(doc, rows[r + 1][0], rows[r + 1][1], rightX, y - 14, colW, isAr, currentLang);
-        }
-
-        var summaryTitleY = y + 6;
-        fxhSetFont(doc, currentLang, 'bold');
-        doc.setTextColor(42, 52, 90);
-        doc.setFontSize(16);
-        doc.text(labels.summary, isAr ? pageW - margin : margin, summaryTitleY, isAr ? { align: 'right' } : undefined);
-        currentPageNo = 4;
-        doc.addPage();
-
-        function startSummaryPage(){
-            doc.setPage(currentPageNo);
-            fxhSetFont(doc, currentLang, 'bold');
-            doc.setTextColor(42, 52, 90);
-            doc.setFontSize(15);
-            doc.text(labels.summary, isAr ? pageW - margin : margin, contentTop, isAr ? { align: 'right' } : undefined);
-            var tableY = contentTop + 8;
-            doc.setFillColor(79, 70, 229);
-            doc.roundedRect(margin, tableY, pageW - margin * 2, 10, 2, 2, 'F');
-            doc.setTextColor(255,255,255);
-            doc.setFontSize(9.4);
-            fxhSetFont(doc, currentLang, 'bold');
-            if (isAr) {
-                doc.text(labels.qNo, pageW - margin - 12, tableY + 6.7, { align: 'right' });
-                doc.text(labels.result, pageW - margin - 70, tableY + 6.7, { align: 'right' });
-                doc.text(labels.qPage, margin + 22, tableY + 6.7);
-            } else {
-                doc.text(labels.qNo, margin + 8, tableY + 6.7);
-                doc.text(labels.result, margin + 78, tableY + 6.7);
-                doc.text(labels.qPage, pageW - margin - 28, tableY + 6.7, { align: 'right' });
-            }
-            return tableY + 14;
-        }
-
-        var summaryY = startSummaryPage();
-        var summaryRowH = 9;
-        var detailStartPageBase = currentPageNo;
-
-        // Build detail pages and remember page numbers.
-        function addDetailPage(questionObj, qIndex){
-            currentPageNo += 1;
-            doc.addPage();
-            doc.setPage(currentPageNo);
-            detailPageStarts[qIndex] = currentPageNo;
-            var yPos = contentTop;
-            var qNo = fxhQuestionDisplayNo(questionObj, qIndex, isAr);
-            fxhSetFont(doc, currentLang, 'bold');
-            doc.setTextColor(42, 52, 90);
-            doc.setFontSize(15);
-            doc.text((isAr ? 'سؤال ' : 'Question ') + qNo, isAr ? pageW - margin : margin, yPos, isAr ? { align: 'right' } : undefined);
-            yPos += 7;
-            doc.setFillColor(244, 247, 255);
-            doc.roundedRect(margin, yPos, pageW - margin * 2, 18, 3, 3, 'F');
-            fxhSetFont(doc, currentLang, 'normal');
-            doc.setTextColor(25, 35, 55);
-            doc.setFontSize(10.5);
-            yPos = fxhAddWrappedText(doc, fxhSafeText(questionObj.question || ''), isAr ? pageW - margin - 3 : margin + 3, yPos + 6, pageW - margin * 2 - 6, 5.2, { align: isAr ? 'right' : 'left' }) + 5;
-
-            var blocks = [
-                [labels.options, (questionObj.options || []).map(function(opt, i){ return ((isAr ? 'الخيار ' : 'Option ') + String.fromCharCode(65 + i) + ': ' + fxhSafeText(opt)); }).join(' | ') || (isAr ? 'لا توجد خيارات' : 'No options')],
-                [labels.yourAnswer, fxhGetUserAnswerTextForPdf(questionObj, qIndex, isAr)],
-                [labels.correctAnswer, fxhGetCorrectAnswerTextForPdf(questionObj, isAr)]
-            ];
-            blocks.forEach(function(item, bi){
-                var title = item[0];
-                var textVal = item[1];
-                var estLines = doc.splitTextToSize(textVal, pageW - margin * 2 - 8).length;
-                var boxH = Math.max(14, 8 + estLines * 5.1);
-                if (yPos + boxH > pageH - contentBottom - 10) {
-                    currentPageNo += 1;
-                    doc.addPage();
-                    doc.setPage(currentPageNo);
-                    yPos = contentTop;
-                }
-                doc.setFillColor(bi === 1 ? 239 : (bi === 2 ? 232 : 248), bi === 1 ? 246 : (bi === 2 ? 245 : 250), bi === 1 ? 255 : (bi === 2 ? 255 : 255));
-                doc.roundedRect(margin, yPos, pageW - margin * 2, boxH, 3, 3, 'F');
-                fxhSetFont(doc, currentLang, 'bold');
-                doc.setTextColor(79, 70, 229);
-                doc.setFontSize(10.2);
-                doc.text(title, isAr ? pageW - margin - 3 : margin + 3, yPos + 6, isAr ? { align: 'right' } : undefined);
-                fxhSetFont(doc, currentLang, 'normal');
-                doc.setTextColor(20, 24, 35);
-                doc.setFontSize(9.6);
-                yPos = fxhAddWrappedText(doc, textVal, isAr ? pageW - margin - 3 : margin + 3, yPos + 11, pageW - margin * 2 - 8, 5, { align: isAr ? 'right' : 'left' }) + 4;
-            });
-
-            var sourceUrl = questionObj && questionObj.sourceUrl ? String(questionObj.sourceUrl).trim() : '';
-            if (sourceUrl) {
-                if (!/^https?:\/\//i.test(sourceUrl)) sourceUrl = 'https://' + sourceUrl;
-                if (yPos + 16 > pageH - contentBottom - 10) {
-                    currentPageNo += 1;
-                    doc.addPage();
-                    doc.setPage(currentPageNo);
-                    yPos = contentTop;
-                }
-                doc.setFillColor(245, 247, 255);
-                doc.roundedRect(margin, yPos, pageW - margin * 2, 15, 3, 3, 'F');
-                fxhSetFont(doc, currentLang, 'bold');
-                doc.setTextColor(79, 70, 229);
-                doc.setFontSize(10.2);
-                doc.text(labels.source, isAr ? pageW - margin - 3 : margin + 3, yPos + 6, isAr ? { align: 'right' } : undefined);
-                doc.setTextColor(37, 99, 235);
-                fxhSetFont(doc, currentLang, 'normal');
-                var linkText = sourceUrl.length > 70 ? sourceUrl.slice(0,67) + '...' : sourceUrl;
-                var tx = isAr ? pageW - margin - 3 : margin + 3;
-                try { doc.textWithLink(linkText, tx, yPos + 11.5, { url: sourceUrl, align: isAr ? 'right' : 'left' }); }
-                catch (e) { doc.text(linkText, tx, yPos + 11.5, isAr ? { align: 'right' } : undefined); }
-                yPos += 19;
-            }
-            return currentPageNo;
-        }
-
-        // Pre-create detail pages to know page numbers.
-        selectedQuestions.forEach(function(q, idx){ addDetailPage(q, idx); });
-        var closingPage = currentPageNo + 1;
-        doc.addPage();
-        currentPageNo = closingPage;
-
-        // Fill summary table now that detail pages are known.
-        var rowIndex = 0;
-        selectedQuestions.forEach(function(q, idx){
-            if (summaryY + summaryRowH > pageH - contentBottom - 2) {
-                currentPageNo = doc.getNumberOfPages() + 1;
-                doc.addPage();
-                summaryStartPage = Math.min(summaryStartPage, doc.getNumberOfPages());
-                doc.setPage(doc.getNumberOfPages());
-                summaryY = startSummaryPage();
-            }
-            var ok = fxhIsAnswerCorrectForPdf(q, idx);
-            var qNo = fxhQuestionDisplayNo(q, idx, isAr);
-            doc.setFillColor(ok ? 220 : 254, ok ? 252 : 226, ok ? 231 : 226);
-            doc.roundedRect(margin, summaryY, pageW - margin * 2, summaryRowH - 1.2, 2, 2, 'F');
-            fxhSetFont(doc, currentLang, 'bold');
-            doc.setTextColor(25,35,55);
-            doc.setFontSize(9.3);
-            if (isAr) {
-                doc.text(String(qNo), pageW - margin - 12, summaryY + 5.8, { align: 'right' });
-                doc.setTextColor(ok ? 22 : 220, ok ? 163 : 38, ok ? 74 : 38);
-                doc.text(ok ? 'صحيح' : 'خطأ', pageW - margin - 70, summaryY + 5.8, { align: 'right' });
-                doc.setTextColor(25,35,55);
-                doc.text(String(detailPageStarts[idx]), margin + 22, summaryY + 5.8);
-            } else {
-                doc.text(String(qNo), margin + 8, summaryY + 5.8);
-                doc.setTextColor(ok ? 22 : 220, ok ? 163 : 38, ok ? 74 : 38);
-                doc.text(ok ? 'Correct' : 'Wrong', margin + 78, summaryY + 5.8);
-                doc.setTextColor(25,35,55);
-                doc.text(String(detailPageStarts[idx]), pageW - margin - 12, summaryY + 5.8, { align: 'right' });
-            }
-            summaryY += summaryRowH;
-            rowIndex++;
-        });
-
-        var totalPages = doc.getNumberOfPages();
-        var summaryEndPage = detailPageStarts.length ? (detailPageStarts[0] - 1) : 4;
-        var detailRange = detailPageStarts.length ? (detailPageStarts[0] + (detailPageStarts.length > 1 ? ' - ' + (closingPage - 1) : '')) : '-';
-
-        // Cover page
-        doc.setPage(1);
-        doc.setFillColor(15,12,41); doc.rect(0,0,pageW,pageH,'F');
-        doc.setFillColor(48,43,99); doc.rect(0,0,pageW,20,'F');
-        if (siteLogo) { try { doc.addImage(siteLogo, 'JPEG', pageW/2 - 28, 20, 56, 38, undefined, 'FAST'); } catch(e){} }
-        if (certLogo) { try { doc.addImage(certLogo, 'JPEG', pageW/2 - 18, 62, 36, 28, undefined, 'FAST'); } catch(e){} }
-        fxhSetFont(doc, currentLang, 'bold');
-        doc.setTextColor(255,255,255);
-        doc.setFontSize(24);
-        doc.text(labels.coverSub, pageW/2, 105, { align: 'center' });
-        doc.setFontSize(18);
-        doc.setTextColor(219,234,254);
-        doc.text(certName, pageW/2, 118, { align: 'center', maxWidth: 160 });
-        doc.setTextColor(147,197,253);
-        doc.setFontSize(13);
-        doc.text((certLevel ? (certLevel + ' • ') : '') + currentCertCode, pageW/2, 127, { align: 'center' });
-        var coverY = 142;
-        doc.setFillColor(255,255,255); doc.setGState && doc.setGState(new doc.GState({opacity:0.08}));
-        doc.roundedRect(18, coverY - 10, pageW - 36, 50, 4, 4, 'F');
-        fxhSetFont(doc, currentLang, 'bold');
-        doc.setTextColor(255,255,255);
-        doc.setFontSize(12);
-        doc.text((isAr ? 'اسم الشهادة' : 'Certificate Name') + ': ' + certName, pageW/2, coverY, { align: 'center', maxWidth: 160 });
-        doc.text((isAr ? 'مستوى الشهادة' : 'Certificate Level') + ': ' + (certLevel || '—'), pageW/2, coverY + 10, { align: 'center' });
-        doc.text((isAr ? 'رمز الشهادة' : 'Certificate Code') + ': ' + currentCertCode, pageW/2, coverY + 20, { align: 'center' });
-        doc.text((isAr ? 'لغة الشهادة' : 'Certificate Language') + ': ' + certLang, pageW/2, coverY + 30, { align: 'center' });
-
-        // Index page
-        doc.setPage(2);
-        fxhSetFont(doc, currentLang, 'bold');
-        doc.setTextColor(42,52,90);
-        doc.setFontSize(20);
-        doc.text(labels.index, isAr ? pageW - margin : margin, contentTop, isAr ? { align: 'right' } : undefined);
-        doc.setFillColor(79,70,229);
-        doc.roundedRect(margin, contentTop + 8, pageW - margin * 2, 10, 2, 2, 'F');
-        doc.setTextColor(255,255,255);
-        doc.setFontSize(10);
-        if (isAr) {
-            doc.text(labels.titleCol, pageW - margin - 8, contentTop + 14.5, { align: 'right' });
-            doc.text(labels.pageCol, margin + 8, contentTop + 14.5);
-        } else {
-            doc.text(labels.titleCol, margin + 8, contentTop + 14.5);
-            doc.text(labels.pageCol, pageW - margin - 8, contentTop + 14.5, { align: 'right' });
-        }
+        // TOC
+        pdf.addPage(); pageNum++;
+        fxhAddHeader(pdf, isAr, pageW, logoData, certData, certName, certCode);
+        pdf.setTextColor(15,23,42); pdf.setFontSize(18); pdf.setFont(undefined,'bold'); pdf.text(t.toc, pageW/2, 35, {align:'center'});
+        pdf.setFillColor(79,70,229); pdf.roundedRect(12,44,pageW-24,10,2,2,'F');
+        pdf.setTextColor(255,255,255); pdf.setFontSize(11); pdf.text(t.title, 18, 50); pdf.text(t.page, pageW-18, 50, {align:'right'});
         var tocRows = [
-            [labels.cover, '1'],
-            [labels.index, '2'],
-            [labels.details, '3'],
-            [labels.summary, summaryStartPage + (summaryEndPage > summaryStartPage ? (' - ' + summaryEndPage) : '')],
-            [labels.questionDetails, detailRange],
-            [labels.closing, String(closingPage)]
+            [t.details, '3'],
+            [t.summary, '4']
         ];
-        var tocY = contentTop + 24;
+        var firstQuestionPage = 5;
+        for (var qi=0; qi<qs.length; qi++) { tocRows.push([t.qNo + ' ' + (qi+1), String(firstQuestionPage + qi)]); }
+        var tocY = 62;
+        pdf.setTextColor(15,23,42); pdf.setFontSize(10);
         tocRows.forEach(function(row, idx){
-            doc.setFillColor(idx % 2 === 0 ? 245 : 238, idx % 2 === 0 ? 247 : 242, 255);
-            doc.roundedRect(margin, tocY, pageW - margin * 2, 11, 2, 2, 'F');
-            doc.setTextColor(25,35,55);
-            fxhSetFont(doc, currentLang, 'normal');
-            doc.setFontSize(10);
-            if (isAr) {
-                doc.text(row[0], pageW - margin - 8, tocY + 7, { align: 'right' });
-                doc.text(row[1], margin + 8, tocY + 7);
-            } else {
-                doc.text(row[0], margin + 8, tocY + 7);
-                doc.text(row[1], pageW - margin - 8, tocY + 7, { align: 'right' });
-            }
-            tocY += 13;
+            var fill = idx % 2 === 0 ? [248,250,252] : [241,245,249];
+            pdf.setFillColor.apply(pdf, fill); pdf.rect(12, tocY-5, pageW-24, 9, 'F');
+            pdf.text(row[0], 18, tocY); pdf.text(row[1], pageW-18, tocY, {align:'right'}); tocY += 10;
         });
-        doc.setTextColor(100,110,130);
-        doc.setFontSize(9);
-        doc.text(labels.userGuide, pageW/2, pageH - 18, { align: 'center', maxWidth: 170 });
+        fxhAddFooter(pdf, pageNum, pageW, pageH);
 
-        // Closing page
-        doc.setPage(closingPage);
-        doc.setFillColor(15,12,41); doc.rect(0,0,pageW,pageH,'F');
-        doc.setFillColor(37,99,235); doc.rect(0,0,pageW,18,'F');
-        if (siteLogo) { try { doc.addImage(siteLogo, 'JPEG', pageW/2 - 42, pageH/2 - 38, 84, 56, undefined, 'FAST'); } catch(e){} }
-        fxhSetFont(doc, currentLang, 'bold');
-        doc.setTextColor(255,255,255);
-        doc.setFontSize(18);
-        doc.text(isAr ? 'Future Exams Hub' : 'Future Exams Hub', pageW/2, pageH - 32, { align: 'center' });
+        // Details page
+        pdf.addPage(); pageNum++;
+        fxhAddHeader(pdf, isAr, pageW, logoData, certData, certName, certCode);
+        pdf.setTextColor(15,23,42); pdf.setFontSize(18); pdf.setFont(undefined,'bold'); pdf.text(t.details, pageW/2, 35, {align:'center'});
+        var resultText = snap.passed ? t.pass : t.fail;
+        pdf.setFillColor(snap.passed ? 22 : 220, snap.passed ? 163 : 38, snap.passed ? 74 : 38); pdf.roundedRect(15, 42, pageW-30, 16, 4, 4, 'F');
+        pdf.setTextColor(255,255,255); pdf.setFontSize(18); pdf.setFont(undefined,'bold'); pdf.text(t.result + ': ' + resultText, pageW/2, 53, {align:'center'});
+        var details = [
+            [t.score, String(snap.score || 0) + ' / 1000'],
+            [t.percentage, String(snap.percentage || 0) + '%'],
+            [t.examCode, certCode],
+            [t.mode, (window.currentMode === 'custom' ? 'CustomRange Mode' : 'Smart Random Mode')],
+            [t.total, String(qs.length)],
+            [t.correct, String(snap.correctAnswers || 0)],
+            [t.wrong, String(snap.wrongAnswers || 0)],
+            [t.start, fxhFmtDateTime(start, isAr)],
+            [t.end, fxhFmtDateTime(end, isAr)],
+            [t.duration, fxhFmtDuration(durationMs, isAr)]
+        ];
+        var dx=15, dy=66, boxW=(pageW-40)/2, boxH=20;
+        details.forEach(function(item, idx){
+            var x = idx%2===0 ? dx : dx+boxW+10;
+            var y = dy + Math.floor(idx/2)*(boxH+6);
+            var fill = idx===0 ? [237,233,254] : idx===1 ? [219,234,254] : [248,250,252];
+            fxhAddKvBox(pdf, x,y,boxW,boxH,item[0],item[1],fill);
+        });
+        fxhAddFooter(pdf, pageNum, pageW, pageH);
 
-        // Apply headers/footers.
-        for (var p = 1; p <= totalPages; p++) {
-            doc.setPage(p);
-            fxhAddHeader(doc, { pageNumber: p, totalPages: totalPages, lang: currentLang, isAr: isAr, siteLogo: siteLogo, certLogo: certLogo, certName: certName, certCode: currentCertCode, labels: labels });
-            fxhAddFooter(doc, { pageNumber: p, totalPages: totalPages, lang: currentLang, isAr: isAr });
-        }
+        // Summary page
+        pdf.addPage(); pageNum++;
+        fxhAddHeader(pdf, isAr, pageW, logoData, certData, certName, certCode);
+        pdf.setTextColor(15,23,42); pdf.setFontSize(18); pdf.setFont(undefined,'bold'); pdf.text(t.summary, pageW/2, 35, {align:'center'});
+        var cols = [12, 40, 75, 28];
+        var xs = [10, 22, 72, pageW-28];
+        pdf.setFillColor(79,70,229); pdf.roundedRect(10,42,pageW-20,10,2,2,'F');
+        pdf.setTextColor(255,255,255); pdf.setFontSize(10); pdf.text(t.qNo, xs[0]+2, 48); pdf.text(t.status, xs[1], 48); pdf.text(t.qPage, xs[3], 48, {align:'center'});
+        var sy=58;
+        qs.forEach(function(q, idx){
+            var ok = fxhIsCorrect(q, idx);
+            questionPageNumbers[idx] = 5 + idx;
+            statusRows[idx] = ok;
+            pdf.setFillColor(ok ? 220 : 254, ok ? 252 : 226, ok ? 231 : 226); pdf.rect(10, sy-5, pageW-20, 9, 'F');
+            pdf.setTextColor(15,23,42); pdf.text(String(idx+1), xs[0]+4, sy);
+            pdf.setTextColor(ok ? 22 : 220, ok ? 163 : 38, ok ? 74 : 38); pdf.text(ok ? t.correctTxt : t.wrongTxt, xs[1], sy);
+            pdf.setTextColor(15,23,42); pdf.text(String(questionPageNumbers[idx]), xs[3], sy, {align:'center'});
+            sy += 10;
+            if (sy > 270 && idx < qs.length-1) { fxhAddFooter(pdf, pageNum, pageW, pageH); pdf.addPage(); pageNum++; fxhAddHeader(pdf, isAr, pageW, logoData, certData, certName, certCode); sy=25; }
+        });
+        fxhAddFooter(pdf, pageNum, pageW, pageH);
 
-        var fileBase = (isAr ? 'تفاصيل_الاختبار_' : 'Test_Details_') + (currentCertCode || 'Exam');
-        doc.save(fileBase.replace(/[^\w\-\u0600-\u06FF]+/g, '_') + '.pdf');
-    }
+        // Per-question pages
+        qs.forEach(function(q, idx){
+            pdf.addPage(); pageNum++;
+            fxhAddHeader(pdf, isAr, pageW, logoData, certData, certName, certCode);
+            var ok = statusRows[idx];
+            pdf.setTextColor(15,23,42); pdf.setFontSize(16); pdf.setFont(undefined,'bold'); pdf.text(t.qNo + ' ' + (idx+1), 12, 34);
+            pdf.setFillColor(ok ? 22 : 220, ok ? 163 : 38, ok ? 74 : 38); pdf.roundedRect(pageW-44, 27, 32, 10, 3, 3, 'F');
+            pdf.setTextColor(255,255,255); pdf.setFontSize(10); pdf.text(ok ? t.correctTxt : t.wrongTxt, pageW-28, 34, {align:'center'});
 
-    // enrich results snapshot without touching existing calculation logic
-    var _fxhOriginalCalculateResults = window.calculateResults;
-    if (typeof _fxhOriginalCalculateResults === 'function') {
-        window.calculateResults = function(timeExpiredParam){
-            var before = Date.now();
-            var out = _fxhOriginalCalculateResults.apply(this, arguments);
-            try {
-                if (window.fxhResultsSnapshot) {
-                    var st = window.fxhResultsSnapshot.startTimeMs || (startTime ? startTime.getTime() : before);
-                    window.fxhResultsSnapshot.endTimeMs = Date.now();
-                    window.fxhResultsSnapshot.durationSeconds = Math.max(0, Math.round((window.fxhResultsSnapshot.endTimeMs - st) / 1000));
-                    window.fxhResultsSnapshot.totalQuestions = selectedQuestions ? selectedQuestions.length : 0;
-                    window.fxhResultsSnapshot.examMode = window.currentMode || 'smart';
-                    window.fxhResultsSnapshot.certCode = currentCertCode || '';
-                    window.fxhResultsSnapshot.certName = currentCertName || '';
-                    window.fxhResultsSnapshot.lang = currentLang || 'en';
-                }
-            } catch(e){}
-            return out;
-        };
-    }
+            pdf.setTextColor(15,23,42); pdf.setFontSize(12); pdf.setFont(undefined,'bold'); pdf.text((isAr ? 'السؤال:' : 'Question:'), 12, 48);
+            pdf.setFont(undefined,'normal'); pdf.setFontSize(11); pdf.text(pdf.splitTextToSize(fxhQuestionText(q) || '-', 185), 12, 56);
 
-    document.addEventListener('DOMContentLoaded', function(){
+            var y = 80;
+            var opts = fxhOptions(q);
+            if (opts.length) {
+                pdf.setFont(undefined,'bold'); pdf.setTextColor(15,23,42); pdf.text((isAr ? 'الخيارات:' : 'Options:'), 12, y); y += 8;
+                pdf.setFont(undefined,'normal'); pdf.setFontSize(10.5);
+                opts.forEach(function(opt, oi){
+                    var label = (oi+1) + '. ' + fxhOptionLabel(opt, oi, isAr);
+                    var lines = pdf.splitTextToSize(label, 180);
+                    pdf.setFillColor(248,250,252); pdf.roundedRect(12, y-4, 186, Math.max(8, lines.length*5+4), 2, 2, 'F');
+                    pdf.setTextColor(15,23,42); pdf.text(lines, 15, y);
+                    y += Math.max(10, lines.length*5+6);
+                });
+            }
+            var ua = fxhUserAnswerFor(idx).join(', ') || '-';
+            var ca = fxhCorrectAnswers(q).join(', ') || '-';
+            pdf.setFont(undefined,'bold'); pdf.setTextColor(37,99,235); pdf.text(t.userAnswer + ':', 12, y+4);
+            pdf.setFont(undefined,'normal'); pdf.setTextColor(15,23,42); pdf.text(pdf.splitTextToSize(ua, 180), 45, y+4); y += 14;
+            pdf.setFont(undefined,'bold'); pdf.setTextColor(22,163,74); pdf.text(t.correctAnswer + ':', 12, y+4);
+            pdf.setFont(undefined,'normal'); pdf.setTextColor(15,23,42); pdf.text(pdf.splitTextToSize(ca, 175), 52, y+4); y += 16;
+            var src = fxhSourceUrl(q);
+            pdf.setFont(undefined,'bold'); pdf.setTextColor(79,70,229); pdf.text(t.source + ':', 12, y+4);
+            pdf.setFont(undefined,'normal');
+            if (src) {
+                var srcLines = pdf.splitTextToSize(src, 150);
+                pdf.setTextColor(37,99,235); pdf.text(srcLines, 32, y+4);
+                try { pdf.link(32, y-1, 150, Math.max(6, srcLines.length*5), {url: src}); } catch(e){}
+            } else {
+                pdf.setTextColor(100,116,139); pdf.text(t.noSource, 32, y+4);
+            }
+            fxhAddFooter(pdf, pageNum, pageW, pageH);
+        });
+
+        // Last page
+        pdf.addPage(); pageNum++;
+        pdf.setFillColor(255,255,255); pdf.rect(0,0,pageW,pageH,'F');
+        if (logoData) { try { pdf.addImage(logoData.data,'PNG', pageW/2-35, pageH/2-35, 70, 70); } catch(e){} }
+        fxhAddFooter(pdf, pageNum, pageW, pageH);
+
+        pdf.save((certCode || 'exam') + '-' + (isAr ? 'تفاصيل-الاختبار' : 'test-details') + '.pdf');
+    };
+
+    function injectBtn(){
         var reviewH2 = document.getElementById('lbl_detailedReview');
-        if (reviewH2 && !document.getElementById('fxhDetailedPdfBtnWrap')) {
-            var wrap = document.createElement('div');
-            wrap.className = 'fxh-detailed-pdf-btn-wrap';
-            wrap.id = 'fxhDetailedPdfBtnWrap';
-            wrap.innerHTML = '<button class="fxh-detailed-pdf-btn" onclick="fxhGenerateDetailedPdf()">📊 <span>تحميل تفاصيل الاختبار<br>Download Test Details</span></button>';
-            reviewH2.parentNode.insertBefore(wrap, reviewH2);
-        }
-    });
+        if (!reviewH2) return;
+        if (document.getElementById('fxhDetailedPdfBtn')) return;
+        var host = reviewH2.parentNode.querySelector('.fxh-print-btn-wrap');
+        var wrap = document.createElement('div');
+        wrap.className = 'fxh-detailed-pdf-btn-wrap';
+        wrap.innerHTML = '<button id="fxhDetailedPdfBtn" class="fxh-detailed-pdf-btn" onclick="fxhGenerateDetailedPdf()">📊 <span>' + (fxhIsAr() ? 'تحميل تفاصيل الاختبار' : 'Download Test Details') + '</span></button>';
+        if (host && host.nextSibling) host.parentNode.insertBefore(wrap, host.nextSibling); else reviewH2.parentNode.insertBefore(wrap, reviewH2);
+    }
 
-    window.fxhGenerateDetailedPdf = fxhGenerateDetailedPdf;
+    document.addEventListener('DOMContentLoaded', injectBtn);
+    window.addEventListener('load', injectBtn);
+    setTimeout(injectBtn, 600);
 })();
 </script>
-
 </body>
 </html>
