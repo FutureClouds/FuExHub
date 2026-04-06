@@ -3998,8 +3998,10 @@ function fbSaveResult(resultData) {
             fbDailyAttempts++;
             fbAttemptsLastFetched = Date.now(); // keep cache fresh after new attempt
             fbUpdateAttemptsDisplay();
-            // Also cache the updated My Results so it loads instantly next time
-            fbMyResultsCache = null; // invalidate results cache so next open re-fetches
+            // Invalidate memory cache so next open re-fetches from Firestore
+            // Also clear localStorage cache so stale data is not shown
+            fbMyResultsCache = null;
+            try { localStorage.removeItem('fxhResultsCache_' + fbCurrentUser.uid); } catch(e) {}
         })
         .catch(function(err) {
             console.warn('Failed to save result:', err);
@@ -4191,11 +4193,46 @@ function fbLoadMyResults() {
     if (subtitleElReal) subtitleElReal.style.display = 'block';
     var thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
 
-    // ── Show cached results INSTANTLY if available ────────────────
+    // ── Helpers: localStorage persistence ────────────────────────
+    function fbSaveResultsToStorage(results, uid) {
+        try {
+            var key = 'fxhResultsCache_' + uid;
+            var payload = results.map(function(r) {
+                var copy = Object.assign({}, r);
+                copy._ts = r._ts ? r._ts.getTime() : null;
+                return copy;
+            });
+            localStorage.setItem(key, JSON.stringify({ ts: Date.now(), data: payload }));
+        } catch(e) {}
+    }
+    function fbLoadResultsFromStorage(uid) {
+        try {
+            var key = 'fxhResultsCache_' + uid;
+            var raw = localStorage.getItem(key);
+            if (!raw) return null;
+            var parsed = JSON.parse(raw);
+            if (!parsed || !parsed.data) return null;
+            return parsed.data.map(function(r) {
+                if (r._ts) r._ts = new Date(r._ts);
+                return r;
+            });
+        } catch(e) { return null; }
+    }
+
+    // ── Show results INSTANTLY: memory cache → localStorage → loading spinner ──
+    var shownFromCache = false;
     if (fbMyResultsCache && fbMyResultsCache.length > 0) {
         document.getElementById('myResultsLoading').style.display = 'none';
         fbRenderMyResultsTable(fbMyResultsCache);
-        // Still refresh from Firestore silently in background
+        shownFromCache = true;
+    } else {
+        var lsResults = fbLoadResultsFromStorage(fbCurrentUser.uid);
+        if (lsResults && lsResults.length > 0) {
+            fbMyResultsCache = lsResults;
+            document.getElementById('myResultsLoading').style.display = 'none';
+            fbRenderMyResultsTable(lsResults);
+            shownFromCache = true;
+        }
     }
 
     fbDb.collection('users').doc(fbCurrentUser.uid)
@@ -4218,8 +4255,9 @@ function fbLoadMyResults() {
                 }
             });
 
-            // Save to cache for next time
+            // Save to memory cache + localStorage for instant load next time
             fbMyResultsCache = results;
+            fbSaveResultsToStorage(results, fbCurrentUser.uid);
 
             if (results.length === 0) {
                 document.getElementById('myResultsEmpty').style.display = 'block';
@@ -4232,7 +4270,7 @@ function fbLoadMyResults() {
         })
         .catch(function(err) {
             document.getElementById('myResultsLoading').style.display = 'none';
-            if (!fbMyResultsCache || fbMyResultsCache.length === 0) {
+            if (!shownFromCache) {
                 document.getElementById('myResultsEmpty').style.display   = 'block';
                 document.getElementById('myResultsEmpty').textContent = 'Error loading results. (' + err.message + ')';
             }
@@ -4641,7 +4679,7 @@ async function fxhGeneratePdfResult(data) {
         await new Promise(function(resolve) { setTimeout(resolve, 120); });
 
         var canvas = await window.html2canvas(page, {
-            scale: Math.max(2, window.devicePixelRatio || 1),
+            scale: 1.5,
             useCORS: true,
             backgroundColor: '#0b1220',
             logging: false,
@@ -4653,7 +4691,7 @@ async function fxhGeneratePdfResult(data) {
             scrollY: 0
         });
 
-        var imgData = canvas.toDataURL('image/jpeg', 0.98);
+        var imgData = canvas.toDataURL('image/jpeg', 0.82);
         var jsPDF = window.jspdf.jsPDF;
         var pdf = new jsPDF({ orientation: 'landscape', unit: 'mm', format: 'a4', compress: true });
         pdf.addImage(imgData, 'JPEG', 0, 0, 297, 210, undefined, 'FAST');
