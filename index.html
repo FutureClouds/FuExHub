@@ -4621,63 +4621,71 @@ function fxhBuildPdfMarkup(data) {
 
 async function fxhGeneratePdfResult(data) {
     var isAr = (data.lang === 'ar');
-
     var payload = fxhBuildPdfMarkup(data);
+    var fileName = fxhSafeFileName(payload.fileName);
 
-    /* ── جمع CSS المضمّن من الصفحة الحالية ── */
-    var inlineCss = '';
+    /* ── بناء HTML الكامل للنافذة المخفية ── */
+    var printDoc = '<!DOCTYPE html><html lang="' + (isAr ? 'ar' : 'en') + '"><head>'
+        + '<meta charset="UTF-8">'
+        + '<meta name="viewport" content="width=1200">'
+        + '<title>' + fxhEscapeHtml(fileName) + '</title>'
+        + '<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">'
+        + '<style>'
+        + 'html,body{margin:0;padding:0;background:#0b1220;}'
+        + '@page{size:A4 landscape;margin:0;}'
+        + '@media print{'
+        + '  html,body{width:297mm;height:210mm;overflow:hidden;}'
+        + '  .fxh-pdf-stage{width:297mm!important;height:210mm!important;}'
+        + '  .fxh-pdf-page{width:297mm!important;height:210mm!important;page-break-after:avoid;}'
+        + '}'
+        + '</style>'
+        /* ── إضافة CSS المضمّن من الصفحة الأصلية (fxh-pdf-*) ── */
+        + '<style id="fxhInlineStyles"></style>'
+        + '</head><body>'
+        + payload.html
+        + '<script>'
+        + 'window.onload=function(){'
+        + '  var s=document.getElementById("fxhInlineStyles");'
+        + '  if(s)s.textContent=window._fxhCss||"";'
+        + '  setTimeout(function(){window.print();setTimeout(function(){window.close();},800);},600);'
+        + '};'
+        + '<\/script>'
+        + '</body></html>';
+
+    /* ── استخراج CSS الخاص بـ fxh-pdf من الصفحة الحالية ── */
+    var fxhCss = '';
     try {
-        var styleTags = document.querySelectorAll('style');
-        for (var si = 0; si < styleTags.length; si++) {
-            inlineCss += styleTags[si].textContent + '\n';
+        var sheets = document.styleSheets;
+        for (var si = 0; si < sheets.length; si++) {
+            try {
+                var rules = sheets[si].cssRules || sheets[si].rules || [];
+                for (var ri = 0; ri < rules.length; ri++) {
+                    var ruleText = rules[ri].cssText || '';
+                    if (ruleText.indexOf('fxh-') !== -1 || ruleText.indexOf('fxh') !== -1) {
+                        fxhCss += ruleText + '\n';
+                    }
+                }
+            } catch(e) {}
         }
     } catch(e) {}
 
-    /* ── CSS خاص بالطباعة: A4 أفقي، بدون هوامش المتصفح، بعرض Desktop ثابت ── */
-    var printCss =
-        '@page { size: A4 landscape; margin: 0; }' +
-        'html, body { margin: 0 !important; padding: 0 !important; background: #0b1220 !important; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; color-adjust: exact !important; }' +
-        '.fxh-pdf-stage { width: 297mm !important; height: 210mm !important; overflow: hidden !important; }' +
-        '.fxh-pdf-page { width: 297mm !important; height: 210mm !important; overflow: hidden !important; page-break-after: avoid !important; break-after: avoid !important; }';
-
-    /* ── فتح نافذة مخفية بعرض Desktop ثابت (1123px = تقريب 297mm عند 96dpi) ── */
-    var printWin = window.open('', '_blank',
-        'width=1123,height=794,menubar=no,toolbar=no,location=no,status=no,scrollbars=no,resizable=no,left=-99999,top=0'
-    );
-
+    /* ── فتح نافذة بحجم Desktop ثابت بغض النظر عن الجهاز ── */
+    var printWin = window.open('', '_blank', 'width=1220,height=900,menubar=no,toolbar=no,location=no,status=no,scrollbars=no,resizable=no');
     if (!printWin) {
-        alert(isAr
-            ? 'تعذر فتح نافذة الطباعة. يرجى السماح بالنوافذ المنبثقة ثم المحاولة مجدداً.'
-            : 'Could not open print window. Please allow popups and try again.');
+        alert(isAr ? 'تعذر فتح نافذة الطباعة. يرجى السماح بالنوافذ المنبثقة ثم المحاولة مجدداً.' : 'Could not open print window. Please allow popups and try again.');
         return;
     }
 
-    /* ── كتابة HTML كامل داخل النافذة بـ viewport ثابت 1123px (Desktop) ── */
     printWin.document.open();
-    printWin.document.write(
-        '<!DOCTYPE html><html data-theme="dark"><head>' +
-        '<meta charset="UTF-8">' +
-        '<meta name="viewport" content="width=1123,initial-scale=1">' +
-        '<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Roboto:wght@400;500&family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">' +
-        '<style>' + inlineCss + printCss + '</style>' +
-        '<script>' +
-        'window.addEventListener("load", function() {' +
-        '  document.title = ' + JSON.stringify(fxhSafeFileName(payload.fileName)) + ';' +
-        '  if (document.fonts && document.fonts.ready) {' +
-        '    document.fonts.ready.then(function() {' +
-        '      setTimeout(function() { window.print(); setTimeout(function(){ window.close(); }, 1000); }, 300);' +
-        '    });' +
-        '  } else {' +
-        '    setTimeout(function() { window.print(); setTimeout(function(){ window.close(); }, 1000); }, 800);' +
-        '  }' +
-        '});' +
-        '<\/script>' +
-        '</head>' +
-        '<body style="margin:0;padding:0;background:#0b1220;">' +
-        payload.html +
-        '</body></html>'
-    );
+    printWin.document.write(printDoc);
     printWin.document.close();
+
+    /* ── حقن CSS المستخرج في النافذة الجديدة ── */
+    try {
+        printWin._fxhCss = fxhCss;
+        var styleEl = printWin.document.getElementById('fxhInlineStyles');
+        if (styleEl) styleEl.textContent = fxhCss;
+    } catch(e) {}
 }
 
 /* ── توليد PDF لنتيجة الاختبار الحالي (page3) ─────────────────── */
