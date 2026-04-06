@@ -1009,6 +1009,8 @@ body.lang-ar #pageCertEN * {
         }
 
 </style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 </head>
 <body data-theme="light">
 
@@ -4617,147 +4619,239 @@ function fxhBuildPdfMarkup(data) {
     };
 }
 
-function fxhBuildPrintableDocument(payload, isAr) {
-    var title = fxhEscapeHtml(payload.fileName || (isAr ? 'نتيجة الاختبار' : 'Exam Result'));
-    return '<!DOCTYPE html>' +
-        '<html lang="' + (isAr ? 'ar' : 'en') + '" dir="' + (isAr ? 'rtl' : 'ltr') + '">' +
-        '<head>' +
-        '  <meta charset="UTF-8">' +
-        '  <meta name="viewport" content="width=device-width, initial-scale=1.0">' +
-        '  <title>' + title + '</title>' +
-        '  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Roboto:wght@400;500&family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">' +
-        '  <style>' +
-        '    :root { color-scheme: light; }' +
-        '    @page { size: A4 landscape; margin: 0; }' +
-        '    html, body { margin: 0; padding: 0; width: 100%; min-height: 100%; background: #ffffff; }' +
-        '    body { font-family: "Tajawal", "Montserrat", "Roboto", sans-serif; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; color-adjust: exact !important; }' +
-        '    .fxh-pdf-stage { position: static !important; left: auto !important; top: auto !important; width: 297mm !important; height: 210mm !important; overflow: hidden !important; pointer-events: auto !important; z-index: 1 !important; margin: 0 auto !important; }' +
-        '    .fxh-pdf-page { width: 1600px; height: 1131px; background: linear-gradient(135deg, #0f0c29 0%, #302b63 52%, #24243e 100%); color: #e5eefc; font-family: "Tajawal", sans-serif; transform-origin: top left; transform: scale(0.701875); }' +
-        '    .fxh-pdf-shell { width: 100%; height: 100%; background: radial-gradient(circle at top right, rgba(168, 85, 247, 0.30) 0%, rgba(168, 85, 247, 0) 32%), radial-gradient(circle at bottom left, rgba(59, 130, 246, 0.24) 0%, rgba(59, 130, 246, 0) 36%), linear-gradient(135deg, #0f0c29 0%, #302b63 52%, #24243e 100%); padding: 54px 62px; position: relative; box-sizing: border-box; }' +
-        '    .fxh-pdf-shell::before { content: ""; position: absolute; inset: 26px; border-radius: 34px; border: 1px solid rgba(255,255,255,0.08); box-shadow: inset 0 0 0 1px rgba(255,255,255,0.02); pointer-events: none; }' +
-        '    .fxh-top-accent { position: absolute; inset: 0 0 auto 0; height: 16px; background: linear-gradient(90deg, #2563eb, #7c3aed, #06b6d4); }' +
-        '    .fxh-header { display: flex; align-items: center; gap: 28px; margin-bottom: 28px; position: relative; z-index: 1; }' +
-        '    .fxh-badge-wrap { width: 132px; height: 132px; border-radius: 28px; background: linear-gradient(135deg, rgba(255,255,255,0.16), rgba(255,255,255,0.06)); border: 1px solid rgba(255,255,255,0.16); display: flex; align-items: center; justify-content: center; flex-shrink: 0; box-shadow: 0 18px 40px rgba(0,0,0,0.26); }' +
-        '    .fxh-badge-fallback { color: #93c5fd; font-size: 42px; font-weight: 800; }' +
-        '    .fxh-badge { width: 100px; height: 100px; object-fit: contain; }' +
-        '    .fxh-brand-mark { display: flex; align-items: center; justify-content: flex-end; gap: 16px; padding: 16px 22px; border-radius: 20px; background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.12); box-shadow: 0 12px 28px rgba(0,0,0,0.22); backdrop-filter: blur(10px); }' +
-        '    .fxh-brand-logo { width: 176px; height: 126px; object-fit: contain; filter: drop-shadow(0 8px 20px rgba(0,0,0,0.28)); }' +
-        '    .fxh-brand-text { display: flex; flex-direction: column; gap: 4px; text-align: left; }' +
-        '    .fxh-brand-title { color: #ffffff; font-size: 24px; font-weight: 800; line-height: 1.1; }' +
-        '    .fxh-brand-subtitle { color: #c7d2fe; font-size: 15px; font-weight: 600; letter-spacing: 0.3px; }' +
-        '    .fxh-title-wrap { flex: 1; }' +
-        '    .fxh-eyebrow { color: #93c5fd; font-size: 24px; font-weight: 700; margin-bottom: 10px; }' +
-        '    .fxh-title { font-size: 48px; line-height: 1.2; font-weight: 800; color: #f8fbff; margin-bottom: 2px; }' +
-        '    .fxh-subtitle { color: #c7d2fe; font-size: 26px; font-weight: 600; }' +
-        '    .fxh-level-line { display: inline-flex; align-items: center; gap: 8px; margin: 2px 0 8px; padding-top: 6px; border-top: 1px solid rgba(255,255,255,0.18); color: #f5f3ff; font-size: 22px; font-weight: 700; }' +
-        '    .fxh-user-card { background: linear-gradient(135deg, rgba(255,255,255,0.09), rgba(255,255,255,0.05)); border: 1px solid rgba(255,255,255,0.12); border-radius: 26px; padding: 28px 32px; margin-bottom: 24px; position: relative; z-index: 1; box-shadow: 0 16px 36px rgba(0,0,0,0.18); }' +
-        '    .fxh-user-head { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; margin-bottom: 16px; text-align: center; }' +
-        '    .fxh-user-head-main { min-width: 0; flex: 0 1 auto; text-align: center; }' +
-        '    .fxh-user-result-pill { padding: 10px 20px; border-radius: 999px; color: #fff; font-size: 20px; font-weight: 800; flex-shrink: 0; box-shadow: 0 14px 30px rgba(0,0,0,0.24); border: 1px solid rgba(255,255,255,0.12); }' +
-        '    .fxh-pdf-page[dir="rtl"] .fxh-user-head, .fxh-pdf-page[dir="ltr"] .fxh-user-head, .fxh-pdf-page[dir="rtl"] .fxh-user-head-main, .fxh-pdf-page[dir="ltr"] .fxh-user-head-main, .fxh-user-card, .fxh-user-label, .fxh-user-name, .fxh-user-desc { text-align: center; }' +
-        '    .fxh-user-label { color: #93c5fd; font-size: 22px; font-weight: 700; margin-bottom: 10px; }' +
-        '    .fxh-user-name { color: #fff; font-size: 42px; font-weight: 800; margin-bottom: 14px; }' +
-        '    .fxh-user-desc { font-size: 24px; line-height: 1.8; color: #dbeafe; }' +
-        '    .fxh-stats-grid { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 18px; margin-bottom: 24px; }' +
-        '    .fxh-stat { background: linear-gradient(135deg, rgba(255,255,255,0.09), rgba(255,255,255,0.05)); border: 1px solid rgba(255,255,255,0.12); border-radius: 22px; padding: 24px 18px; text-align: center; box-shadow: 0 14px 30px rgba(0,0,0,0.16); }' +
-        '    .fxh-stat.good { border-color: rgba(34,197,94,0.42); background: linear-gradient(135deg, rgba(22,163,74,0.28), rgba(20,83,45,0.18)); }' +
-        '    .fxh-stat.bad { border-color: rgba(239,68,68,0.42); background: linear-gradient(135deg, rgba(239,68,68,0.28), rgba(127,29,29,0.18)); }' +
-        '    .fxh-stat.time { border-color: rgba(59,130,246,0.38); background: linear-gradient(135deg, rgba(59,130,246,0.22), rgba(30,64,175,0.16)); }' +
-        '    .fxh-stat-label { color: #93c5fd; font-size: 22px; font-weight: 700; margin-bottom: 12px; }' +
-        '    .fxh-stat-value { color: #fff; font-size: 34px; font-weight: 800; line-height: 1.25; }' +
-        '    .fxh-meta-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; }' +
-        '    .fxh-meta-item { background: linear-gradient(135deg, rgba(255,255,255,0.08), rgba(255,255,255,0.04)); border: 1px solid rgba(255,255,255,0.10); border-radius: 18px; padding: 20px 22px; box-shadow: 0 10px 24px rgba(0,0,0,0.14); }' +
-        '    .fxh-meta-label { color: #93c5fd; font-size: 20px; font-weight: 700; margin-bottom: 10px; }' +
-        '    .fxh-meta-value { color: #f8fbff; font-size: 28px; font-weight: 700; line-height: 1.45; }' +
-        '    .fxh-meta-value.fxh-status { color: #ffffff; }' +
-        '    .fxh-meta-value.fxh-status.pass { color: #86efac; text-shadow: 0 0 18px rgba(34,197,94,0.28); }' +
-        '    .fxh-meta-value.fxh-status.fail { color: #fca5a5; text-shadow: 0 0 18px rgba(239,68,68,0.24); }' +
-        '    .fxh-time-meridiem { display: inline-block; margin-left: 8px; padding: 4px 10px; border-radius: 999px; font-size: 0.72em; font-weight: 800; letter-spacing: 0.8px; vertical-align: middle; background: rgba(255,255,255,0.10); border: 1px solid rgba(255,255,255,0.16); }' +
-        '    .fxh-time-meridiem.am { color: #bfdbfe; background: rgba(59,130,246,0.16); }' +
-        '    .fxh-time-meridiem.pm { color: #ddd6fe; background: rgba(124,58,237,0.18); }' +
-        '    .fxh-footer { position: absolute; left: 62px; right: 62px; bottom: 34px; color: #cbd5e1; font-size: 18px; text-align: center; border-top: 1px solid rgba(255,255,255,0.10); padding-top: 16px; }' +
-        '    @media screen { html, body { background: #eef2ff; } .fxh-pdf-stage { margin: 16px auto; box-shadow: 0 18px 45px rgba(15, 23, 42, 0.22); } }' +
-        '    @media print { html, body { background: transparent !important; } .fxh-pdf-stage { margin: 0 !important; } }' +
-        '  </style>' +
-        '</head>' +
-        '<body>' + payload.html + '</body>' +
-        '</html>';
-}
+function fxhBuildTextPdfDocument(data) {
+    var isAr   = (data.lang === 'ar');
+    var dir    = isAr ? 'rtl' : 'ltr';
+    var certCode = data.certCode || '';
+    var certImg  = fxhPrintCertImgMap[certCode] || '';
+    var brandImg = 'FUEXHUB.png';
+    var examDate = data.examDate ? new Date(data.examDate) : new Date();
+    var dateStr  = fxhFormatGregorianDate(examDate, isAr);
+    var timeObj  = fxhFormatTime12(examDate, isAr);
+    var timeStr  = timeObj.text;
+    var name     = data.name || (isAr ? 'مختبر' : 'Examinee');
+    var fileName = isAr
+        ? 'نتيجة نصية - ' + name + ' - ' + certCode
+        : 'Text Result - ' + name + ' - ' + certCode;
 
-function fxhPrintDocumentHtml(docHtml, fileName, isAr) {
-    return new Promise(function(resolve, reject) {
-        var iframe = document.createElement('iframe');
-        iframe.style.position = 'fixed';
-        iframe.style.right = '0';
-        iframe.style.bottom = '0';
-        iframe.style.width = '0';
-        iframe.style.height = '0';
-        iframe.style.border = '0';
-        iframe.setAttribute('aria-hidden', 'true');
-        document.body.appendChild(iframe);
+    var enName = fxhCertFullNameEN[certCode] || data.certNameEN || data.certName || certCode || '';
+    var arName = fxhCertFullNameAR[certCode] || data.certNameAR || (isAr ? data.certName : '') || '';
+    var displayName = isAr && arName ? arName : enName;
+    var levelText   = fxhGetCertLevel(certCode, isAr);
+    var total       = data.totalQuestions || ((data.correctAnswers || 0) + (data.wrongAnswers || 0)) || 0;
+    var duration    = fxhFormatDuration(data.timeFormatted, isAr);
+    var modeValue   = (data.examMode === 'custom')
+        ? (isAr ? 'نطاق مخصص' : 'Custom Range Mode')
+        : (isAr ? 'ترتيب عشوائي ذكي' : 'Smart Random Mode');
+    var passText    = isAr ? (data.passed ? 'ناجح' : 'راسب') : (data.passed ? 'PASS' : 'FAIL');
+    var statusClass = data.passed ? 'pass' : 'fail';
 
-        var cleaned = false;
-        function cleanup() {
-            if (cleaned) return;
-            cleaned = true;
-            setTimeout(function() {
-                if (iframe && iframe.parentNode) iframe.parentNode.removeChild(iframe);
-            }, 800);
-        }
+    var scoreRows = isAr ? [
+        ['الدرجة', (data.score || 0) + ' / 1000'],
+        ['النسبة', (data.percentage || 0) + '%'],
+        ['الإجابات الصحيحة', String(data.correctAnswers || 0)],
+        ['الإجابات الخاطئة', String(data.wrongAnswers || 0)],
+        ['مدة الاختبار', duration]
+    ] : [
+        ['Score', (data.score || 0) + ' / 1000'],
+        ['Percentage', (data.percentage || 0) + '%'],
+        ['Correct Answers', String(data.correctAnswers || 0)],
+        ['Wrong Answers', String(data.wrongAnswers || 0)],
+        ['Exam Duration', duration]
+    ];
 
-        try {
-            var win = iframe.contentWindow;
-            var doc = win.document;
-            doc.open();
-            doc.write(docHtml);
-            doc.close();
+    var metaRows = isAr ? [
+        ['اسم المختبر', name],
+        ['الشهادة', displayName],
+        ['رمز الشهادة', certCode],
+        ['المستوى', levelText || '—'],
+        ['عدد الأسئلة', String(total)],
+        ['وضع الاختبار', modeValue],
+        ['تاريخ الاختبار', dateStr],
+        ['وقت الاختبار', timeStr],
+        ['الحالة', passText]
+    ] : [
+        ['Examinee', name],
+        ['Certification', displayName],
+        ['Certification Code', certCode],
+        ['Level', levelText || '—'],
+        ['Total Questions', String(total)],
+        ['Exam Mode', modeValue],
+        ['Exam Date', dateStr],
+        ['Exam Time', timeStr],
+        ['Status', passText]
+    ];
 
-            var triggerPrint = async function() {
-                try {
-                    if (doc.fonts && doc.fonts.ready) {
-                        try { await doc.fonts.ready; } catch (e) {}
-                    }
-                    await fxhWaitForImages(doc.body);
-                    await new Promise(function(r) { setTimeout(r, 250); });
-                    win.focus();
-                    var after = function() {
-                        win.removeEventListener('afterprint', after);
-                        cleanup();
-                        resolve();
-                    };
-                    win.addEventListener('afterprint', after);
-                    win.print();
-                    setTimeout(function() {
-                        cleanup();
-                        resolve();
-                    }, 4000);
-                } catch (err) {
-                    cleanup();
-                    reject(err);
-                }
-            };
+    var scoreHtml = scoreRows.map(function(row) {
+        return '<tr><th>' + fxhEscapeHtml(row[0]) + '</th><td>' + fxhEscapeHtml(row[1]) + '</td></tr>';
+    }).join('');
 
-            if (iframe.contentDocument && iframe.contentDocument.readyState === 'complete') {
-                triggerPrint();
-            } else {
-                iframe.onload = function() { triggerPrint(); };
-            }
-        } catch (err) {
-            cleanup();
-            reject(err);
-        }
-    });
+    var metaHtml = metaRows.map(function(row) {
+        var cls = row[0] === (isAr ? 'الحالة' : 'Status') ? (' class="status-cell ' + statusClass + '"') : '';
+        return '<tr><th>' + fxhEscapeHtml(row[0]) + '</th><td' + cls + '>' + fxhEscapeHtml(row[1]) + '</td></tr>';
+    }).join('');
+
+    var introText = isAr
+        ? 'هذه نسخة نصية احترافية صالحة للطباعة والحفظ بصيغة PDF، ومهيأة للعرض على الجوال واللابتوب مع الحفاظ على نفس المحتوى الأساسي.'
+        : 'This is a professional text-based layout prepared for printing or saving as PDF, optimized for phones and laptops while preserving the same core content.';
+
+    return {
+        fileName: fileName,
+        html: '<!DOCTYPE html>' +
+            '<html lang="' + (isAr ? 'ar' : 'en') + '" dir="' + dir + '">' +
+            '<head>' +
+            '  <meta charset="UTF-8">' +
+            '  <meta name="viewport" content="width=device-width, initial-scale=1.0">' +
+            '  <title>' + fxhEscapeHtml(fileName) + '</title>' +
+            '  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">' +
+            '  <style>' +
+            '    @page { size: A4 portrait; margin: 12mm; }' +
+            '    * { box-sizing: border-box; }' +
+            '    html, body { margin: 0; padding: 0; background: #eef3fb; color: #122033; }' +
+            '    body { font-family: ' + (isAr ? '\'Tajawal\', Arial, sans-serif' : '\'Roboto\', Arial, sans-serif') + '; }' +
+            '    .sheet { width: 100%; max-width: 186mm; margin: 0 auto; background: #ffffff; border: 1px solid #d8e1ef; border-radius: 16px; overflow: hidden; box-shadow: 0 10px 30px rgba(15,23,42,0.08); }' +
+            '    .topbar { height: 8px; background: linear-gradient(90deg, #2563eb, #7c3aed, #06b6d4); }' +
+            '    .content { padding: 14mm 12mm 10mm; }' +
+            '    .header { display: table; width: 100%; margin-bottom: 8mm; }' +
+            '    .header > div { display: table-cell; vertical-align: middle; }' +
+            '    .brand { text-align: ' + (isAr ? 'left' : 'right') + '; width: 42mm; }' +
+            '    .brand img { max-width: 34mm; max-height: 24mm; object-fit: contain; }' +
+            '    .cert { width: 28mm; }' +
+            '    .cert-box { width: 24mm; height: 24mm; border: 1px solid #d7dff0; border-radius: 8px; display:flex; align-items:center; justify-content:center; background:#f8fbff; }' +
+            '    .cert-box img { max-width: 18mm; max-height: 18mm; object-fit: contain; }' +
+            '    .title-block h1 { margin: 0 0 2mm; font-size: 18pt; line-height: 1.25; color: #0f172a; }' +
+            '    .title-block .sub { font-size: 10.5pt; color: #475569; margin-bottom: 1.5mm; }' +
+            '    .level { display: inline-block; margin-top: 1mm; padding: 1.2mm 3mm; border-radius: 999px; font-size: 9pt; font-weight: 700; color: #1e3a8a; background: #dbeafe; }' +
+            '    .hero { border: 1px solid #dbe4f1; border-radius: 12px; padding: 5mm; background: linear-gradient(180deg, #f8fbff, #ffffff); margin-bottom: 6mm; }' +
+            '    .hero-grid { display: table; width: 100%; }' +
+            '    .hero-grid > div { display: table-cell; vertical-align: top; }' +
+            '    .hero-name small { display:block; font-size: 9pt; color:#64748b; margin-bottom:1mm; }' +
+            '    .hero-name strong { display:block; font-size: 16pt; color:#0f172a; }' +
+            '    .status-badge { display:inline-block; padding: 2.2mm 5mm; border-radius: 999px; font-size: 10pt; font-weight: 800; color:#fff; background:' + (data.passed ? '#16a34a' : '#dc2626') + '; }' +
+            '    .intro { margin-top: 3mm; font-size: 9.4pt; line-height: 1.8; color: #334155; }' +
+            '    .grid { display: table; width: 100%; table-layout: fixed; margin-top: 5mm; }' +
+            '    .col { display: table-cell; width: 50%; vertical-align: top; }' +
+            '    .col.pad-' + (isAr ? 'left' : 'right') + ' { padding-' + (isAr ? 'left' : 'right') + ': 3mm; }' +
+            '    .col.pad-' + (isAr ? 'right' : 'left') + ' { padding-' + (isAr ? 'right' : 'left') + ': 3mm; }' +
+            '    .card { border: 1px solid #dbe4f1; border-radius: 12px; overflow: hidden; margin-bottom: 5mm; }' +
+            '    .card h2 { margin: 0; padding: 3.2mm 4mm; font-size: 11pt; color: #0f172a; background: #eff6ff; border-bottom: 1px solid #dbe4f1; }' +
+            '    table { width: 100%; border-collapse: collapse; }' +
+            '    th, td { padding: 3mm 3.2mm; border-bottom: 1px solid #e5edf7; font-size: 9.5pt; text-align: ' + (isAr ? 'right' : 'left') + '; vertical-align: top; }' +
+            '    th { width: 42%; color: #334155; background: #fcfdff; font-weight: 700; }' +
+            '    td { color: #0f172a; font-weight: 500; }' +
+            '    tr:last-child th, tr:last-child td { border-bottom: none; }' +
+            '    .status-cell.pass { color:#15803d; font-weight:800; }' +
+            '    .status-cell.fail { color:#b91c1c; font-weight:800; }' +
+            '    .footer { margin-top: 5mm; padding-top: 4mm; border-top: 1px solid #dbe4f1; font-size: 8.6pt; color:#64748b; text-align:center; }' +
+            '    @media print { body { background:#fff; } .sheet { max-width:none; border:none; border-radius:0; box-shadow:none; } }' +
+            '  </style>' +
+            '</head>' +
+            '<body>' +
+            '  <main class="sheet">' +
+            '    <div class="topbar"></div>' +
+            '    <div class="content">' +
+            '      <section class="header">' +
+            '        <div class="cert"><div class="cert-box">' + (certImg ? '<img src="' + fxhEscapeHtml(certImg) + '" alt="' + fxhEscapeHtml(certCode) + '">' : '<strong>AWS</strong>') + '</div></div>' +
+            '        <div class="title-block">' +
+            '          <div class="sub">FuExHub • Future Exams Hub</div>' +
+            '          <h1>' + fxhEscapeHtml(displayName || certCode) + '</h1>' +
+            '          <div class="sub">' + fxhEscapeHtml(certCode) + '</div>' +
+            (levelText ? '          <div class="level">' + fxhEscapeHtml(levelText) + '</div>' : '') +
+            '        </div>' +
+            '        <div class="brand">' +
+            '          <img src="' + brandImg + '" alt="FuExHub">' +
+            '        </div>' +
+            '      </section>' +
+            '      <section class="hero">' +
+            '        <div class="hero-grid">' +
+            '          <div class="hero-name">' +
+            '            <small>' + fxhEscapeHtml(isAr ? 'اسم المختبر' : 'Examinee') + '</small>' +
+            '            <strong>' + fxhEscapeHtml(name) + '</strong>' +
+            '          </div>' +
+            '          <div style="text-align:' + (isAr ? 'left' : 'right') + '; width:34mm;">' +
+            '            <span class="status-badge">' + fxhEscapeHtml(passText) + '</span>' +
+            '          </div>' +
+            '        </div>' +
+            '        <div class="intro">' + fxhEscapeHtml(introText) + '</div>' +
+            '      </section>' +
+            '      <section class="grid">' +
+            '        <div class="col pad-' + (isAr ? 'left' : 'right') + '">' +
+            '          <div class="card">' +
+            '            <h2>' + fxhEscapeHtml(isAr ? 'ملخص النتيجة' : 'Result Summary') + '</h2>' +
+            '            <table><tbody>' + scoreHtml + '</tbody></table>' +
+            '          </div>' +
+            '        </div>' +
+            '        <div class="col pad-' + (isAr ? 'right' : 'left') + '">' +
+            '          <div class="card">' +
+            '            <h2>' + fxhEscapeHtml(isAr ? 'بيانات الاختبار' : 'Exam Details') + '</h2>' +
+            '            <table><tbody>' + metaHtml + '</tbody></table>' +
+            '          </div>' +
+            '        </div>' +
+            '      </section>' +
+            '      <div class="footer">' + fxhEscapeHtml(isAr ? 'نسخة نصية جاهزة للطباعة والحفظ كملف PDF — Future Exams Hub' : 'Text-based version ready for print and Save as PDF — Future Exams Hub') + '</div>' +
+            '    </div>' +
+            '  </main>' +
+            '</body>' +
+            '</html>'
+    };
 }
 
 async function fxhGeneratePdfResult(data) {
     var isAr = (data.lang === 'ar');
+    var payload = fxhBuildTextPdfDocument(data);
+    var printWindow = window.open('', '_blank', 'noopener,noreferrer,width=1100,height=900');
+
+    if (!printWindow) {
+        alert(isAr ? 'تعذر فتح نافذة الطباعة. تأكد من السماح بالنوافذ المنبثقة ثم حاول مجدداً.' : 'Could not open the print window. Please allow pop-ups and try again.');
+        return;
+    }
+
     try {
-        var payload = fxhBuildPdfMarkup(data);
-        var docHtml = fxhBuildPrintableDocument(payload, isAr);
-        await fxhPrintDocumentHtml(docHtml, payload.fileName, isAr);
+        printWindow.document.open();
+        printWindow.document.write(payload.html);
+        printWindow.document.close();
+        printWindow.document.title = fxhSafeFileName(payload.fileName);
+
+        var waitReady = function() {
+            var doc = printWindow.document;
+            var imgs = Array.prototype.slice.call(doc.images || []);
+            var imgPromises = imgs.map(function(img) {
+                if (img.complete) return Promise.resolve();
+                return new Promise(function(resolve) {
+                    img.onload = resolve;
+                    img.onerror = resolve;
+                    setTimeout(resolve, 2500);
+                });
+            });
+
+            var fontsPromise = Promise.resolve();
+            try {
+                if (doc.fonts && doc.fonts.ready) fontsPromise = doc.fonts.ready;
+            } catch (e) {}
+
+            Promise.all([fontsPromise, Promise.all(imgPromises)]).then(function() {
+                setTimeout(function() {
+                    try {
+                        printWindow.focus();
+                        printWindow.print();
+                    } catch (err) {
+                        console.error('Print launch failed:', err);
+                        alert(isAr ? 'تم تجهيز النسخة النصية، لكن تعذر فتح الطباعة تلقائياً.' : 'The text version is ready, but automatic printing could not be started.');
+                    }
+                }, 300);
+            });
+        };
+
+        if (printWindow.document.readyState === 'complete') waitReady();
+        else printWindow.onload = waitReady;
+
+        printWindow.onafterprint = function() {
+            try { printWindow.close(); } catch (e) {}
+        };
     } catch (err) {
-        console.error('Printable PDF generation failed:', err);
-        alert(isAr ? 'حدث خطأ أثناء تجهيز ملف النتيجة للطباعة أو الحفظ.' : 'An error occurred while preparing the result file for printing or saving.');
+        console.error('Text PDF preparation failed:', err);
+        try { printWindow.close(); } catch (e) {}
+        alert(isAr ? 'حدث خطأ أثناء تجهيز النسخة النصية للطباعة.' : 'An error occurred while preparing the text version for printing.');
     }
 }
 
