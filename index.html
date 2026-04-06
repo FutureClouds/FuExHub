@@ -4581,9 +4581,9 @@ function fxhBuildPdfMarkup(data) {
         ? (isAr ? 'ترتيب مخصص' : 'Custom Range Mode')
         : (isAr ? 'ترتيب عشوائي' : 'Smart Random Mode');
     var mainTitle = fxhStripCertLevelFromName(isAr && arName ? arName : enName, isAr);
-    var subTitle = isAr && arName ? enName : certCode;
+    var subTitle = certCode;
     var levelText = fxhGetCertLevel(certCode, isAr);
-    var levelLine = levelText ? ((isAr ? ' ' : 'Level: ') + levelText) : '';
+    var levelLine = levelText ? (isAr ? ('المستوى: ' + levelText) : ('Level: ' + levelText)) : '';
 
     var stats = isAr ? [
         ['الدرجة', (data.score || 0) + ' / 1000'],
@@ -4649,7 +4649,7 @@ function fxhBuildPdfMarkup(data) {
             '      <div class="fxh-header">' +
             (certImg ? '        <div class="fxh-badge-wrap"><img class="fxh-badge" src="' + fxhEscapeHtml(certImg) + '" alt="' + fxhEscapeHtml(certCode) + '"></div>' : '        <div class="fxh-badge-wrap fxh-badge-fallback">AWS</div>') +
             '        <div class="fxh-title-wrap">' +
-            '          <div class="fxh-eyebrow">FuExHub - Future Exams Hub</div>' +
+            '          <div class="fxh-eyebrow">' + (isAr ? 'مركز اختبارات المستقبل' : 'FuExHub - Future Exams Hub') + '</div>' +
             '          <div class="fxh-title">' + fxhEscapeHtml(mainTitle) + '</div>' +
             (levelLine ? '          <div class="fxh-level-line">' + fxhEscapeHtml(levelLine) + '</div>' : '') +
             '          <div class="fxh-subtitle">' + fxhEscapeHtml(subTitle) + '</div>' +
@@ -4703,7 +4703,7 @@ async function fxhGeneratePdfResult(data) {
         await new Promise(function(resolve) { setTimeout(resolve, 120); });
 
         var canvas = await window.html2canvas(page, {
-            scale: 1.5,
+            scale: 1.2,
             useCORS: true,
             backgroundColor: '#0b1220',
             logging: false,
@@ -4715,7 +4715,7 @@ async function fxhGeneratePdfResult(data) {
             scrollY: 0
         });
 
-        var imgData = canvas.toDataURL('image/jpeg', 0.82);
+        var imgData = canvas.toDataURL('image/jpeg', 0.75);
         var jsPDF = window.jspdf.jsPDF;
         var pdf = new jsPDF({ orientation: 'landscape', unit: 'mm', format: 'a4', compress: true });
         pdf.addImage(imgData, 'JPEG', 0, 0, 297, 210, undefined, 'FAST');
