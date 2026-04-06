@@ -1009,6 +1009,7 @@ body.lang-ar #pageCertEN * {
         }
 
 </style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 </head>
 <body data-theme="light">
@@ -1621,33 +1622,316 @@ body.lang-ar #pageCertEN * {
 }
 
 
-.fxh-pdf-note {
-    margin: 10px auto 0;
-    max-width: 560px;
-    padding: 10px 14px;
-    border-radius: 12px;
-    background: rgba(41,128,185,0.10);
-    border: 1px solid rgba(41,128,185,0.22);
-    color: var(--text-color);
-    font-size: 0.9rem;
-    line-height: 1.6;
-    text-align: center;
+.fxh-pdf-stage {
+    position: fixed;
+    left: -99999px;
+    top: 0;
+    width: 1600px;
+    height: 1131px;
+    overflow: hidden;
+    pointer-events: none;
+    z-index: -1;
+}
+.fxh-pdf-page {
+    width: 1600px;
+    height: 1131px;
+    background: linear-gradient(135deg, #0f0c29 0%, #302b63 52%, #24243e 100%);
+    color: #e5eefc;
     font-family: 'Tajawal', sans-serif;
 }
-@media (max-width: 600px) {
-    .fxh-print-btn {
-        width: min(100%, 320px);
-        justify-content: center;
-        padding: 12px 18px;
-        font-size: 0.95rem;
-        border-radius: 10px;
-        box-shadow: 0 3px 10px rgba(52,152,219,0.32);
-    }
-    .fxh-pdf-note {
-        max-width: 100%;
-        font-size: 0.84rem;
-        padding: 9px 12px;
-    }
+.fxh-pdf-shell {
+    width: 100%;
+    height: 100%;
+    background:
+        radial-gradient(circle at top right, rgba(168, 85, 247, 0.30) 0%, rgba(168, 85, 247, 0) 32%),
+        radial-gradient(circle at bottom left, rgba(59, 130, 246, 0.24) 0%, rgba(59, 130, 246, 0) 36%),
+        linear-gradient(135deg, #0f0c29 0%, #302b63 52%, #24243e 100%);
+    padding: 54px 62px;
+    position: relative;
+}
+.fxh-pdf-shell::before {
+    content: '';
+    position: absolute;
+    inset: 26px;
+    border-radius: 34px;
+    border: 1px solid rgba(255,255,255,0.08);
+    box-shadow: inset 0 0 0 1px rgba(255,255,255,0.02);
+    pointer-events: none;
+}
+.fxh-top-accent {
+    position: absolute;
+    inset: 0 0 auto 0;
+    height: 16px;
+    background: linear-gradient(90deg, #2563eb, #7c3aed, #06b6d4);
+}
+.fxh-header {
+    display: flex;
+    align-items: center;
+    gap: 28px;
+    margin-bottom: 28px;
+    position: relative;
+    z-index: 1;
+}
+.fxh-badge-wrap {
+    width: 132px;
+    height: 132px;
+    border-radius: 28px;
+    background: linear-gradient(135deg, rgba(255,255,255,0.16), rgba(255,255,255,0.06));
+    border: 1px solid rgba(255,255,255,0.16);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    box-shadow: 0 18px 40px rgba(0,0,0,0.26);
+}
+.fxh-badge-fallback {
+    color: #93c5fd;
+    font-size: 42px;
+    font-weight: 800;
+}
+.fxh-badge {
+    width: 100px;
+    height: 100px;
+    object-fit: contain;
+}
+.fxh-brand-mark {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 16px;
+    padding: 16px 22px;
+    border-radius: 20px;
+    background: rgba(255,255,255,0.07);
+    border: 1px solid rgba(255,255,255,0.12);
+    box-shadow: 0 12px 28px rgba(0,0,0,0.22);
+    backdrop-filter: blur(10px);
+}
+.fxh-brand-logo {
+    width: 176px;
+    height: 126px;
+    object-fit: contain;
+    filter: drop-shadow(0 8px 20px rgba(0,0,0,0.28));
+}
+.fxh-brand-text {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    text-align: left;
+}
+.fxh-brand-title {
+    color: #ffffff;
+    font-size: 24px;
+    font-weight: 800;
+    line-height: 1.1;
+}
+.fxh-brand-subtitle {
+    color: #c7d2fe;
+    font-size: 15px;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+}
+.fxh-title-wrap { flex: 1; }
+.fxh-eyebrow {
+    color: #93c5fd;
+    font-size: 24px;
+    font-weight: 700;
+    margin-bottom: 10px;
+}
+.fxh-title {
+    font-size: 48px;
+    line-height: 1.2;
+    font-weight: 800;
+    color: #f8fbff;
+    margin-bottom: 2px;
+}
+.fxh-subtitle {
+    color: #c7d2fe;
+    font-size: 26px;
+    font-weight: 600;
+}
+.fxh-level-line {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin: 2px 0 8px;
+    padding-top: 6px;
+    border-top: 1px solid rgba(255,255,255,0.18);
+    color: #f5f3ff;
+    font-size: 22px;
+    font-weight: 700;
+}
+.fxh-result-pill {
+    padding: 18px 30px;
+    border-radius: 999px;
+    color: #fff;
+    font-size: 28px;
+    font-weight: 800;
+    flex-shrink: 0;
+    box-shadow: 0 14px 30px rgba(0,0,0,0.24);
+    border: 1px solid rgba(255,255,255,0.12);
+}
+.fxh-user-card {
+    background: linear-gradient(135deg, rgba(255,255,255,0.09), rgba(255,255,255,0.05));
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 26px;
+    padding: 28px 32px;
+    margin-bottom: 24px;
+    position: relative;
+    z-index: 1;
+    box-shadow: 0 16px 36px rgba(0,0,0,0.18);
+}
+.fxh-user-head {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 6px; /* أقل بين الاسم و PASS */
+    margin-bottom: 16px; /* مسافة أكبر قبل الوصف */
+    text-align: center;
+}
+.fxh-user-head-main {
+    min-width: 0;
+    flex: 0 1 auto;
+    text-align: center;
+}
+.fxh-user-result-pill {
+    padding: 10px 20px; /* أصغر */
+    border-radius: 999px;
+    color: #fff;
+    font-size: 20px; /* تصغير */
+    font-weight: 800;
+    flex-shrink: 0;
+    box-shadow: 0 14px 30px rgba(0,0,0,0.24);
+    border: 1px solid rgba(255,255,255,0.12);
+}
+.fxh-pdf-page[dir="rtl"] .fxh-user-head,
+.fxh-pdf-page[dir="ltr"] .fxh-user-head,
+.fxh-pdf-page[dir="rtl"] .fxh-user-head-main,
+.fxh-pdf-page[dir="ltr"] .fxh-user-head-main,
+.fxh-user-card,
+.fxh-user-label,
+.fxh-user-name,
+.fxh-user-desc {
+    text-align: center;
+}
+.fxh-user-label {
+    color: #93c5fd;
+    font-size: 22px;
+    font-weight: 700;
+    margin-bottom: 10px;
+}
+.fxh-user-name {
+    color: #fff;
+    font-size: 42px;
+    font-weight: 800;
+    margin-bottom: 14px;
+}
+.fxh-user-desc {
+    font-size: 24px;
+    line-height: 1.8;
+    color: #dbeafe;
+}
+.fxh-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 18px;
+    margin-bottom: 24px;
+}
+.fxh-stat {
+    background: linear-gradient(135deg, rgba(255,255,255,0.09), rgba(255,255,255,0.05));
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 22px;
+    padding: 24px 18px;
+    text-align: center;
+    box-shadow: 0 14px 30px rgba(0,0,0,0.16);
+}
+.fxh-stat.good {
+    border-color: rgba(34,197,94,0.42);
+    background: linear-gradient(135deg, rgba(22,163,74,0.28), rgba(20,83,45,0.18));
+}
+.fxh-stat.bad {
+    border-color: rgba(239,68,68,0.42);
+    background: linear-gradient(135deg, rgba(239,68,68,0.28), rgba(127,29,29,0.18));
+}
+.fxh-stat.time {
+    border-color: rgba(59,130,246,0.38);
+    background: linear-gradient(135deg, rgba(59,130,246,0.22), rgba(30,64,175,0.16));
+}
+.fxh-stat-label {
+    color: #93c5fd;
+    font-size: 22px;
+    font-weight: 700;
+    margin-bottom: 12px;
+}
+.fxh-stat-value {
+    color: #fff;
+    font-size: 34px;
+    font-weight: 800;
+    line-height: 1.25;
+}
+.fxh-meta-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 18px;
+}
+.fxh-meta-item {
+    background: linear-gradient(135deg, rgba(255,255,255,0.08), rgba(255,255,255,0.04));
+    border: 1px solid rgba(255,255,255,0.10);
+    border-radius: 18px;
+    padding: 20px 22px;
+    box-shadow: 0 10px 24px rgba(0,0,0,0.14);
+}
+.fxh-meta-label {
+    color: #93c5fd;
+    font-size: 20px;
+    font-weight: 700;
+    margin-bottom: 10px;
+}
+.fxh-meta-value {
+    color: #f8fbff;
+    font-size: 28px;
+    font-weight: 700;
+    line-height: 1.45;
+}
+.fxh-meta-value.fxh-status { color: #ffffff; }
+.fxh-meta-value.fxh-status.pass {
+    color: #86efac;
+    text-shadow: 0 0 18px rgba(34,197,94,0.28);
+}
+.fxh-meta-value.fxh-status.fail {
+    color: #fca5a5;
+    text-shadow: 0 0 18px rgba(239,68,68,0.24);
+}
+.fxh-time-meridiem {
+    display: inline-block;
+    margin-left: 8px;
+    padding: 4px 10px;
+    border-radius: 999px;
+    font-size: 0.72em;
+    font-weight: 800;
+    letter-spacing: 0.8px;
+    vertical-align: middle;
+    background: rgba(255,255,255,0.10);
+    border: 1px solid rgba(255,255,255,0.16);
+}
+.fxh-time-meridiem.am {
+    color: #bfdbfe;
+    background: rgba(59,130,246,0.16);
+}
+.fxh-time-meridiem.pm {
+    color: #ddd6fe;
+    background: rgba(124,58,237,0.18);
+}
+.fxh-footer {
+    position: absolute;
+    left: 62px;
+    right: 62px;
+    bottom: 34px;
+    color: #cbd5e1;
+    font-size: 18px;
+    text-align: center;
+    border-top: 1px solid rgba(255,255,255,0.10);
+    padding-top: 16px;
 }
 
 /* ── My Results table print btn ── */
@@ -3714,8 +3998,10 @@ function fbSaveResult(resultData) {
             fbDailyAttempts++;
             fbAttemptsLastFetched = Date.now(); // keep cache fresh after new attempt
             fbUpdateAttemptsDisplay();
-            // Also cache the updated My Results so it loads instantly next time
-            fbMyResultsCache = null; // invalidate results cache so next open re-fetches
+            // Invalidate memory cache so next open re-fetches from Firestore
+            // Also clear localStorage cache so stale data is not shown
+            fbMyResultsCache = null;
+            try { localStorage.removeItem('fxhResultsCache_' + fbCurrentUser.uid); } catch(e) {}
         })
         .catch(function(err) {
             console.warn('Failed to save result:', err);
@@ -3907,11 +4193,46 @@ function fbLoadMyResults() {
     if (subtitleElReal) subtitleElReal.style.display = 'block';
     var thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
 
-    // ── Show cached results INSTANTLY if available ────────────────
+    // ── Helpers: localStorage persistence ────────────────────────
+    function fbSaveResultsToStorage(results, uid) {
+        try {
+            var key = 'fxhResultsCache_' + uid;
+            var payload = results.map(function(r) {
+                var copy = Object.assign({}, r);
+                copy._ts = r._ts ? r._ts.getTime() : null;
+                return copy;
+            });
+            localStorage.setItem(key, JSON.stringify({ ts: Date.now(), data: payload }));
+        } catch(e) {}
+    }
+    function fbLoadResultsFromStorage(uid) {
+        try {
+            var key = 'fxhResultsCache_' + uid;
+            var raw = localStorage.getItem(key);
+            if (!raw) return null;
+            var parsed = JSON.parse(raw);
+            if (!parsed || !parsed.data) return null;
+            return parsed.data.map(function(r) {
+                if (r._ts) r._ts = new Date(r._ts);
+                return r;
+            });
+        } catch(e) { return null; }
+    }
+
+    // ── Show results INSTANTLY: memory cache → localStorage → loading spinner ──
+    var shownFromCache = false;
     if (fbMyResultsCache && fbMyResultsCache.length > 0) {
         document.getElementById('myResultsLoading').style.display = 'none';
         fbRenderMyResultsTable(fbMyResultsCache);
-        // Still refresh from Firestore silently in background
+        shownFromCache = true;
+    } else {
+        var lsResults = fbLoadResultsFromStorage(fbCurrentUser.uid);
+        if (lsResults && lsResults.length > 0) {
+            fbMyResultsCache = lsResults;
+            document.getElementById('myResultsLoading').style.display = 'none';
+            fbRenderMyResultsTable(lsResults);
+            shownFromCache = true;
+        }
     }
 
     fbDb.collection('users').doc(fbCurrentUser.uid)
@@ -3934,8 +4255,9 @@ function fbLoadMyResults() {
                 }
             });
 
-            // Save to cache for next time
+            // Save to memory cache + localStorage for instant load next time
             fbMyResultsCache = results;
+            fbSaveResultsToStorage(results, fbCurrentUser.uid);
 
             if (results.length === 0) {
                 document.getElementById('myResultsEmpty').style.display = 'block';
@@ -3948,7 +4270,7 @@ function fbLoadMyResults() {
         })
         .catch(function(err) {
             document.getElementById('myResultsLoading').style.display = 'none';
-            if (!fbMyResultsCache || fbMyResultsCache.length === 0) {
+            if (!shownFromCache) {
                 document.getElementById('myResultsEmpty').style.display   = 'block';
                 document.getElementById('myResultsEmpty').textContent = 'Error loading results. (' + err.message + ')';
             }
@@ -4114,13 +4436,33 @@ function fxhFormatDuration(timeStr, isAr) {
     var m = parseInt(parts[0] || 0), s = parseInt(parts[1] || 0);
     if (isNaN(m)) m = 0; if (isNaN(s)) s = 0;
     if (isAr) {
-        var str = m + ' دقيقة';
-        if (s > 0) str += ' و' + s + ' ثانية';
-        return str;
+        // ── صياغة الدقائق ──────────────────────────────
+        var mStr;
+        if      (m === 0)  mStr = '٠ دقيقة';
+        else if (m === 1)  mStr = '١ دقيقة';
+        else if (m === 2)  mStr = 'دقيقتين';
+        else if (m <= 10)  mStr = fxhToArabicNumerals(m) + ' دقائق';
+        else               mStr = fxhToArabicNumerals(m) + ' دقيقة';
+        // ── صياغة الثواني ──────────────────────────────
+        var sStr;
+        if      (s === 0)  sStr = '٠ ثانية';
+        else if (s === 1)  sStr = '١ ثانية';
+        else if (s === 2)  sStr = 'ثانيتان';
+        else if (s <= 10)  sStr = fxhToArabicNumerals(s) + ' ثوانٍ';
+        else               sStr = fxhToArabicNumerals(s) + ' ثانية';
+        // ── سطران منفصلان بدون (و) ─────────────────────
+        return mStr + '\n' + sStr;
     }
-    var str = m + ' minute' + (m !== 1 ? 's' : '');
-    if (s > 0) str += ' ' + s + ' second' + (s !== 1 ? 's' : '');
-    return str;
+    // ── English: two separate lines ────────────────────
+    var mStrEn = (m === 1) ? '1 minute' : m + ' minutes';
+    var sStrEn = (s === 1) ? '1 second' : s + ' seconds';
+    return mStrEn + '\n' + sStrEn;
+}
+
+function fxhToArabicNumerals(n) {
+    return String(n).replace(/[0-9]/g, function(d) {
+        return '٠١٢٣٤٥٦٧٨٩'[parseInt(d)];
+    });
 }
 
 
@@ -4236,12 +4578,18 @@ function fxhBuildPdfMarkup(data) {
     var passColor = data.passed ? '#10b981' : '#ef4444';
     var passText = isAr ? (data.passed ? 'ناجح' : 'راسب') : (data.passed ? 'PASS' : 'FAIL');
     var modeValue = (data.examMode === 'custom')
-        ? (isAr ? 'نطاق مخصص' : 'Custom Range Mode')
+        ? (isAr ? 'ترتيب مخصص' : 'Custom Range Mode')
         : (isAr ? 'ترتيب عشوائي' : 'Smart Random Mode');
     var mainTitle = fxhStripCertLevelFromName(isAr && arName ? arName : enName, isAr);
-    var subTitle = isAr && arName ? enName : certCode;
-    var levelText = fxhGetCertLevel(certCode, isAr);
-    var levelLine = levelText ? ((isAr ? ' ' : 'Level: ') + levelText) : '';
+    var subTitle = certCode;
+    var fxhPdfLevelMapAR = {
+        'AIF-C01':'تأسيسي','CLF-C02':'تأسيسي',
+        'MLA-C01':'مشارك','SAA-C03':'مشارك','DVA-C02':'مشارك','DEA-C01':'مشارك','SOA-C02':'مشارك','SOA-C03':'مشارك',
+        'AIP-C01':'احترافي','SAP-C02':'احترافي','DOP-C02':'احترافي',
+        'MLS-C01':'تخصصي','ANS-C01':'تخصصي','SCS-C02':'تخصصي','SCS-C03':'تخصصي'
+    };
+    var levelText = isAr ? (fxhPdfLevelMapAR[certCode] || '') : (fxhCertLevelMapEN[certCode] || '');
+    var levelLine = levelText ? (isAr ? ('المستوى: ' + levelText) : ('Level: ' + levelText)) : '';
 
     var stats = isAr ? [
         ['الدرجة', (data.score || 0) + ' / 1000'],
@@ -4258,14 +4606,14 @@ function fxhBuildPdfMarkup(data) {
     ];
 
     var meta = isAr ? [
-        ['رمز الشهادة', certCode],
+        ['رمز الاختبار', certCode],
         ['تاريخ الاختبار', dateStr],
         ['وقت الاختبار', timeStr],
         ['عدد الأسئلة', String(total)],
         ['وضع الاختبار', modeValue],
         ['الحالة', passText]
     ] : [
-        ['Certification Code', certCode],
+        ['Exam Code', certCode],
         ['Exam Date', dateStr],
         ['Exam Time', timeStr],
         ['Total Questions', String(total)],
@@ -4278,7 +4626,11 @@ function fxhBuildPdfMarkup(data) {
         if (idx === 2) extra = ' good';
         if (idx === 3) extra = ' bad';
         if (idx === 4) extra = ' time';
-        return '<div class="fxh-stat' + extra + '"><div class="fxh-stat-label">' + fxhEscapeHtml(item[0]) + '</div><div class="fxh-stat-value">' + fxhEscapeHtml(item[1]) + '</div></div>';
+        // Duration (idx===4) may contain \n — convert to <br> for HTML display
+        var valueHtml = (idx === 4)
+            ? fxhEscapeHtml(item[1]).replace(/\n/g, '<br>')
+            : fxhEscapeHtml(item[1]);
+        return '<div class="fxh-stat' + extra + '"><div class="fxh-stat-label">' + fxhEscapeHtml(item[0]) + '</div><div class="fxh-stat-value">' + valueHtml + '</div></div>';
     }).join('');
 
     var metaHtml = meta.map(function(item) {
@@ -4303,7 +4655,7 @@ function fxhBuildPdfMarkup(data) {
             '      <div class="fxh-header">' +
             (certImg ? '        <div class="fxh-badge-wrap"><img class="fxh-badge" src="' + fxhEscapeHtml(certImg) + '" alt="' + fxhEscapeHtml(certCode) + '"></div>' : '        <div class="fxh-badge-wrap fxh-badge-fallback">AWS</div>') +
             '        <div class="fxh-title-wrap">' +
-            '          <div class="fxh-eyebrow">FuExHub - Future Exams Hub</div>' +
+            '          <div class="fxh-eyebrow">' + (isAr ? 'مركز اختبارات المستقبل' : 'FuExHub - Future Exams Hub') + '</div>' +
             '          <div class="fxh-title">' + fxhEscapeHtml(mainTitle) + '</div>' +
             (levelLine ? '          <div class="fxh-level-line">' + fxhEscapeHtml(levelLine) + '</div>' : '') +
             '          <div class="fxh-subtitle">' + fxhEscapeHtml(subTitle) + '</div>' +
@@ -4338,147 +4690,234 @@ function fxhBuildPdfMarkup(data) {
 async function fxhGeneratePdfResult(data) {
     var isAr = (data.lang === 'ar');
     if (!(window.jspdf && window.jspdf.jsPDF)) {
-        alert(isAr ? 'تعذر تحميل أداة PDF. تحقق من الاتصال بالإنترنت ثم حاول مجدداً.' : 'Could not load PDF tool. Check your internet connection and try again.');
+        alert(isAr ? 'تعذر تحميل أدوات PDF. تحقق من الاتصال بالإنترنت ثم حاول مجدداً.' : 'Could not load PDF tools. Check your internet connection and try again.');
         return;
     }
 
+    var payload = fxhBuildPdfMarkup(data);
+    var certCode = data.certCode || '';
+    var certImgSrc = fxhPrintCertImgMap[certCode] || '';
+
+    /* ── تحميل صورة الشهادة كـ base64 ── */
+    function fxhLoadImgBase64(src) {
+        return new Promise(function(resolve) {
+            if (!src) return resolve(null);
+            var img = new Image();
+            img.crossOrigin = 'anonymous';
+            img.onload = function() {
+                try {
+                    var c = document.createElement('canvas');
+                    c.width = img.naturalWidth; c.height = img.naturalHeight;
+                    c.getContext('2d').drawImage(img, 0, 0);
+                    resolve(c.toDataURL('image/png'));
+                } catch(e) { resolve(null); }
+            };
+            img.onerror = function() { resolve(null); };
+            img.src = src;
+        });
+    }
+
+    /* ── تحميل شعار FuExHub ── */
+    function fxhLoadLogoBase64() {
+        return fxhLoadImgBase64('FUEXHUB.png');
+    }
+
     try {
-        var payload = fxhBuildPdfMarkup(data);
+        var certImgData = await fxhLoadImgBase64(certImgSrc);
+        var logoImgData = await fxhLoadLogoBase64();
+
         var jsPDF = window.jspdf.jsPDF;
-        var pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4', compress: true });
-        var pageWidth = pdf.internal.pageSize.getWidth();
-        var pageHeight = pdf.internal.pageSize.getHeight();
-        var margin = 12;
-        var contentWidth = pageWidth - (margin * 2);
-        var y = 16;
+        var pdf = new jsPDF({ orientation: 'landscape', unit: 'mm', format: 'a4', compress: true });
+        var W = 297, H = 210;
+        var dir = isAr ? 'rtl' : 'ltr';
 
-        function ensureSpace(heightNeeded) {
-            if (y + heightNeeded > pageHeight - 14) {
-                pdf.addPage();
-                y = 16;
-            }
-        }
+        /* ── خلفية ── */
+        pdf.setFillColor(11, 18, 32);
+        pdf.rect(0, 0, W, H, 'F');
 
-        function lineText(value) {
-            return String(value == null ? '-' : value);
-        }
-
-        function addWrappedText(value, x, width, align) {
-            var lines = pdf.splitTextToSize(lineText(value), width);
-            pdf.text(lines, x, y, align ? { align: align } : undefined);
-            y += (lines.length * 5.2);
-        }
-
-        function drawCard(title, value, opts) {
-            opts = opts || {};
-            var cardY = y;
-            var cardH = opts.height || 22;
-            ensureSpace(cardH + 4);
-            pdf.setFillColor(opts.fillR || 255, opts.fillG || 255, opts.fillB || 255);
-            pdf.setDrawColor(opts.strokeR || 220, opts.strokeG || 228, opts.strokeB || 236);
-            pdf.roundedRect(margin, cardY, contentWidth, cardH, 4, 4, 'FD');
-            pdf.setTextColor(90, 110, 130);
-            pdf.setFont('helvetica', 'bold');
-            pdf.setFontSize(9);
-            pdf.text(title, margin + 6, cardY + 7);
-            pdf.setTextColor(25, 35, 52);
-            pdf.setFont('helvetica', opts.valueWeight || 'bold');
-            pdf.setFontSize(opts.valueSize || 14);
-            var textY = cardY + (opts.valueY || 15);
-            if (opts.alignCenter) {
-                pdf.text(lineText(value), pageWidth / 2, textY, { align: 'center' });
-            } else {
-                pdf.text(lineText(value), margin + 6, textY);
-            }
-            y = cardY + cardH + 5;
-        }
-
-        pdf.setFillColor(246, 249, 252);
-        pdf.rect(0, 0, pageWidth, pageHeight, 'F');
-
+        /* ── شريط علوي ── */
         pdf.setFillColor(41, 128, 185);
-        pdf.rect(0, 0, pageWidth, 18, 'F');
+        pdf.rect(0, 0, W, 3, 'F');
+        pdf.setFillColor(142, 68, 173);
+        pdf.rect(0, 3, W, 1.5, 'F');
+
+        /* ── صورة الشهادة ── */
+        var badgeX = isAr ? (W - 16 - 28) : 16;
+        if (certImgData) {
+            pdf.addImage(certImgData, 'PNG', badgeX, 10, 28, 28, undefined, 'FAST');
+        }
+
+        /* ── شعار FuExHub ── */
+        var logoX = isAr ? 16 : (W - 16 - 28);
+        if (logoImgData) {
+            pdf.addImage(logoImgData, 'PNG', logoX, 10, 24, 24, undefined, 'FAST');
+        }
+
+        /* ── دالة مساعدة للنص مع دعم RTL ── */
+        function pdfText(text, x, y, opts) {
+            opts = opts || {};
+            if (isAr) {
+                pdf.text(text, x, y, Object.assign({ align: 'right', lang: 'ar' }, opts));
+            } else {
+                pdf.text(text, x, y, opts);
+            }
+        }
+
+        var txtX = isAr ? (W - 52) : 52;
+
+        /* ── eyebrow ── */
+        pdf.setTextColor(100, 160, 220);
+        pdf.setFontSize(8);
+        pdf.setFont('helvetica', 'normal');
+        pdfText(isAr ? 'مركز اختبارات المستقبل' : 'FuExHub - Future Exams Hub', txtX, 17);
+
+        /* ── اسم الشهادة ── */
         pdf.setTextColor(255, 255, 255);
+        pdf.setFontSize(13);
         pdf.setFont('helvetica', 'bold');
-        pdf.setFontSize(16);
-        pdf.text('FuExHub', margin, 11.5);
+        var mainTitle = fxhBuildPdfMarkup.__lastMainTitle || payload.html.match(/fxh-title[^>]*>([^<]+)/)?.[1] || certCode;
+        /* استخرج mainTitle و levelLine من payload مباشرة */
+        var _isAr2 = isAr;
+        var _enName = fxhCertFullNameEN[certCode] || certCode;
+        var _arName = fxhCertFullNameAR[certCode] || '';
+        var _mainTitle = fxhStripCertLevelFromName(_isAr2 && _arName ? _arName : _enName, _isAr2);
+        var _fxhPdfLvlAR = {'AIF-C01':'تأسيسي','CLF-C02':'تأسيسي','MLA-C01':'مشارك','SAA-C03':'مشارك','DVA-C02':'مشارك','DEA-C01':'مشارك','SOA-C02':'مشارك','SOA-C03':'مشارك','AIP-C01':'احترافي','SAP-C02':'احترافي','DOP-C02':'احترافي','MLS-C01':'تخصصي','ANS-C01':'تخصصي','SCS-C02':'تخصصي','SCS-C03':'تخصصي'};
+        var _levelTxt = isAr ? (_fxhPdfLvlAR[certCode]||'') : (fxhCertLevelMapEN[certCode]||'');
+        var _levelLine = _levelTxt ? (isAr ? ('المستوى: '+_levelTxt) : ('Level: '+_levelTxt)) : '';
+        pdfText(_mainTitle, txtX, 25);
+
+        /* ── سطر المستوى ── */
+        if (_levelLine) {
+            pdf.setFontSize(9);
+            pdf.setTextColor(180, 180, 220);
+            pdf.setFont('helvetica', 'normal');
+            pdfText(_levelLine, txtX, 32);
+        }
+
+        /* ── رمز الشهادة ── */
         pdf.setFontSize(9);
-        pdf.text('Exam Result', pageWidth - margin, 11.5, { align: 'right' });
+        pdf.setTextColor(88, 166, 255);
+        pdfText(certCode, txtX, _levelLine ? 38 : 32);
 
-        y = 24;
-        pdf.setTextColor(25, 35, 52);
-        pdf.setFont('helvetica', 'bold');
-        pdf.setFontSize(18);
-        pdf.text((data.certCode || 'Exam Result') + ' Result', margin, y);
-        y += 7;
+        /* ── بطاقة المستخدم ── */
+        var passColor = data.passed ? [16,185,129] : [239,68,68];
+        var passText  = isAr ? (data.passed?'ناجح':'راسب') : (data.passed?'PASS':'FAIL');
+        pdf.setFillColor(22, 27, 34);
+        pdf.roundedRect(12, 46, W-24, 22, 3, 3, 'F');
+        pdf.setFillColor(passColor[0], passColor[1], passColor[2]);
+        pdf.roundedRect(isAr ? 16 : (W-52), 50, 36, 14, 2, 2, 'F');
+        pdf.setTextColor(255,255,255);
+        pdf.setFontSize(9);
+        pdf.setFont('helvetica','bold');
+        pdf.text(passText, isAr ? 34 : (W-34), 58.5, {align:'center'});
 
-        pdf.setTextColor(90, 110, 130);
-        pdf.setFont('helvetica', 'normal');
+        var nameLabel = isAr ? 'اسم المختبر' : 'Examinee';
+        var nameVal   = (data.name || (isAr?'مختبر':'Examinee')).toUpperCase();
+        pdf.setFontSize(7.5);
+        pdf.setTextColor(130,130,160);
+        pdf.setFont('helvetica','normal');
+        pdfText(nameLabel, isAr ? (W-58) : 58, 53);
         pdf.setFontSize(10);
-        addWrappedText(payload.fileName || (data.certCode || 'result'), margin, contentWidth);
-        y += 1;
+        pdf.setTextColor(255,255,255);
+        pdf.setFont('helvetica','bold');
+        pdfText(nameVal, isAr ? (W-58) : 58, 61);
 
-        var passFill = data.passed ? [232, 248, 240] : [253, 237, 237];
-        var passStroke = data.passed ? [46, 204, 113] : [231, 76, 60];
-        drawCard('STATUS', data.passed ? 'PASS' : 'FAIL', {
-            fillR: passFill[0], fillG: passFill[1], fillB: passFill[2],
-            strokeR: passStroke[0], strokeG: passStroke[1], strokeB: passStroke[2],
-            alignCenter: true,
-            valueSize: 16,
-            height: 20,
-            valueY: 13.5
-        });
-
-        drawCard('NAME', data.name || '-');
-        drawCard('CERTIFICATE', data.certCode || '-');
-        drawCard('CERT NAME', data.certNameEN || data.certNameAR || '-');
-
-        var colGap = 5;
-        var colW = (contentWidth - colGap) / 2;
-        ensureSpace(54);
-        var statsY = y;
-        var cards = [
-            {x: margin, y: statsY, w: colW, h: 22, title: 'SCORE', value: (data.score || 0) + '/1000'},
-            {x: margin + colW + colGap, y: statsY, w: colW, h: 22, title: 'PERCENTAGE', value: (data.percentage || 0) + '%'},
-            {x: margin, y: statsY + 27, w: colW, h: 22, title: 'CORRECT', value: String(data.correctAnswers || 0)},
-            {x: margin + colW + colGap, y: statsY + 27, w: colW, h: 22, title: 'WRONG', value: String(data.wrongAnswers || 0)}
+        /* ── شبكة الإحصائيات ── */
+        var stats = isAr ? [
+            ['الدرجة',   (data.score||0)+' / 1000'],
+            ['النسبة',   (data.percentage||0)+'%'],
+            ['الصحيحة',  String(data.correctAnswers||0)],
+            ['الخاطئة',  String(data.wrongAnswers||0)],
+            ['المدة',    fxhFormatDuration(data.timeFormatted, true)]
+        ] : [
+            ['Score',      (data.score||0)+' / 1000'],
+            ['Percentage', (data.percentage||0)+'%'],
+            ['Correct',    String(data.correctAnswers||0)],
+            ['Wrong',      String(data.wrongAnswers||0)],
+            ['Duration',   fxhFormatDuration(data.timeFormatted, false)]
         ];
-        cards.forEach(function(card) {
-            pdf.setFillColor(255, 255, 255);
-            pdf.setDrawColor(220, 228, 236);
-            pdf.roundedRect(card.x, card.y, card.w, card.h, 4, 4, 'FD');
-            pdf.setTextColor(90, 110, 130);
-            pdf.setFont('helvetica', 'bold');
-            pdf.setFontSize(8.5);
-            pdf.text(card.title, card.x + 5, card.y + 6.5);
-            pdf.setTextColor(25, 35, 52);
-            pdf.setFont('helvetica', 'bold');
-            pdf.setFontSize(13);
-            pdf.text(card.value, card.x + 5, card.y + 15);
+
+        var statColors = [[255,255,255],[255,255,255],[16,185,129],[239,68,68],[88,166,255]];
+        var statW = (W-24) / 5;
+        stats.forEach(function(st, i) {
+            var sx = 12 + i * statW;
+            pdf.setFillColor(22,27,34);
+            pdf.roundedRect(sx+1, 71, statW-2, 22, 2, 2, 'F');
+            pdf.setFontSize(7);
+            pdf.setTextColor(130,130,160);
+            pdf.setFont('helvetica','normal');
+            pdf.text(st[0], sx + statW/2, 77, {align:'center'});
+            pdf.setFontSize(9);
+            pdf.setTextColor(statColors[i][0], statColors[i][1], statColors[i][2]);
+            pdf.setFont('helvetica','bold');
+            /* Duration قد يحتوي سطرين */
+            var valLines = st[1].split('\n');
+            if (valLines.length > 1) {
+                pdf.text(valLines[0], sx + statW/2, 83, {align:'center'});
+                pdf.setFontSize(7.5);
+                pdf.text(valLines[1], sx + statW/2, 88, {align:'center'});
+            } else {
+                pdf.text(st[1], sx + statW/2, 85, {align:'center'});
+            }
         });
-        y = statsY + 54;
 
-        drawCard('TOTAL QUESTIONS', data.totalQuestions || 0, { valueWeight: 'normal', valueSize: 12 });
-        drawCard('TIME', data.timeFormatted || '00:00', { valueWeight: 'normal', valueSize: 12 });
+        /* ── شبكة البيانات الوصفية ── */
+        var examDate = data.examDate ? new Date(data.examDate) : new Date();
+        var dateStr  = fxhFormatGregorianDate(examDate, isAr);
+        var timeObj  = fxhFormatTime12(examDate, isAr);
+        var modeVal  = (data.examMode==='custom') ? (isAr?'ترتيب مخصص':'Custom Range') : (isAr?'ترتيب عشوائي':'Smart Random');
+        var meta = isAr ? [
+            ['رمز الاختبار', certCode],
+            ['تاريخ الاختبار', dateStr],
+            ['وقت الاختبار', timeObj.text],
+            ['عدد الأسئلة', String(data.totalQuestions||0)],
+            ['وضع الاختبار', modeVal],
+            ['الحالة', passText]
+        ] : [
+            ['Exam Code', certCode],
+            ['Exam Date', dateStr],
+            ['Exam Time', timeObj.text],
+            ['Total Q', String(data.totalQuestions||0)],
+            ['Mode', modeVal],
+            ['Status', passText]
+        ];
 
-        if (data.examMode) {
-            drawCard('MODE', String(data.examMode).toUpperCase(), { valueWeight: 'normal', valueSize: 12 });
-        }
+        var metaW = (W-24) / 6;
+        meta.forEach(function(mt, i) {
+            var mx = 12 + i * metaW;
+            pdf.setFillColor(16,21,30);
+            pdf.roundedRect(mx+1, 96, metaW-2, 16, 1.5, 1.5, 'F');
+            pdf.setFontSize(6.5);
+            pdf.setTextColor(100,100,140);
+            pdf.setFont('helvetica','normal');
+            pdf.text(mt[0], mx + metaW/2, 101, {align:'center'});
+            pdf.setFontSize(7.5);
+            var isStatusCell = (mt[0]==='الحالة'||mt[0]==='Status');
+            if (isStatusCell) {
+                pdf.setTextColor(passColor[0], passColor[1], passColor[2]);
+            } else {
+                pdf.setTextColor(200,200,220);
+            }
+            pdf.setFont('helvetica','bold');
+            pdf.text(mt[1], mx + metaW/2, 107.5, {align:'center'});
+        });
 
-        if (data.examDate) {
-            var dt = new Date(data.examDate);
-            var dateText = dt.toLocaleString('en-US');
-            drawCard('DATE', dateText, { valueWeight: 'normal', valueSize: 11, height: 24, valueY: 15 });
-        }
+        /* ── وصف المستخدم ── */
+        var descTxt = isAr
+            ? ('تم إصدار هذه النتيجة بواسطة FuExHub للمختبر ' + nameVal + ' في اختبار محاكاة ' + _mainTitle + '.')
+            : ('This result was issued by FuExHub for ' + nameVal + ' in the ' + _mainTitle + ' simulation exam.');
+        pdf.setFontSize(7);
+        pdf.setTextColor(120,120,150);
+        pdf.setFont('helvetica','normal');
+        pdf.text(descTxt, W/2, 118, {align:'center', maxWidth: W-40});
 
-        ensureSpace(16);
-        pdf.setDrawColor(215, 225, 235);
-        pdf.line(margin, pageHeight - 14, pageWidth - margin, pageHeight - 14);
-        pdf.setTextColor(120, 132, 145);
-        pdf.setFont('helvetica', 'normal');
-        pdf.setFontSize(8.5);
-        pdf.text('Generated by FuExHub', margin, pageHeight - 8.5);
-        pdf.text('Lightweight PDF export', pageWidth - margin, pageHeight - 8.5, { align: 'right' });
+        /* ── تذييل ── */
+        pdf.setFillColor(20,26,40);
+        pdf.rect(0, H-12, W, 12, 'F');
+        pdf.setFontSize(8);
+        pdf.setTextColor(100,120,160);
+        pdf.setFont('helvetica','normal');
+        pdf.text(isAr ? 'مركز اختبارات المستقبل' : 'Future Exams Hub', W/2, H-5, {align:'center'});
 
         pdf.save(fxhSafeFileName(payload.fileName) + '.pdf');
     } catch (err) {
@@ -4562,7 +5001,7 @@ document.addEventListener('DOMContentLoaded', function() {
     if (myResultsHead && !myResultsHead.querySelector('.fxh-print-th')) {
         var th = document.createElement('th');
         th.className = 'fxh-print-th';
-        th.innerHTML = '🖨️';
+        th.innerHTML = 'Print';
         th.title = 'Print Result';
         th.style.whiteSpace = 'nowrap';
         myResultsHead.appendChild(th);
