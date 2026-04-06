@@ -4100,7 +4100,7 @@ function fbRenderMyResultsTable(results) {
         tdP.className = 'fxh-print-td';
         var btnP = document.createElement('button');
         btnP.className = 'fxh-row-print-btn';
-        btnP.innerHTML = '🖨️';
+        btnP.innerHTML = 'Print';
         btnP.title = r.lang === 'ar' ? 'تحميل النتيجة' : 'Download Result';
         btnP.addEventListener('click', (function(rowData){ return function(e){ e.stopPropagation(); fxhPrintRowResult(rowData); }; })(r));
         tdP.appendChild(btnP);
@@ -4520,7 +4520,7 @@ function fxhBuildPdfMarkup(data) {
     var passColor = data.passed ? '#10b981' : '#ef4444';
     var passText = isAr ? (data.passed ? 'ناجح' : 'راسب') : (data.passed ? 'PASS' : 'FAIL');
     var modeValue = (data.examMode === 'custom')
-        ? (isAr ? 'نطاق مخصص' : 'Custom Range Mode')
+        ? (isAr ? 'ترتيب مخصص' : 'Custom Range Mode')
         : (isAr ? 'ترتيب عشوائي' : 'Smart Random Mode');
     var mainTitle = fxhStripCertLevelFromName(isAr && arName ? arName : enName, isAr);
     var subTitle = isAr && arName ? enName : certCode;
@@ -4542,14 +4542,14 @@ function fxhBuildPdfMarkup(data) {
     ];
 
     var meta = isAr ? [
-        ['رمز الشهادة', certCode],
+        ['رمز الاختبار', certCode],
         ['تاريخ الاختبار', dateStr],
         ['وقت الاختبار', timeStr],
         ['عدد الأسئلة', String(total)],
         ['وضع الاختبار', modeValue],
         ['الحالة', passText]
     ] : [
-        ['Certification Code', certCode],
+        ['Exam Code', certCode],
         ['Exam Date', dateStr],
         ['Exam Time', timeStr],
         ['Total Questions', String(total)],
