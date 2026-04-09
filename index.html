@@ -1492,7 +1492,7 @@ body.lang-ar #pageCertEN * {
                     <span id="myResultsThemeIcon">🌙</span> <span id="myResultsThemeLabel">Dark Mode</span>
                 </button>
             </div>
-            <div class="my-results-subtitle" id="myResultsSubtitle">Last 30 days | آخر 30 يوم</div>
+            <div class="my-results-subtitle" id="myResultsSubtitle">Last 14 days | آخر 14 يوم</div>
 
             <!-- Stats row — Avg Score removed (Fix 5) -->
             <div class="my-results-stats-row" id="myResultsStatsRow" style="display:none;">
@@ -4141,7 +4141,7 @@ function fbLoadMyResults() {
     // ── GUEST: load from sessionStorage ──────────────────────────
     if (fbIsGuest || !fbCurrentUser) {
         document.getElementById('myResultsLoading').style.display = 'none';
-        // Hide "Last 30 days" subtitle for guest
+        // Hide "Last 14 days" subtitle for guest
         var subtitleEl = document.getElementById('myResultsSubtitle');
         if (subtitleEl) subtitleEl.style.display = 'none';
         var guestResults = [];
@@ -4273,7 +4273,7 @@ function fbLoadMyResults() {
         .then(function(snap) {
             document.getElementById('myResultsLoading').style.display = 'none';
 
-            // Filter client-side to last 30 days (avoids composite index requirement)
+            // Filter client-side to last 14 days (avoids composite index requirement)
             var results = [];
             snap.forEach(function(doc) {
                 var d = doc.data();
