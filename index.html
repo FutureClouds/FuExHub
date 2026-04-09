@@ -3989,6 +3989,9 @@ function fbSaveResult(resultData) {
         return;
     }
 
+    // حساب تاريخ انتهاء الصلاحية: 14 يوم من الآن
+    var expiresAtMs = Date.now() + 14 * 24 * 60 * 60 * 1000;
+
     var docData = {
         certCode:       currentCertCode,
         certName:       currentCertName,
@@ -4004,7 +4007,7 @@ function fbSaveResult(resultData) {
         timestamp:      firebase.firestore.FieldValue.serverTimestamp(),
         clientTimestamp: Date.now(),   // fallback for immediate display
         uid:            fbCurrentUser.uid,
-        expiresAt:      new Date(Date.now() + 30 * 24 * 60 * 60 * 1000) // TTL: auto-delete after 30 days
+        expiresAt:      firebase.firestore.Timestamp.fromDate(new Date(expiresAtMs)) // TTL field
     };
 
     // Save to user's subcollection (for My Results)
@@ -4208,23 +4211,22 @@ function fbLoadMyResults() {
     // ── REAL USER: load from Firestore ────────────────────────────
     var subtitleElReal = document.getElementById('myResultsSubtitle');
     if (subtitleElReal) subtitleElReal.style.display = 'block';
-    var thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
+    var thirtyDaysAgo = new Date(Date.now() - 14 * 24 * 60 * 60 * 1000); // تم تحديثه: 14 يوم بدلاً من 30
 
     // ── Helpers: localStorage persistence ────────────────────────
     function fbSaveResultsToStorage(results, uid) {
         try {
             var key = 'fxhResultsCache_' + uid;
-            var cutoff = Date.now() - 30 * 24 * 60 * 60 * 1000; // 30 days ago
-            var payload = results
-                .filter(function(r) {
-                    var t = r._ts ? r._ts.getTime() : (r.clientTimestamp || 0);
-                    return t >= cutoff;
-                })
-                .map(function(r) {
-                    var copy = Object.assign({}, r);
-                    copy._ts = r._ts ? r._ts.getTime() : null;
-                    return copy;
-                });
+            var cutoffMs = Date.now() - 14 * 24 * 60 * 60 * 1000; // حذف ما هو أقدم من 14 يوم
+            var filtered = results.filter(function(r) {
+                var tsMs = r._ts ? r._ts.getTime() : (r.clientTimestamp || 0);
+                return tsMs >= cutoffMs;
+            });
+            var payload = filtered.map(function(r) {
+                var copy = Object.assign({}, r);
+                copy._ts = r._ts ? r._ts.getTime() : null;
+                return copy;
+            });
             localStorage.setItem(key, JSON.stringify({ ts: Date.now(), data: payload }));
         } catch(e) {}
     }
@@ -4235,16 +4237,15 @@ function fbLoadMyResults() {
             if (!raw) return null;
             var parsed = JSON.parse(raw);
             if (!parsed || !parsed.data) return null;
-            var cutoff = Date.now() - 30 * 24 * 60 * 60 * 1000; // 30 days ago
-            return parsed.data
-                .filter(function(r) {
-                    var t = r._ts || r.clientTimestamp || 0;
-                    return t >= cutoff;
-                })
-                .map(function(r) {
-                    if (r._ts) r._ts = new Date(r._ts);
-                    return r;
-                });
+            var cutoffMs = Date.now() - 14 * 24 * 60 * 60 * 1000; // حذف ما هو أقدم من 14 يوم
+            var filtered = parsed.data.filter(function(r) {
+                var tsMs = r._ts || r.clientTimestamp || 0;
+                return tsMs >= cutoffMs;
+            });
+            return filtered.map(function(r) {
+                if (r._ts) r._ts = new Date(r._ts);
+                return r;
+            });
         } catch(e) { return null; }
     }
 
