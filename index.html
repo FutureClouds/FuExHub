@@ -3450,8 +3450,18 @@ var HASH_PAGE_MAP = {};
 
 function fbUpdateHash(pageId) {
     var hash = PAGE_HASH_MAP[pageId];
-    if (hash && window.location.hash !== '#' + hash) {
+    if (!hash) return;
+    // page2 (EXAM) and page3 (ExamResults) must NOT be added to browser history
+    // so the user cannot navigate back/forward into them via browser buttons.
+    // All other pages use pushState to enable back/forward navigation.
+    var noHistoryPages = ['page2', 'page3'];
+    if (noHistoryPages.indexOf(pageId) !== -1) {
+        // Replace instead of push — keeps URL in sync but doesn't add a history entry
         history.replaceState({ page: pageId }, '', '#' + hash);
+    } else {
+        if (window.location.hash !== '#' + hash) {
+            history.pushState({ page: pageId }, '', '#' + hash);
+        }
     }
 }
 
@@ -3472,8 +3482,8 @@ function fbUnlockNavigation() {
 }
 
 window.addEventListener('popstate', function(e) {
+    // ── EXAM LOCK: block all browser navigation during exam ──────────
     if (_examNavLocked) {
-        // Push state again to prevent leaving during exam
         history.pushState({ locked: true }, '', window.location.href);
         return;
     }
@@ -3483,23 +3493,31 @@ window.addEventListener('popstate', function(e) {
     var activePage = document.querySelector('.page.active');
     var activeId   = activePage ? activePage.id : '';
 
-    // On mobile, back/forward triggers a full page reload (no BFCache).
-    // In that case the page restarts from scratch and onAuthStateChanged
-    // handles restore — nothing to do here.
-    // When the page is already loaded (SPA navigation), handle hash routing:
-    if (targetPage && targetPage !== activeId && targetPage !== 'pageAuth') {
-        // Protect exam and results pages from direct hash navigation
-        if (targetPage === 'page2' || targetPage === 'page3') {
-            history.replaceState({ page: activeId }, '', '#' + (PAGE_HASH_MAP[activeId] || ''));
-            return;
-        }
-        // Try to restore from saved full state for this target page
+    // ── Never navigate TO page2 or page3 via browser buttons ────────
+    // (they are excluded from history via replaceState in fbUpdateHash)
+    if (targetPage === 'page2' || targetPage === 'page3') {
+        history.replaceState({ page: activeId }, '', '#' + (PAGE_HASH_MAP[activeId] || ''));
+        return;
+    }
+
+    // ── page3 (ExamResults) special rule:
+    //    From page3, back is allowed only to page0 (ModeSelect/setup),
+    //    NOT back to page2 (exam). Since page2 was never pushed to history,
+    //    this works automatically — the previous history entry will be page0 or earlier.
+
+    // ── Block navigation to pageAuth via browser buttons ────────────
+    if (targetPage === 'pageAuth') {
+        history.replaceState({ page: activeId }, '', '#' + (PAGE_HASH_MAP[activeId] || ''));
+        return;
+    }
+
+    if (targetPage && targetPage !== activeId) {
+        // Try to restore full app state for the target page
         var raw = sessionStorage.getItem('fxhState');
         if (raw) {
             try {
                 var s = JSON.parse(raw);
                 if (s && s.page === targetPage) {
-                    // State matches — let fbTryRestoreState handle it fully
                     if (typeof fbTryRestoreState === 'function') {
                         fbTryRestoreState(fbIsGuest);
                         return;
@@ -3507,12 +3525,10 @@ window.addEventListener('popstate', function(e) {
                 }
             } catch(e) {}
         }
-        // Fallback: just navigate to the target page if it's safe
-        if (targetPage !== 'page2' && targetPage !== 'page3') {
-            showPage(targetPage);
-        }
+        // Fallback: navigate directly (safe pages only)
+        showPage(targetPage);
     } else if (!targetPage) {
-        // No matching hash — keep the current page
+        // No matching hash — keep current page
         if (activeId) {
             history.replaceState({ page: activeId }, '', '#' + (PAGE_HASH_MAP[activeId] || ''));
         }
@@ -3987,7 +4003,8 @@ function fbSaveResult(resultData) {
         timeExpired:    resultData.timeExpired,
         timestamp:      firebase.firestore.FieldValue.serverTimestamp(),
         clientTimestamp: Date.now(),   // fallback for immediate display
-        uid:            fbCurrentUser.uid
+        uid:            fbCurrentUser.uid,
+        expiresAt:      new Date(Date.now() + 30 * 24 * 60 * 60 * 1000) // TTL: auto-delete after 30 days
     };
 
     // Save to user's subcollection (for My Results)
@@ -4197,11 +4214,17 @@ function fbLoadMyResults() {
     function fbSaveResultsToStorage(results, uid) {
         try {
             var key = 'fxhResultsCache_' + uid;
-            var payload = results.map(function(r) {
-                var copy = Object.assign({}, r);
-                copy._ts = r._ts ? r._ts.getTime() : null;
-                return copy;
-            });
+            var cutoff = Date.now() - 30 * 24 * 60 * 60 * 1000; // 30 days ago
+            var payload = results
+                .filter(function(r) {
+                    var t = r._ts ? r._ts.getTime() : (r.clientTimestamp || 0);
+                    return t >= cutoff;
+                })
+                .map(function(r) {
+                    var copy = Object.assign({}, r);
+                    copy._ts = r._ts ? r._ts.getTime() : null;
+                    return copy;
+                });
             localStorage.setItem(key, JSON.stringify({ ts: Date.now(), data: payload }));
         } catch(e) {}
     }
@@ -4212,10 +4235,16 @@ function fbLoadMyResults() {
             if (!raw) return null;
             var parsed = JSON.parse(raw);
             if (!parsed || !parsed.data) return null;
-            return parsed.data.map(function(r) {
-                if (r._ts) r._ts = new Date(r._ts);
-                return r;
-            });
+            var cutoff = Date.now() - 30 * 24 * 60 * 60 * 1000; // 30 days ago
+            return parsed.data
+                .filter(function(r) {
+                    var t = r._ts || r.clientTimestamp || 0;
+                    return t >= cutoff;
+                })
+                .map(function(r) {
+                    if (r._ts) r._ts = new Date(r._ts);
+                    return r;
+                });
         } catch(e) { return null; }
     }
 
