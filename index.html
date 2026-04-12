@@ -2242,7 +2242,7 @@ if (isAr) {
                     cLine.startsWith('HOTSPOT_ROW:') || cLine.startsWith('IMG_Q:') ||
                     /^IMG_[A-Z]:/.test(cLine) || /^https?:\/\//i.test(cLine) ||
                     /^[A-Za-z0-9][\w.-]*\.[a-zA-Z]{2,}(\/\S*)?$/.test(cLine)) break;
-                question += '\n' + cLine;
+                question += '\n\n' + cLine;
             }
             var options = [], correct = [], questionImages = [], optionImages = {};
             var sourceUrl = '', questionType = 'standard';
@@ -2331,7 +2331,7 @@ if (isAr) {
                     cLine.startsWith('HOTSPOT_ROW:') || cLine.startsWith('IMG_Q:') ||
                     /^https?:\/\//i.test(cLine) ||
                     /^[A-Za-z0-9][\w.-]*\.[a-zA-Z]{2,}(\/\S*)?$/.test(cLine)) break;
-                question += '\n' + cLine;
+                question += '\n\n' + cLine;
             }
             var options = [], correct = [], questionImages = [], optionImages = {};
             var sourceUrl = '', questionType = 'standard';
