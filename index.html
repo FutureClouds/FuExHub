@@ -2234,6 +2234,16 @@ if (isAr) {
             if (qLineIdx === -1) return;
 
             var question = lines[qLineIdx].trim().substring(2).trim();
+            for (var ci = qLineIdx + 1; ci < lines.length; ci++) {
+                var cLine = lines[ci].trim();
+                if (!cLine) continue;
+                if (/^[A-Z]\./.test(cLine) || /^\*[A-Z]\./.test(cLine) ||
+                    cLine.startsWith('TYPE:') || cLine.startsWith('HOTSPOT_OPTIONS:') ||
+                    cLine.startsWith('HOTSPOT_ROW:') || cLine.startsWith('IMG_Q:') ||
+                    /^IMG_[A-Z]:/.test(cLine) || /^https?:\/\//i.test(cLine) ||
+                    /^[A-Za-z0-9][\w.-]*\.[a-zA-Z]{2,}(\/\S*)?$/.test(cLine)) break;
+                question += '\n' + cLine;
+            }
             var options = [], correct = [], questionImages = [], optionImages = {};
             var sourceUrl = '', questionType = 'standard';
             var hotspotOptions = [], hotspotRows = [];
@@ -2313,6 +2323,16 @@ if (isAr) {
             if (qLineIdx === -1) return;
 
             var question = lines[qLineIdx].trim().substring(2).trim();
+            for (var ci = qLineIdx + 1; ci < lines.length; ci++) {
+                var cLine = lines[ci].trim();
+                if (!cLine) continue;
+                if (getArabicOptionIndex(cLine) !== -1 || getArabicCorrectIndex(cLine) !== -1 ||
+                    cLine.startsWith('TYPE:') || cLine.startsWith('HOTSPOT_OPTIONS:') ||
+                    cLine.startsWith('HOTSPOT_ROW:') || cLine.startsWith('IMG_Q:') ||
+                    /^https?:\/\//i.test(cLine) ||
+                    /^[A-Za-z0-9][\w.-]*\.[a-zA-Z]{2,}(\/\S*)?$/.test(cLine)) break;
+                question += '\n' + cLine;
+            }
             var options = [], correct = [], questionImages = [], optionImages = {};
             var sourceUrl = '', questionType = 'standard';
             var hotspotOptions = [], hotspotRows = [];
