@@ -2262,7 +2262,7 @@ if (isAr) {
                 } else if (line.startsWith('IMG_Q:')) {
                     questionImages = questionImages.concat(line.substring(6).trim().split(' ').filter(Boolean));
                 } else if (/^IMG_[A-Z]:/.test(line)) {
-                    optionImages[line.charCodeAt(4) - 75] = line.substring(6).trim();
+                    optionImages[line.charCodeAt(4) - 65] = line.substring(6).trim();
                 } else if (/^\*[A-Z]\./.test(line)) {
                     options.push(line.substring(3).trim());
                     correct.push(options.length - 1);
