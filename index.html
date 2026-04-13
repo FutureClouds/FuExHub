@@ -395,7 +395,7 @@ body.simple-theme-page #fabWrapper {
         .review-score-badge.correct { background: rgba(39,174,96,0.2); color: #27ae60; }
         .review-score-badge.wrong { background: rgba(231,76,60,0.15); color: #e74c3c; }
         .review-item-body { max-height: 0; overflow: hidden; transition: max-height 0.4s cubic-bezier(0.4,0,0.2,1); }
-        .review-item-body.open { max-height: 2000px; }
+        .review-item-body.open { max-height: 20000px; }
         .review-question { padding: 16px 18px 18px; color: var(--result-box-text); text-align: left; direction: ltr; }
         .review-question h4, .review-question p, .review-question label { text-align: left; }
         body.lang-ar .review-question { text-align: right; direction: rtl; }
@@ -2964,6 +2964,21 @@ if (isAr) {
         var header = document.querySelector('#reviewItem' + index + ' .review-item-header');
         if (!body) return;
         var open = body.classList.toggle('open');
+        if (open) {
+            body.style.maxHeight = body.scrollHeight + 'px';
+            var reviewImages = body.querySelectorAll('img');
+            reviewImages.forEach(function(img) {
+                if (!img.complete) {
+                    img.addEventListener('load', function() {
+                        if (body.classList.contains('open')) {
+                            body.style.maxHeight = body.scrollHeight + 'px';
+                        }
+                    }, { once: true });
+                }
+            });
+        } else {
+            body.style.maxHeight = '0px';
+        }
         if (arrow)  arrow.classList.toggle('open', open);
         if (header) header.classList.toggle('open', open);
     }
