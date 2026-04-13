@@ -65,6 +65,7 @@
             --cert-card-bg: rgba(255,255,255,0.12);
             --cert-card-border: rgba(255,255,255,0.25);
             --cert-card-hover: rgba(255,255,255,0.22);
+            --question-last-line-color: #4b0082;
         }
 
         [data-theme="dark"] {
@@ -100,6 +101,7 @@
             --cert-card-bg: rgba(22, 27, 34, 0.85);
             --cert-card-border: rgba(48, 54, 61, 0.8);
             --cert-card-hover: rgba(31, 58, 95, 0.85);
+            --question-last-line-color: #d8b4fe;
         }
 
         /* ===== BASE ===== */
@@ -321,6 +323,8 @@ body.simple-theme-page #fabWrapper {
         body.lang-ar .question { text-align: right; }
         .question:hover { transform: translateY(-2px); box-shadow: 0 12px 24px rgba(0,0,0,0.3); }
         .question h3 { color: var(--header-color); font-size: 1.3rem; margin-bottom: 20px; font-weight: 600; white-space: pre-line; line-height: 1.75; }
+        .question-last-line { color: var(--question-last-line-color); font-weight: 700; }
+        .review-question-last-line { color: var(--question-last-line-color); font-weight: 700; }
         .option { display: block; padding: 15px; margin: 10px 0; border: 2px solid var(--option-border); border-radius: 8px; cursor: pointer; transition: all 0.3s ease; background: var(--option-bg); color: var(--question-text); }
         .option:hover { background: var(--option-hover); border-color: #3498db; }
         .option input[type="checkbox"], .option input[type="radio"] { margin-right: 10px; transform: scale(1.2); }
@@ -2659,6 +2663,27 @@ if (isAr) {
         if (typeof fbLockNavigation === 'function') fbLockNavigation();
     }
 
+    function escapeHtml(text) {
+        return String(text)
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#39;');
+    }
+
+    function renderQuestionWithColoredLastLine(text, lineClass) {
+        var str = text == null ? '' : String(text);
+        var lines = str.split('\n');
+        if (lines.length === 0) return '';
+        if (lines.length === 1) {
+            return '<span class="' + lineClass + '">' + escapeHtml(lines[0]) + '</span>';
+        }
+        var firstLines = lines.slice(0, -1).map(escapeHtml).join('<br>');
+        var lastLine = escapeHtml(lines[lines.length - 1]);
+        return firstLines + '<br><span class="' + lineClass + '">' + lastLine + '</span>';
+    }
+
     /* ===== GENERATE QUIZ HTML ===== */
     function generateQuizHTML() {
         var container = document.getElementById('quizQuestions');
@@ -2688,7 +2713,7 @@ if (isAr) {
             }
 
             if (q.isHotspot) {
-                html += '<div class="question" id="question' + index + '"><h3>' + qLabel + ': ' + q.question + '</h3>' + questionImagesHTML + '<p style="color:#7f8c8d; font-style:italic; margin-bottom:10px;">' + (isAr ? '(اختر السياسة الصحيحة لكل إجراء)' : '(Select the correct filter policy for each action)') + '</p><table class="hotspot-table"><thead><tr><th>' + (isAr ? 'الإجراء' : 'Mitigation Action') + '</th><th>' + (isAr ? 'سياسة التصفية' : 'Filter Policy') + '</th></tr></thead><tbody>';
+                html += '<div class="question" id="question' + index + '"><h3>' + qLabel + ': ' + renderQuestionWithColoredLastLine(q.question, 'question-last-line') + '</h3>' + questionImagesHTML + '<p style="color:#7f8c8d; font-style:italic; margin-bottom:10px;">' + (isAr ? '(اختر السياسة الصحيحة لكل إجراء)' : '(Select the correct filter policy for each action)') + '</p><table class="hotspot-table"><thead><tr><th>' + (isAr ? 'الإجراء' : 'Mitigation Action') + '</th><th>' + (isAr ? 'سياسة التصفية' : 'Filter Policy') + '</th></tr></thead><tbody>';
                 q.hotspotRows.forEach(function(row, ri) {
                     html += '<tr><td>' + row.statement + '</td><td class="hotspot-td-select"><select class="hotspot-row-select" id="hotspot' + index + '_' + ri + '" onchange="handleHotspotChange(' + index + ',' + ri + ',this.value,this)"><option value="">-- ' + (isAr ? 'اختر' : 'Select') + ' --</option>' + q.hotspotOptions.map(function(opt){ return '<option value="' + opt + '">' + opt + '</option>'; }).join('') + '</select></td></tr>';
                 });
@@ -2703,7 +2728,7 @@ if (isAr) {
                 } else {
                     selectText = q.correct.length === 1 ? '(Select one answer)' : '(Select ' + q.correct.length + ' answers)';
                 }
-                html += '<div class="question" id="question' + index + '"><h3>' + qLabel + ': ' + q.question + '</h3>' + questionImagesHTML + '<p style="color:#7f8c8d; font-style:italic; margin-bottom:15px;">' + selectText + '</p>';
+                html += '<div class="question" id="question' + index + '"><h3>' + qLabel + ': ' + renderQuestionWithColoredLastLine(q.question, 'question-last-line') + '</h3>' + questionImagesHTML + '<p style="color:#7f8c8d; font-style:italic; margin-bottom:15px;">' + selectText + '</p>';
                 q.options.forEach(function(option, optIndex) {
                     var letter = isAr ? arabicLetters[optIndex] : String.fromCharCode(65 + optIndex);
                     var optImgHTML = '';
@@ -2973,7 +2998,7 @@ if (isAr) {
                 var userDisp = userVal || (timeExpiredParam ? (isAr ? 'لم يتم الإجابة (انتهى الوقت)' : 'Not answered (time expired)') : (isAr ? 'لا توجد إجابة' : 'No answer'));
                 rowsHTML += '<tr><td style="padding:10px 14px; border-bottom:1px solid var(--option-border); color:var(--question-text); background:var(--option-bg);">' + row.statement + '</td><td style="padding:10px 14px; border-bottom:1px solid var(--option-border); background:var(--option-bg);"><div class="' + (isRowOk ? 'hotspot-correct-cell' : 'hotspot-wrong-cell') + '">' + (isRowOk ? '✔ ' : '✘ ') + userDisp + '</div></td><td style="padding:10px 14px; border-bottom:1px solid var(--option-border); background:var(--option-bg);"><div class="hotspot-expected-cell">' + row.correct + '</div></td></tr>';
             });
-            return '<div class="review-item ' + badgeClass + '" id="reviewItem' + index + '"><div class="review-item-header" onclick="toggleReviewItem(' + index + ')"><div class="review-item-left"><span class="review-item-arrow" id="reviewArrow' + index + '">▼</span><span class="review-q-label">' + qLabel + '</span></div><span class="review-score-badge ' + badgeClass + '">' + (allOk ? '1/1' : '0/1') + '</span></div><div class="review-item-body" id="reviewBody' + index + '"><div class="review-question"><h4 style="margin-top:14px;">' + q.question + '</h4>' + questionImagesHTML + '<table class="hotspot-review-table" style="margin-top:14px;"><thead><tr><th>' + (isAr ? 'الإجراء' : 'Mitigation Action') + '</th><th>' + (isAr ? 'إجابتك' : 'Your Answer') + '</th><th>' + (isAr ? 'الإجابة الصحيحة' : 'Correct Answer') + '</th></tr></thead><tbody>' + rowsHTML + '</tbody></table>' + buildSourceHTML(q) + '</div></div></div>';
+            return '<div class="review-item ' + badgeClass + '" id="reviewItem' + index + '"><div class="review-item-header" onclick="toggleReviewItem(' + index + ')"><div class="review-item-left"><span class="review-item-arrow" id="reviewArrow' + index + '">▼</span><span class="review-q-label">' + qLabel + '</span></div><span class="review-score-badge ' + badgeClass + '">' + (allOk ? '1/1' : '0/1') + '</span></div><div class="review-item-body" id="reviewBody' + index + '"><div class="review-question"><h4 style="margin-top:14px; white-space:pre-line;">' + renderQuestionWithColoredLastLine(q.question, 'review-question-last-line') + '</h4>' + questionImagesHTML + '<table class="hotspot-review-table" style="margin-top:14px;"><thead><tr><th>' + (isAr ? 'الإجراء' : 'Mitigation Action') + '</th><th>' + (isAr ? 'إجابتك' : 'Your Answer') + '</th><th>' + (isAr ? 'الإجابة الصحيحة' : 'Correct Answer') + '</th></tr></thead><tbody>' + rowsHTML + '</tbody></table>' + buildSourceHTML(q) + '</div></div></div>';
         } else {
             var ua2 = userAnswers[index] || [], ca = q.correct;
             var uaText, isOk = false;
@@ -3012,7 +3037,7 @@ if (isAr) {
             var uaLabelCls = (isOk && ua2.length > 0) ? 'user-correct-label' : 'user-wrong-label';
             var uaAnsCls   = (isOk && ua2.length > 0) ? 'user-correct-answer' : 'user-wrong-answer';
 
-            return '<div class="review-item ' + itemClass + '" id="reviewItem' + index + '"><div class="review-item-header" onclick="toggleReviewItem(' + index + ')"><div class="review-item-left"><span class="review-item-arrow" id="reviewArrow' + index + '">▼</span><span class="review-q-label">' + qLabel + '</span></div><span class="review-score-badge ' + badgeCls + '">' + ((isOk && ua2.length > 0) ? '1/1' : '0/1') + '</span></div><div class="review-item-body" id="reviewBody' + index + '"><div class="review-question"><h4 style="margin-top:14px;">' + q.question + '</h4>' + questionImagesHTML + optionsHTML + '<div style="margin-top:15px;"><div class="review-info-box"><span class="' + uaLabelCls + '">' + (isAr ? 'إجابتك:' : 'Your answer:') + '</span><div class="' + uaAnsCls + '" style="margin-top:8px;">' + uaText + '</div></div><div class="review-explanation-box"><span class="correct-answer-label">' + (isAr ? 'الإجابة الصحيحة:' : 'The correct answer:') + '</span><div class="correct-answer-text" style="margin-top:8px;">' + caText + '</div></div>' + buildSourceHTML(q) + '</div></div></div></div>';
+            return '<div class="review-item ' + itemClass + '" id="reviewItem' + index + '"><div class="review-item-header" onclick="toggleReviewItem(' + index + ')"><div class="review-item-left"><span class="review-item-arrow" id="reviewArrow' + index + '">▼</span><span class="review-q-label">' + qLabel + '</span></div><span class="review-score-badge ' + badgeCls + '">' + ((isOk && ua2.length > 0) ? '1/1' : '0/1') + '</span></div><div class="review-item-body" id="reviewBody' + index + '"><div class="review-question"><h4 style="margin-top:14px; white-space:pre-line;">' + renderQuestionWithColoredLastLine(q.question, 'review-question-last-line') + '</h4>' + questionImagesHTML + optionsHTML + '<div style="margin-top:15px;"><div class="review-info-box"><span class="' + uaLabelCls + '">' + (isAr ? 'إجابتك:' : 'Your answer:') + '</span><div class="' + uaAnsCls + '" style="margin-top:8px;">' + uaText + '</div></div><div class="review-explanation-box"><span class="correct-answer-label">' + (isAr ? 'الإجابة الصحيحة:' : 'The correct answer:') + '</span><div class="correct-answer-text" style="margin-top:8px;">' + caText + '</div></div>' + buildSourceHTML(q) + '</div></div></div></div>';
         }
     }
 
