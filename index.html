@@ -2235,7 +2235,7 @@ if (isAr) {
             }
             if (qLineIdx === -1) return;
 
-            var question = lines[qLineIdx].trim().substring(2).trim();
+            var question = lines[qLineIdx].trim().substring(2).trim().replace(/\\n/g, '\n');
             for (var ci = qLineIdx + 1; ci < lines.length; ci++) {
                 var cLine = lines[ci].trim();
                 if (!cLine) continue;
@@ -2266,10 +2266,10 @@ if (isAr) {
                 } else if (/^IMG_[A-Z]:/.test(line)) {
                     optionImages[line.charCodeAt(4) - 65] = line.substring(6).trim();
                 } else if (/^\*[A-Z]\./.test(line)) {
-                    options.push(line.substring(3).trim());
+                    options.push(line.substring(3).trim().replace(/\\n/g, '\n'));
                     correct.push(options.length - 1);
                 } else if (/^[A-Z]\./.test(line)) {
-                    options.push(line.substring(2).trim());
+                    options.push(line.substring(2).trim().replace(/\\n/g, '\n'));
                 } else if (/^https?:\/\//i.test(line) || /^[A-Za-z0-9][\w.-]*\.[a-zA-Z]{2,}(\/\S*)?$/.test(line)) {
                     sourceUrl = line;
                 }
@@ -2324,7 +2324,7 @@ if (isAr) {
             }
             if (qLineIdx === -1) return;
 
-            var question = lines[qLineIdx].trim().substring(2).trim();
+            var question = lines[qLineIdx].trim().substring(2).trim().replace(/\\n/g, '\n');
             for (var ci = qLineIdx + 1; ci < lines.length; ci++) {
                 var cLine = lines[ci].trim();
                 if (!cLine) continue;
@@ -2355,10 +2355,10 @@ if (isAr) {
                     var cidx = getArabicCorrectIndex(line);
                     var oidx = getArabicOptionIndex(line);
                     if (cidx !== -1) {
-                        options.push(extractArabicOptionText(line.substring(1)));
+                        options.push(extractArabicOptionText(line.substring(1)).replace(/\\n/g, '\n'));
                         correct.push(options.length - 1);
                     } else if (oidx !== -1) {
-                        options.push(extractArabicOptionText(line));
+                        options.push(extractArabicOptionText(line).replace(/\\n/g, '\n'));
                     } else if (/^https?:\/\//i.test(line) || /^[A-Za-z0-9][\w.-]*\.[a-zA-Z]{2,}(\/\S*)?$/.test(line)) {
                         sourceUrl = line;
                     }
