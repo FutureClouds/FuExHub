@@ -1214,7 +1214,7 @@ Q: Users are reporting errors in an application. The application consists of sev
 *A. Deploy AWS X-Ray as a sidecar container to the microservices. Update the task role policy to allow access to the X-Ray API.
 B. Deploy AWS X-Ray as a daemonset to the Fargate cluster. Update the service role policy to allow access to the X-Ray API.
 C. Instrument the application by using the AWS X-Ray SDK. Update the application to use the PutXrayTrace API call to communicate with the X-Ray API.
-D. Instrument the application by using the AWS X-Ray SDK. Update the application to communicate with the X-Ray daemon.
+*D. Instrument the application by using the AWS X-Ray SDK. Update the application to communicate with the X-Ray daemon.
 E. Instrument the ECS task to send the stdout and stderr output to Amazon CloudWatch Logs. Update the task role policy to allow the cloudwatch:PullLogs action.
 https://www.examtopics.com/discussions/amazon/view/117795-exam-aws-certified-developer-associate-dva-c02-topic-1/
 
