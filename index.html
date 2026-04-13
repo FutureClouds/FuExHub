@@ -321,6 +321,7 @@ body.simple-theme-page #fabWrapper {
         body.lang-ar .question { text-align: right; }
         .question:hover { transform: translateY(-2px); box-shadow: 0 12px 24px rgba(0,0,0,0.3); }
         .question h3 { color: var(--header-color); font-size: 1.3rem; margin-bottom: 20px; font-weight: 600; white-space: pre-line; line-height: 1.75; }
+        .review-question h4 { white-space: pre-line; line-height: 1.7; }
         .option { display: block; padding: 15px; margin: 10px 0; border: 2px solid var(--option-border); border-radius: 8px; cursor: pointer; transition: all 0.3s ease; background: var(--option-bg); color: var(--question-text); }
         .option:hover { background: var(--option-hover); border-color: #3498db; }
         .option input[type="checkbox"], .option input[type="radio"] { margin-right: 10px; transform: scale(1.2); }
@@ -332,7 +333,8 @@ body.simple-theme-page #fabWrapper {
         @media (max-width: 480px) { .option-image { max-width: 250px; } }
         .image-container { text-align: center; margin: 15px 0; }
         .option-content { display: flex; align-items: flex-start; gap: 15px; }
-        .option-text { flex: 1; }
+        .option-text { flex: 1; line-height: 1.7; }
+        .correct-answer-text br, .user-correct-answer br, .user-wrong-answer br { display: block; margin-top: 2px; }
         .warning { color: #e74c3c; font-weight: bold; margin: 10px 0; }
 
         /* ===== RESULTS ===== */
@@ -2680,7 +2682,7 @@ if (isAr) {
                     if (q.optionImages && q.optionImages[optIndex]) {
                         optImgHTML = '<img src="' + q.optionImages[optIndex] + '" alt="option" class="option-image" onerror="this.style.display=\'none\';"><div style="display:none; color:#e74c3c; font-style:italic; font-size:0.8rem;">' + (isAr ? 'الصورة غير موجودة' : 'Image not found') + ': ' + q.optionImages[optIndex] + '</div>';
                     }
-                    html += '<label class="option"><div class="option-content"><div><input type="' + inputType + '" name="question' + index + '" id="q' + index + '_' + optIndex + '" onchange="handleOptionChange(' + index + ',' + optIndex + ',\'' + inputType + '\')"></div><div class="option-text"><span>' + letter + '. ' + option + '</span>' + optImgHTML + '</div></div></label>';
+                    html += '<label class="option"><div class="option-content"><div><input type="' + inputType + '" name="question' + index + '" id="q' + index + '_' + optIndex + '" onchange="handleOptionChange(' + index + ',' + optIndex + ',\'' + inputType + '\')"></div><div class="option-text"><span>' + letter + '. ' + option.replace(/\n/g, '<br>') + '</span>' + optImgHTML + '</div></div></label>';
                 });
                 html += '</div>';
             }
@@ -2956,7 +2958,7 @@ if (isAr) {
                     var letter = isAr ? arabicLetters[i] : String.fromCharCode(65 + i);
                     var imgH = '';
                     if (q.optionImages && q.optionImages[i]) imgH = '<div style="margin:10px 0;"><img src="' + q.optionImages[i] + '" class="option-image" onerror="this.style.display=\'none\';"></div>';
-                    return letter + '. ' + q.options[i] + imgH;
+                    return letter + '. ' + q.options[i].replace(/\n/g, '<br>') + imgH;
                 }).join('<br>');
                 isOk = ua2.length === ca.length &&
                        ua2.every(function(v){ return ca.indexOf(v) !== -1; }) &&
@@ -2966,7 +2968,7 @@ if (isAr) {
                 var letter = isAr ? arabicLetters[i] : String.fromCharCode(65 + i);
                 var imgH = '';
                 if (q.optionImages && q.optionImages[i]) imgH = '<div style="margin:10px 0;"><img src="' + q.optionImages[i] + '" class="option-image" onerror="this.style.display=\'none\';"></div>';
-                return letter + '. ' + q.options[i] + imgH;
+                return letter + '. ' + q.options[i].replace(/\n/g, '<br>') + imgH;
             }).join('<br>');
 
             var optionsHTML = '';
@@ -2974,7 +2976,7 @@ if (isAr) {
                 var letter = isAr ? arabicLetters[oi] : String.fromCharCode(65 + oi);
                 var imgH = '';
                 if (q.optionImages && q.optionImages[oi]) imgH = '<div style="margin:10px 0;"><img src="' + q.optionImages[oi] + '" class="option-image" onerror="this.style.display=\'none\';"></div>';
-                optionsHTML += '<div style="margin:8px 0;">' + letter + '. ' + opt + imgH + '</div>';
+                optionsHTML += '<div style="margin:8px 0;">' + letter + '. ' + opt.replace(/\n/g, '<br>') + imgH + '</div>';
             });
 
             var itemClass  = (isOk && ua2.length > 0) ? 'correct' : 'wrong';
