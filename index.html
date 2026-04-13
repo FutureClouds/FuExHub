@@ -321,7 +321,6 @@ body.simple-theme-page #fabWrapper {
         body.lang-ar .question { text-align: right; }
         .question:hover { transform: translateY(-2px); box-shadow: 0 12px 24px rgba(0,0,0,0.3); }
         .question h3 { color: var(--header-color); font-size: 1.3rem; margin-bottom: 20px; font-weight: 600; white-space: pre-line; line-height: 1.75; }
-        .review-question h4 { white-space: pre-line; line-height: 1.7; }
         .option { display: block; padding: 15px; margin: 10px 0; border: 2px solid var(--option-border); border-radius: 8px; cursor: pointer; transition: all 0.3s ease; background: var(--option-bg); color: var(--question-text); }
         .option:hover { background: var(--option-hover); border-color: #3498db; }
         .option input[type="checkbox"], .option input[type="radio"] { margin-right: 10px; transform: scale(1.2); }
@@ -333,8 +332,8 @@ body.simple-theme-page #fabWrapper {
         @media (max-width: 480px) { .option-image { max-width: 250px; } }
         .image-container { text-align: center; margin: 15px 0; }
         .option-content { display: flex; align-items: flex-start; gap: 15px; }
-        .option-text { flex: 1; line-height: 1.7; }
-        .correct-answer-text br, .user-correct-answer br, .user-wrong-answer br { display: block; margin-top: 2px; }
+        .option-text { flex: 1; white-space: pre-line; }
+        .option-text span { white-space: pre-line; }
         .warning { color: #e74c3c; font-weight: bold; margin: 10px 0; }
 
         /* ===== RESULTS ===== */
@@ -2227,51 +2226,80 @@ if (isAr) {
         if (!text) return;
         var blocks = text.split('\n\n');
 
+        function isOptionLine(line) {
+            return /^\*?[A-Z]\.\s*/.test(line.trim());
+        }
+
+        function isQuestionLine(line) {
+            return line.trim().startsWith('Q:');
+        }
+
+        function isLinkLine(line) {
+            return /^https?:\/\//i.test(line) || /^[A-Za-z0-9][\w.-]*\.[a-zA-Z]{2,}(\/\S*)?$/.test(line);
+        }
+
+        function isMetaLine(line) {
+            var t = line.trim();
+            return (
+                t.startsWith('TYPE:') ||
+                t.startsWith('HOTSPOT_OPTIONS:') ||
+                t.startsWith('HOTSPOT_ROW:') ||
+                t.startsWith('IMG_Q:') ||
+                /^IMG_[A-Z]:/.test(t) ||
+                isLinkLine(t)
+            );
+        }
+
         function processBlock(lines) {
             if (!lines.length) return;
             var qLineIdx = -1;
             for (var i = 0; i < lines.length; i++) {
-                if (lines[i].trim().startsWith('Q:')) { qLineIdx = i; break; }
+                if (isQuestionLine(lines[i])) { qLineIdx = i; break; }
             }
             if (qLineIdx === -1) return;
 
-            var question = lines[qLineIdx].trim().substring(2).trim().replace(/\\n/g, '\n');
-            for (var ci = qLineIdx + 1; ci < lines.length; ci++) {
-                var cLine = lines[ci].trim();
-                if (!cLine) continue;
-                if (/^[A-Z]\./.test(cLine) || /^\*[A-Z]\./.test(cLine) ||
-                    cLine.startsWith('TYPE:') || cLine.startsWith('HOTSPOT_OPTIONS:') ||
-                    cLine.startsWith('HOTSPOT_ROW:') || cLine.startsWith('IMG_Q:') ||
-                    /^IMG_[A-Z]:/.test(cLine) || /^https?:\/\//i.test(cLine) ||
-                    /^[A-Za-z0-9][\w.-]*\.[a-zA-Z]{2,}(\/\S*)?$/.test(cLine)) break;
-                question += '\n' + cLine;
-            }
+            var question = lines[qLineIdx].trim().substring(2).trim();
             var options = [], correct = [], questionImages = [], optionImages = {};
             var sourceUrl = '', questionType = 'standard';
             var hotspotOptions = [], hotspotRows = [];
+            var currentOptionIndex = -1;
 
             for (var i = qLineIdx + 1; i < lines.length; i++) {
-                var line = lines[i].trim();
+                var rawLine = lines[i] || '';
+                var line = rawLine.trim();
                 if (!line) continue;
+
                 if (line.startsWith('TYPE:')) {
                     var t = line.substring(5).trim().toLowerCase();
                     if (t === 'hotspot') questionType = 'hotspot';
+                    currentOptionIndex = -1;
                 } else if (line.startsWith('HOTSPOT_OPTIONS:')) {
                     hotspotOptions = line.substring(16).trim().split('|').map(function(o){ return o.trim(); });
+                    currentOptionIndex = -1;
                 } else if (line.startsWith('HOTSPOT_ROW:')) {
                     var parts = line.substring(12).trim().split('|');
                     hotspotRows.push({ statement: parts[0] ? parts[0].trim() : '', correct: parts[1] ? parts[1].trim() : '' });
+                    currentOptionIndex = -1;
                 } else if (line.startsWith('IMG_Q:')) {
                     questionImages = questionImages.concat(line.substring(6).trim().split(' ').filter(Boolean));
+                    currentOptionIndex = -1;
                 } else if (/^IMG_[A-Z]:/.test(line)) {
                     optionImages[line.charCodeAt(4) - 65] = line.substring(6).trim();
                 } else if (/^\*[A-Z]\./.test(line)) {
-                    options.push(line.substring(3).trim().replace(/\\n/g, '\n'));
+                    options.push(line.substring(3).trim());
                     correct.push(options.length - 1);
+                    currentOptionIndex = options.length - 1;
                 } else if (/^[A-Z]\./.test(line)) {
-                    options.push(line.substring(2).trim().replace(/\\n/g, '\n'));
-                } else if (/^https?:\/\//i.test(line) || /^[A-Za-z0-9][\w.-]*\.[a-zA-Z]{2,}(\/\S*)?$/.test(line)) {
+                    options.push(line.substring(2).trim());
+                    currentOptionIndex = options.length - 1;
+                } else if (isLinkLine(line)) {
                     sourceUrl = line;
+                    currentOptionIndex = -1;
+                } else if (currentOptionIndex !== -1 && !isQuestionLine(line) && !isMetaLine(line) && !isOptionLine(line)) {
+                    options[currentOptionIndex] += '\n' + line;
+                } else {
+                    question += '\n' + line;
+                    currentOptionIndex = -1;
                 }
             }
 
@@ -2324,7 +2352,7 @@ if (isAr) {
             }
             if (qLineIdx === -1) return;
 
-            var question = lines[qLineIdx].trim().substring(2).trim().replace(/\\n/g, '\n');
+            var question = lines[qLineIdx].trim().substring(2).trim();
             for (var ci = qLineIdx + 1; ci < lines.length; ci++) {
                 var cLine = lines[ci].trim();
                 if (!cLine) continue;
@@ -2355,10 +2383,10 @@ if (isAr) {
                     var cidx = getArabicCorrectIndex(line);
                     var oidx = getArabicOptionIndex(line);
                     if (cidx !== -1) {
-                        options.push(extractArabicOptionText(line.substring(1)).replace(/\\n/g, '\n'));
+                        options.push(extractArabicOptionText(line.substring(1)));
                         correct.push(options.length - 1);
                     } else if (oidx !== -1) {
-                        options.push(extractArabicOptionText(line).replace(/\\n/g, '\n'));
+                        options.push(extractArabicOptionText(line));
                     } else if (/^https?:\/\//i.test(line) || /^[A-Za-z0-9][\w.-]*\.[a-zA-Z]{2,}(\/\S*)?$/.test(line)) {
                         sourceUrl = line;
                     }
@@ -2682,7 +2710,7 @@ if (isAr) {
                     if (q.optionImages && q.optionImages[optIndex]) {
                         optImgHTML = '<img src="' + q.optionImages[optIndex] + '" alt="option" class="option-image" onerror="this.style.display=\'none\';"><div style="display:none; color:#e74c3c; font-style:italic; font-size:0.8rem;">' + (isAr ? 'الصورة غير موجودة' : 'Image not found') + ': ' + q.optionImages[optIndex] + '</div>';
                     }
-                    html += '<label class="option"><div class="option-content"><div><input type="' + inputType + '" name="question' + index + '" id="q' + index + '_' + optIndex + '" onchange="handleOptionChange(' + index + ',' + optIndex + ',\'' + inputType + '\')"></div><div class="option-text"><span>' + letter + '. ' + option.replace(/\n/g, '<br>') + '</span>' + optImgHTML + '</div></div></label>';
+                    html += '<label class="option"><div class="option-content"><div><input type="' + inputType + '" name="question' + index + '" id="q' + index + '_' + optIndex + '" onchange="handleOptionChange(' + index + ',' + optIndex + ',\'' + inputType + '\')"></div><div class="option-text"><span>' + letter + '. ' + option + '</span>' + optImgHTML + '</div></div></label>';
                 });
                 html += '</div>';
             }
@@ -2958,7 +2986,7 @@ if (isAr) {
                     var letter = isAr ? arabicLetters[i] : String.fromCharCode(65 + i);
                     var imgH = '';
                     if (q.optionImages && q.optionImages[i]) imgH = '<div style="margin:10px 0;"><img src="' + q.optionImages[i] + '" class="option-image" onerror="this.style.display=\'none\';"></div>';
-                    return letter + '. ' + q.options[i].replace(/\n/g, '<br>') + imgH;
+                    return letter + '. ' + q.options[i] + imgH;
                 }).join('<br>');
                 isOk = ua2.length === ca.length &&
                        ua2.every(function(v){ return ca.indexOf(v) !== -1; }) &&
@@ -2968,7 +2996,7 @@ if (isAr) {
                 var letter = isAr ? arabicLetters[i] : String.fromCharCode(65 + i);
                 var imgH = '';
                 if (q.optionImages && q.optionImages[i]) imgH = '<div style="margin:10px 0;"><img src="' + q.optionImages[i] + '" class="option-image" onerror="this.style.display=\'none\';"></div>';
-                return letter + '. ' + q.options[i].replace(/\n/g, '<br>') + imgH;
+                return letter + '. ' + q.options[i] + imgH;
             }).join('<br>');
 
             var optionsHTML = '';
@@ -2976,7 +3004,7 @@ if (isAr) {
                 var letter = isAr ? arabicLetters[oi] : String.fromCharCode(65 + oi);
                 var imgH = '';
                 if (q.optionImages && q.optionImages[oi]) imgH = '<div style="margin:10px 0;"><img src="' + q.optionImages[oi] + '" class="option-image" onerror="this.style.display=\'none\';"></div>';
-                optionsHTML += '<div style="margin:8px 0;">' + letter + '. ' + opt.replace(/\n/g, '<br>') + imgH + '</div>';
+                optionsHTML += '<div style="margin:8px 0;">' + letter + '. ' + opt + imgH + '</div>';
             });
 
             var itemClass  = (isOk && ua2.length > 0) ? 'correct' : 'wrong';
