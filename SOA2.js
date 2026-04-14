@@ -4300,7 +4300,7 @@ A. Create an AWS Storage Gateway.
 B. Create an IAM role for an AWS Lambda function.
 C. Delete an Amazon Simple Queue Service (Amazon SQS) queue.
 *D. Describe AWS load balancers.
-E. Invoke an AWS Lambda function.
+*E. Invoke an AWS Lambda function.
 https://www.examtopics.com/discussions/amazon/view/129818-exam-aws-certified-sysops-administrator-associate-soa-c02-topic/
 
 ---
