@@ -1920,6 +1920,242 @@ https://www.examtopics.com/discussions/amazon/view/382255-exam-aws-certified-mac
 
 ---
 
+Q: An ML engineer is setting up a continuous integration and continuous delivery (CI/CD) pipeline for an ML workflow in Amazon SageMaker AI. The pipeline needs to automate model re-training, testing, and deployment whenever new data is uploaded to an Amazon S3 bucket. New data files are approximately 10 GB in size. The ML engineer wants to track model versions for auditing.\nWhich solution will meet these requirements?
+A. Use AWS CodePipeline. Amazon S3, and AWS CodeBuild to retrain and deploy the model automatically and to track model versions.
+*B. Use SageMaker Pipelines with the SageMaker Model Registry to orchestrate model training and version tracking.
+C. Create an AWS Lambda function to re-train and deploy the model. Use Amazon EventBridge to invoke the Lambda function. Reference the Lambda logs to track model versions.
+D. Use SageMaker AI notebook instances to manually re-train and deploy the model when needed. Reference AWS CloudTrail logs to track model versions.
+https://www.examtopics.com/discussions/amazon/view/404825-exam-aws-certified-machine-learning-engineer-associate-mla/
+
+---
+
+Q: An ML engineering team is spread across multiple locations. When the lead ML engineer opens an Amazon SageMaker Al notebook, the ML engineer does not see the latest merged notebook made by other team members from a Git repository.\nThe lead ML engineer must see the latest SageMaker AI notebook updates.\nWhich solution will meet this requirement?
+*A. Run the !git pull origin master command.
+B. Run the !git commit command.
+C. Run the !git push origin master command.
+D. Run the !git branch command.
+https://www.examtopics.com/discussions/amazon/view/404827-exam-aws-certified-machine-learning-engineer-associate-mla/
+
+---
+
+Q: An ML engineer is preparing data for binary classification modeling. The ML engineer runs an Amazon SageMaker Clarify processing job. The bias report shows that the difference in proportions of labels (DPL) score is 0.4. The ML engineer wants the occurrence of labels across classes to be equal. The ML engineer decides to use SageMaker Data Wrangler to balance the data.\nWhat should the ML engineer do to most of the data to meet these requirements?
+A. Use random oversampling to increase the DPL score.
+B. Use random undersampling to increase the DPL score
+*C. Use random oversampling to reduce the DPL score.
+D. Use random undersampling to reduce the DPL score.
+https://www.examtopics.com/discussions/amazon/view/404828-exam-aws-certified-machine-learning-engineer-associate-mla/
+
+---
+
+Q: An ML engineer is using Amazon SageMaker AI to train a deep learning model. During testing, the model shows high variance. The ML engineer needs to adjust a hyperparameter to improve generalization without significantly increasing training time.\nWhich solution will MOST improve the model generalization?
+A. Increase the number of layers in the neural network.
+B. Reduce the learning rate of the optimizer.
+*C. Increase the L2 regularization parameter
+D. Increase the batch size significantly.
+https://www.examtopics.com/discussions/amazon/view/404829-exam-aws-certified-machine-learning-engineer-associate-mla/
+
+---
+
+Q: An ML engineer is running a hyperparameter tuning job in Amazon SageMaker AI. The hyperparameter tuning job will train an XGBoost model on a tabular dataset that has millions of rows.\nEach individual training job is configured to use up to 8 GPU instances, which leads to high costs if too many jobs run concurrently. The ML engineer wants to ensure that no more than five training jobs run in parallel at any time while still exploring all hyperparameter configurations.\nWhich solution will meet these requirements?
+A. Set the resource limit for the MaxNumberOfTrainingJobs parameter to 5 in the hyperparameter tuning job.
+*B. Set the resource limit for the MaxParallelTrainingJobs parameter to 5 in the hyperparameter tuning job.
+C. Set the stopping condition for the MaxRuntimeInSeconds parameter to 5 in the hyperparameter tuning job.
+D. Set the resource limit for the MaxNumberOfTrainingJobs parameter to 5 inside the script in the hyperparameter training job.
+https://www.examtopics.com/discussions/amazon/view/404830-exam-aws-certified-machine-learning-engineer-associate-mla/
+
+---
+
+Q: A company is developing an ML model to forecast future values based on time series data. The dataset includes historical measurements collected at regular intervals and categorical features. The model needs to predict future values based on past patterns and trends.\nWhich algorithm and hyperparameters should the company use to develop the model?
+A. Use the Amazon SageMaker AI XGBoost algorithm. Set the scale_pos_weight hyperparameter to adjust for class imbalance.
+B. Use k-means clustering with k to specify the number of clusters.
+*C. Use the Amazon SageMaker AI DeepAR algorithm with matching context_length and prediction_length hyperparameters.
+D. Use the Amazon SageMaker AI Random Cut Forest (RCF) algorithm with contamination to set the expected proportion of anomalies.
+https://www.examtopics.com/discussions/amazon/view/404831-exam-aws-certified-machine-learning-engineer-associate-mla/
+
+---
+
+Q: A company uses an Amazon EMR cluster to run a data ingestion process for an ML model. An ML engineer notices that the processing time is increasing.\nWhich solution will reduce the processing time MOST cost-effectively?
+A. Use Spot Instances to increase the number of primary nodes.
+B. Use Spot Instances to increase the number of core nodes.
+*C. Use Spot Instances to increase the number of task nodes.
+D. Use On-Demand Instances to increase the number of core nodes.
+https://www.examtopics.com/discussions/amazon/view/404832-exam-aws-certified-machine-learning-engineer-associate-mla/
+
+---
+
+Q: An ML engineer is designing an AI-powered traffic management system to adjust traffic lights during predicted congestion. The system must use near real-time inference to generate predictions to help prevent traffic collisions. The system must use a batch processing pipeline to perform historical analysis of the predictions to continuously refine and improve the model. The historical analysis will take several hours to evaluate how well the predictions correlate with actual outcomes. The system must be able to scale inference endpoints appropriately to meet demand.\nWhich combination of solutions will meet these requirements? (Choose two.)
+*A. Use Amazon SageMaker real-time inference endpoints. Configure the endpoints to scale automatically based on a target tracking scaling policy that uses the metric ConcurrentInvocationsPerinstance.
+B. Configure reserved concurrency for AWS Lambda functions to process streaming data. Use Lambda SnapStart to connect the Lambda functions to Amazon SageMaker real-time endpoints to support near real-time traffic predictions.
+*C. Configure an Amazon SageMaker Processing job for batch analysis of historical prediction data. Use Amazon EventBridge to schedule the job to run daily. Allow several hours for in-depth analysis to refine and improve the traffic management model.
+D. Use an Amazon EC2 Auto Scaling group to host containers to support the batch analysis of historical prediction data. Configure scaling based on Amazon CloudWatch metrics to analyze historical traffic patterns and model performance over multiple hours.
+E. Use an AWS Lambda function to perform the historical analysis. Use Amazon EventBridge to invoke the Lambda function.
+https://www.examtopics.com/discussions/amazon/view/404833-exam-aws-certified-machine-learning-engineer-associate-mla/
+
+---
+
+Q: A company wants to launch a new website feature that predicts home prices based on user-supplied home attributes. The attributes include location, square footage, and number of bedrooms and bathrooms.\nAn ML engineer has trained a regression model by using the Amazon SageMaker AI XGBoost algorithm. The model performs well with training data. However, the model significantly underperforms when it is validated against real-world data.\nWhich solution will improve the model’s validation score with the LEAST implementation effort?
+A. Create a larger training dataset that includes more real-world data. Retrain the model.
+B. Increase the value of the num_round hyperparameter.
+C. Change the eval_metric hyperparameter from Root Mean Square Error (RMSE) to Error.
+*D. Increase the value of the lambda hyperparameter.
+https://www.examtopics.com/discussions/amazon/view/404834-exam-aws-certified-machine-learning-engineer-associate-mla/
+
+---
+
+Q: A company is developing an ML model for a customer. The company will train the model on data that is in an Amazon S3 bucket in the customer’s AWS account, named Account A. The company will use Amazon SageMaker AI training jobs in a separate AWS account, named Account B.\nThe company requires cross-account access to the S3 bucket to train the model. The company defines an S3 bucket policy and an IAM policy to allow reads to the S3 bucket that contains the training data.\nWhich additional steps will meet these requirements?
+A. Create the S3 bucket policy in Account Attach the IAM policy to an IAM role that SageMaker AI uses in Account A.
+*B. Create the S3 bucket policy in Account A. Attach the IAM policy to an IAM role that SageMaker AI uses in Account B.
+C. Create the S3 bucket policy in Account B. Attach the IAM policy to an IAM role that SageMaker AI uses in Account A.
+D. Create the S3 bucket policy in Account B. Attach the IAM policy to an IAM role that SageMaker AI uses in Account B.
+https://www.examtopics.com/discussions/amazon/view/404835-exam-aws-certified-machine-learning-engineer-associate-mla/
+
+---
+
+Q: A company is performing A/B testing on a model that provides product recommendations. The company has deployed two versions of the model and is showing each version of the model to 50% of users randomly.\nWhich metric should the company use to evaluate whether users act on a recommendation?
+*A. The conversion rates between the two versions of the model
+B. The number of recommendations provided to each user
+C. The model accuracy on held-out test data
+D. The latency of model inference
+https://www.examtopics.com/discussions/amazon/view/404836-exam-aws-certified-machine-learning-engineer-associate-mla/
+
+---
+
+Q: A company is using Amazon SageMaker AI to build an ML model to predict customer behavior. The company needs to explain the bias in the model to an auditor. The explanation must focus on demographics data of the customers.\nWhich solution will meet these requirements?
+*A. Use SageMaker Clarify to generate a bias report. Send the report to the auditor.
+B. Use AWS Glue DataBrew to create a job to detect drift in the model's data quality. Send the job output to the auditor.
+C. Use Amazon Quick Suite (previously known as Amazon QuickSight) integration with SageMaker AI to generate a bias report from Quick Suite. Send the report to the auditor.
+D. Use Amazon CloudWatch metrics from the SageMaker AI namespace to create a bias dashboard. Share the dashboard with the auditor.
+https://www.examtopics.com/discussions/amazon/view/404837-exam-aws-certified-machine-learning-engineer-associate-mla/
+
+---
+
+Q: A digital media entertainment company needs real-time video content moderation to ensure compliance during live streaming events.\nWhich solution will meet these requirements with the LEAST operational overhead?
+*A. Use Amazon Rekognition and AWS Lambda to extract and analyze the metadata from the videos’ image frames.
+B. Use Amazon Rekognition and a large language model (LLM) hosted on Amazon Bedrock to extract and analyze the metadata from the videos’ image frames.
+C. Use Amazon SageMaker AI to extract and analyze the metadata from the videos’ image frames.
+D. Use Amazon Transcribe and Amazon Comprehend to extract and analyze the metadata from the videos’ image frames.
+https://www.examtopics.com/discussions/amazon/view/404838-exam-aws-certified-machine-learning-engineer-associate-mla/
+
+---
+
+Q: An ML engineer is working on a project to predict customer churn. The dataset contains customer information and is stored in an Amazon S3 bucket. A few rows have blank values in the monthly spend column.\nThe ML engineer needs to replace the blank values by using the mean value of the column. The replacement must be performed as part of an automated data preparation pipeline.\nWhat should the ML engineer do to prepare the data?
+A. Use Amazon Athena with a SQL query that uses the AVG function and an UPDATE operation to replace the missing values.
+*B. Use AWS Glue DataBrew with the impute missing values transformation to replace the missing values.
+C. Use Amazon Quick Suite (previously known as Amazon QuickSight) with the Calculated Field feature to replace the missing values.
+D. Use AWS Glue with the DropColumns transformation to replace the missing values.
+https://www.examtopics.com/discussions/amazon/view/404839-exam-aws-certified-machine-learning-engineer-associate-mla/
+
+---
+
+Q: A company is using Amazon SageMaker AI to train a face detection ML model. The company uses the model to ensure that only authorized employees are present on the company premises.\nThe facial data used to train the model must be encrypted. The company must manage the encryption control. Only authorized employees must be able to view the data.\nWhich solution will meet these requirements?
+*A. Use SageMaker AI IAM roles and policies to control access. Use AWS Key Management Service (AWS KMS) for encryption.
+B. Use AWS PrivateLink for SageMaker AI to control access. Use AWS Key Management Service (AWS KMS) for encryption.
+C. Use AWS PrivateLink for SageMaker AI to control access. Use VPC only mode for encryption.
+D. Use SageMaker AI IAM roles and policies to control access. Use AWS CloudTrail for encryption.
+https://www.examtopics.com/discussions/amazon/view/404840-exam-aws-certified-machine-learning-engineer-associate-mla/
+
+---
+
+Q: A company is evaluating options to deploy an ML model that will be used to make predictions. The model performs image classification on photos that customers upload.\nThe application that will use the model needs the model to operate with low latency. The company has limited capacity to manage infrastructure and needs to minimize costs.\nHow should the company deploy the model to meet these requirements?
+A. Deploy the model on Amazon EC2 instances behind an Application Load Balancer.
+*B. Deploy the model to Amazon SageMaker AI real-time inference endpoints.
+C. Deploy the model on Amazon Elastic Container Service (Amazon ECS) containers that run on AWS Fargate.
+D. Deploy the model on Kubernetes nodes on an Amazon Elastic Kubernetes Service (Amazon EKS) cluster.
+https://www.examtopics.com/discussions/amazon/view/404841-exam-aws-certified-machine-learning-engineer-associate-mla/
+
+---
+
+Q: An ML engineer uses A/B testing to dynamically select recommendation models. The models are deployed on Amazon SageMaker AI endpoints. The ML engineer needs to monitor system metrics such as latency, call volume, and HTTP status codes when the endpoints are invoked.\nWhich solution will meet these requirements with the LEAST operational overhead?
+A. Use AWS X-Ray tracing to monitor SageMaker AI endpoints.
+*B. Configure Amazon CloudWatch dashboards with AWS Lambda log processors.
+C. Enable AWS Identity and Access Management (IAM) Access Analyzer to track SageMaker AI endpoint metrics.
+D. Deploy AWS Trusted Advisor checks on SageMaker AI endpoint instances.
+https://www.examtopics.com/discussions/amazon/view/404842-exam-aws-certified-machine-learning-engineer-associate-mla/
+
+---
+
+Q: An ML engineer at a credit card company used Amazon SageMaker AI to build and deploy a new ML model. The model was trained on a copy of transactions from the production environment. The copy of transactions contained only a few fraudulent transactions.\nAfter deployment to production, the model is underperforming.\nWhat should the ML engineer do to improve the model’s performance?
+A. Retrain the model with a different built-in algorithm that is available in SageMaker AI.
+B. Use random undersampling in SageMaker Data Wrangler to randomly reduce the majority class samples. Retrain the model.
+*C. Use Synthetic Minority Oversampling Technique (SMOTE) in SageMaker Data Wrangler to generate synthetic minority samples. Retrain the model.
+D. Use random oversampling in SageMaker Data Wrangler to randomly duplicate minority samples. Retrain the model.
+https://www.examtopics.com/discussions/amazon/view/404843-exam-aws-certified-machine-learning-engineer-associate-mla/
+
+---
+
+Q: An ML engineer is importing a custom model from the Hugging Face Hub into Amazon Bedrock. The ML engineer wants to use the model with the Amazon Bedrock API in an agentic AI application.\nWhich combination of steps will meet these requirements? (Choose two.)
+A. Import the model for deployment by using Amazon Bedrock On-Demand mode.
+*B. Convert the model to a quantized format. Import the quantized model after conversion.
+C. Import the model directly by using the Amazon SageMaker AI SDK in the agentic AI application.
+D. During the model import process, configure an auto-scaling policy before using the model in the agentic AI application.
+*E. In the import job, provide the complete Amazon S3 URI that points to the Hugging Face model files. Ensure that the S3 URI is in the same AWS account as the Amazon Bedrock import job.
+https://www.examtopics.com/discussions/amazon/view/404844-exam-aws-certified-machine-learning-engineer-associate-mla/
+
+---
+
+Q: A company is developing a classification model to predict profitability. The company wants to incorporate new unstructured data that the company bought from another company. The company needs data access to be restricted to only the company’s data science team to maintain data security.\nWhich solution will meet these requirements?
+*A. Store the new data in an encrypted Amazon S3 bucket. Create an IAM role for the data science team. Use IAM policies to allow access only by using the new IAM role.
+B. Load the new data into an Amazon RDS database with public access disabled. Share the connection credentials with the data science team in an email message.
+C. Upload the new data into a feature group in Amazon SageMaker Feature Store. Enable all Amazon SageMaker AI users.
+D. Store the new data in a local file on each data scientist’s laptop to ensure that only that specific data scientists can access the data.
+https://www.examtopics.com/discussions/amazon/view/404845-exam-aws-certified-machine-learning-engineer-associate-mla/
+
+---
+
+Q: A company is developing ML models by using PyTorch and TensorFlow estimators with Amazon SageMaker AI. An ML engineer configures the SageMaker AI estimator and now needs to initiate a training job that uses a training dataset.\nWhich SageMaker AI SDK method can initiate the training job?
+*A. fit method
+B. create_model method
+C. deploy method
+D. predict method
+https://www.examtopics.com/discussions/amazon/view/404846-exam-aws-certified-machine-learning-engineer-associate-mla/
+
+---
+
+Q: An ML engineer is preparing a dataset of medical records to train an ML model. The model will predict the likelihood of patients developing a specific disease. The dataset includes numeric features and categorical features. The ML engineer will train the model by using a custom container that accesses data stored in an Amazon Elastic File System (Amazon EFS) file system.\nHow should the ML engineer prepare the dataset to train the model?
+A. Select a random sample of records. Encode the categorical features. Load the pre-processed data into the file system.
+*B. Perform data validation to check for missing or invalid values. Encode the categorical features. Scale the numeric features. Select a random sample of records.
+C. Scale the numeric features. Select a random sample of records for the initial model training. Load the pre-processed data into the file system.
+D. Compress the data files. Remove duplicate records. Load the pre-processed data into the file system.
+https://www.examtopics.com/discussions/amazon/view/404847-exam-aws-certified-machine-learning-engineer-associate-mla/
+
+---
+
+Q: An ML engineer used Amazon SageMaker Studio to train a neural network. The neural network logs its information into TensorBoard and uses stochastic gradient descent (SGD) as the optimizer.\nThe ML engineer reviewed training graphs and discovered that the accuracy was not increasing and the loss was decreasing very slowly. The ML engineer needs to improve the model’s performance without increasing the total training time.\nWhich solution will meet these requirements?
+*A. Increase the initial learning rate.
+B. Decrease the initial learning rate.
+C. Increase the total number of epochs.
+D. Decrease the total number of epochs.
+https://www.examtopics.com/discussions/amazon/view/404848-exam-aws-certified-machine-learning-engineer-associate-mla/
+
+---
+
+Q: A company wants to use large language models (LLMs) that are supported by Amazon Bedrock to develop a chat interface for the company’s internal technical documentation. The company stores the documentation as dozens of text files that are several megabytes in total size. The company updates the text files often.\nWhich solution will meet these requirements MOST cost-effectively?
+A. Create a new LLM on Amazon Bedrock. Train the new LLM on the original dataset and the company documentation. Make the new model available in Bedrock for calls from the chat interface.
+B. Integrate the company documentation with Amazon Bedrock guardrails. Invoke the guardrails for all Amazon Bedrock calls from the chat interface.
+C. Use all the text files to fine tune a model in Amazon Bedrock. Use the fine-tuned model to process user prompts.
+*D. Upload all the text files to an Amazon Bedrock knowledge base. Use the knowledge base to provide context when the chat interface makes calls to Amazon Bedrock.
+https://www.examtopics.com/discussions/amazon/view/404849-exam-aws-certified-machine-learning-engineer-associate-mla/
+
+---
+
+Q: An ML engineer is using AWS CodeDeploy to deploy new versions of containers that perform inference to an Amazon Elastic Container Service (Amazon ECS) compute platform. The ML engineer needs to define a deployment configuration to shift traffic to the updated ECS task set. The deployment configuration must shift 10% of traffic to the updated containers in the first increment. The remaining 90% of traffic must shift to the updated containers within 10 to 15 minutes.\nWhich deployment configuration will meet these requirements?
+A. CodeDeployDefault.LambdaLinear10PercentEvery10Minutes
+B. CodeDeployDefault.ECSAllAtOnce
+*C. CodeDeployDefault.ECSCanary10Percent15Minutes
+D. CodeDeployDefault.LambdaCanary10Percent15Minutes
+https://www.examtopics.com/discussions/amazon/view/404850-exam-aws-certified-machine-learning-engineer-associate-mla/
+
+---
+
+Q: A company uses an ML model to recommend videos to users. The model is deployed on Amazon SageMaker AI. The model performed well initially after deployment, but the model’s performance has degraded over time.\nWhich solution can the company use to identify model drift in the future?
+A. Create a monitoring job in SageMaker Model Monitor. Then create a baseline from the training dataset.
+*B. Create a baseline from the training dataset. Then create a monitoring job in SageMaker Model Monitor.
+C. Create a baseline by using a built-in rule in SageMaker Clarify. Monitor the drift in Amazon CloudWatch.
+D. Retrain the model on new data. Compare the retrained model's performance to the original model’s performance.
+https://www.examtopics.com/discussions/amazon/view/404851-exam-aws-certified-machine-learning-engineer-associate-mla/
+
+---
+
 Q: HOTSPOT\nA company stores historical data in .csv files in Amazon S3. Only some of the rows and columns in the .csv files are populated. The columns are not labeled. An ML engineer needs to prepare and store the data so that the company can use the data to train ML models.\nSelect and order the correct steps from the following list to perform this task. Each step should be selected one time or not at all.\n• Create an Amazon SageMaker batch transform job for data cleaning and feature engineering.\n• Store the resulting data back in Amazon S3.\n• Use Amazon Athena to infer the schemas and available columns.\n• Use AWS Glue crawlers to infer the schemas and available columns.\n• Use AWS Glue DataBrew for data cleaning and feature engineering\n(Select and order three.).
 TYPE: hotspot
 HOTSPOT_OPTIONS: Create an Amazon SageMaker batch transform job for data cleaning and feature engineering. | Store the resulting data back in Amazon S3. | Use Amazon Athena to infer the schemas and available columns. | Use AWS Glue crawlers to infer the schemas and available columns. | Use AWS Glue DataBrew for data cleaning and feature engineering.
@@ -2105,6 +2341,16 @@ HOTSPOT_ROW: Measure the model's success for exact category matching. | Categori
 https://www.examtopics.com/discussions/amazon/view/389699-exam-aws-certified-machine-learning-engineer-associate-mla/
 
 ---
+
+Q: Q: HOTSPOT\nAn ML engineer needs to monitor the behavior of an ML model and track bias drift. The ML engineer must detect issues from an Amazon SageMaker Al endpoint so the ML engineer can take actions to address any identified issues. The ML engineer has collected Amazon SageMaker Ground Truth labels that show correct results for a set of test data.\nSelect the AWS service feature from the following list to correctly answer each of the following questions.\n• Amazon CloudWatch alarms\n• Amazon CloudWatch metrics\n• Amazon S3 bucket\n• Amazon SageMaker Clarify\nSelect each service feature one time.
+TYPE: hotspot
+HOTSPOT_OPTIONS: Amazon CloudWatch alarms | Amazon CloudWatch metrics | Amazon S3 bucket | Amazon SageMaker Clarify
+HOTSPOT_ROW: Where can the ML engineer view findings and results related to data quality and accuracy drift? | Amazon CloudWatch metrics
+HOTSPOT_ROW: Where can the ML engineer store labels to compare with predictions to measure model quality? | Amazon S3 bucket
+HOTSPOT_ROW: Which service feature can the ML engineer use to monitor bias metrics for a deployed model? | Amazon SageMaker Clarify
+HOTSPOT_ROW: Which service feature can the ML engineer use to roll back to a previous endpoint if a new endpoint's average error rate exceeds a specified threshold? | Amazon CloudWatch alarms
+https://www.examtopics.com/discussions/amazon/view/404826-exam-aws-certified-machine-learning-engineer-associate-mla/
+
 
 
 `;
