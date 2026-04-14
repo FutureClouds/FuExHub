@@ -784,7 +784,7 @@ https://www.examtopics.com/discussions/amazon/view/142560-exam-aws-certified-dat
 Q: A retail company uses Amazon Aurora PostgreSQL to process and store live transactional data. The company uses an Amazon Redshift cluster for a data warehouse.\nAn extract, transform, and load (ETL) job runs every morning to update the Redshift cluster with new data from the PostgreSQL database. The company has grown rapidly and needs to cost optimize the Redshift cluster.\nA data engineer needs to create a solution to archive historical data. The data engineer must be able to run analytics queries that effectively combine data from live transactional data in PostgreSQL, current data in Redshift, and archived historical data. The solution must keep only the most recent 15 months of data in Amazon Redshift to reduce costs.\nWhich combination of steps will meet these requirements? (Choose two.)
 *A. Configure the Amazon Redshift Federated Query feature to query live transactional data that is in the PostgreSQL database.
 B. Configure Amazon Redshift Spectrum to query live transactional data that is in the PostgreSQL database.
-C. Schedule a monthly job to copy data that is older than 15 months to Amazon S3 by using the UNLOAD command. Delete the old data from the Redshift cluster. Configure Amazon Redshift Spectrum to access historical data in Amazon S3.
+*C. Schedule a monthly job to copy data that is older than 15 months to Amazon S3 by using the UNLOAD command. Delete the old data from the Redshift cluster. Configure Amazon Redshift Spectrum to access historical data in Amazon S3.
 D. Schedule a monthly job to copy data that is older than 15 months to Amazon S3 Glacier Flexible Retrieval by using the UNLOAD command. Delete the old data from the Redshift cluster. Configure Redshift Spectrum to access historical data from S3 Glacier Flexible Retrieval.
 E. Create a materialized view in Amazon Redshift that combines live, current, and historical data from different sources.
 https://www.examtopics.com/discussions/amazon/view/142537-exam-aws-certified-data-engineer-associate-dea-c01-topic-1/
@@ -1587,10 +1587,10 @@ https://www.examtopics.com/discussions/amazon/view/151941-exam-aws-certified-dat
 
 Q: A company uses Amazon S3 to store data and Amazon QuickSight to create visualizations,\nThe company has an S3 bucket in an AWS account named Hub-Account. The S3 bucket is encrypted by an AWS Key Management Service (AWS KMS) key. The company's QuickSight instance is in a separate account named BI-Account.\nThe company updates the S3 bucket policy to grant access to the QuickSight service role. The company wants to enable cross-account access to allow QuickSight to interact with the S3 bucket.\nWhich combination of steps will meet this requirement? (Choose two.)
 A. Use the existing AWS KMS key to encrypt connections from QuickSight to the S3 bucket.
-B. Add the S3 bucket as a resource that the QuickSight service role can access.
+*B. Add the S3 bucket as a resource that the QuickSight service role can access.
 C. Use AWS Resource Access Manager (AWS RAM) to share the S3 bucket with the BI-Account account.
-D. Add an IAM policy to the QuickSight service role to give QuickSight access to the KMS key that encrypts the S3 bucket.
-*E. Add the KMS key as a resource that the QuickSight service role can access.
+*D. Add an IAM policy to the QuickSight service role to give QuickSight access to the KMS key that encrypts the S3 bucket.
+E. Add the KMS key as a resource that the QuickSight service role can access.
 https://www.examtopics.com/discussions/amazon/view/150344-exam-aws-certified-data-engineer-associate-dea-c01-topic-1/
 
 ---
