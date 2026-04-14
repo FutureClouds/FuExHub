@@ -1914,8 +1914,8 @@ https://www.examtopics.com/discussions/amazon/view/315477-exam-aws-certified-mac
 Q: An ecommerce company trains an ML model to forecast demand for near real-time inventory management based on historical customer activity. The company successfully deploys the trained model to a production Amazon SageMaker AI endpoint. However, the company notices that the model’s forecast performance degrades over time. The company needs a long-term and automated solution to mitigate the performance degradation.\nWhich solution will meet these requirements?
 A. Use Amazon SageMaker Debugger to automatically send alerts when model performance anomalies are detected.
 B. Use AWS X-Ray to monitor the performance of the SageMaker AI endpoint and the incoming requests to inform model re-training.
-*C. Use Amazon SageMaker Ground Truth to curate a high-quality dataset. Use the dataset to re-train the model.
-D. Use Amazon SageMaker Clarify to monitor model and feature attribution bias to inform model re-training.
+C. Use Amazon SageMaker Ground Truth to curate a high-quality dataset. Use the dataset to re-train the model.
+*D. Use Amazon SageMaker Clarify to monitor model and feature attribution bias to inform model re-training.
 https://www.examtopics.com/discussions/amazon/view/382255-exam-aws-certified-machine-learning-engineer-associate-mla/
 
 ---
