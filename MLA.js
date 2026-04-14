@@ -2066,7 +2066,7 @@ https://www.examtopics.com/discussions/amazon/view/382284-exam-aws-certified-mac
 
 Q: HOTSPOT\nA company is using Amazon SageMaker to deploy a new version of its ML model.\nSelect the correct SageMaker traffic shifting strategy from the following list for each use case. Each traffic shifting strategy should be selected one time.\n• All at once traffic shifting\n• Canary traffic shifting\n• Linear traffic shifting\n(Choose three.)
 TYPE: hotspot
-HOTSPOT_OPTIONS: ‎All at once traffic shifting | Canary traffic shifting | Linear traffic shifting
+HOTSPOT_OPTIONS: All at once traffic shifting | Canary traffic shifting | Linear traffic shifting
 HOTSPOT_ROW: Shift traffic in two steps to validate the new model version. | Canary traffic shifting
 HOTSPOT_ROW: Shift traffic to the new model version in the shortest amount of time. | All at once traffic shifting
 HOTSPOT_ROW: Incrementally shift traffic to the new model version over time. | Linear traffic shifting
