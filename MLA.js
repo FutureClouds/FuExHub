@@ -2021,7 +2021,7 @@ https://www.examtopics.com/discussions/amazon/view/382311-exam-aws-certified-mac
 
 ---
 
-Q: HOTSPOT\nA company develops an ML model to classify products. The model uses textual data and visual data to classify the products into a hierarchical taxonomy. An ML engineer must use specific strategies to enhance the model’s accuracy and handle class imbalances.\nSelect the correct strategy from the following list for each use case. Select each strategy one time.\n• Categorical cross-entropy\n• Fallback metric\n• Hierarchical loss\n• General oversampling\n• Synthetic Minority Oversampling Technique (SMOTE) for text\n(Choose five.)
+Q: HOTSPOT\nA company develops an ML model to classify products. The model uses textual data and visual data to classify the products into a hierarchical taxonomy. An ML engineer must use specific strategies to enhance the model’s accuracy and handle class imbalances.\nSelect the correct strategy from the following list for each use case. Select each strategy one time.\n• Categorical cross-entropy\n• Fallback metric\n• Hierarchical loss\n• General oversampling\n• Synthetic Minority Oversampling Technique (SMOTE) for text\n(Choose four.)
 TYPE: hotspot
 HOTSPOT_OPTIONS: Categorical cross-entropy | Fallback metric | Hierarchical loss | General oversampling | Synthetic Minority Oversampling Technique (SMOTE) for text
 HOTSPOT_ROW: Evaluate predictions with tolerance for broader category matches. | Fallback metric
