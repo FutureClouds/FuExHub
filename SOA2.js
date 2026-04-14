@@ -202,7 +202,7 @@ https://www.examtopics.com/discussions/amazon/view/79112-exam-aws-certified-syso
 
 ---
 
-Q: A new website will run on Amazon EC2 instances behind an Application Load Balancer. Amazon Route 53 will be used to manage DNS records.\nWhat type of record should be set in Route 53 to point the website's apex domain name (for example, `company.com`) to the Application Load Balancer?
+Q: A new website will run on Amazon EC2 instances behind an Application Load Balancer. Amazon Route 53 will be used to manage DNS records.\nWhat type of record should be set in Route 53 to point the website's apex domain name (for example, 'company.com') to the Application Load Balancer?
 A. CNAME
 B. SOA
 C. TXT
