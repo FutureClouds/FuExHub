@@ -3410,10 +3410,10 @@ Q: A machine learning (ML) specialist is using Amazon SageMaker hyperparameter o
 IMG_Q: MLSC01-21.png
 A. Modify the HPO configuration as follows: Select the most accurate hyperparameter configuration form this HPO job.
 IMG_A: MLSC01-22.png
-B. Run three different HPO jobs that use different learning rates form the following intervals for MinValue and MaxValue while using the same number of training jobs for each HPO job: ✑ [0.01, 0.1] ✑ [0.001, 0.01] ✑ [0.0001, 0.001] Select the most accurate hyperparameter configuration form these three HPO jobs.
+B. Run three different HPO jobs that use different learning rates form the following intervals for MinValue and MaxValue while using the same number of training jobs for each HPO job: \n✑ [0.01, 0.1] \n✑ [0.001, 0.01] \n✑ [0.0001, 0.001] \nSelect the most accurate hyperparameter configuration form these three HPO jobs.
 *C. Modify the HPO configuration as follows: Select the most accurate hyperparameter configuration form this training job.
 IMG_C: MLSC01-23.png
-D. Run three different HPO jobs that use different learning rates form the following intervals for MinValue and MaxValue. Divide the number of training jobs for each HPO job by three: ✑ [0.01, 0.1] ✑ [0.001, 0.01] [0.0001, 0.001] Select the most accurate hyperparameter configuration form these three HPO jobs.
+D. Run three different HPO jobs that use different learning rates form the following intervals for MinValue and MaxValue. Divide the number of training jobs for each HPO job by three: \n✑ [0.01, 0.1] \n✑ [0.001, 0.01] [0.0001, 0.001] \nSelect the most accurate hyperparameter configuration form these three HPO jobs.
 https://www.examtopics.com/discussions/amazon/view/75200-exam-aws-certified-machine-learning-specialty-topic-1/
 
 ---
