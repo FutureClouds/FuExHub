@@ -200,7 +200,7 @@ https://www.examtopics.com/discussions/amazon/view/10264-exam-aws-certified-mach
 
 ---
 
-Q: A Machine Learning Specialist is creating a new natural language processing application that processes a dataset comprised of 1 million sentences. The aim is to then run Word2Vec to generate embeddings of the sentences and enable different types of predictions.\nHere is an example from the dataset:\n"The quck BROWN FOX jumps over the lazy dog.`\nWhich of the following are the operations the Specialist needs to perform to correctly sanitize and prepare the data in a repeatable manner? (Choose three.)
+Q: A Machine Learning Specialist is creating a new natural language processing application that processes a dataset comprised of 1 million sentences. The aim is to then run Word2Vec to generate embeddings of the sentences and enable different types of predictions.\nHere is an example from the dataset:\n"The quck BROWN FOX jumps over the lazy dog."\nWhich of the following are the operations the Specialist needs to perform to correctly sanitize and prepare the data in a repeatable manner? (Choose three.)
 A. Perform part-of-speech tagging and keep the action verb and the nouns only.
 *B. Normalize all words by making the sentence lowercase.
 *C. Remove stop words using an English stopword dictionary.
@@ -1177,7 +1177,7 @@ https://www.examtopics.com/discussions/amazon/view/74394-exam-aws-certified-mach
 
 ---
 
-Q: A company that runs an online library is implementing a chatbot using Amazon Lex to provide book recommendations based on category. This intent is fulfilled by an AWS Lambda function that queries an Amazon DynamoDB table for a list of book titles, given a particular category. For testing, there are only three categories implemented as the custom slot types: "comedy," "adventure,` and "documentary.`\nA machine learning (ML) specialist notices that sometimes the request cannot be fulfilled because Amazon Lex cannot understand the category spoken by users with utterances such as "funny," "fun," and "humor." The ML specialist needs to fix the problem without changing the Lambda code or data in DynamoDB.\nHow should the ML specialist fix the problem?
+Q: A company that runs an online library is implementing a chatbot using Amazon Lex to provide book recommendations based on category. This intent is fulfilled by an AWS Lambda function that queries an Amazon DynamoDB table for a list of book titles, given a particular category. For testing, there are only three categories implemented as the custom slot types: "comedy," "adventure," and "documentary."\nA machine learning (ML) specialist notices that sometimes the request cannot be fulfilled because Amazon Lex cannot understand the category spoken by users with utterances such as "funny," "fun," and "humor." The ML specialist needs to fix the problem without changing the Lambda code or data in DynamoDB.\nHow should the ML specialist fix the problem?
 A. Add the unrecognized words in the enumeration values list as new values in the slot type.
 B. Create a new custom slot type, add the unrecognized words to this slot type as enumeration values, and use this slot type for the slot.
 C. Use the AMAZON.SearchQuery built-in slot types for custom searches in the database.
