@@ -4685,7 +4685,7 @@ https://www.examtopics.com/discussions/amazon/view/143003-exam-aws-certified-sol
 ---
 
 Q: A company wants to create a single Amazon S3 bucket for its data scientists to store work-related documents. The company uses AWS IAM Identity Center to authenticate all users. A group for the data scientists was created.\nThe company wants to give the data scientists access to only their own work. The company also wants to create monthly reports that show which documents each user accessed.\nWhich combination of steps will meet these requirements? (Choose two.)
-*A. Create a custom IAM Identity Center permission set to grant the data scientists access to an S3 bucket prefix that matches their username tag. Use a policy to limit access to paths with the ${aws:PrincipalTag/userName}/* condition.
+*A. Create a custom IAM Identity Center permission set to grant the data scientists access to an S3 bucket prefix that matches their username tag. Use a policy to limit access to paths with the $ {aws:PrincipalTag/userName}/* condition.
 B. Create an IAM Identity Center role for the data scientists group that has Amazon S3 read access and write access. Add an S3 bucket policy that allows access to the IAM Identity Center role.
 *C. Configure AWS CloudTrail to log S3 data events and deliver the logs to an S3 bucket. Use Amazon Athena to run queries on the CloudTrail logs in Amazon S3 and generate reports.
 D. Configure AWS CloudTrail to log S3 management events to CloudWatch. Use Amazon Athena’s CloudWatch connector to query the logs and generate reports.
