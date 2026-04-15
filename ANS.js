@@ -2210,7 +2210,7 @@ Q: A finance company runs multiple applications on Amazon EC2 instances in two V
 B. Add an inbound rule to the security groups that are attached to the multicast receiver instances. Configure the rule as follows:\nProtocol: IGMP Version 2. Port: 5102, and Source: 239 10.10.10/32
 C. Create associations to two EC2 instance IDs on the financial application VPC transit gateway attachment under the transit gateway multicast domain.
 *D. Create an association to EC2 instance subnets on the financial application VPC transit gateway attachment under the transit gateway multicast domain.\nD. Add an inbound rule to the security groups that are attached to the multicast receiver instances. Configure the rule as follows:\nProtocol: IGMP Version 2. Port: All, and Source: 0 0.0.0/32
-E. Add an inbound rule to the security groups that are attached to the multicast receiver instances. Configure the rule as follows.\nProtocol: UDP, Port: 5102, and Source: 10.128.10.2/32
+*E. Add an inbound rule to the security groups that are attached to the multicast receiver instances. Configure the rule as follows.\nProtocol: UDP, Port: 5102, and Source: 10.128.10.2/32
 https://www.examtopics.com/discussions/amazon/view/153961-exam-aws-certified-advanced-networking-specialty-ans-c01/
 
 ---
