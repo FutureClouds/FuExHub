@@ -3977,9 +3977,9 @@ IMG_A: DOPC02-17.png
 *B. Change "Resource": "*"to "Resource": "arn:aws:ec2:*:*:instance/*"
 C. Add the following conditional expression:
 IMG_C: DOPC02-18.png
-D. Add the following conditional expression:
+*D. Add the following conditional expression:
 IMG_D: DOPC02-19.png
-E. Change "Action": "ec2:*"to "Action": "ec2:StopInstances"
+*E. Change "Action": "ec2:*"to "Action": "ec2:StopInstances"
 F. Add the following conditional expression:
 IMG_F: DOPC02-20.png
 https://www.examtopics.com/discussions/amazon/view/129705-exam-aws-certified-devops-engineer-professional-dop-c02/
