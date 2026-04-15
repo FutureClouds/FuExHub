@@ -4877,7 +4877,7 @@ B. In Account A, set the S3 bucket policy to the following:
 IMG_B: SAPC02-1.png
 *C. In Account A, set the S3 bucket policy to the following:
 IMG_C: SAPC02-2.png
-D. In Account B, set the permissions of User_DataProcessor to the following:
+*D. In Account B, set the permissions of User_DataProcessor to the following:
 IMG_D: SAPC02-3.png
 E. In Account B, set the permissions of User_DataProcessor to the following:
 IMG_E: SAPC02-4.png
