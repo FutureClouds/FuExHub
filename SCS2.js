@@ -2187,8 +2187,8 @@ https://www.examtopics.com/discussions/amazon/view/155537-exam-aws-certified-sec
 Q: A company has an organization in AWS Organizations. The organization consists of multiple OUs. The company must prevent IAM principals from outside the organization from accessing the organization’s Amazon S3 buckets. The solution must not affect the existing access that the OUs have to the S3 buckets.\nWhich solution will meet these requirements?
 A. Configure S3 Block Public Access for all S3 buckets.
 B. Configure S3 Block Public Access for all AWS accounts.
-C. Deploy an SCP that includes the “aws:ResourceOrgPaths”: “${aws:PrincipalOrgPaths}” condition.
-*D. Deploy an SCP that includes the “aws:ResourceOrgID”: “${aws:PrincipalOrgID}" condition.
+C. Deploy an SCP that includes the “aws:ResourceOrgPaths”: “$ {aws:PrincipalOrgPaths}” condition.
+*D. Deploy an SCP that includes the “aws:ResourceOrgID”: “$ {aws:PrincipalOrgID}" condition.
 https://www.examtopics.com/discussions/amazon/view/302533-exam-aws-certified-security-specialty-scs-c02-topic-1/
 
 ---
@@ -2375,8 +2375,8 @@ https://www.examtopics.com/discussions/amazon/view/152024-exam-aws-certified-sec
 ---
 
 Q: A company runs workloads on Amazon EC2 instances in VPCs. The EC2 instances make requests to Amazon S3 buckets through VPC endpoints. The company uses AWS Organizations to manage its AWS accounts.\nThe company needs the requests from the EC2 instances to originate from the same VPC that the EC2 instance credentials were issued to.\nWhich solution will meet this requirement?
-A. Deploy an SCP that includes the S3:* action with the “aws:SourceVpc”: “${aws:Ec2InstanceSourceVpc}” condition.
-B. Edit the VPC endpoints to include the S3:* action with the “aws:Ec2InstanceSourcePrivateIPv4”: “${aws:VpcSourceIp}” condition.
+A. Deploy an SCP that includes the S3:* action with the “aws:SourceVpc”: “$ {aws:Ec2InstanceSourceVpc}” condition.
+B. Edit the VPC endpoints to include the S3:* action with the “aws:Ec2InstanceSourcePrivateIPv4”: “$ {aws:VpcSourceIp}” condition.
 C. Limit all actions in the S3 bucket policies by using the aws:SourceVpce condition key with the value of the allowed VPC endpoint.
 *D. Limit all actions in the S3 bucket policies by using the aws:SourceVpc condition key with the value of the allowed VPC ID.
 https://www.examtopics.com/discussions/amazon/view/303388-exam-aws-certified-security-specialty-scs-c02-topic-1/
