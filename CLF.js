@@ -2440,7 +2440,7 @@ https://www.examtopics.com/discussions/amazon/view/129620-exam-aws-certified-clo
 Q: Which of the following are pillars of the AWS Well-Architected Framework? (Choose two.)
 A. High availability
 *B. Performance efficiency
-C. Cost optimization
+*C. Cost optimization
 D. Going global in minutes
 E. Continuous development
 https://www.examtopics.com/discussions/amazon/view/129621-exam-aws-certified-cloud-practitioner-clf-c02-topic-1/
