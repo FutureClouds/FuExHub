@@ -784,7 +784,7 @@ https://www.examtopics.com/discussions/amazon/view/142560-exam-aws-certified-dat
 Q: A retail company uses Amazon Aurora PostgreSQL to process and store live transactional data. The company uses an Amazon Redshift cluster for a data warehouse.\nAn extract, transform, and load (ETL) job runs every morning to update the Redshift cluster with new data from the PostgreSQL database. The company has grown rapidly and needs to cost optimize the Redshift cluster.\nA data engineer needs to create a solution to archive historical data. The data engineer must be able to run analytics queries that effectively combine data from live transactional data in PostgreSQL, current data in Redshift, and archived historical data. The solution must keep only the most recent 15 months of data in Amazon Redshift to reduce costs.\nWhich combination of steps will meet these requirements? (Choose two.)
 *A. Configure the Amazon Redshift Federated Query feature to query live transactional data that is in the PostgreSQL database.
 B. Configure Amazon Redshift Spectrum to query live transactional data that is in the PostgreSQL database.
-*C. Schedule a monthly job to copy data that is older than 15 months to Amazon S3 by using the UNLOAD command. Delete the old data from the Redshift cluster. Configure Amazon Redshift Spectrum to access historical data in Amazon S3.
+C. Schedule a monthly job to copy data that is older than 15 months to Amazon S3 by using the UNLOAD command. Delete the old data from the Redshift cluster. Configure Amazon Redshift Spectrum to access historical data in Amazon S3.
 D. Schedule a monthly job to copy data that is older than 15 months to Amazon S3 Glacier Flexible Retrieval by using the UNLOAD command. Delete the old data from the Redshift cluster. Configure Redshift Spectrum to access historical data from S3 Glacier Flexible Retrieval.
 E. Create a materialized view in Amazon Redshift that combines live, current, and historical data from different sources.
 https://www.examtopics.com/discussions/amazon/view/142537-exam-aws-certified-data-engineer-associate-dea-c01-topic-1/
@@ -1587,10 +1587,10 @@ https://www.examtopics.com/discussions/amazon/view/151941-exam-aws-certified-dat
 
 Q: A company uses Amazon S3 to store data and Amazon QuickSight to create visualizations,\nThe company has an S3 bucket in an AWS account named Hub-Account. The S3 bucket is encrypted by an AWS Key Management Service (AWS KMS) key. The company's QuickSight instance is in a separate account named BI-Account.\nThe company updates the S3 bucket policy to grant access to the QuickSight service role. The company wants to enable cross-account access to allow QuickSight to interact with the S3 bucket.\nWhich combination of steps will meet this requirement? (Choose two.)
 A. Use the existing AWS KMS key to encrypt connections from QuickSight to the S3 bucket.
-*B. Add the S3 bucket as a resource that the QuickSight service role can access.
+B. Add the S3 bucket as a resource that the QuickSight service role can access.
 C. Use AWS Resource Access Manager (AWS RAM) to share the S3 bucket with the BI-Account account.
-*D. Add an IAM policy to the QuickSight service role to give QuickSight access to the KMS key that encrypts the S3 bucket.
-E. Add the KMS key as a resource that the QuickSight service role can access.
+D. Add an IAM policy to the QuickSight service role to give QuickSight access to the KMS key that encrypts the S3 bucket.
+*E. Add the KMS key as a resource that the QuickSight service role can access.
 https://www.examtopics.com/discussions/amazon/view/150344-exam-aws-certified-data-engineer-associate-dea-c01-topic-1/
 
 ---
@@ -1959,6 +1959,15 @@ https://www.examtopics.com/discussions/amazon/view/315500-exam-aws-certified-dat
 
 ---
 
+Q: A company needs to use Amazon Athena to analyze data that is in an Amazon S3 bucket. A data engineer needs to configure AWS Glue table partitions for year, month, and day. The data engineer needs to create the partitions every day to adjust to schema changes in the data.\nWhich solution will meet these requirements?
+A. Use AWS Glue DataBrew to create the partitions for the AWS Glue table.
+B. Use an AWS Lambda function to create the partitions for the AWS Glue table.
+*C. Set partition projection properties for the AWS Glue table.
+D. Configure an AWS Glue crawler to run on a set schedule.
+https://www.examtopics.com/discussions/amazon/view/315501-exam-aws-certified-data-engineer-associate-dea-c01-topic-1/
+
+---
+
 Q: A company stores information about its subscribers in an Amazon S3 bucket. The company runs an analysis every time a subscriber ends their subscription. The company uses AWS Lambda functions to respond to events from the S3 bucket by performing analyses.\nThe Lambda functions clean data from the S3 bucket and initiate an AWS Glue workflow. The Lambda functions have 128 MB of memory and 512 MB of ephemeral storage. The Lambda functions have a timeout of 15 seconds.\nAll three functions successfully finish running. However, CPU usage is often near 100%, which causes slow performance. The company wants to improve the performance of the functions and reduce the total runtime of the pipeline.\nWhich solution will meet these requirements?
 *A. Increase the memory of the Lambda functions to 512 MB.
 B. Increase the number of retries by using the Maximum Retry Attempts setting.
@@ -1968,11 +1977,20 @@ https://www.examtopics.com/discussions/amazon/view/315508-exam-aws-certified-dat
 
 ---
 
+Q: A company uses a data stream in Amazon Kinesis Data Streams to collect transactional data from multiple sources. The company uses an AWS Glue extract, transform, and load (ETL) pipeline to look for outliers in the data from the stream. When the workflow detects an outlier, it sends a notification to an Amazon Simple Notification Service (Amazon SNS) topic. The SNS topic initiates a second workflow to retrieve logs for the outliers and stores the logs in an Amazon S3 bucket.\nThe company experiences delays in the notifications to the SNS topic during periods when the data stream is processing a high volume of data. When the company examines Amazon CloudWatch logs, the company notices a high value for the glue.driver.BlockManager.disk.diskSpaceUsed_MB metric when the traffic is high. The company must resolve this issue.\nWhich solution will meet this requirement with the LEAST operational effort?
+A. Increase the number of data processing units (DPUs) in AWS Glue ETL jobs.
+B. Use Amazon EMR to manage the ETL pipeline instead of AWS Glue.
+C. Use AWS Step Functions to orchestrate a parallel workflow state.
+*D. Enable auto scaling for the AWS Glue ETL jobs.
+https://www.examtopics.com/discussions/amazon/view/316746-exam-aws-certified-data-engineer-associate-dea-c01-topic-1/
+
+---
+
 Q: A gaming company uses AWS Glue to perform read and write operations on Apache Iceberg tables for real-time streaming data. The data in the Iceberg tables is in Apache Parquet format. The company is experiencing slow query performance.\nWhich solutions will improve query performance? (Choose two.)
-A. Use AWS Glue Data Catalog to generate column-level statistics for the Iceberg tables on a schedule.
+*A. Use AWS Glue Data Catalog to generate column-level statistics for the Iceberg tables on a schedule.
 *B. Use AWS Glue Data Catalog to automatically compact the Iceberg tables.
 C. Use AWS Glue Data Catalog to automatically optimize indexes for the Iceberg tables.
-*D. Use AWS Glue Data Catalog to enable copy-on-write for the Iceberg tables.
+D. Use AWS Glue Data Catalog to enable copy-on-write for the Iceberg tables.
 E. Use AWS Glue Data Catalog to generate views for the Iceberg tables.
 https://www.examtopics.com/discussions/amazon/view/316745-exam-aws-certified-data-engineer-associate-dea-c01-topic-1/
 
@@ -1987,12 +2005,48 @@ https://www.examtopics.com/discussions/amazon/view/382561-exam-aws-certified-dat
 
 ---
 
+Q: A retail company stores point-of-sale transaction data in an Amazon RDS for MySQL database. The company maintains historical sales analytics in Amazon Redshift. The company needs to create daily reports that combine the current day's transactions with historical sales patterns for trend analysis. The company requires a solution that provides near real-time insights while minimizing data transfer costs and maintenance overhead.\nWhich solution will meet these requirements?
+A. Configure AWS Database Migration Service (AWS DMS) to continuously replicate data from RDS for MySQL to Amazon Redshift. Use Redshift queries to create consolidated reports.
+*B. Implement Amazon Redshift federated queries to directly access RDS for MySQL data and join it with existing Redshift tables in a single query.
+C. Use AWS Glue to create an extract, transform, and load (ETL) pipeline that runs every hour to copy incremental data from RDS for MySQL to Amazon Redshift. Generate reports.
+D. Export RDS for MySQL data to an Amazon S3 bucket on a regular schedule. Use the COPY command to load the data into Amazon Redshift staging tables. Join the data with historical data.
+https://www.examtopics.com/discussions/amazon/view/382472-exam-aws-certified-data-engineer-associate-dea-c01-topic-1/
+
+---
+
 Q: A company runs a multi-tenant Amazon EMR cluster on Amazon EC2 instances. Multiple teams perform interactive query analyses and data transformations on the data in the EMR cluster. The teams can access the cluster only through EMR Studio workspaces and EMR steps.\nThe teams need to use EMR steps to run Apache Spark jobs to fetch data from an Amazon DynamoDB table. The DynamoDB table contains confidential data that must be accessible to only one specific team. The company needs to ensure that only the appropriate team can access the confidential data in the EMR cluster.\nWhich solution will meet these requirements?
 *A. Set up runtime roles for EMR steps.
 B. Set up AWS Lake Formation permissions.
 C. Set up IAM roles for EMR File System (EMRFS) requests.
 D. Set up a DynamoDB resource-based policy.
 https://www.examtopics.com/discussions/amazon/view/382569-exam-aws-certified-data-engineer-associate-dea-c01-topic-1/
+
+---
+
+Q: A company needs a solution to store and query product data that has variable attributes. The solution must support unpredictable and high-volume queries with single-digit millisecond latency, even during sudden traffic spikes. The solution must retrieve items by a primary identifier named Product ID. The solution must allow flexible queries by secondary attributes named Category and Brand.\nWhich solution will meet these requirements?
+*A. Use an Amazon DynamoDB table with on-demand capacity to store product data. Store products by primary key. Use global secondary indexes (GSIs) to store secondary attributes.
+B. Use Amazon Aurora with a Multi-AZ deployment to store product data. Use read replicas. Create indexes for primary and secondary attributes.
+C. Use an Amazon OpenSearch Serverless cluster with dynamic scaling to store product data. Index product data by primary and secondary attributes.
+D. Use Amazon ElastiCache (Redis OSS) and Amazon S3 to store product data. Use Amazon Athena to run flexible secondary attribute queries.
+https://www.examtopics.com/discussions/amazon/view/382578-exam-aws-certified-data-engineer-associate-dea-c01-topic-1/
+
+---
+
+Q: A company needs to build a data pipeline to process a 1-TB file from an Amazon S3 bucket. The pipeline needs to create three DataFrames based on business logic. The pipeline must save all three DataFrames to a second S3 bucket in parallel. The company needs to set the pipeline to be the target of an Amazon EventBridge rule that matches file uploads to the source S3 bucket.\nWhich solution will meet these requirements with the LEAST maintenance overhead?
+A. Configure an Apache Spark Streaming application on Amazon EMR to process data from the S3 source bucket in batches, create DataFrames, and save the output to the destination S3 bucket.
+B. Configure three AWS Lambda functions to process the business logic and to save the DataFrames to the destination S3 bucket in parallel.
+*C. Configure an AWS Glue workflow to run three AWS Glue jobs in parallel to process the file.
+D. Configure an AWS Step Functions state machine to initiate an AWS Glue workflow to run three AWS Glue jobs in parallel to process the file.
+https://www.examtopics.com/discussions/amazon/view/389738-exam-aws-certified-data-engineer-associate-dea-c01-topic-1/
+
+---
+
+Q: A company must retain specific data for 1 year. A data engineer observes that one of the company’s Amazon S3 buckets contains millions of objects that are older than 3 years. Versioning is enabled on the bucket.\nTo reduce costs, the data engineer implements an S3 Lifecycle rule to expire objects after 365 days. The new S3 Lifecycle rule causes the object count to double instead of decrease.\nWhich additional step must the data engineer take to permanently delete the old objects?
+A. Disable versioning on the S3 bucket.
+B. Use an AWS Lambda function to run a Python job to identify and delete objects that are older than 365 days.
+C. Suspend versioning on the S3 bucket.
+*D. Add an additional S3 Lifecycle rule to delete the current and expired versions of objects that are older than 365 days.
+https://www.examtopics.com/discussions/amazon/view/389703-exam-aws-certified-data-engineer-associate-dea-c01-topic-1/
 
 ---
 
@@ -2360,15 +2414,6 @@ https://www.examtopics.com/discussions/amazon/view/382572-exam-aws-certified-dat
 
 ---
 
-Q: A retail company stores point-of-sale transaction data in an Amazon RDS for MySQL database. The company maintains historical sales analytics in Amazon Redshift. The company needs to create daily reports that combine the current day's transactions with historical sales patterns for trend analysis. The company requires a solution that provides near real-time insights while minimizing data transfer costs and maintenance overhead.\nWhich solution will meet these requirements?
-*A. Configure AWS Database Migration Service (AWS DMS) to continuously replicate data from RDS for MySQL to Amazon Redshift. Use Redshift queries to create consolidated reports.
-B. Implement Amazon Redshift federated queries to directly access RDS for MySQL data and join it with existing Redshift tables in a single query.
-C. Use AWS Glue to create an extract, transform, and load (ETL) pipeline that runs every hour to copy incremental data from RDS for MySQL to Amazon Redshift. Generate reports.
-D. Export RDS for MySQL data to an Amazon S3 bucket on a regular schedule. Use the COPY command to load the data into Amazon Redshift staging tables. Join the data with historical data.
-https://www.examtopics.com/discussions/amazon/view/382472-exam-aws-certified-data-engineer-associate-dea-c01-topic-1/
-
----
-
 Q: A company is creating a new data pipeline to populate a data lake. A data analyst needs to prepare and standardize the data before a data engineering team can perform advanced data transformations. The data analyst needs a solution to process the data that does not require writing new code.\nWhich solution will meet these requirements with the LEAST operational effort?
 A. Use Python and Pandas in an AWS Glue Studio notebook. Ensure that the data engineers add additional transformations to complete the pipeline.
 B. Use Amazon SageMaker Canvas and SageMaker Data Wrangler to write to a new dataset. Ensure that the data engineers add additional transformations to complete the pipeline by using AWS Glue.
@@ -2414,15 +2459,6 @@ https://www.examtopics.com/discussions/amazon/view/382573-exam-aws-certified-dat
 
 ---
 
-Q: A company needs to implement a data mesh architecture in which domains for trading, risk, and compliance teams each have own their data. The teams need to share specific views with one another. The teams have over 1,000 tables across 50 databases in AWS Glue Data Catalog. All three teams use Amazon Athena to perform on-demand analysis. The teams use Amazon Redshift to generate complex reports. The compliance team must audit all data access. Access to personally identifiable information (PII) data must be restricted.\nThe company requires a scalable solution to meet the team requirements. The solution must provide the ability to perform analysis across team domains.\nWhich solution will meet these requirements?
-A. Create views in Athena for on-demand analysis. Use the Athena views in Amazon Redshift to perform cross-domain analytics. Use AWS CloudTrail to audit data access. Use AWS Lake Formation to establish fine-grained access control.
-B. Use AWS Glue Data Catalog views to perform analysis. Use AWS CloudTrail logs to audit data access. Use AWS Lake Formation to manage access permissions. Use security definer views to mask PII.
-*C. Use AWS Lake Formation to set up cross-domain access to tables. Set up fine-grained access controls.
-D. Create materialized views and enable Amazon Redshift datashares for each domain. Configure cross-domain access policies.
-https://www.examtopics.com/discussions/amazon/view/382562-exam-aws-certified-data-engineer-associate-dea-c01-topic-1/
-
----
-
 Q: A company stores data in Amazon S3 and Amazon RDS. The company needs to apply technical controls to meet security requirements. The company must generate backups of the data and retain the backups for specified retention periods. The company must protect the backups from accidental or malicious deletion during the retention periods.\nWhich solution will meet these requirements with the LEAST operational overhead?
 A. Create S3 buckets with versioning and MFA Delete enabled. Set a backup retention period and backup window for each RDS DB instance. Use the automated backup feature of Amazon RDS, and take additional snapshots as required.
 B. Create S3 buckets with versioning and Same-Region Replication enabled. Set a backup retention period and backup window for each RDS DB instance. Use the automated backup feature of Amazon RDS. Take additional snapshots as required.
@@ -2450,15 +2486,6 @@ https://www.examtopics.com/discussions/amazon/view/382557-exam-aws-certified-dat
 
 ---
 
-Q: A data engineer needs to deploy a complex pipeline. The stages of the pipeline must be able to run a script. The data engineer must use only fully managed and serverless services in the pipeline.\nWhich solution will meet these requirements?
-A. Deploy AWS Glue jobs and workflows. Use AWS Glue to run the jobs and workflows on a schedule.
-*B. Use Amazon Managed Workflows for Apache Airflow (Amazon MWAA) to build and schedule the pipeline.
-C. Deploy the script to Amazon EC2 instances. Use Amazon EventBridge to run the script on a schedule.
-D. Use Aws Glue DataBrew to build the pipeline. Use Amazon EventBridge to run the pipeline on a schedule.
-https://www.examtopics.com/discussions/amazon/view/382579-exam-aws-certified-data-engineer-associate-dea-c01-topic-1/
-
----
-
 Q: A company needs to use an Aws Glue PySpark job to read specific data from an Amazon DynamoDB table. The company knows the partition key values for the required records. The existing processing logic of the AWS Glue PySpark job requires the data to be in DynamicFrame format. The company needs a solution to ensure that the job reads only the specified data.\nWhich solution will meet this requirement with the MINIMUM number of read capacity units (RCUs)?
 A. Use the AWS Glue DynamoDB ETL connector to read the DynamoDB table. Use the filter option to read the required partition key.
 B. Perform a query on the DynamoDB table in the AWS Glue job by using only the sort key in the key condition expression. Load the data into a DynamicFrame.
@@ -2477,15 +2504,6 @@ https://www.examtopics.com/discussions/amazon/view/382559-exam-aws-certified-dat
 
 ---
 
-Q: A company needs a solution to store and query product data that has variable attributes. The solution must support unpredictable and high-volume queries with single-digit millisecond latency, even during sudden traffic spikes. The solution must retrieve items by a primary identifier named Product ID. The solution must allow flexible queries by secondary attributes named Category and Brand.\nWhich solution will meet these requirements?
-*A. Use an Amazon DynamoDB table with on-demand capacity to store product data. Store products by primary key. Use global secondary indexes (GSIs) to store secondary attributes.
-B. Use Amazon Aurora with a Multi-AZ deployment to store product data. Use read replicas. Create indexes for primary and secondary attributes.
-C. Use an Amazon OpenSearch Serverless cluster with dynamic scaling to store product data. Index product data by primary and secondary attributes.
-D. Use Amazon ElastiCache (Redis OSS) and Amazon S3 to store product data. Use Amazon Athena to run flexible secondary attribute queries.
-https://www.examtopics.com/discussions/amazon/view/382578-exam-aws-certified-data-engineer-associate-dea-c01-topic-1/
-
----
-
 Q: A company is uploading log files from on-premises servers to an Amazon S3 bucket. The company needs to validate that the logs from the on-premises server are the same as the logs that are stored in the S3 bucket.\nWhich solution will meet this requirement?
 *A. Use the AWS SDK to automatically compute CRC32 checksums during the upload. Store the checksums in S3 object metadata.
 B. Create an AWS Lambda function to calculate SHA-256 checksums. Store results in a separate metadata table. Validate the logs after the upload.
@@ -2501,15 +2519,6 @@ B. Use the archive and replay features in EventBridge Scheduler to investigate t
 C. Change the retry policy in EventBridge Scheduler to reduce the value for maximum retries.
 D. Change the retry policy in EventBridge Scheduler to increase the value for maximum age of event.
 https://www.examtopics.com/discussions/amazon/view/382560-exam-aws-certified-data-engineer-associate-dea-c01-topic-1/
-
----
-
-Q: A company needs to build a data pipeline to process a 1-TB file from an Amazon S3 bucket. The pipeline needs to create three DataFrames based on business logic. The pipeline must save all three DataFrames to a second S3 bucket in parallel. The company needs to set the pipeline to be the target of an Amazon EventBridge rule that matches file uploads to the source S3 bucket.\nWhich solution will meet these requirements with the LEAST maintenance overhead?
-A. Configure an Apache Spark Streaming application on Amazon EMR to process data from the S3 source bucket in batches, create DataFrames, and save the output to the destination S3 bucket.
-B. Configure three AWS Lambda functions to process the business logic and to save the DataFrames to the destination S3 bucket in parallel.
-*C. Configure an AWS Glue workflow to run three AWS Glue jobs in parallel to process the file.
-D. Configure an AWS Step Functions state machine to initiate an AWS Glue workflow to run three AWS Glue jobs in parallel to process the file.
-https://www.examtopics.com/discussions/amazon/view/389738-exam-aws-certified-data-engineer-associate-dea-c01-topic-1/
 
 ---
 
@@ -2549,15 +2558,6 @@ https://www.examtopics.com/discussions/amazon/view/389737-exam-aws-certified-dat
 
 ---
 
-Q: An ecommerce company collects daily customer transaction logs in CSV format and stores the logs in Amazon S3. The company uses Amazon Athena to scan a subset of attributes from the logs on the same day the company receives each log.\nQuery times are increasing because of increasing transaction volume. The company wants to improve query performance.\nWhich solution will meet these requirements with the SHORTEST query times?
-A. Convert the CSV logs into multiple ORC files for better parallelism in Athena. Partition by date in Amazon S3. Use columnar pushdown filters.
-B. Convert the CSV logs to JSON. Partition by date in Amazon S3. Use Athena with dynamic filtering to reduce data scans.
-C. Convert the CSV logs to Avro. Partition by date in Amazon S3. Use Athena with projection-based partitioning.
-*D. Convert the CSV logs to a single Apache Parquet file for each day Partition the data by date in Amazon S3. Use Athena with predicate pushdown filters.
-https://www.examtopics.com/discussions/amazon/view/389736-exam-aws-certified-data-engineer-associate-dea-c01-topic-1/
-
----
-
 Q: A company stores customer data in an Amazon S3 bucket. The company must permanently delete all customer data that is older than 7 years.\nWhich solution will meet this requirement?
 *A. Configure an S3 Lifecycle policy to permanently delete objects that are older than 7 years.
 B. Use Amazon Athena to query the S3 bucket for objects that are older than 7 years. Configure Athena to delete the results.
@@ -2582,15 +2582,6 @@ B. Enable Amazon DynamoDB Streams. Configure a TTL rule to delete items from the
 C. Include a timestamp with the data that is loaded into DynamoDB. Use an AWS Lambda function to read timestamps and move items that are 1 year old directly to Amazon S3 Glacier Deep Archive. Configure the function to delete items after 5 years.
 *D. Enable Amazon DynamoDB Streams. Configure a TTL rule to delete items from the DynamoDB table after 1 year. Use an AWS Lambda function to consume the stream and send items directly to Amazon S3 Glacier Deep Archive. Create an S3 Lifecycle policy to delete the items after 5 years.
 https://www.examtopics.com/discussions/amazon/view/389731-exam-aws-certified-data-engineer-associate-dea-c01-topic-1/
-
----
-
-Q: A company must retain specific data for 1 year. A data engineer observes that one of the company’s Amazon S3 buckets contains millions of objects that are older than 3 years. Versioning is enabled on the bucket.\nTo reduce costs, the data engineer implements an S3 Lifecycle rule to expire objects after 365 days. The new S3 Lifecycle rule causes the object count to double instead of decrease.\nWhich additional step must the data engineer take to permanently delete the old objects?
-A. Disable versioning on the S3 bucket.
-B. Use an AWS Lambda function to run a Python job to identify and delete objects that are older than 365 days.
-C. Suspend versioning on the S3 bucket.
-*D. Add an additional S3 Lifecycle rule to delete the current and expired versions of objects that are older than 365 days.
-https://www.examtopics.com/discussions/amazon/view/389703-exam-aws-certified-data-engineer-associate-dea-c01-topic-1/
 
 ---
 
@@ -2690,15 +2681,6 @@ B. Use Amazon Managed Streaming for Apache Kafka (Amazon MSK) Connect with Debez
 C. Use AWS Database Migration Service (AWS DMS) to set up binary log replication to Amazon Kinesis Data Streams. Load the data into Amazon Redshift Serverless after schema conversion.
 *D. Use Aurora zero-ETL integrations with Amazon Redshift Serverless for each database to load Aurora MySQL changes in Amazon Redshift Serverless.
 https://www.examtopics.com/discussions/amazon/view/401535-exam-aws-certified-data-engineer-associate-dea-c01-topic-1/
-
----
-
-Q: A data engineer is writing a query to join two tables in Amazon Athena. The data engineer needs to choose the correct join order for the tables to optimize query performance.\nWhich solution will meet these requirements?
-*A. Specify the smaller table on the left side of the join and the larger table on the right side of the join.
-B. Specify the larger table on the left side of the join and the smaller table on the right side of the join.
-C. Use AWS Glue to pre-process the tables before performing the join.
-D. Use table statistics to automatically determine the join order.
-https://www.examtopics.com/discussions/amazon/view/401536-exam-aws-certified-data-engineer-associate-dea-c01-topic-1/
 
 ---
 
@@ -2974,20 +2956,137 @@ https://www.examtopics.com/discussions/amazon/view/401567-exam-aws-certified-dat
 
 ---
 
-Q: An application uses an AWS Lambda function that is configured with managed runtimes. The Lambda function successfully writes logs to the default Amazon CloudWatch Logs log group. A data engineer wants to modify the logging behavior to show only ERROR level logs for application logs and WARN level logs for system logs.\nWhich solution will meet these requirements?
-A. Add additional permissions to the Lambda execution role.
-B. Set the log level to ERROR in the Lambda function code.
-*C. Configure the Lambda function to use the JSON log format.
-D. Configure the Lambda function to send logs to a custom log group.
-https://www.examtopics.com/discussions/amazon/view/401568-exam-aws-certified-data-engineer-associate-dea-c01-topic-1/
+Q: A company uses AWS Step Functions to orchestrate a data pipeline. The company has configured the Step Functions logs to push to Amazon CloudWatch Logs when the log level is FATAL The company has enabled logs for all AWS services in the pipeline.\nA state named "preprocessing" invokes an AWS Lambda function named "preprocessing." The Lambda function preprocesses data before proceeding to the next state. The company needs to find error details if an error occurs during the data preprocessing.\nWhich CloudWatch Logs log group should the company check to find the error details?
+A. The Step Functions TaskFailed event in the /aws/vendedlogs/states log group
+B. The AWS CloudTrail logs SendTaskFailure event in the CloudTrail/logs/preprocessing log group
+*C. The Lambda logs in the laws/lambda/preprocessing log group
+D. The Step Functions TaskSucceeded event in the /aws/vendedlogs/states log group
+https://www.examtopics.com/discussions/amazon/view/406573-exam-aws-certified-data-engineer-associate-dea-c01-topic-1/
+
+---
+
+Q: A research company stores data in an Amazon Redshift cluster. The company needs to share data between departments and maintain regulatory compliance. The company needs a solution that gives researchers access to only the records from their own departments and does not create multiple dataset copies. The solution must also ensure that personally identifiable information (PII) is protected from unauthorized access.\nWhich solution will meet these requirements?
+A. Create a datashare in Amazon Redshift for each department. Use cross-Region data sharing to distribute copies of the entire dataset to each department's Amazon Redshift cluster.
+B. Implement row-level security policies with basic SQL filters based on department. Attach the security policies to the data tables. Grant EXPLAIN RLS permission to authorized researchers.
+C. Create separate schemas for each department with appropriate views that filter data. Grant each department access to only their respective schema.
+*D. Use row-level security policies with multi-condition SQL predicates. Attach the security policies to the data tables. Grant each department's role access to the appropriate policies.
+https://www.examtopics.com/discussions/amazon/view/406574-exam-aws-certified-data-engineer-associate-dea-c01-topic-1/
+
+---
+
+Q: A company stores analysis results for thousands of daily customer service call transcripts in an Amazon DynamoDB table. An application generates business reports by using only the previous 7 working days of data. To reduce costs, the company wants to implement a solution that automatically removes data that is older than 7 working days.\nWhich solution will meet this requirement with the LEAST operational overhead?
+*A. Enable TTL on the DynamoDB table. Add an expiration timestamp attribute to each item in the table.
+B. Use Amazon EventBridge to invoke an AWS Lambda function on a schedule to delete old records every day.
+C. Create a new DynamoDB table. Enable TTL on the new table. Migrate the data to the new table. Update the application to use the new table.
+D. Use AWS Glue jobs to implement a daily batch job to scan for and delete expired items from the DynamoDB table.
+https://www.examtopics.com/discussions/amazon/view/406575-exam-aws-certified-data-engineer-associate-dea-c01-topic-1/
+
+---
+
+Q: A data engineer needs to design a data pipeline that invokes an AWS Glue job. After the AWS Glue job finishes successfully, the pipeline needs to invoke three AWS Lambda functions. The pipeline must be serverless. The data engineer wants to see the entire pipeline lineage in a single interface.\nWhich solution will meet these requirements?
+*A. Configure a workflow in AWS Step Functions that invokes the AWS Glue job and the Lambda functions. View the lineage in Step Functions Workflow Studio.
+B. Deploy an Apache Airflow workflow that invokes the AWS Glue job and the Lambda functions. View the lineage in the Airflow UI.
+C. Build the pipeline in the AWS Glue job. Invoke the Lambda functions after the AWS Glue job runs. Use Amazon CloudWatch Logs Insights to view the lineage.
+D. Deploy a workflow in AWS Step Functions to invoke the AWS Glue job. In the job code, invoke the Lambda functions before the job finishes. View the lineage from the AWS Glue UI.
+https://www.examtopics.com/discussions/amazon/view/406576-exam-aws-certified-data-engineer-associate-dea-c01-topic-1/
+
+---
+
+Q: A manufacturing company is setting up an IoT monitoring system that generates large, complex data streams. The company wants to store the data in an Amazon S3 data lake for real-time and historical analysis. The company needs a solution that can process data quickly, provide short query times, and use resources efficiently without slowing down data ingestion.\nThe solution must use a Spark streaming extract, transform, and load (ETL) job on Amazon EMR that is configured to write data to an Iceberg table.\nWhich solution will meet these requirements?
+A. Use Amazon Kinesis Data Streams to ingest the data. Configure the Iceberg table with copy on write (CoW) mode. Enable the AWS Glue Data Catalog compaction optimizer.
+B. Use Amazon Managed Streaming for Apache Kafka (Amazon MSK) to ingest the data. Configure the Iceberg table with copy on write (CoW) mode. Schedule an AWS Glue job for compaction to optimize the Iceberg table.
+*C. Use Amazon Kinesis Data Streams to ingest the data. Configure the Iceberg table with merge on read (MoR) mode. Enable the AWS Glue Data Catalog compaction optimizer.
+D. Use Amazon Data Firehose to ingest the data. Use an AWS Lambda function to handle nested schema. Write the data to an Iceberg table with merge on read (MoR) mode in an Amazon S3 table bucket.
+https://www.examtopics.com/discussions/amazon/view/406577-exam-aws-certified-data-engineer-associate-dea-c01-topic-1/
+
+---
+
+Q: A media streaming company is moving its application to AWS. The company wants to avoid data quality issues in user engagement analytics. The company needs to be able to reprocess several days of historical data without duplicates and without interrupting current real-time processing.\nWhich solution will meet these requirements?
+*A. Configure Amazon Kinesis Data Streams with extended retention. Implement idempotent consumers with Amazon DynamoDB checkpointing. Use separate processing paths for replay data and real-time data.
+B. Configure Amazon Kinesis Data Streams with standard retention. Implement idempotent consumers with Amazon RDS checkpointing. Use separate processing paths with conditional logic for replay data and real-time data.
+C. Configure Amazon Kinesis Data Streams with standard retention. Implement idempotent consumers with Amazon DynamoDB checkpointing. Use shared processing paths with conditional logic for replay data and real-time data.
+D. Configure Amazon Kinesis Data Streams with extended retention. Implement idempotent consumers with Amazon RDS checkpointing. Use shared processing paths for replay data and real-time data.
+https://www.examtopics.com/discussions/amazon/view/406578-exam-aws-certified-data-engineer-associate-dea-c01-topic-1/
+
+---
+
+Q: A global ecommerce company occasionally receives customer data files in its Amazon S3 data lake. The company needs to automatically detect new data and mask sensitive data before making the data available to the company's analytics team.\nWhich solution will meet these requirements with the LEAST operational overhead?
+A. Configure Amazon S3 Event Notifications to detect the new data and trigger an AWS Glue job. Use Amazon Macie to detect and mask the sensitive data. Store the processed data in Amazon Redshift.
+B. Use Amazon Managed Streaming for Apache Kafka (Amazon MSK) to detect incoming data. Use Amazon EMR workflows to detect and mask sensitive data. Store the processed data in Amazon S3.
+C. Use Amazon Kinesis Data Streams to capture new data. Use Amazon Comprehend to detect and mask the sensitive data. Store the processed data in Amazon DynamoDB tables.
+*D. Use Amazon EventBridge to detect new data and run AWS Glue workflows. Use AWS Glue DataBrew to detect and mask the sensitive data. Store the processed data in an S3 bucket.
+https://www.examtopics.com/discussions/amazon/view/406579-exam-aws-certified-data-engineer-associate-dea-c01-topic-1/
+
+---
+
+Q: A company uses Amazon SageMaker AI for its machine learning (ML) workflows. The company is organized into several project groups that use sensitive data. The company needs to give the project groups the ability to discover available datasets across different AWS accounts. The solution must maintain access controls and track all data access for compliance purposes.\nWhich solution will meet these requirements with the LEAST operational overhead?
+*A. Use Amazon SageMaker Assets to publish, discover, and request access to datasets through the asset catalog with approval workflows that track data access.
+B. Set up Amazon SageMaker Feature Store with cross-account access policies to automatically share data between AWS accounts without requiring approval workflows.
+C. Set up IAM roles for each project group with permissions to access all datasets across all AWS accounts. Use AWS CloudTrail to record data access activity.
+D. Create separate Amazon SageMaker Studio domains for each project group with isolated environments and no ability to share data between domains.
+https://www.examtopics.com/discussions/amazon/view/406580-exam-aws-certified-data-engineer-associate-dea-c01-topic-1/
+
+---
+
+Q: A company has an application that is deployed on AWS. The application uses Amazon Simple Notification Service (Amazon SNS) with multiple topics. The company's security team needs to be able to audit all Publish and PublishBatch API actions for all the SNS topics. The company's application team and security team must also be able to query the audit data. The company has already established an event data store in AWS CloudTrail Lake to collect all events.\nWhich solution will meet these requirements with the LEAST operational overhead?
+A. Enable management events for the SNS topics. Create a table in AWS Glue Data Catalog. Query the data by using Amazon Athena.
+B. Enable management events for the SNS topics. Use CloudTrail Lake to query the audit data.
+*C. Enable data events for the SNS topics. Use CloudTrail Lake to query the audit data.
+D. Enable data events for the SNS topics. Create a table in AWS Glue Data Catalog. Query the data by using Amazon Athena.
+https://www.examtopics.com/discussions/amazon/view/406581-exam-aws-certified-data-engineer-associate-dea-c01-topic-1/
+
+---
+
+Q: A data engineer needs to validate the quality of files that are uploaded to an Amazon S3 bucket every day. The files are in CSV and JSON formats and schema variations exist. The data engineer needs a repeatable process to monitor data quality metrics such as null values, format inconsistencies, and outliers. The process must provide reusable rule-based profiling and scale across multiple datasets with minimal manual effort or custom code.\nWhich solution will meet these requirements?
+A. Use AWS Glue Studio to create a daily extract, transform, and load (ETL) pipeline that merges datasets and applies validation logic by using PySpark transformations.
+B. Use AWS Glue extract, transform, and load (ETL) jobs with dynamic frames and the ResolveChoice class to align schemas and detect structural differences between files.
+*C. Use AWS Glue DataBrew to configure profiling jobs and reusable recipe actions. Schedule the profiling jobs and reusable recipe actions to run against each dataset in Amazon S3.
+D. Use AWS Glue DataBrew to generate profiling dashboards for each dataset. Monitor quality metrics through manual review.
+https://www.examtopics.com/discussions/amazon/view/406582-exam-aws-certified-data-engineer-associate-dea-c01-topic-1/
+
+---
+
+Q: A company needs a solution to process streaming data by using Apache Spark in a Kubernetes environment. The solution must support event-driven scaling and optimize resource utilization. The company needs to integrate the solution with existing Kubernetes infrastructure deployed on Amazon Elastic Kubernetes Service (Amazon EKS).\nWhich solution will meet these requirements with the LEAST operational overhead?
+A. Deploy self-managed Apache Spark on Amazon EKS by using custom auto-scaling policies based on Kubernetes Event-Driven Autoscaling (KEDA) operators.
+*B. Use Amazon EMR on Amazon EKS with Kubernetes Event-Driven Autoscaling (KEDA) for event-driven scaling of Spark applications.
+C. Use Amazon EMR on Amazon EKS with the Kubernetes Cluster Autoscaler to scale Spark applications based on metrics events generated by the Kubernetes Metrics Server.
+D. Implement Apache Spark on Amazon EKS with AWS Auto Scaling groups and custom scaling policies based on metrics events collected by the Kubernetes Metrics Server.
+https://www.examtopics.com/discussions/amazon/view/406583-exam-aws-certified-data-engineer-associate-dea-c01-topic-1/
+
+---
+
+Q: A legal company is building a data pipeline to power an application that will handle peak traffic during business hours. The application will provide information about relevant laws and available lawyers. The legal document database will be updated one time each day.\nThe application must display up-to-date lawyer availability from a calendar database and provide complex full-text search of legal documents. The company wants to use AWS Glue for extract, transform, and load (ETL) processes. Lawyer availability information must be current within 5 minutes of any schedule changes.\nWhich solution will meet these requirements with the LEAST operational overhead?
+A. Use AWS Step Functions to orchestrate AWS Glue jobs with time-based triggers and event-based triggers. Store processed data in Amazon S3. Use Amazon RDS for the search functionality.
+*B. Use AWS Step Functions to orchestrate AWS Glue jobs with time-based triggers and event-based triggers. Store processed data in Amazon S3. Use Amazon OpenSearch Service for full-text search capabilities.
+C. Use AWS Glue workflows with time-based triggers and event-based triggers. Store processed data in Amazon DynamoDB. Create a custom search solution by using AWS Lambda functions.
+D. Use Amazon EventBridge to schedule all AWS Glue jobs. Store processed data in Amazon RDS. Use Amazon Kendra for full-text search capabilities.
+https://www.examtopics.com/discussions/amazon/view/406584-exam-aws-certified-data-engineer-associate-dea-c01-topic-1/
+
+---
+
+Q: A data engineer needs to deploy a serverless data pipeline. In the pipeline, CSV files are uploaded to an Amazon S3 bucket, which invokes an AWS Lambda function. The Lambda function transforms the CSV files to JSON format and stores the results in a second S3 bucket.\nThe data engineer has created an AWS Serverless Application Model (AWS SAM) template that includes the Lambda function. The data engineer wants to use AWS SAM for the pipeline deployment.\nWhich solution will package and deploy this serverless data pipeline?
+*A. Add the first S3 bucket and the S3 event source for the Lambda function to the SAM template. Run the sam build command to prepare the deployment package. Run the sam deploy --guided command to deploy the pipeline.
+B. Run the sam deploy command directly with the --s3-bucket parameter to deploy the Lambda function code. Manually configure the S3 event trigger in the AWS Management Console.
+C. Add the first S3 bucket to the SAM template. Run the sam package template to upload the Lambda function code to Amazon S3. Create an AWS CloudFormation stack from the packaged template. Configure event notifications manually.
+D. Add the first S3 bucket and the S3 event source for the Lambda function to the SAM template. Run the sam build command followed by the aws cloudformation deploy command to deploy the pipeline.
+https://www.examtopics.com/discussions/amazon/view/406489-exam-aws-certified-data-engineer-associate-dea-c01-topic-1/
+
+---
+
+Q: A company stores objects in an Amazon S3 bucket. The company crawls the objects so that Amazon Athena can query the data.\nA data engineer manually moved all objects from the partition with a path prefix of status=01 to the prefix status=02. The status=01 partition location is now empty. However, the status=01 partition location still appears in the AWS Glue Data Catalog metadata.\nWhich Athena command should the data engineer run to resolve the metadata discrepancy?
+A. MSCK REPAIR TABLE
+*B. ALTER TABLE DROP PARTITION
+C. ALTER TABLE SET TBLPROPERTIES
+D. ALTER TABLE CHANGE COLUMN
+https://www.examtopics.com/discussions/amazon/view/406490-exam-aws-certified-data-engineer-associate-dea-c01-topic-1/
 
 ---
 
 Q: A data engineer is using an AWS Glue ETL job to remove outdated customer records from a table that contains customer account information. The data engineer is using the following SQL command to remove customers that exist in a table named monthly_accounts_update table from the customer accounts table:\nMERGE INTO accounts t USING monthly_accounts_update s\nON t.customer = s.customer -\nWHEN MATCHED -\nTHEN DELETE -\nWhat will happen when the data engineer runs the SQL command?
-A. All customer records that exist in both the customer accounts table and the monthly_accounts_update table will be deleted from the accounts table.
+*A. All customer records that exist in both the customer accounts table and the monthly_accounts_update table will be deleted from the accounts table.
 B. Only customer records that are present in both tables will be retained in the customer accounts table.
 C. The monthly_accounts_update table will be deleted.
-*D. No records will be deleted because the command syntax is not valid in AWS Glue.
+D. No records will be deleted because the command syntax is not valid in AWS Glue.
 https://www.examtopics.com/discussions/amazon/view/305095-exam-aws-certified-data-engineer-associate-dea-c01-topic-1/
 
 ---
@@ -3001,30 +3100,12 @@ https://www.examtopics.com/discussions/amazon/view/315497-exam-aws-certified-dat
 
 ---
 
-Q: A company needs to use Amazon Athena to analyze data that is in an Amazon S3 bucket. A data engineer needs to configure AWS Glue table partitions for year, month, and day. The data engineer needs to create the partitions every day to adjust to schema changes in the data.\nWhich solution will meet these requirements?
-A. Use AWS Glue DataBrew to create the partitions for the AWS Glue table.
-B. Use an AWS Lambda function to create the partitions for the AWS Glue table.
-C. Set partition projection properties for the AWS Glue table.
-*D. Configure an AWS Glue crawler to run on a set schedule.
-https://www.examtopics.com/discussions/amazon/view/315501-exam-aws-certified-data-engineer-associate-dea-c01-topic-1/
-
----
-
 Q: A data engineer is building a solution to detect sensitive information that is stored in a data lake across multiple Amazon S3 buckets. The solution must detect personally identifiable information (PII) that is in a proprietary data format.\nWhich solution will meet these requirements with the LEAST operational overhead?
 A. Use the AWS Glue Detect PII transform with specific patterns.
 *B. Use Amazon Made with managed data identifiers.
 C. Use an AWS Lambda function with custom regular expressions.
 D. Use Amazon Athena with a SQL query to match the custom formats.
 https://www.examtopics.com/discussions/amazon/view/316744-exam-aws-certified-data-engineer-associate-dea-c01-topic-1/
-
----
-
-Q: A company uses a data stream in Amazon Kinesis Data Streams to collect transactional data from multiple sources. The company uses an AWS Glue extract, transform, and load (ETL) pipeline to look for outliers in the data from the stream. When the workflow detects an outlier, it sends a notification to an Amazon Simple Notification Service (Amazon SNS) topic. The SNS topic initiates a second workflow to retrieve logs for the outliers and stores the logs in an Amazon S3 bucket.\nThe company experiences delays in the notifications to the SNS topic during periods when the data stream is processing a high volume of data. When the company examines Amazon CloudWatch logs, the company notices a high value for the glue.driver.BlockManager.disk.diskSpaceUsed_MB metric when the traffic is high. The company must resolve this issue.\nWhich solution will meet this requirement with the LEAST operational effort?
-A. Increase the number of data processing units (DPUs) in AWS Glue ETL jobs.
-B. Use Amazon EMR to manage the ETL pipeline instead of AWS Glue.
-C. Use AWS Step Functions to orchestrate a parallel workflow state.
-*D. Enable auto scaling for the AWS Glue ETL jobs.
-https://www.examtopics.com/discussions/amazon/view/316746-exam-aws-certified-data-engineer-associate-dea-c01-topic-1/
 
 ---
 
@@ -3047,6 +3128,24 @@ https://www.examtopics.com/discussions/amazon/view/382556-exam-aws-certified-dat
 
 ---
 
+Q: A company needs to implement a data mesh architecture in which domains for trading, risk, and compliance teams each have own their data. The teams need to share specific views with one another. The teams have over 1,000 tables across 50 databases in AWS Glue Data Catalog. All three teams use Amazon Athena to perform on-demand analysis. The teams use Amazon Redshift to generate complex reports. The compliance team must audit all data access. Access to personally identifiable information (PII) data must be restricted.\nThe company requires a scalable solution to meet the team requirements. The solution must provide the ability to perform analysis across team domains.\nWhich solution will meet these requirements?
+A. Create views in Athena for on-demand analysis. Use the Athena views in Amazon Redshift to perform cross-domain analytics. Use AWS CloudTrail to audit data access. Use AWS Lake Formation to establish fine-grained access control.
+B. Use AWS Glue Data Catalog views to perform analysis. Use AWS CloudTrail logs to audit data access. Use AWS Lake Formation to manage access permissions. Use security definer views to mask PII.
+*C. Use AWS Lake Formation to set up cross-domain access to tables. Set up fine-grained access controls.
+D. Create materialized views and enable Amazon Redshift datashares for each domain. Configure cross-domain access policies.
+https://www.examtopics.com/discussions/amazon/view/382562-exam-aws-certified-data-engineer-associate-dea-c01-topic-1/
+
+---
+
+Q: A data engineer needs to deploy a complex pipeline. The stages of the pipeline must be able to run a script. The data engineer must use only fully managed and serverless services in the pipeline.\nWhich solution will meet these requirements?
+A. Deploy AWS Glue jobs and workflows. Use AWS Glue to run the jobs and workflows on a schedule.
+*B. Use Amazon Managed Workflows for Apache Airflow (Amazon MWAA) to build and schedule the pipeline.
+C. Deploy the script to Amazon EC2 instances. Use Amazon EventBridge to run the script on a schedule.
+D. Use Aws Glue DataBrew to build the pipeline. Use Amazon EventBridge to run the pipeline on a schedule.
+https://www.examtopics.com/discussions/amazon/view/382579-exam-aws-certified-data-engineer-associate-dea-c01-topic-1/
+
+---
+
 Q: A company needs to optimize storage costs for an Amazon S3 bucket. The S3 bucket receives 10 million objects every day. The objects range in size from 2 KB to 5 MB. The objects need to be immediately accessible for the first 60 days. Users access objects infrequently from 61 to 180 days. The objects must be accessible within an hour from 181 to 365 days. The company can delete the objects after 365 days.\nWhich solution will meet these requirements?
 A. Use S3 Intelligent-Tiering to automatically transition objects. Select the Archive Access tier for Intelligent-Tiering. Configure an S3 bucket policy to expire objects that are older than 365 days.
 *B. Create an S3 Lifecycle policy to move objects. Configure the policy to move objects from S3 Standard to S3 Standard-Infrequent Access (S3 Standard-IA) after 60 days. Move the objects to S3 Glacier Flexible Retrieval after 180 days. Expire objects after 365 days.
@@ -3065,12 +3164,39 @@ https://www.examtopics.com/discussions/amazon/view/382565-exam-aws-certified-dat
 
 ---
 
+Q: An ecommerce company collects daily customer transaction logs in CSV format and stores the logs in Amazon S3. The company uses Amazon Athena to scan a subset of attributes from the logs on the same day the company receives each log.\nQuery times are increasing because of increasing transaction volume. The company wants to improve query performance.\nWhich solution will meet these requirements with the SHORTEST query times?
+A. Convert the CSV logs into multiple ORC files for better parallelism in Athena. Partition by date in Amazon S3. Use columnar pushdown filters.
+B. Convert the CSV logs to JSON. Partition by date in Amazon S3. Use Athena with dynamic filtering to reduce data scans.
+C. Convert the CSV logs to Avro. Partition by date in Amazon S3. Use Athena with projection-based partitioning.
+*D. Convert the CSV logs to a single Apache Parquet file for each day Partition the data by date in Amazon S3. Use Athena with predicate pushdown filters.
+https://www.examtopics.com/discussions/amazon/view/389736-exam-aws-certified-data-engineer-associate-dea-c01-topic-1/
+
+---
+
 Q: A manufacturing company uses AWS Glue jobs to process IoT sensor data to generate predictive maintenance models. A data engineer needs to implement automated data quality checks to identify temperature readings that are outside the expected range of -50°C to 150°C. The data quality checks must also identify records that are missing timestamp values.\nThe data engineer needs a solution that requires minimal coding and can automatically flag the specified issues.\nWhich solution will meet these requirements?
 A. Create an AWS Glue DataBrew project to profile the sensor data Define completeness rules for timestamps. Set up numeric range validation for temperature values.
 *B. Use AWS Glue’s Data Quality rules and machine learning (ML)-based anomaly detection to identify missing timestamps and to detect temperature anomalies.
 C. Create an AWS Lambda function to scan the sensor data files to validate temperature ranges. Use AWS Glue Data Catalog tables to check timestamp completeness.
 D. Create an AWS Glue DynamicFrame that uses a custom data quality operator to profile the sensor data. Use Amazon SageMaker Data Wrangler transforms to validate timestamps and temperature ranges.
 https://www.examtopics.com/discussions/amazon/view/389729-exam-aws-certified-data-engineer-associate-dea-c01-topic-1/
+
+---
+
+Q: A data engineer is writing a query to join two tables in Amazon Athena. The data engineer needs to choose the correct join order for the tables to optimize query performance.\nWhich solution will meet these requirements?
+*A. Specify the smaller table on the left side of the join and the larger table on the right side of the join.
+B. Specify the larger table on the left side of the join and the smaller table on the right side of the join.
+C. Use AWS Glue to pre-process the tables before performing the join.
+D. Use table statistics to automatically determine the join order.
+https://www.examtopics.com/discussions/amazon/view/401536-exam-aws-certified-data-engineer-associate-dea-c01-topic-1/
+
+---
+
+Q: An application uses an AWS Lambda function that is configured with managed runtimes. The Lambda function successfully writes logs to the default Amazon CloudWatch Logs log group. A data engineer wants to modify the logging behavior to show only ERROR level logs for application logs and WARN level logs for system logs.\nWhich solution will meet these requirements?
+A. Add additional permissions to the Lambda execution role.
+B. Set the log level to ERROR in the Lambda function code.
+*C. Configure the Lambda function to use the JSON log format.
+D. Configure the Lambda function to send logs to a custom log group.
+https://www.examtopics.com/discussions/amazon/view/401568-exam-aws-certified-data-engineer-associate-dea-c01-topic-1/
 
 ---
 
@@ -3116,7 +3242,6 @@ D. Create a filter expression that uses RiderID and RideStatus.
 https://www.examtopics.com/discussions/amazon/view/316747-exam-aws-certified-data-engineer-associate-dea-c01-topic-1/
 
 ---
-
 
 
 `;
