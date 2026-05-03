@@ -3731,7 +3731,6 @@ HOTSPOT_ROW: الخطوة 2: | استخدام نماذج Amazon Nova متعدد�
 HOTSPOT_ROW: الخطوة 3: | إدخال البيانات في قاعدة بيانات المنتجات
 https://www.examtopics.com/discussions/amazon/view/313013-exam-aws-certified-ai-practitioner-aif-c01-topic-1-question/
 
-```text id="oczowa_cont4"
 س: HOTSPOT\nتريد شركة بناء تطبيقات ذكاء اصطناعي توليدي باستخدام Amazon Bedrock، وتريد تقليل جهد التطوير إلى الحد الأدنى.\nحدد ورتب تقنيات تطوير النماذج من القائمة التالية من أقل جهد تطوير إلى أعلى جهد تطوير. يجب اختيار كل تقنية مرة واحدة.
 TYPE: hotspot
 HOTSPOT_OPTIONS: التدريب المسبق المستمر | الضبط الدقيق | هندسة المطالبات | التوليد المعزز بالاسترجاع (RAG)
