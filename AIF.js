@@ -1053,12 +1053,12 @@ Q: A food service company wants to develop an ML model to help decrease daily fo
 *A. Use Amazon SageMaker and iterate with newer data.
 B. Use Amazon Personalize and iterate with historical data.
 C. Use Amazon CloudWatch to analyze customer orders.
-D. Use Amazon Rekognition to optimize the model.
-https://www.examtopics.com/discussions/amazon/view/153556-exam-aws-certified-ai-practitioner-aif-c01-topic-1-question/
-
 ---
 
 Q: A company has developed an ML model to predict real estate sale prices. The company wants to deploy the model to make predictions without managing servers or infrastructure.\nWhich solution meets these requirements?
+D. Use Amazon Rekognition to optimize the model.
+https://www.examtopics.com/discussions/amazon/view/153556-exam-aws-certified-ai-practitioner-aif-c01-topic-1-question/
+
 A. Deploy the model on an Amazon EC2 instance.
 B. Deploy the model on an Amazon Elastic Kubernetes Service (Amazon EKS) cluster.
 C. Deploy the model by using Amazon CloudFront with an Amazon S3 integration.
@@ -3543,7 +3543,7 @@ https://www.examtopics.com/discussions/amazon/view/401793-exam-aws-certified-ai-
 
 ---
 
-Q: HOTSPOT\nA company wants to build an ML application.\nSelect and order the correct steps from the following list to develop a well-architected ML workload. Each step should be selected one time.
+Q: A company wants to build an ML application.\nSelect and order the correct steps from the following list to develop a well-architected ML workload. Each step should be selected one time.
 TYPE: hotspot
 HOTSPOT_OPTIONS: Deploy model | Develop model | Monitor model | Define business goal and frame ML problem
 HOTSPOT_ROW: Step 1: | Define business goal and frame ML problem
@@ -3552,7 +3552,7 @@ HOTSPOT_ROW: Step 3: | Deploy model
 HOTSPOT_ROW: Step 4: | Monitor model
 https://www.examtopics.com/discussions/amazon/view/156318-exam-aws-certified-ai-practitioner-aif-c01-topic-1-question/
 
-Q: HOTSPOT\nA company has developed a large language model (LLM) and wants to make the LLM available to multiple internal teams. The company needs to select the appropriate inference mode for each team.\nSelect the correct inference mode from the following list for each use case. Each inference mode should be selected one or more times.
+Q: A company has developed a large language model (LLM) and wants to make the LLM available to multiple internal teams. The company needs to select the appropriate inference mode for each team.\nSelect the correct inference mode from the following list for each use case. Each inference mode should be selected one or more times.
 TYPE: hotspot
 HOTSPOT_OPTIONS: Batch transform | Real-time inference
 HOTSPOT_ROW: The company's chatbot needs predictions from the LLM to understand users’ intent with minimal latency. | Real-time inference
@@ -3560,7 +3560,7 @@ HOTSPOT_ROW: A data processing job needs to query the LLM to process gigabytes o
 HOTSPOT_ROW: The company’s engineering team needs to create an API that can process small pieces of text content and provide low-latency predictions. | Real-time inference
 https://www.examtopics.com/discussions/amazon/view/156319-exam-aws-certified-ai-practitioner-aif-c01-topic-1-question/
 
-Q: HOTSPOT\nA company wants to develop ML applications to improve business operations and efficiency.\nSelect the correct ML paradigm from the following list for each use case. Each ML paradigm should be selected one or more times.
+Q: A company wants to develop ML applications to improve business operations and efficiency.\nSelect the correct ML paradigm from the following list for each use case. Each ML paradigm should be selected one or more times.
 TYPE: hotspot
 HOTSPOT_OPTIONS: Supervised learning | Unsupervised learning
 HOTSPOT_ROW: Binary classification | Supervised learning
@@ -3569,7 +3569,7 @@ HOTSPOT_ROW: K-means clustering | Unsupervised learning
 HOTSPOT_ROW: Dimensionality reduction | Unsupervised learning
 https://www.examtopics.com/discussions/amazon/view/155872-exam-aws-certified-ai-practitioner-aif-c01-topic-1-question/
 
-Q: HOTSPOT\nA company is training its employees on how to structure prompts for foundation models.\nSelect the correct prompt engineering technique from the following list for each prompt template. Each prompt engineering technique should be selected one time.
+Q: A company is training its employees on how to structure prompts for foundation models.\nSelect the correct prompt engineering technique from the following list for each prompt template. Each prompt engineering technique should be selected one time.
 TYPE: hotspot
 HOTSPOT_OPTIONS: Chain-of-thought reasoning | Few-shot learning | Zero-shot learning
 HOTSPOT_ROW: "Classify the following text as either sports, politics, or entertainment: [input text]." | Zero-shot learning
@@ -3577,7 +3577,7 @@ HOTSPOT_ROW: "A [image 1], [image 2], and [image 3] are examples of [target clas
 HOTSPOT_ROW: "[Question] [Instructions to follow.] Think step by step and walk me through your thinking." | Chain-of-thought reasoning
 https://www.examtopics.com/discussions/amazon/view/156390-exam-aws-certified-ai-practitioner-aif-c01-topic-1-question/
 
-Q: HOTSPOT\nA company is using a generative AI model to develop a digital assistant. The model’s responses occasionally include undesirable and potentially harmful content.\nSelect the correct Amazon Bedrock filter policy from the following list for each mitigation action. Each filter policy should be selected one time.
+Q: A company is using a generative AI model to develop a digital assistant. The model’s responses occasionally include undesirable and potentially harmful content.\nSelect the correct Amazon Bedrock filter policy from the following list for each mitigation action. Each filter policy should be selected one time.
 TYPE: hotspot
 HOTSPOT_OPTIONS: Content filters | Contextual grounding check | Denied topics | Word filters
 HOTSPOT_ROW: Block input prompts or model responses that contain harmful content such as hate, insults, violence, or misconduct | Content filters
@@ -3586,7 +3586,7 @@ HOTSPOT_ROW: Detect and block specific offensive terms | Word filters
 HOTSPOT_ROW: Detect and fiter out information in the model's responses thats not grounded in the provided source information | Contextual grounding check
 https://www.examtopics.com/discussions/amazon/view/308015-exam-aws-certified-ai-practitioner-aif-c01-topic-1-question/
 
-Q: HOTSPOT\nA company wants more customized responses to its generative AI models’ prompts.\nSelect the correct customization methodology from the following list for each use case. Each use case should be selected one time.
+Q: A company wants more customized responses to its generative AI models’ prompts.\nSelect the correct customization methodology from the following list for each use case. Each use case should be selected one time.
 TYPE: hotspot
 HOTSPOT_OPTIONS: Continued pre-training | Data augmentation | Model fine-tuning
 HOTSPOT_ROW: The models must be taught a new domain-specific task | Model fine-tuning
@@ -3594,7 +3594,7 @@ HOTSPOT_ROW: A limited amount of labeled data is available and more data is need
 HOTSPOT_ROW: Only unlabeled data is available | Continued pre-training
 https://www.examtopics.com/discussions/amazon/view/302416-exam-aws-certified-ai-practitioner-aif-c01-topic-1-question/
 
-Q: HOTSPOT\nA company needs to customize a base model that is hosted on Amazon Bedrock.\nSelect the correct model customization method from the following list of company requirements. Each model customization method should be selected one or more times.
+Q: A company needs to customize a base model that is hosted on Amazon Bedrock.\nSelect the correct model customization method from the following list of company requirements. Each model customization method should be selected one or more times.
 TYPE: hotspot
 HOTSPOT_OPTIONS: Continued pre-training | Fine-tuning
 HOTSPOT_ROW: The company wants to improve the model's performance on specific tasks and examples. | Fine-tuning
@@ -3602,7 +3602,7 @@ HOTSPOT_ROW: The company wants to improve the model's domain knowledge by provid
 HOTSPOT_ROW: The company wants to retrain the model by using more unlabeled data over time. | Continued pre-training
 https://www.examtopics.com/discussions/amazon/view/306675-exam-aws-certified-ai-practitioner-aif-c01-topic-1-question/
 
-Q: HOTSPOT\nA company is designing a customer service chatbot by using a fine-tuned large language model (LLM). The company wants to ensure that the chatbot uses responsible AI characteristics.\nSelect the correct responsible AI characteristic from the following list for each application design action. Each responsible AI characteristic should be selected one time or not at all.
+Q: A company is designing a customer service chatbot by using a fine-tuned large language model (LLM). The company wants to ensure that the chatbot uses responsible AI characteristics.\nSelect the correct responsible AI characteristic from the following list for each application design action. Each responsible AI characteristic should be selected one time or not at all.
 TYPE: hotspot
 HOTSPOT_OPTIONS: Governance | Privacy and security | Safety | Transparency
 HOTSPOT_ROW: Anonymize personal information during training data preparation | Privacy and security
@@ -3610,7 +3610,7 @@ HOTSPOT_ROW: Design the customer service chatbot to provide explainable decision
 HOTSPOT_ROW: Use Amazon Bedrock Guardrails to prevent harmful output and misuse of the chatbot | Safety
 https://www.examtopics.com/discussions/amazon/view/306672-exam-aws-certified-ai-practitioner-aif-c01-topic-1-question/
 
-Q: HOTSPOT\nA company wants to use Amazon SageMaker features for various use cases.\nSelect the correct SageMaker feature from the following list for each use case. Each SageMaker feature should be selected one time or not at all.
+Q: A company wants to use Amazon SageMaker features for various use cases.\nSelect the correct SageMaker feature from the following list for each use case. Each SageMaker feature should be selected one time or not at all.
 TYPE: hotspot
 HOTSPOT_OPTIONS: SageMaker Canvas | SageMaker Feature Store | SageMaker Ground Truth | SageMaker JumpStart | SageMaker Model Monitor
 HOTSPOT_ROW: Preparing data through a visual interface without using code | SageMaker Canvas
@@ -3618,14 +3618,14 @@ HOTSPOT_ROW: Finding and using a prebuilt solution for fraud detection | SageMak
 HOTSPOT_ROW: Create labeled datasets with human intervention | SageMaker Ground Truth
 https://www.examtopics.com/discussions/amazon/view/306667-exam-aws-certified-ai-practitioner-aif-c01-topic-1-question/
 
-Q: HOTSPOT\nA company is using Amazon SageMaker to develop AI models.\nSelect the correct SageMaker feature or resource from the following list for each step in the AI model lifecycle workflow. Each SageMaker feature or resource should be selected one time or not at all.
+Q: A company is using Amazon SageMaker to develop AI models.\nSelect the correct SageMaker feature or resource from the following list for each step in the AI model lifecycle workflow. Each SageMaker feature or resource should be selected one time or not at all.
 TYPE: hotspot
 HOTSPOT_OPTIONS: SageMaker Clarify | SageMaker Model Registry | SageMaker Serverless Inference
 HOTSPOT_ROW: Managing different versions of the model | SageMaker Model Registry
 HOTSPOT_ROW: Using the current model to make predictions | SageMaker Serverless Inference
 https://www.examtopics.com/discussions/amazon/view/308680-exam-aws-certified-ai-practitioner-aif-c01-topic-1-question/
 
-Q: HOTSPOT\nA company wants to develop a solution that uses generative AI to create content for product advertisements, including sample images and slogans.\nSelect the correct model type from the following list for each action. Each model type should be selected one time.
+Q: A company wants to develop a solution that uses generative AI to create content for product advertisements, including sample images and slogans.\nSelect the correct model type from the following list for each action. Each model type should be selected one time.
 TYPE: hotspot
 HOTSPOT_OPTIONS: Diffusion model | Object detection model | Transformer-based model
 HOTSPOT_ROW: Create high-quality images that are influenced by the generated slogans and product | Diffusion model
@@ -3633,7 +3633,7 @@ HOTSPOT_ROW: Create contextually relevant slogans based on the advertisement pro
 HOTSPOT_ROW: Ensure that company brand elements are properly placed in the images | Object detection model
 https://www.examtopics.com/discussions/amazon/view/313022-exam-aws-certified-ai-practitioner-aif-c01-topic-1-question/
 
-Q: HOTSPOT\nA company is developing an AI application to help the company approve or deny personal loans. The application must follow the principles of responsible AI.\nSelect the correct responsible AI principle from the following list for each action. Select each responsible AI principle one time or not at all.
+Q: A company is developing an AI application to help the company approve or deny personal loans. The application must follow the principles of responsible AI.\nSelect the correct responsible AI principle from the following list for each action. Select each responsible AI principle one time or not at all.
 TYPE: hotspot
 HOTSPOT_OPTIONS: Explainability | Fairness | Privacy and security | Robustness | Safety
 HOTSPOT_ROW: Encrypt the application data, and isolate the application on a private network. | Privacy and security
@@ -3641,7 +3641,7 @@ HOTSPOT_ROW: Evaluate how different population groups will be impacted. | Fairne
 HOTSPOT_ROW: Test the application with unexpected data to ensure the application will work in unique situations. | Robustness
 https://www.examtopics.com/discussions/amazon/view/312997-exam-aws-certified-ai-practitioner-aif-c01-topic-1-question/
 
-Q: HOTSPOT\nSelect the correct AWS service or tool from the following list for each use case. Select each AWS service or tool one time or not at all.
+Q: Select the correct AWS service or tool from the following list for each use case. Select each AWS service or tool one time or not at all.
 TYPE: hotspot
 HOTSPOT_OPTIONS: Amazon SageMaker Clarify | Amazon SageMaker Ground Truth | Amazon Bedrock Guardrails | AWS CloudTrail | AWS Trusted Advisor
 HOTSPOT_ROW: Apply human feedback across the ML lifecycle to improve the accuracy and relevancy of models. | Amazon SageMaker Ground Truth
@@ -3649,7 +3649,7 @@ HOTSPOT_ROW: Implement safeguards that align with responsible Al policies. | Ama
 HOTSPOT_ROW: Detect potential bias during data preparation and model training. | Amazon SageMaker Clarify
 https://www.examtopics.com/discussions/amazon/view/313040-exam-aws-certified-ai-practitioner-aif-c01-topic-1-question/
 
-Q: Q: HOTSPOT\nA company uses ML techniques to build applications.\nSelect the correct ML technique from the following list for each task. Select each ML technique one time.
+Q: Q: A company uses ML techniques to build applications.\nSelect the correct ML technique from the following list for each task. Select each ML technique one time.
 TYPE: hotspot
 HOTSPOT_OPTIONS: Binary classification | Multiclass classification | Regression
 HOTSPOT_ROW: Analyze a text question to determine if the answer is correct. | Binary classification
@@ -3657,7 +3657,7 @@ HOTSPOT_ROW: Analyze ecological factors to determine the number of species in a 
 HOTSPOT_ROW: Analyze car attributes to determine the car model. | Multiclass classification
 https://www.examtopics.com/discussions/amazon/view/312986-exam-aws-certified-ai-practitioner-aif-c01-topic-1-question/
 
-Q: HOTSPOT\nA company is building an AI solution by using Amazon SageMaker AI. The company wants to use SageMaker AI features to facilitate application development.\nSelect the correct SageMaker AI feature from the following list for each use case. Select each feature one time.
+Q: A company is building an AI solution by using Amazon SageMaker AI. The company wants to use SageMaker AI features to facilitate application development.\nSelect the correct SageMaker AI feature from the following list for each use case. Select each feature one time.
 TYPE: hotspot
 HOTSPOT_OPTIONS: Clarify | Data Wrangler | Model Cards
 HOTSPOT_ROW: Determine the most suitable model to use for a business case. | Model Cards
@@ -3665,7 +3665,7 @@ HOTSPOT_ROW: Prepare data through a low-code or no-code interface. | Data Wrangl
 HOTSPOT_ROW: Identify biases or imbalances in the data. | Clarify
 https://www.examtopics.com/discussions/amazon/view/313042-exam-aws-certified-ai-practitioner-aif-c01-topic-1-question/
 
-Q: HOTSPOT\nAn ecommerce company is developing a generative AI solution to create personalized product recommendations for its application users. The company wants to track how effectively the AI solution increases product sales and user engagement in the application.\nSelect the correct business metric from the following list for each business goal. Each business metric should be selected one time.
+Q: An ecommerce company is developing a generative AI solution to create personalized product recommendations for its application users. The company wants to track how effectively the AI solution increases product sales and user engagement in the application.\nSelect the correct business metric from the following list for each business goal. Each business metric should be selected one time.
 TYPE: hotspot
 HOTSPOT_OPTIONS: Average order value (AOV) | Click-through rate (CTR) | Retention rate
 HOTSPOT_ROW: Measure how engaging the product recommendations are to users | Click-through rate (CTR)
@@ -3673,7 +3673,7 @@ HOTSPOT_ROW: Determine the effect of the Al solution on the total value of user 
 HOTSPOT_ROW: Assess the Al solution's ability to encourage users to return to the platform | Retention rate
 https://www.examtopics.com/discussions/amazon/view/313001-exam-aws-certified-ai-practitioner-aif-c01-topic-1-question/
 
-Q: HOTSPOT\nA company wants to improve multiple ML models.\nSelect the correct technique from the following list of use cases. Each technique should be selected one time or not at all.
+Q: A company wants to improve multiple ML models.\nSelect the correct technique from the following list of use cases. Each technique should be selected one time or not at all.
 TYPE: hotspot
 HOTSPOT_OPTIONS: Few-shot learning | Fine-tuning | Retrieval Augmented Generation (RAG) | Zero-shot learning
 HOTSPOT_ROW: Enhancing the capabilities of a large language model (LLM) by using external sources | Retrieval Augmented Generation (RAG)
@@ -3681,7 +3681,7 @@ HOTSPOT_ROW: Querying a model to generalize and make predictions on unseen tasks
 HOTSPOT_ROW: Querying a model with a limited amount of data for new tasks | Few-shot learning
 https://www.examtopics.com/discussions/amazon/view/313021-exam-aws-certified-ai-practitioner-aif-c01-topic-1-question/
 
-Q: HOTSPOT\nSelect the correct AI term from the following list for each statement. Each AI term should be selected one time.
+Q: Select the correct AI term from the following list for each statement. Each AI term should be selected one time.
 TYPE: hotspot
 HOTSPOT_OPTIONS: Al | Deep learning | ML
 HOTSPOT_ROW: Simulates human problem-solving capabilities | Al
@@ -3689,7 +3689,7 @@ HOTSPOT_ROW: Applies data-driven learning techniques to make predictions | ML
 HOTSPOT_ROW: Focuses on processing data through intricate neural networks | Deep learning
 https://www.examtopics.com/discussions/amazon/view/312971-exam-aws-certified-ai-practitioner-aif-c01-topic-1-question/
 
-Q: HOTSPOT\nAn AI practitioner is determining the appropriate data type for various use cases.\nSelect the correct data type from the following list for each use case. Select each data type one time.
+Q: An AI practitioner is determining the appropriate data type for various use cases.\nSelect the correct data type from the following list for each use case. Select each data type one time.
 TYPE: hotspot
 HOTSPOT_OPTIONS: Image data | Tabular data | Text data | Time series data
 HOTSPOT_ROW: Build a sentiment analysis model for social media posts. | Text data
@@ -3698,7 +3698,7 @@ HOTSPOT_ROW: Optimize ad campaigns by using customer demographic data and purcha
 HOTSPOT_ROW: Forecast stock prices by using historical price data. | Time series data
 https://www.examtopics.com/discussions/amazon/view/312988-exam-aws-certified-ai-practitioner-aif-c01-topic-1-question/
 
-Q: HOTSPOT\nA company is building a generative AI application and is reviewing foundation models (FMs). The company needs to consider multiple FM characteristics.\nSelect the correct FM characteristic from the following list for each definition. Each FM characteristic should be selected one time.
+Q: A company is building a generative AI application and is reviewing foundation models (FMs). The company needs to consider multiple FM characteristics.\nSelect the correct FM characteristic from the following list for each definition. Each FM characteristic should be selected one time.
 TYPE: hotspot
 HOTSPOT_OPTIONS: Concurrency | Context windows | Latency
 HOTSPOT_ROW: Amount of information that can fit in a single prompt | Context windows
@@ -3706,7 +3706,7 @@ HOTSPOT_ROW: Length of time it takes for a model to generate an output | Latency
 HOTSPOT_ROW: Multiple users invoking an application endpoint simultaneously | Concurrency
 https://www.examtopics.com/discussions/amazon/view/313017-exam-aws-certified-ai-practitioner-aif-c01-topic-1-question/
 
-Q: HOTSPOT\nSelect and order the steps from the following list to correctly describe the ML lifecycle for a new custom model. Select each step one time.
+Q: Select and order the steps from the following list to correctly describe the ML lifecycle for a new custom model. Select each step one time.
 TYPE: hotspot
 HOTSPOT_OPTIONS: Define the business objective. | Deploy the model. | Develop and train the model. | Process the data.
 HOTSPOT_ROW: Step 1: | Define the business objective.
@@ -3715,7 +3715,7 @@ HOTSPOT_ROW: Step 3: | Develop and train the model.
 HOTSPOT_ROW: Step 4: | Deploy the model.
 https://www.examtopics.com/discussions/amazon/view/313008-exam-aws-certified-ai-practitioner-aif-c01-topic-1-question/
 
-Q: HOTSPOT\nSelect the correct prompt engineering technique from the following list for each description. Select each prompt engineering technique one time or not at all.
+Q: Select the correct prompt engineering technique from the following list for each description. Select each prompt engineering technique one time or not at all.
 TYPE: hotspot
 HOTSPOT_OPTIONS: Chain-of-thought prompting | Few-shot prompting | Role-based prompting | Single-shot prompting | Zero-shot prompting
 HOTSPOT_ROW: Provide a small number of examples to the model to understand the desired task before generating outputs. | Few-shot prompting
@@ -3723,7 +3723,7 @@ HOTSPOT_ROW: Prompt a model to break down the step-by-step process that the mode
 HOTSPOT_ROW: Prompt a model to perform a task without providing examples. | Zero-shot prompting
 https://www.examtopics.com/discussions/amazon/view/312996-exam-aws-certified-ai-practitioner-aif-c01-topic-1-question/
 
-Q: HOTSPOT\nA company periodically updates its product database by manually uploading digital product guides. The product guides contain text and images. The company wants to automate this task by using generative AI.\nSelect and order the steps from the following list to automate the database update task by using generative AI. Select each step one time.
+Q: A company periodically updates its product database by manually uploading digital product guides. The product guides contain text and images. The company wants to automate this task by using generative AI.\nSelect and order the steps from the following list to automate the database update task by using generative AI. Select each step one time.
 TYPE: hotspot
 HOTSPOT_OPTIONS: Insert data into the product database | Upload the digital text and image files to an Amazon S3 bucket | Use Amazon Nova multimodal models to process the digital text and image files.
 HOTSPOT_ROW: Step 1: | Upload the digital text and image files to an Amazon S3 bucket
@@ -3731,7 +3731,7 @@ HOTSPOT_ROW: Step 2: | Use Amazon Nova multimodal models to process the digital 
 HOTSPOT_ROW: Step 3: | Insert data into the product database
 https://www.examtopics.com/discussions/amazon/view/313013-exam-aws-certified-ai-practitioner-aif-c01-topic-1-question/
 
-Q: HOTSPOT\nA company wants to build generative AI applications by using Amazon Bedrock. The company wants to minimize development effort.\nSelect and order the model development techniques from the following list from the LEAST development effort to the MOST development effort. Each model development technique should be selected one time.
+Q: A company wants to build generative AI applications by using Amazon Bedrock. The company wants to minimize development effort.\nSelect and order the model development techniques from the following list from the LEAST development effort to the MOST development effort. Each model development technique should be selected one time.
 TYPE: hotspot
 HOTSPOT_OPTIONS: Continued pre-training | Fine-tuning | Prompt engineering | Retrieval Augmented Generation (RAG)
 HOTSPOT_ROW: LEAST development effort: | Prompt engineering
@@ -3740,7 +3740,7 @@ HOTSPOT_ROW:  | Fine-tuning
 HOTSPOT_ROW: MOST development effort: | Continued pre-training
 https://www.examtopics.com/discussions/amazon/view/316396-exam-aws-certified-ai-practitioner-aif-c01-topic-1-question/
 
-Q: HOTSPOT\nA company wants to use ML to increase customer engagement and sales. The company has collected a large dataset that includes customer demographics, purchase history, browsing patterns, and product ratings.\nSelect the correct ML approach from the following list for each use case. Select each ML approach one time.
+Q: A company wants to use ML to increase customer engagement and sales. The company has collected a large dataset that includes customer demographics, purchase history, browsing patterns, and product ratings.\nSelect the correct ML approach from the following list for each use case. Select each ML approach one time.
 TYPE: hotspot
 HOTSPOT_OPTIONS: Classification | Clustering | Regression
 HOTSPOT_ROW: Predict customer lifetime value (CLV) by estimating how much revenue a customer will generate over the customer's lifetime. | Regression
@@ -3748,7 +3748,7 @@ HOTSPOT_ROW: Identify the likelihood of a customer to stop using the company's s
 HOTSPOT_ROW: Group customers based on similar purchasing patterns and preferences. | Clustering
 https://www.examtopics.com/discussions/amazon/view/385090-exam-aws-certified-ai-practitioner-aif-c01-topic-1-question/
 
-Q: HOTSPOT\nA company wants to build a new ML solution. The company already has data. The company needs to understand the ML lifecycle before building the solution.\nSelect and order the steps from the following list to correctly describe the ML lifecycle. Select each step one time.
+Q: A company wants to build a new ML solution. The company already has data. The company needs to understand the ML lifecycle before building the solution.\nSelect and order the steps from the following list to correctly describe the ML lifecycle. Select each step one time.
 TYPE: hotspot
 HOTSPOT_OPTIONS: Deploy the model. | Prepare the data for training. | Test the model. | Train the model.
 HOTSPOT_ROW: Step 1: | Prepare the data for training.
@@ -3757,7 +3757,7 @@ HOTSPOT_ROW: Step 3: | Test the model.
 HOTSPOT_ROW: Step 4: | Deploy the model.
 https://www.examtopics.com/discussions/amazon/view/385091-exam-aws-certified-ai-practitioner-aif-c01-topic-1-question/
 
-Q: HOTSPOT\nA company wants to customize a foundation model (FM). The company wants to understand the customization methods and data types that are available.\nSelect the correct customization method from the following list for each description. Select each customization method one time.
+Q: A company wants to customize a foundation model (FM). The company wants to understand the customization methods and data types that are available.\nSelect the correct customization method from the following list for each description. Select each customization method one time.
 TYPE: hotspot
 HOTSPOT_OPTIONS: Continued pre-training | Distillation | Fine-tuning
 HOTSPOT_ROW: Provide labeled data to customize a model to improve performance on specific tasks. | Fine-tuning
@@ -3765,7 +3765,7 @@ HOTSPOT_ROW: Provide unlabeled data to customize an FM for a specific domain. | 
 HOTSPOT_ROW: Transfer knowledge from a larger and more intelligent model to a smaller model. | Distillation
 https://www.examtopics.com/discussions/amazon/view/385333-exam-aws-certified-ai-practitioner-aif-c01-topic-1-question/
 
-Q: HOTSPOT\nA company is building an AI assistant application. The company must implement a core governance process for the application development project. The company must ensure that the application aligns with responsible AI practices.\nSelect and order the steps from the following list to correctly describe the implementation of a core governance process for this use case. Select each step one time.
+Q: A company is building an AI assistant application. The company must implement a core governance process for the application development project. The company must ensure that the application aligns with responsible AI practices.\nSelect and order the steps from the following list to correctly describe the implementation of a core governance process for this use case. Select each step one time.
 TYPE: hotspot
 HOTSPOT_OPTIONS: Determine governance goals, risks, and policies. | Put together a cross-functional Al governance group. | Set up model monitoring mechanisms.
 HOTSPOT_ROW: Step 1: | Determine governance goals, risks, and policies.
@@ -3773,7 +3773,7 @@ HOTSPOT_ROW: Step 2: | Put together a cross-functional Al governance group.
 HOTSPOT_ROW: Step 3: | Set up model monitoring mechanisms.
 https://www.examtopics.com/discussions/amazon/view/401758-exam-aws-certified-ai-practitioner-aif-c01-topic-1-question/
 
-Q: Q: HOTSPOT\nA company has multiple datasets that contain historical data. The company wants to use ML technologies to process each dataset.\nSelect the correct ML technology from the following list for each dataset. Select each ML technology one time or not at all.
+Q: Q: A company has multiple datasets that contain historical data. The company wants to use ML technologies to process each dataset.\nSelect the correct ML technology from the following list for each dataset. Select each ML technology one time or not at all.
 TYPE: hotspot
 HOTSPOT_OPTIONS: Computer vision | Natural language processing (NLP) | Reinforcement learning | Time series forecasting
 HOTSPOT_ROW: A dataset that contains text-based customer reviews | Natural language processing (NLP)
@@ -3781,7 +3781,7 @@ HOTSPOT_ROW: A dataset that contains images of animals labeled with their specie
 HOTSPOT_ROW: A dataset that contains daily sales volumes for products | Time series forecasting
 https://www.examtopics.com/discussions/amazon/view/401774-exam-aws-certified-ai-practitioner-aif-c01-topic-1-question/
 
-Q: HOTSPOT\nAn AI practitioner is using an Amazon Nova text model. The AI practitioner wants to apply prompt engineering techniques to ensure that prompts support an iterative refinement process.\nSelect the correct prompt design component from the following list for each definition. Select each prompt design component one time.
+Q: An AI practitioner is using an Amazon Nova text model. The AI practitioner wants to apply prompt engineering techniques to ensure that prompts support an iterative refinement process.\nSelect the correct prompt design component from the following list for each definition. Select each prompt design component one time.
 TYPE: hotspot
 HOTSPOT_OPTIONS: Response style | Role | Success criteria | Task
 HOTSPOT_ROW: Specify the use case for the model. | Task
