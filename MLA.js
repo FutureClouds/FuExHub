@@ -2156,7 +2156,7 @@ https://www.examtopics.com/discussions/amazon/view/404851-exam-aws-certified-mac
 
 ---
 
-Q: HOTSPOT\nA company stores historical data in .csv files in Amazon S3. Only some of the rows and columns in the .csv files are populated. The columns are not labeled. An ML engineer needs to prepare and store the data so that the company can use the data to train ML models.\nSelect and order the correct steps from the following list to perform this task. Each step should be selected one time or not at all.\n• Create an Amazon SageMaker batch transform job for data cleaning and feature engineering.\n• Store the resulting data back in Amazon S3.\n• Use Amazon Athena to infer the schemas and available columns.\n• Use AWS Glue crawlers to infer the schemas and available columns.\n• Use AWS Glue DataBrew for data cleaning and feature engineering\n(Select and order three.).
+Q: A company stores historical data in .csv files in Amazon S3. Only some of the rows and columns in the .csv files are populated. The columns are not labeled. An ML engineer needs to prepare and store the data so that the company can use the data to train ML models.\nSelect and order the correct steps from the following list to perform this task. Each step should be selected one time or not at all.\n• Create an Amazon SageMaker batch transform job for data cleaning and feature engineering.\n• Store the resulting data back in Amazon S3.\n• Use Amazon Athena to infer the schemas and available columns.\n• Use AWS Glue crawlers to infer the schemas and available columns.\n• Use AWS Glue DataBrew for data cleaning and feature engineering\n(Select and order three.).
 TYPE: hotspot
 HOTSPOT_OPTIONS: Create an Amazon SageMaker batch transform job for data cleaning and feature engineering. | Store the resulting data back in Amazon S3. | Use Amazon Athena to infer the schemas and available columns. | Use AWS Glue crawlers to infer the schemas and available columns. | Use AWS Glue DataBrew for data cleaning and feature engineering.
 HOTSPOT_ROW: Step 1: | Use AWS Glue crawlers to infer the schemas and available columns.
@@ -2166,7 +2166,7 @@ https://www.examtopics.com/discussions/amazon/view/156754-exam-aws-certified-mac
 
 ---
 
-Q: HOTSPOT\nAn ML engineer needs to use Amazon SageMaker Feature Store to create and manage features to train a model.\nSelect and order the steps from the following list to create and use the features in Feature Store. Each step should be selected one time.\n• Access the store to build datasets for training.\n• Create a feature group.\n• Ingest the records\n(Select and order three.).
+Q: An ML engineer needs to use Amazon SageMaker Feature Store to create and manage features to train a model.\nSelect and order the steps from the following list to create and use the features in Feature Store. Each step should be selected one time.\n• Access the store to build datasets for training.\n• Create a feature group.\n• Ingest the records\n(Select and order three.).
 TYPE: hotspot
 HOTSPOT_OPTIONS: Access the store to build datasets for training. | Create a feature group. | Ingest the records.
 HOTSPOT_ROW: Step 1: | Create a feature group.
@@ -2176,7 +2176,7 @@ https://www.examtopics.com/discussions/amazon/view/156755-exam-aws-certified-mac
 
 ---
 
-Q: HOTSPOT\nA company wants to host an ML model on Amazon SageMaker. An ML engineer is configuring a continuous integration and continuous delivery (Cl/CD) pipeline in AWS CodePipeline to deploy the model. The pipeline must run automatically when new training data for the model is uploaded to an Amazon S3 bucket.\nSelect and order the pipeline's correct steps from the following list. Each step should be selected one time or not at all.\n• An S3 event notification invokes the pipeline when new data is uploaded.\n• S3 Lifecycle rule invokes the pipeline when new data is uploaded.\n• SageMaker retrains the model by using the data in the S3 bucket.\n• The pipeline deploys the model to a SageMaker endpoint.\n• The pipeline deploys the model to SageMaker Model Registry\n(Select and order three.).
+Q: A company wants to host an ML model on Amazon SageMaker. An ML engineer is configuring a continuous integration and continuous delivery (Cl/CD) pipeline in AWS CodePipeline to deploy the model. The pipeline must run automatically when new training data for the model is uploaded to an Amazon S3 bucket.\nSelect and order the pipeline's correct steps from the following list. Each step should be selected one time or not at all.\n• An S3 event notification invokes the pipeline when new data is uploaded.\n• S3 Lifecycle rule invokes the pipeline when new data is uploaded.\n• SageMaker retrains the model by using the data in the S3 bucket.\n• The pipeline deploys the model to a SageMaker endpoint.\n• The pipeline deploys the model to SageMaker Model Registry\n(Select and order three.).
 TYPE: hotspot
 HOTSPOT_OPTIONS: An S3 event notification invokes the pipeline when new data is uploaded. | An 53 Lifecycle rule invokes the pipeline when new data is uploaded. | SageMaker retrains the model by using the data in the S3 bucket. | The pipeline deploys the model to a SageMaker endpoint. | The pipeline deploys the model to SageMaker Model Registry.
 HOTSPOT_ROW: Step 1: | An S3 event notification invokes the pipeline when new data is uploaded.
@@ -2186,7 +2186,7 @@ https://www.examtopics.com/discussions/amazon/view/154557-exam-aws-certified-mac
 
 ---
 
-Q: HOTSPOT\nAn ML engineer is building a generative AI application on Amazon Bedrock by using large language models (LLMs).\nSelect the correct generative AI term from the following list for each description. Each term should be selected one time or not at all.\n• Embedding\n• Retrieval Augmented Generation (RAG)\n• Temperature\n• Token\n(Select three.)
+Q: An ML engineer is building a generative AI application on Amazon Bedrock by using large language models (LLMs).\nSelect the correct generative AI term from the following list for each description. Each term should be selected one time or not at all.\n• Embedding\n• Retrieval Augmented Generation (RAG)\n• Temperature\n• Token\n(Select three.)
 TYPE: hotspot
 HOTSPOT_OPTIONS: Embedding | Retrieval Augmented Generation (RAG) | Temperature | Token
 HOTSPOT_ROW: Text representation of basic units of data processed by LLMs: | Token
@@ -2196,7 +2196,7 @@ https://www.examtopics.com/discussions/amazon/view/156757-exam-aws-certified-mac
 
 ---
 
-Q: HOTSPOT\nAn ML engineer is working on an ML model to predict the prices of similarly sized homes. The model will base predictions on several features The ML engineer will use the following feature engineering techniques to estimate the prices of the homes:\n• Feature splitting\n• Logarithmic transformation\n• One-hot encoding\n• Standardized distribution\nSelect the correct feature engineering techniques for the following list of features. Each feature engineering technique should be selected one time or not at all (Select three.)
+Q: An ML engineer is working on an ML model to predict the prices of similarly sized homes. The model will base predictions on several features The ML engineer will use the following feature engineering techniques to estimate the prices of the homes:\n• Feature splitting\n• Logarithmic transformation\n• One-hot encoding\n• Standardized distribution\nSelect the correct feature engineering techniques for the following list of features. Each feature engineering technique should be selected one time or not at all (Select three.)
 TYPE: hotspot
 HOTSPOT_OPTIONS: Feature splitting | Logarithmic transformation | One-hot encoding | Standardized distribution
 HOTSPOT_ROW: City (name): | One-hot encoding
@@ -2206,7 +2206,7 @@ https://www.examtopics.com/discussions/amazon/view/155580-exam-aws-certified-mac
 
 ---
 
-Q: HOTSPOT\nA company needs to train an ML model that will use historical transaction data to predict customer behavior.\nSelect the correct AWS service from the following list to perform each task on the data. Each service should be selected one time or not at all.\n• Amazon Athena\n• AWS Glue\n• Amazon Kinesis Data Streams\n• Amazon S3\n(Select three.)
+Q: A company needs to train an ML model that will use historical transaction data to predict customer behavior.\nSelect the correct AWS service from the following list to perform each task on the data. Each service should be selected one time or not at all.\n• Amazon Athena\n• AWS Glue\n• Amazon Kinesis Data Streams\n• Amazon S3\n(Select three.)
 TYPE: hotspot
 HOTSPOT_OPTIONS: Amazon Athena | AWS Glue | Amazon Kinesis Data Streams | Amazon S3
 HOTSPOT_ROW: Query the data for exploration and analysis. | Amazon Athena
@@ -2216,7 +2216,7 @@ https://www.examtopics.com/discussions/amazon/view/310754-exam-aws-certified-mac
 
 ---
 
-Q: HOTSPOT\nAn ecommerce company is using Amazon SageMaker Clarify Foundation Model Evaluations (FMEval) to evaluate ML models.\n• Classification evaluation\n• Open-ended generation\n• Question answering\n• Text summarization\nSelect the correct model evaluation task from the following list for each ecommerce use case. Each model evaluation task should be selected one time.
+Q: An ecommerce company is using Amazon SageMaker Clarify Foundation Model Evaluations (FMEval) to evaluate ML models.\n• Classification evaluation\n• Open-ended generation\n• Question answering\n• Text summarization\nSelect the correct model evaluation task from the following list for each ecommerce use case. Each model evaluation task should be selected one time.
 TYPE: hotspot
 HOTSPOT_OPTIONS: Classification evaluation | Open-ended generation | Question answering | Text summarization
 HOTSPOT_ROW: Categorize customer reviews as positive, neutral, or negative sentiment. | Classification evaluation
@@ -2227,7 +2227,7 @@ https://www.examtopics.com/discussions/amazon/view/315657-exam-aws-certified-mac
 
 ---
 
-Q: HOTSPOT\nAn ML engineer must choose the appropriate Amazon SageMaker algorithm to solve specific AI problems.\n• Random Cut Forest (RCF) algorithm\n• Semantic segmentation algorithm\n• Sequence-to-Sequence (seq2seq) algorithm\nSelect the correct SageMaker built-in algorithm from the following list for each use case. Each algorithm should be selected one time.
+Q: An ML engineer must choose the appropriate Amazon SageMaker algorithm to solve specific AI problems.\n• Random Cut Forest (RCF) algorithm\n• Semantic segmentation algorithm\n• Sequence-to-Sequence (seq2seq) algorithm\nSelect the correct SageMaker built-in algorithm from the following list for each use case. Each algorithm should be selected one time.
 TYPE: hotspot
 HOTSPOT_OPTIONS: Random Cut Forest (RCF) algorithm | Semantic segmentation algorithm | Sequence-to-Sequence (seq2seq) algorithm
 HOTSPOT_ROW: Summarize the text of a research paper. | Sequence-to-Sequence (seq2seq) algorithm
@@ -2237,7 +2237,7 @@ https://www.examtopics.com/discussions/amazon/view/315673-exam-aws-certified-mac
 
 ---
 
-Q: HOTSPOT\nA hospital wants to predict patient outcomes for the coming year. An ML engineer must improve several existing ML models that currently perform poorly.\nSelect the correct regularization method from the following list to improve each model. Select each regularization method one time, more than one time, or not at all.\n• L1 regularization\n• L2 regularization\n• Early stopping\n(Choose three.)
+Q: A hospital wants to predict patient outcomes for the coming year. An ML engineer must improve several existing ML models that currently perform poorly.\nSelect the correct regularization method from the following list to improve each model. Select each regularization method one time, more than one time, or not at all.\n• L1 regularization\n• L2 regularization\n• Early stopping\n(Choose three.)
 TYPE: hotspot
 HOTSPOT_OPTIONS: L1 regularization | L2 regularization | Early stopping
 HOTSPOT_ROW: A linear regression model whose coefficients should shrink but not become zero: | L2 regularization
@@ -2247,7 +2247,7 @@ https://www.examtopics.com/discussions/amazon/view/382295-exam-aws-certified-mac
 
 ---
 
-Q: HOTSPOT\nAn ML engineer needs to use Amazon SageMaker hyperparameter tuning to reduce the training time for an ML model.\nSelect and order the correct steps from the following list to meet this requirement. Each step should be selected one time or not at all.\n• Choose Bayesian optimization and increase the number of parameters.\n• Choose Hyperband tuning and decrease the number of parameters.\n• Choose random search and use a random seed of -1.\n• Deploy the model to a SageMaker endpoint.\n• Evaluate the change in training time.\n• Retrain the model.\n(Select and order three.)
+Q: An ML engineer needs to use Amazon SageMaker hyperparameter tuning to reduce the training time for an ML model.\nSelect and order the correct steps from the following list to meet this requirement. Each step should be selected one time or not at all.\n• Choose Bayesian optimization and increase the number of parameters.\n• Choose Hyperband tuning and decrease the number of parameters.\n• Choose random search and use a random seed of -1.\n• Deploy the model to a SageMaker endpoint.\n• Evaluate the change in training time.\n• Retrain the model.\n(Select and order three.)
 TYPE: hotspot
 HOTSPOT_OPTIONS: ‎Choose Bayesian optimization and increase the number of parameters. | Choose Hyperband tuning and decrease the number of parameters. | Choose random search and use a random seed of -1. | Deploy the model to a SageMaker endpoint. | Evaluate the change in training time. | Retrain the model.
 HOTSPOT_ROW: Step 1: | Choose Hyperband tuning and decrease the number of parameters.
@@ -2257,7 +2257,7 @@ https://www.examtopics.com/discussions/amazon/view/382311-exam-aws-certified-mac
 
 ---
 
-Q: HOTSPOT\nA company develops an ML model to classify products. The model uses textual data and visual data to classify the products into a hierarchical taxonomy. An ML engineer must use specific strategies to enhance the model’s accuracy and handle class imbalances.\nSelect the correct strategy from the following list for each use case. Select each strategy one time.\n• Categorical cross-entropy\n• Fallback metric\n• Hierarchical loss\n• General oversampling\n• Synthetic Minority Oversampling Technique (SMOTE) for text\n(Choose four.)
+Q: A company develops an ML model to classify products. The model uses textual data and visual data to classify the products into a hierarchical taxonomy. An ML engineer must use specific strategies to enhance the model’s accuracy and handle class imbalances.\nSelect the correct strategy from the following list for each use case. Select each strategy one time.\n• Categorical cross-entropy\n• Fallback metric\n• Hierarchical loss\n• General oversampling\n• Synthetic Minority Oversampling Technique (SMOTE) for text\n(Choose four.)
 TYPE: hotspot
 HOTSPOT_OPTIONS: Categorical cross-entropy | Fallback metric | Hierarchical loss | General oversampling | Synthetic Minority Oversampling Technique (SMOTE) for text
 HOTSPOT_ROW: Evaluate predictions with tolerance for broader category matches. | Fallback metric
@@ -2268,7 +2268,7 @@ https://www.examtopics.com/discussions/amazon/view/382296-exam-aws-certified-mac
 
 ---
 
-Q: HOTSPOT\nAn ML engineer needs to automate the rebuild and redeployment of an ML model. Updates will occur when changes are made to the model’s code base. The ML engineer must use AWS services to configure a continuous integration and continuous delivery (CI/CD) pipeline for the rebuild and redeployment.\nSelect and order the steps from the following list to configure the CI/CD pipeline. Each step should be selected one time.\n• Invoke Amazon SageMaker Pipelines to run all steps required for model training and deployment.\n• Create a pipeline in AWS CodePipeline. Build and test containers in AWS CodeBuild.\n• Create a Git source code repository.\n(Select and order three.)
+Q: An ML engineer needs to automate the rebuild and redeployment of an ML model. Updates will occur when changes are made to the model’s code base. The ML engineer must use AWS services to configure a continuous integration and continuous delivery (CI/CD) pipeline for the rebuild and redeployment.\nSelect and order the steps from the following list to configure the CI/CD pipeline. Each step should be selected one time.\n• Invoke Amazon SageMaker Pipelines to run all steps required for model training and deployment.\n• Create a pipeline in AWS CodePipeline. Build and test containers in AWS CodeBuild.\n• Create a Git source code repository.\n(Select and order three.)
 TYPE: hotspot
 HOTSPOT_OPTIONS: Invoke Amazon SageMaker Pipelines to run all steps required for model training and deployment. | Create a pipeline in AWS CodePipeline. Build and test containers in AWS CodeBuild. | Create a Git source code repository.
 HOTSPOT_ROW: Step 1: | Create a Git source code repository.
@@ -2278,7 +2278,7 @@ https://www.examtopics.com/discussions/amazon/view/382302-exam-aws-certified-mac
 
 ---
 
-Q: HOTSPOT\nAn airline company deploys ML models to one dozen Amazon SageMaker AI inference endpoints. The inference endpoints must be able to handle different types of workloads in a cost-effective way.\nSelect the correct inference option from the following list to handle each type of workload. Select each inference option one time.\n• Asynchronous inference\n• Batch inference\n• Real-time inference\n• Serverless inference\n(Choose four.)
+Q: An airline company deploys ML models to one dozen Amazon SageMaker AI inference endpoints. The inference endpoints must be able to handle different types of workloads in a cost-effective way.\nSelect the correct inference option from the following list to handle each type of workload. Select each inference option one time.\n• Asynchronous inference\n• Batch inference\n• Real-time inference\n• Serverless inference\n(Choose four.)
 TYPE: hotspot
 HOTSPOT_OPTIONS: Asynchronous inference | Batch inference | Real-time inference | Serverless inference
 HOTSPOT_ROW: Provide flight departure, arrival, and delay information, and provide updates for low-latency workloads. | Real-time inference
@@ -2289,7 +2289,7 @@ https://www.examtopics.com/discussions/amazon/view/382265-exam-aws-certified-mac
 
 ---
 
-Q: HOTSPOT\nA company uses Amazon SageMaker AI to support ML workflows such as model training and deployment.\nSelect the correct registry from the following list to meet the requirements for each use case with the LEAST operational overhead. Each registry should be selected one or more times. (Choose four.)
+Q: A company uses Amazon SageMaker AI to support ML workflows such as model training and deployment.\nSelect the correct registry from the following list to meet the requirements for each use case with the LEAST operational overhead. Each registry should be selected one or more times. (Choose four.)
 TYPE: hotspot
 HOTSPOT_OPTIONS: Amazon Elastic Container Registry (Amazon ECR) | SageMaker Model Registry
 HOTSPOT_ROW: Tag model packages and use model package groups that include container images for training and deployment. | SageMaker Model Registry
@@ -2300,7 +2300,7 @@ https://www.examtopics.com/discussions/amazon/view/382284-exam-aws-certified-mac
 
 ---
 
-Q: HOTSPOT\nA company is using Amazon SageMaker to deploy a new version of its ML model.\nSelect the correct SageMaker traffic shifting strategy from the following list for each use case. Each traffic shifting strategy should be selected one time.\n• All at once traffic shifting\n• Canary traffic shifting\n• Linear traffic shifting\n(Choose three.)
+Q: A company is using Amazon SageMaker to deploy a new version of its ML model.\nSelect the correct SageMaker traffic shifting strategy from the following list for each use case. Each traffic shifting strategy should be selected one time.\n• All at once traffic shifting\n• Canary traffic shifting\n• Linear traffic shifting\n(Choose three.)
 TYPE: hotspot
 HOTSPOT_OPTIONS: All at once traffic shifting | Canary traffic shifting | Linear traffic shifting
 HOTSPOT_ROW: Shift traffic in two steps to validate the new model version. | Canary traffic shifting
@@ -2310,7 +2310,7 @@ https://www.examtopics.com/discussions/amazon/view/382318-exam-aws-certified-mac
 
 ---
 
-Q: HOTSPOT\nA company needs to combine data from multiple sources. The company must use Amazon Redshift Serverless to query an AWS Glue Data Catalog database and underlying data that is stored in an Amazon S3 bucket.\nSelect and order the correct steps from the following list to meet these requirements. Select each step one time or not at all.\n• Attach the IAM role to the Redshift cluster.\n• Attach the IAM role to the Redshift namespace.\n• Create an external database in Amazon Redshift to point to the Data Catalog schema.\n• Create an external schema in Amazon Redshift to point to the Data Catalog database.\n• Create an IAM role for Amazon Redshift to use to access only the S3 bucket that contains underlying data.\n• Create an IAM role for Amazon Redshift to use to access the Data Catalog and the S3 bucket that contains underlying data.\n(Select and order three.)
+Q: A company needs to combine data from multiple sources. The company must use Amazon Redshift Serverless to query an AWS Glue Data Catalog database and underlying data that is stored in an Amazon S3 bucket.\nSelect and order the correct steps from the following list to meet these requirements. Select each step one time or not at all.\n• Attach the IAM role to the Redshift cluster.\n• Attach the IAM role to the Redshift namespace.\n• Create an external database in Amazon Redshift to point to the Data Catalog schema.\n• Create an external schema in Amazon Redshift to point to the Data Catalog database.\n• Create an IAM role for Amazon Redshift to use to access only the S3 bucket that contains underlying data.\n• Create an IAM role for Amazon Redshift to use to access the Data Catalog and the S3 bucket that contains underlying data.\n(Select and order three.)
 TYPE: hotspot
 HOTSPOT_OPTIONS: Attach the TAM role to the Redshift cluster. | Attach the TAM role to the Redshift namespace. | Create an external database in Amazon Redshift to point to the Data Catalog schema. | Create an external schema in Amazon Redshift to point to the Data Catalog database. | Create an IAM role for Amazon Redshift to use to access only the S3 bucket that contains underlying data. | Create an IAM role for Amazon Redshift to use to access the Data Catalog and the S3 bucket that contains underlying data.
 HOTSPOT_ROW: Step 1: | Create an IAM role for Amazon Redshift to use to access the Data Catalog and the S3 bucket that contains underlying data.
@@ -2320,7 +2320,7 @@ https://www.examtopics.com/discussions/amazon/view/382298-exam-aws-certified-mac
 
 ---
 
-Q: HOTSPOT\nAn ML engineer needs to use Amazon SageMaker to develop an ML solution for a company. The solution will use streaming video from cameras to count the number of people who walk past the company’s store every day.\nSelect and order the steps from the following list to implement the first version of the algorithm. Each step should be selected one time.\n• Choose a built-in algorithm or pre-trained model.\n• Decide the data input format and apply data augmentation if necessary.\n• Determine if the challenge is a classification, detection, or segmentation problem.\n(Select and order three.)
+Q: An ML engineer needs to use Amazon SageMaker to develop an ML solution for a company. The solution will use streaming video from cameras to count the number of people who walk past the company’s store every day.\nSelect and order the steps from the following list to implement the first version of the algorithm. Each step should be selected one time.\n• Choose a built-in algorithm or pre-trained model.\n• Decide the data input format and apply data augmentation if necessary.\n• Determine if the challenge is a classification, detection, or segmentation problem.\n(Select and order three.)
 TYPE: hotspot
 HOTSPOT_OPTIONS: Choose a built-in algorithm or pre-trained model. | Decide the data input format and apply data augmentation if necessary. | Determine if the challenge is a classification, detection, or segmentation problem.
 HOTSPOT_ROW: Step 1: | Determine if the challenge is a classification, detection, or segmentation problem.
@@ -2330,7 +2330,7 @@ https://www.examtopics.com/discussions/amazon/view/382277-exam-aws-certified-mac
 
 ---
 
-Q: HOTSPOT\nA company develops an ML model to classify products. The model uses textual data and visual data to classify the products into a hierarchical taxonomy. An ML engineer must use specific strategies to enhance the model’s accuracy and handle class imbalances.\nSelect the correct strategy from the following list for each use case. Select each strategy one time.\n• Categorical cross-entropy\n• Fallback metric\n• Hierarchical loss\n• General oversampling\n• Synthetic Minority Oversampling Technique (SMOTE) for text\n(Choose five.)
+Q: A company develops an ML model to classify products. The model uses textual data and visual data to classify the products into a hierarchical taxonomy. An ML engineer must use specific strategies to enhance the model’s accuracy and handle class imbalances.\nSelect the correct strategy from the following list for each use case. Select each strategy one time.\n• Categorical cross-entropy\n• Fallback metric\n• Hierarchical loss\n• General oversampling\n• Synthetic Minority Oversampling Technique (SMOTE) for text\n(Choose five.)
 TYPE: hotspot
 HOTSPOT_OPTIONS: Categorical cross-entropy | Fallback metric | Hierarchical loss | General oversampling | Synthetic Minority Oversampling Technique (SMOTE) for text
 HOTSPOT_ROW: Evaluate predictions with tolerance for broader category matches. | Fallback metric
@@ -2342,7 +2342,7 @@ https://www.examtopics.com/discussions/amazon/view/389699-exam-aws-certified-mac
 
 ---
 
-Q: Q: HOTSPOT\nAn ML engineer needs to monitor the behavior of an ML model and track bias drift. The ML engineer must detect issues from an Amazon SageMaker Al endpoint so the ML engineer can take actions to address any identified issues. The ML engineer has collected Amazon SageMaker Ground Truth labels that show correct results for a set of test data.\nSelect the AWS service feature from the following list to correctly answer each of the following questions.\n• Amazon CloudWatch alarms\n• Amazon CloudWatch metrics\n• Amazon S3 bucket\n• Amazon SageMaker Clarify\nSelect each service feature one time.
+Q: Q: An ML engineer needs to monitor the behavior of an ML model and track bias drift. The ML engineer must detect issues from an Amazon SageMaker Al endpoint so the ML engineer can take actions to address any identified issues. The ML engineer has collected Amazon SageMaker Ground Truth labels that show correct results for a set of test data.\nSelect the AWS service feature from the following list to correctly answer each of the following questions.\n• Amazon CloudWatch alarms\n• Amazon CloudWatch metrics\n• Amazon S3 bucket\n• Amazon SageMaker Clarify\nSelect each service feature one time.
 TYPE: hotspot
 HOTSPOT_OPTIONS: Amazon CloudWatch alarms | Amazon CloudWatch metrics | Amazon S3 bucket | Amazon SageMaker Clarify
 HOTSPOT_ROW: Where can the ML engineer view findings and results related to data quality and accuracy drift? | Amazon CloudWatch metrics

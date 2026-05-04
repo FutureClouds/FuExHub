@@ -193,9 +193,6 @@ body.lang-ar * {
         .cert-card:hover { background: var(--cert-card-hover); transform: translateY(-4px); box-shadow: 0 12px 28px rgba(41,128,185,0.4); border-color: rgba(52,152,219,0.6); }
         .cert-card img { width: 80px; height: 80px; object-fit: contain; border-radius: 8px; display: block; }
         .cert-card-code { font-size: 0.78rem; font-weight: 700; color: #58a6ff; letter-spacing: 0.5px; }
-        /* Cert card anchor wrapper — supports right-click and Ctrl+Click */
-        a.cert-card-anchor { display: contents; text-decoration: none; color: inherit; }
-        a.cert-card-anchor .cert-card { pointer-events: auto; }
         .cert-back-btn { display: inline-flex; align-items: center; gap: 8px; padding: 12px 28px; font-size: 1rem; background: linear-gradient(45deg, #636e72, #95a5a6); color: #fff; border: none; border-radius: 8px; cursor: pointer; transition: all 0.3s ease; margin-top: 20px; font-weight: 600; box-shadow: 0 4px 8px rgba(0,0,0,0.3); }
         .cert-back-btn:hover { background: linear-gradient(45deg, #2d3436, #636e72); transform: scale(1.04); }
 
@@ -326,7 +323,6 @@ body.simple-theme-page #fabWrapper {
         body.lang-ar .question { text-align: right; }
         .question:hover { transform: translateY(-2px); box-shadow: 0 12px 24px rgba(0,0,0,0.3); }
         .question h3 { color: var(--header-color); font-size: 1.3rem; margin-bottom: 20px; font-weight: 600; white-space: pre-line; line-height: 1.75; }
-        .q-line { display: block; margin-bottom: 10px; }
         .question-last-line { color: var(--question-last-line-color); font-weight: 700; }
         .review-question-last-line { color: var(--question-last-line-color); font-weight: 700; }
         .option { display: block; padding: 15px; margin: 10px 0; border: 2px solid var(--option-border); border-radius: 8px; cursor: pointer; transition: all 0.3s ease; background: var(--option-bg); color: var(--question-text); }
@@ -703,8 +699,6 @@ body.lang-ar #pageCertEN * {
             justify-content: center !important;
         }
 
-        #guestNameError { min-height: 0 !important; margin: 2px 0 !important; }
-
         #guestNoticeBtn { display: none !important; }
         #guestNoticeBanner { display: none !important; }
 
@@ -1035,25 +1029,30 @@ body.lang-ar #pageCertEN * {
             <div class="auth-title">FuExHub</div>
             <div class="auth-subtitle">سجّل دخولك لحفظ نتائجك<br>Login to save your results</div>
 
-            <!-- Guest Row -->
-            <div class="auth-guest-row">
-                <button class="auth-btn-guest" id="authBtnGuest" onclick="showGuestNameInput()">
-                    دخول كضيف<br>Continue as guest
-                </button>
-                <div id="guestNameSection" style="display:none; margin-top:14px;">
-                    <input type="text" id="guestDisplayName" class="auth-input"
-                        placeholder="اسمك الثنائي | Full Name"
-                        autocomplete="off"
-                        oninput="document.getElementById('guestNameError').textContent=''">
-                    <div class="auth-error" id="guestNameError"></div>
-                    <button class="auth-btn-primary" onclick="authContinueAsGuestSubmit()" style="margin-top:4px;">
-                        دخول | Login
-                    </button>
+            <!-- Social Sign In Buttons -->
+            <button class="auth-btn-google" onclick="authLoginGoogle()">
+                <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google">
+                Continue with Google
+            </button>
+
+            <!-- Google Name Prompt (shown after Google sign-in if no valid full name) -->
+            <div id="googleNameSection" style="display:none; margin-top:14px;">
+                <div style="font-family:'Tajawal',sans-serif; color:var(--text-color); font-size:0.95rem; margin-bottom:12px; text-align:center;">
+                    يرجى إدخال اسمك الثنائي للمتابعة<br>
+                    <span style="font-size:0.85rem; opacity:0.75;">Please enter your full name to continue</span>
                 </div>
+                <input type="text" id="googleDisplayName" class="auth-input"
+                    placeholder="اسمك الثنائي | Full Name (First Last)"
+                    autocomplete="off"
+                    oninput="document.getElementById('googleNameError').textContent=''">
+                <div class="auth-error" id="googleNameError"></div>
+                <button class="auth-btn-primary" onclick="authSubmitGoogleName()" style="margin-top:4px;">
+                    متابعة | Continue
+                </button>
             </div>
 
             <!-- Email / Password form -->
-            <div class="auth-separator">أو | or</div>
+            <div class="auth-separator">or</div>
 
             <!-- Login Form -->
             <div id="authFormLogin">
@@ -1085,29 +1084,20 @@ body.lang-ar #pageCertEN * {
                 <button class="auth-btn-secondary" onclick="authShowLogin()">Back to Login / العودة للدخول</button>
             </div>
 
-            <!-- OR separator before social login -->
-            <div class="auth-separator" id="socialOrSeparator">أو | or</div>
-
-            <!-- Social Sign In Buttons (at bottom, below New Account) -->
-            <button class="auth-btn-google" onclick="authLoginGoogle()">
-                <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google">
-                Continue with Google
-            </button>
-
-            <!-- Google Name Prompt (shown after Google sign-in if no valid full name) -->
-            <div id="googleNameSection" style="display:none; margin-top:14px;">
-                <div style="font-family:'Tajawal',sans-serif; color:var(--text-color); font-size:0.95rem; margin-bottom:12px; text-align:center;">
-                    يرجى إدخال اسمك الثنائي للمتابعة<br>
-                    <span style="font-size:0.85rem; opacity:0.75;">Please enter your full name to continue</span>
-                </div>
-                <input type="text" id="googleDisplayName" class="auth-input"
-                    placeholder="اسمك الثنائي | Full Name (First Last)"
-                    autocomplete="off"
-                    oninput="document.getElementById('googleNameError').textContent=''">
-                <div class="auth-error" id="googleNameError"></div>
-                <button class="auth-btn-primary" onclick="authSubmitGoogleName()" style="margin-top:4px;">
-                    متابعة | Continue
+            <div class="auth-guest-row">
+                <button class="auth-btn-guest" id="authBtnGuest" onclick="showGuestNameInput()">
+                    دخول كضيف<br>Continue as guest
                 </button>
+                <div id="guestNameSection" style="display:none; margin-top:14px;">
+                    <input type="text" id="guestDisplayName" class="auth-input"
+                        placeholder="اسمك الثنائي | Full Name"
+                        autocomplete="off"
+                        oninput="document.getElementById('guestNameError').textContent=''">
+                    <div class="auth-error" id="guestNameError"></div>
+                    <button class="auth-btn-primary" onclick="authContinueAsGuestSubmit()" style="margin-top:4px;">
+                        دخول | Login
+                    </button>
+                </div>
             </div>
         </div>
     </div>
@@ -1245,11 +1235,11 @@ body.lang-ar #pageCertEN * {
             <div class="cert-level-title" style="font-family:'Tajawal',sans-serif;">⚫️ التأسيسية</div>
             <div class="cert-grid">
                 <div class="cert-card" onclick="loadCert('ar','CLFAR','CLF-C02','شهادة AWS ممارس الحوسبة السحابية التأسيسية','120','65','700','https://drive.google.com/file/d/12oRsoTnUmN7nsP6BjkJ-Q4I02BZTQ96p/view?usp=drive_link')">
-                    <img src="CLFAR.png" alt="CLF-AR" onerror="this.style.background='#27ae60';this.style.borderRadius='50%';">
+                    <img src="CLF.png" alt="CLF-AR" onerror="this.style.background='#27ae60';this.style.borderRadius='50%';">
                     <div class="cert-card-code">CLF-C02</div>
                 </div>
                 <div class="cert-card" onclick="loadCert('ar','AIFAR','AIF-C01','شهادة AWS ممارس الذكاء الاصطناعي التأسيسية','120','65','700','https://drive.google.com/file/d/14gy5PPY3Ia9uF-AtKN0KvURVeMYTGGcR/view?usp=drive_link')">
-                    <img src="AIFAR.png" alt="AIF-AR" onerror="this.style.background='#2980b9';this.style.borderRadius='50%';">
+                    <img src="AIF.png" alt="AIF-AR" onerror="this.style.background='#2980b9';this.style.borderRadius='50%';">
                     <div class="cert-card-code">AIF-C01</div>
                 </div>
             </div>
@@ -1285,7 +1275,10 @@ body.lang-ar #pageCertEN * {
                     <span class="fab-item-label" id="fabTimerToggleLabel">Hide Timer</span>
                     <button class="fab-item-btn fab-btn-timer-hide" id="fabTimerToggleBtn" onclick="event.stopPropagation(); toggleFabTimer(); closeTopbarMenu();">❌</button>
                 </div>
-
+                <div class="fab-item" id="fabBackToLangTopbar" onclick="clearInterval(timerInterval); showPage('pageLang'); closeTopbarMenu();" style="cursor:pointer;">
+                    <span class="fab-item-label" id="fabBackToLangTopbarLabel">Language</span>
+                    <button class="fab-item-btn" style="background:linear-gradient(135deg,#636e72,#95a5a6);color:#fff;" onclick="event.stopPropagation(); clearInterval(timerInterval); showPage('pageLang'); closeTopbarMenu();">🌐</button>
+                </div>
             </div>
         </div>
     </div>
@@ -2003,11 +1996,6 @@ body.lang-ar #pageCertEN * {
 
     /* ===== LOAD CERT ===== */
     function loadCert(lang, certKey, certCode, certName, defaultTime, defaultQCount, passScore, qaLink) {
-        // Clear previous exam results when loading a new cert
-        window.fxhCompletedResults = null;
-        window.fxhPreExamPage = null;
-        try { localStorage.removeItem('fxhExamResults'); } catch(e) {}
-
         currentLang          = lang;
         currentCertKey       = certKey;          // ← save the key
         currentCertCode      = certCode;
@@ -2088,17 +2076,11 @@ body.lang-ar #pageCertEN * {
             'SAP-C02':'SAP.png','DOP-C02':'DOP.png','MLS-C01':'MLS.png',
             'ANS-C01':'ANS.png','SCS-C02':'SCS2.png','SCS-C03':'SCS3.png'
         };
-        var certImgMapTopbarAR = { 'AIF-C01':'AIFAR.png', 'CLF-C02':'CLFAR.png' };
         var tbBadge = document.getElementById('topbarCertBadge');
-        if (tbBadge && currentCertCode) {
-            var topbarImgSrc = (isAr && certImgMapTopbarAR[currentCertCode]) ? certImgMapTopbarAR[currentCertCode] : certImgMapTopbar[currentCertCode];
-            if (topbarImgSrc) {
-                tbBadge.src = topbarImgSrc;
-                tbBadge.alt = currentCertCode;
-                tbBadge.style.display = 'block';
-            } else {
-                tbBadge.style.display = 'none';
-            }
+        if (tbBadge && currentCertCode && certImgMapTopbar[currentCertCode]) {
+            tbBadge.src = certImgMapTopbar[currentCertCode];
+            tbBadge.alt = currentCertCode;
+            tbBadge.style.display = 'block';
         } else if (tbBadge) {
             tbBadge.style.display = 'none';
         }
@@ -2167,8 +2149,6 @@ if (isAr) {
             setText('lbl_stats', 'Statistics');
             setText('lbl_detailedReview', 'Detailed Review');
             setText('restartBtn', 'Retake Exam');
-            setText('backToSetupBtn', '← Back to Setup');
-            setText('backToCertFromResultsBtn', '🏠 Back to Certifications');
             setText('fabPdfLabel', 'Open Q&A File');
             setText('fabThemeLabel', 'Dark Mode');
             setText('fabThemeLabelNormal', 'Dark Mode');
@@ -2210,8 +2190,6 @@ if (isAr) {
             setText('lbl_stats', 'الإحصائيات');
             setText('lbl_detailedReview', 'مراجعة تفصيلية');
             setText('restartBtn', 'إعادة الاختبار');
-            setText('backToSetupBtn', 'رجوع إلى الإعداد ←');
-            setText('backToCertFromResultsBtn', '🏠 رجوع إلى الشهادات');
             setText('fabPdfLabel', 'فتح ملف الأسئلة');
             setText('fabThemeLabel', 'الوضع الداكن');
             setText('fabThemeLabelNormal', 'الوضع الداكن');
@@ -2387,7 +2365,7 @@ if (isAr) {
                     cLine.startsWith('HOTSPOT_ROW:') || cLine.startsWith('IMG_Q:') ||
                     /^https?:\/\//i.test(cLine) ||
                     /^[A-Za-z0-9][\w.-]*\.[a-zA-Z]{2,}(\/\S*)?$/.test(cLine)) break;
-                question += '\n' + cLine;
+                question += '\n\n' + cLine;
             }
             var options = [], correct = [], questionImages = [], optionImages = {};
             var sourceUrl = '', questionType = 'standard';
@@ -2532,9 +2510,6 @@ if (isAr) {
         if (pageId === 'page2') {
             if (tb) tb.classList.add('active');
             if (fw) fw.style.display = 'none';
-            // Hide user info bar during exam
-            var uib = document.getElementById('userInfoBar');
-            if (uib) { uib.dataset.wasShown = uib.classList.contains('show') ? '1' : '0'; uib.classList.remove('show'); }
             timerVisible = true;
             var p = document.getElementById('topbarTimerPill'); if (p) p.classList.remove('hidden-timer');
             var b = document.getElementById('fabTimerToggleBtn'); if (b) { b.className = 'fab-item-btn fab-btn-timer-hide'; b.textContent = '❌'; }
@@ -2543,9 +2518,6 @@ if (isAr) {
         } else {
             if (tb) tb.classList.remove('active');
             if (fw) fw.style.display = 'flex';
-            // Restore user info bar visibility
-            var uib2 = document.getElementById('userInfoBar');
-            if (uib2 && uib2.dataset.wasShown === '1') { uib2.classList.add('show'); }
 
             var simpleThemePages = (pageId === 'pageAuth' || pageId === 'pageLang' || pageId === 'pageCertEN' || pageId === 'pageCertAR' || pageId === 'pageMyResults');
             var fullFabPages = (pageId === 'page0' || pageId === 'page1' || pageId === 'page1b' || pageId === 'page3');
@@ -2604,8 +2576,6 @@ if (isAr) {
 
     /* ===== MODE SELECTION ===== */
     function selectMode(mode) {
-        // مسح نتائج الاختبار السابق عند اختيار وضع جديد حتى لا يعرض النتائج القديمة
-        window.fxhCompletedResults = null;
         if (mode === 'custom') {
             var hint = document.getElementById('totalQuestionsHint');
             if (hint) hint.textContent = currentLang === 'ar'
@@ -2639,9 +2609,12 @@ if (isAr) {
 
         userAnswers = {};
         window.currentMode = 'smart';
-
-        // Open exam in new tab (fxhOpenExamTab handles pre-exam page tracking)
-        fxhOpenExamTab(selectedQuestions, timeLimit, 'smart');
+        startTime = new Date();
+        startTimer();
+        generateQuizHTML();
+        showPage('page2');
+        // Lock browser back/forward during exam
+        if (typeof fbLockNavigation === 'function') fbLockNavigation();
     }
 
     /* ===== START QUIZ - CUSTOM RANGE ===== */
@@ -2682,9 +2655,12 @@ if (isAr) {
         timeLimit = isUnlimited ? 'unlimited' : String(customMins);
         window.currentMode = 'custom';
         userAnswers = {};
-
-        // Open exam in new tab
-        fxhOpenExamTab(selectedQuestions, timeLimit, 'custom');
+        startTime = new Date();
+        startTimer();
+        generateQuizHTML();
+        showPage('page2');
+        // Lock browser back/forward during exam
+        if (typeof fbLockNavigation === 'function') fbLockNavigation();
     }
 
     function escapeHtml(text) {
@@ -2701,11 +2677,11 @@ if (isAr) {
         var lines = str.split('\n');
         if (lines.length === 0) return '';
         if (lines.length === 1) {
-            return '<span class="q-line">' + escapeHtml(lines[0]) + '</span>';
+            return '<span class="' + lineClass + '">' + escapeHtml(lines[0]) + '</span>';
         }
-        var firstLines = lines.slice(0, -1).map(function(l){ return '<span class="q-line">' + escapeHtml(l) + '</span>'; }).join('');
+        var firstLines = lines.slice(0, -1).map(escapeHtml).join('<br>');
         var lastLine = escapeHtml(lines[lines.length - 1]);
-        return firstLines + '<span class="q-line ' + lineClass + '">' + lastLine + '</span>';
+        return firstLines + '<br><span class="' + lineClass + '">' + lastLine + '</span>';
     }
 
     /* ===== GENERATE QUIZ HTML ===== */
@@ -2880,17 +2856,9 @@ if (isAr) {
         clearInterval(timerInterval);
         if (window._examAutoSaveInterval) { clearInterval(window._examAutoSaveInterval); window._examAutoSaveInterval = null; }
         calculateResults(timeExpiredParam);
-
-        // If this is the exam tab: send results back to original tab and close
-        if (window._isExamTab) {
-            fxhFinishExamTab(window.fxhResultsSnapshot, selectedQuestions, userAnswers);
-            // Show a brief "done" message before tab closes
-            showPage('page3');
-            return;
-        }
-
         showPage('page3');
-        // Navigation is NOT locked on results page — user can press browser back to return to cert
+        // Keep navigation locked on results page too
+        if (typeof fbLockNavigation === 'function') fbLockNavigation();
     }
 
     /* ===== CALCULATE RESULTS ===== */
@@ -3092,53 +3060,12 @@ if (isAr) {
     function restartQuiz() {
         clearInterval(timerInterval);
         if (window._examAutoSaveInterval) { clearInterval(window._examAutoSaveInterval); window._examAutoSaveInterval = null; }
-        // Go back to the page the user was on before starting the exam
-        var priorPage = window.fxhPreExamPage || 'page0';
-        showPage(priorPage);
-        // fxhCompletedResults stays so clicking Start again shows results
-    }
-
-    function goBackToSetupPage() {
-        clearInterval(timerInterval);
-        if (window._examAutoSaveInterval) { clearInterval(window._examAutoSaveInterval); window._examAutoSaveInterval = null; }
-
-        // في تبويب الاختبار المنفصل: أغلق التبويب أو أعد التوجيه للصفحة الرئيسية
-        if (window._isExamTab) {
-            try { window.close(); } catch(e) {}
-            // إذا فشل الإغلاق، أعد التوجيه للصفحة الرئيسية بدون hash الاختبار
-            setTimeout(function() {
-                window.location.href = window.location.href.split('#')[0];
-            }, 300);
-            return;
-        }
-
-        window.fxhCompletedResults = null;
-        var priorPage = window.fxhPreExamPage || (window.currentMode === 'custom' ? 'page1b' : 'page1');
-        window.fxhPreExamPage = null;
-        showPage(priorPage);
+        showPage('page0');
     }
 
     function goBackToCert() {
         clearInterval(timerInterval);
         if (window._examAutoSaveInterval) { clearInterval(window._examAutoSaveInterval); window._examAutoSaveInterval = null; }
-        showPage(currentLang === 'ar' ? 'pageCertAR' : 'pageCertEN');
-    }
-
-    function goBackToCertFromResults() {
-        clearInterval(timerInterval);
-        if (window._examAutoSaveInterval) { clearInterval(window._examAutoSaveInterval); window._examAutoSaveInterval = null; }
-
-        // في تبويب الاختبار المنفصل: أغلق التبويب أو أعد التوجيه للصفحة الرئيسية
-        if (window._isExamTab) {
-            try { window.close(); } catch(e) {}
-            setTimeout(function() {
-                window.location.href = window.location.href.split('#')[0];
-            }, 300);
-            return;
-        }
-
-        window.fxhCompletedResults = null;
-        window.fxhPreExamPage = null;
         showPage(currentLang === 'ar' ? 'pageCertAR' : 'pageCertEN');
     }
 
@@ -3179,172 +3106,6 @@ if (isAr) {
         updatePdfButtonVisibility('pageLang');
         updateFabThemeLabel();
         updateThemeLogos();
-
-        // ── Cert card Ctrl+Click / middle-click → open in new tab ──
-        document.querySelectorAll('.cert-card').forEach(function(card) {
-            card.addEventListener('click', function(e) {
-                if (e.ctrlKey || e.metaKey || e.shiftKey || e.button === 1) {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    // Open SPA in new tab at current URL (user can pick cert there)
-                    window.open(window.location.href.split('#')[0], '_blank');
-                }
-            });
-        });
-    });
-
-    /* ==============================================================
-       OPEN EXAM IN NEW TAB — Core helpers
-       ============================================================== */
-
-    /* Detect if this IS the exam tab (opened via our system) */
-    window._isExamTab = (function() {
-        try { return !!(localStorage.getItem('fxhExamTab') && window.location.hash === '#EXAM'); } catch(e) { return false; }
-    })();
-
-    /* Start exam directly from stored params (used in exam tab after auth) */
-    function fxhStartFromTabParams() {
-        var raw;
-        try { raw = localStorage.getItem('fxhExamTab'); } catch(e) { return false; }
-        if (!raw) return false;
-        var s;
-        try { s = JSON.parse(raw); } catch(e) { return false; }
-        if (!s || (Date.now() - s.timestamp) > 90000) return false; // stale > 90s
-
-        // Restore globals
-        currentLang          = s.lang          || 'en';
-        currentCertKey       = s.certKey       || '';
-        currentCertCode      = s.certCode      || '';
-        currentCertName      = s.certName      || '';
-        currentDefaultTime   = s.defaultTime   || 120;
-        currentDefaultQCount = s.defaultQCount || 65;
-        currentPassScore     = s.passScore     || 700;
-        currentQALink        = s.qaLink        || '';
-        window.currentMode   = s.mode          || 'smart';
-        window.fxhPreExamPage = s.preExamPage  || null;
-        timeLimit            = s.timeLimit     || '120';
-        selectedQuestions    = s.selectedQ     || [];
-        userAnswers          = {};
-
-        // Re-parse questions from loaded JS files
-        if (currentCertKey && typeof fbReloadQuestions === 'function') {
-            questions = [];
-            fbReloadQuestions(currentCertKey, currentLang);
-        }
-
-        // Apply language UI
-        if (typeof applyLangUI === 'function') applyLangUI();
-
-        // Clear param so other tabs don't pick it up
-        try { localStorage.removeItem('fxhExamTab'); } catch(e) {}
-
-        // Handle guest session in exam tab
-        if (s.isGuest && s.guestName) {
-            try { sessionStorage.setItem('guestName', s.guestName); } catch(e) {}
-        }
-
-        // Start exam
-        startTime = new Date();
-        if (typeof startTimer === 'function') startTimer();
-        if (typeof generateQuizHTML === 'function') generateQuizHTML();
-        showPage('page2');
-        if (typeof fbLockNavigation === 'function') fbLockNavigation();
-        return true;
-    }
-
-    /* Send exam results back to original tab via localStorage and close */
-    function fxhFinishExamTab(snap, sqData, uaData) {
-        var payload = {
-            snap:      snap,
-            selectedQ: sqData || selectedQuestions,
-            userAnswers: uaData || userAnswers,
-            lang:      currentLang,
-            certCode:  currentCertCode,
-            certName:  currentCertName,
-            passScore: currentPassScore,
-            certKey:   currentCertKey
-        };
-        try { localStorage.setItem('fxhExamResults', JSON.stringify(payload)); } catch(e) {}
-        // Close exam tab after short delay to let storage event propagate
-        setTimeout(function() {
-            try { window.close(); } catch(e) {}
-        }, 400);
-    }
-
-    /* Render results page from a snapshot object (called in original tab) */
-    function fxhRenderResultsFromPayload(payload) {
-        var snap = payload.snap;
-        if (!snap) return;
-
-        // Restore globals needed for generateReview
-        if (payload.lang)      { currentLang     = payload.lang;     if (typeof applyLangUI === 'function') applyLangUI(); }
-        if (payload.certCode)  { currentCertCode = payload.certCode; }
-        if (payload.certName)  { currentCertName = payload.certName; }
-        if (payload.passScore) { currentPassScore = payload.passScore; }
-        if (payload.certKey)   {
-            currentCertKey = payload.certKey;
-            if (typeof fbReloadQuestions === 'function') { questions = []; fbReloadQuestions(currentCertKey, currentLang); }
-        }
-        if (payload.selectedQ)  selectedQuestions = payload.selectedQ;
-        if (payload.userAnswers) userAnswers       = payload.userAnswers;
-
-        var isAr = currentLang === 'ar';
-        startTime = snap.startTimeMs ? new Date(snap.startTimeMs) : new Date();
-
-        document.getElementById('timeResult').innerHTML    = snap.timeMain  || '';
-        document.getElementById('timeResultSub').innerHTML = snap.timeSub   || '';
-        document.getElementById('scoreResult').textContent = (snap.score || 0) + '/1000';
-        document.getElementById('passResult').innerHTML = snap.passed
-            ? '<span class="success">'  + (isAr ? 'ناجح 🎉' : 'PASS 🎉') + '</span>'
-            : '<span class="failure">' + (isAr ? 'راسب 😞' : 'FAIL 😞') + '</span>';
-        document.getElementById('percentageResult').textContent = (snap.percentage || 0) + '%';
-        document.getElementById('correctCount').innerHTML = isAr
-            ? '<strong>الإجابات الصحيحة:</strong> <span style="color:#27ae60;font-weight:700;">' + snap.correctAnswers + '</span>'
-            : '<strong>Correct answers:</strong> <span style="color:#27ae60;font-weight:700;">' + snap.correctAnswers + '</span>';
-        document.getElementById('wrongCount').innerHTML = isAr
-            ? '<strong>الإجابات الخاطئة:</strong> <span style="color:#e74c3c;font-weight:700;">' + snap.wrongAnswers + '</span>'
-            : '<strong>Wrong answers:</strong> <span style="color:#e74c3c;font-weight:700;">' + snap.wrongAnswers + '</span>';
-        document.getElementById('motivationalMessage').innerHTML = snap.passed
-            ? '<div class="success">'  + (isAr ? '🎉 تهانينا! لقد نجحت في الاختبار. حظاً موفقاً في الاختبار الحقيقي!' : '🎉 Congratulations! You passed the exam. Good luck in the real one!') + '</div>'
-            : '<div class="failure">' + (isAr ? '😞 لم تنجح هذه المرة. لا تستسلم — راجع المادة وحاول مرة أخرى!' : '😞 You didn\'t pass this time. Don\'t give up — review and try again!') + '</div>';
-
-        if (typeof generateReview === 'function') generateReview(snap.timeExpiredParam || false);
-
-        var banner = document.getElementById('guestNoticeBanner');
-        if (banner) banner.style.display = (typeof fbIsGuest !== 'undefined' && fbIsGuest && !window.fbCurrentUser) ? 'flex' : 'none';
-
-        window.fxhResultsSnapshot  = snap;
-        window.fxhCompletedResults = snap;
-
-        // Save to Firebase if needed (simulate fbSaveResult)
-        if (typeof fbSaveResult === 'function') {
-            fbSaveResult({
-                score:          snap.score          || 0,
-                percentage:     snap.percentage     || 0,
-                passed:         snap.passed,
-                timeFormatted:  (snap.timeSub || '').replace(/[^\d:]/g,'') || '00:00',
-                correctAnswers: snap.correctAnswers || 0,
-                wrongAnswers:   snap.wrongAnswers   || 0,
-                totalQuestions: (payload.selectedQ || []).length || 0,
-                timeExpired:    snap.timeExpiredParam || false
-            });
-        }
-    }
-
-    /* Listen for results from exam tab (original tab) */
-    window.fxhExamListening = false;
-    window.addEventListener('storage', function(e) {
-        if (e.key === 'fxhExamResults' && e.newValue && window.fxhExamListening) {
-            window.fxhExamListening = false;
-            try {
-                var payload = JSON.parse(e.newValue);
-                fxhRenderResultsFromPayload(payload);
-                showPage('page3');
-                // No navigation lock on results page — browser back goes to cert page
-                // Clean up localStorage result after consuming
-                setTimeout(function() { try { localStorage.removeItem('fxhExamResults'); } catch(err) {} }, 2000);
-            } catch(err) { console.warn('fxh: error loading exam results from storage', err); }
-        }
     });
 </script>
 
@@ -3426,36 +3187,7 @@ fbAuth.onAuthStateChanged(function(user) {
             } catch(e) {}
         }
         if (!fbIsGuest) {
-            // Check if this is an exam tab for a logged-in user that needs auth
-            // (auth should auto-restore via LOCAL persistence — if it doesn't within 3s, redirect)
-            if (window._isExamTab) {
-                // Wait a bit for Firebase to restore auth from cache
-                setTimeout(function() {
-                    if (!fbCurrentUser && !fbIsGuest) {
-                        // Couldn't restore auth in exam tab — try guest-based start
-                        var rawTab;
-                        try { rawTab = localStorage.getItem('fxhExamTab'); } catch(e) {}
-                        if (rawTab) {
-                            try {
-                                var tabData = JSON.parse(rawTab);
-                                if (tabData && tabData.isGuest && tabData.guestName) {
-                                    fbIsGuest = true;
-                                    try { sessionStorage.setItem('guestName', tabData.guestName); } catch(e) {}
-                                    var bar = document.getElementById('userInfoBar');
-                                    if (bar) bar.classList.add('show');
-                                    var nameEl = document.getElementById('userDisplayName');
-                                    if (nameEl) nameEl.textContent = tabData.guestName;
-                                    if (typeof fxhStartFromTabParams === 'function') fxhStartFromTabParams();
-                                    return;
-                                }
-                            } catch(e2) {}
-                        }
-                        showPage('pageAuth');
-                    }
-                }, 3000);
-            } else {
-                showPage('pageAuth');
-            }
+            showPage('pageAuth');
             document.getElementById('userInfoBar').classList.remove('show');
         }
     }
@@ -3475,7 +3207,8 @@ function fbOnUserLoggedIn(user) {
         document.getElementById('authFormRegister').style.display    = 'none';
         document.getElementById('authBtnGuest').style.display        = 'none';
         document.getElementById('guestNameSection').style.display    = 'none';
-        document.querySelectorAll('.auth-separator').forEach(function(s){ s.style.display = 'none'; });
+        var sep = document.querySelector('.auth-separator');
+        if (sep) sep.style.display = 'none';
         var inp = document.getElementById('googleDisplayName');
         if (inp) { inp.value = ''; inp.focus(); }
         return; // wait until name is set before proceeding
@@ -3498,10 +3231,6 @@ function fbOnUserLoggedIn(user) {
     fbLoadDailyAttempts().then(function() {
         fbUpdateAttemptsDisplay();
         var lbb = document.getElementById('langBackBtn'); if (lbb) lbb.style.display = 'none';
-        // Check if this is an exam tab
-        if (window._isExamTab && typeof fxhStartFromTabParams === 'function') {
-            if (fxhStartFromTabParams()) return;
-        }
         // Try restoring last state (refresh handling)
         if (!fbTryRestoreState(false)) {
             showPage('pageLang');
@@ -3527,7 +3256,8 @@ function authLoginGoogle() {
             document.getElementById('authFormRegister').style.display = 'none';
             document.getElementById('authBtnGuest').style.display = 'none';
             document.getElementById('guestNameSection').style.display = 'none';
-            document.querySelectorAll('.auth-separator').forEach(function(s){ s.style.display = 'none'; });
+            var sep = document.querySelector('.auth-separator');
+            if (sep) sep.style.display = 'none';
             var inp = document.getElementById('googleDisplayName');
             if (inp) { inp.value = ''; inp.focus(); }
         }
@@ -3725,11 +3455,6 @@ function authContinueAsGuest(guestName) {
     var attemptsEl = document.getElementById('userAttemptsInfo');
     if (attemptsEl) attemptsEl.style.display = 'none';
 
-    // If this is an exam tab, start exam directly
-    if (window._isExamTab && typeof fxhStartFromTabParams === 'function') {
-        if (fxhStartFromTabParams()) return;
-    }
-
     showPage('pageLang');
 }
 
@@ -3858,29 +3583,17 @@ window.addEventListener('popstate', function(e) {
     var activePage = document.querySelector('.page.active');
     var activeId   = activePage ? activePage.id : '';
 
-    // ── من صفحة النتائج (page3): الرجوع يذهب لصفحة مود الاختبار (page0) ──
-    if (activeId === 'page3') {
-        window.fxhPreExamPage = null;
-        // لا نمسح fxhCompletedResults حتى يتمكن المستخدم من الرجوع للأمام (page0 → page3)
-        showPage('page0');
-        return;
-    }
-
-    // ── منع التنقل إلى page2 (صفحة أداء الاختبار) عبر أزرار المتصفح ────────
-    if (targetPage === 'page2') {
+    // ── Never navigate TO page2 or page3 via browser buttons ────────
+    // (they are excluded from history via replaceState in fbUpdateHash)
+    if (targetPage === 'page2' || targetPage === 'page3') {
         history.replaceState({ page: activeId }, '', '#' + (PAGE_HASH_MAP[activeId] || ''));
         return;
     }
 
-    // ── السماح بالتقدم من page0 إلى page3 إذا كانت هناك نتائج سابقة ─────────
-    if (targetPage === 'page3') {
-        if (activeId === 'page0' && window.fxhCompletedResults) {
-            showPage('page3');
-            return;
-        }
-        history.replaceState({ page: activeId }, '', '#' + (PAGE_HASH_MAP[activeId] || ''));
-        return;
-    }
+    // ── page3 (ExamResults) special rule:
+    //    From page3, back is allowed only to page0 (ModeSelect/setup),
+    //    NOT back to page2 (exam). Since page2 was never pushed to history,
+    //    this works automatically — the previous history entry will be page0 or earlier.
 
     // ── Block navigation to pageAuth via browser buttons ────────────
     if (targetPage === 'pageAuth') {
@@ -4120,7 +3833,7 @@ function fbTryRestoreState(forGuest) {
 
             window.fxhResultsSnapshot = rs;
             showPage('page3');
-            // No navigation lock on results page
+            if (typeof fbLockNavigation === 'function') fbLockNavigation();
             return true;
         }
         showPage('pageLang'); return true;
@@ -4261,53 +3974,7 @@ function fbGetEarliestAttemptTimestamp() {
 var _origStartQuiz       = window.startQuiz;
 var _origStartCustomQuiz = window.startCustomQuiz;
 
-/* ── Helper: open exam in new tab ── */
-function fxhOpenExamTab(preparedSelectedQ, preparedTimeLimit, mode) {
-    // If completed results exist for this cert, show results instead
-    if (window.fxhCompletedResults) {
-        showPage('page3');
-        return;
-    }
-
-    // Track pre-exam page
-    var activeEl = document.querySelector('.page.active');
-    window.fxhPreExamPage = activeEl ? activeEl.id : 'page1';
-
-    // Package exam params for the new tab
-    var examState = {
-        selectedQ:    preparedSelectedQ,
-        timeLimit:    preparedTimeLimit,
-        mode:         mode,
-        lang:         currentLang,
-        certKey:      currentCertKey,
-        certCode:     currentCertCode,
-        certName:     currentCertName,
-        defaultTime:  currentDefaultTime,
-        defaultQCount: currentDefaultQCount,
-        passScore:    currentPassScore,
-        qaLink:       currentQALink,
-        preExamPage:  window.fxhPreExamPage,
-        isGuest:      (typeof fbIsGuest !== 'undefined' ? fbIsGuest : false),
-        guestName:    (function(){ try { return sessionStorage.getItem('guestName') || ''; } catch(e) { return ''; } })(),
-        timestamp:    Date.now()
-    };
-    try { localStorage.setItem('fxhExamTab', JSON.stringify(examState)); } catch(e) {}
-    try { localStorage.removeItem('fxhExamResults'); } catch(e) {}
-
-    // Listen for results in this (original) tab
-    window.fxhExamListening = true;
-
-    // Open exam in new tab (skip if caller already opened the tab)
-    if (!fxhOpenExamTab._skipOpen) {
-        var baseUrl = window.location.href.split('#')[0];
-        window.open(baseUrl + '#EXAM', '_blank');
-    }
-    fxhOpenExamTab._skipOpen = false;
-}
-
 window.startQuiz = function() {
-    // If completed results exist, show them (back-button flow)
-    if (window.fxhCompletedResults) { showPage('page3'); return; }
     if (!fbCurrentUser || fbIsGuest) { _origStartQuiz(); return; }
     var CACHE_TTL = 10 * 60 * 1000; // 10 minutes cache
     var cacheIsFresh = (Date.now() - fbAttemptsLastFetched) < CACHE_TTL;
@@ -4315,43 +3982,22 @@ window.startQuiz = function() {
         // Instant: use cached count directly
         if (fbDailyAttempts >= FB_DAILY_LIMIT) { fbShowLimitOverlay(); } else { _origStartQuiz(); }
     } else {
-        // Cache is stale — pre-open window synchronously to avoid popup blocker, then check limit
-        var preWin = window.open('', '_blank');
+        // Cache is stale — re-fetch, but show limit check only if needed
         fbLoadDailyAttempts().then(function() {
-            if (fbDailyAttempts >= FB_DAILY_LIMIT) {
-                if (preWin && !preWin.closed) { preWin.close(); }
-                fbShowLimitOverlay();
-            } else {
-                var baseUrl = window.location.href.split('#')[0];
-                if (preWin && !preWin.closed) { preWin.location.href = baseUrl + '#EXAM'; } else { window.open(baseUrl + '#EXAM', '_blank'); }
-                fxhOpenExamTab._skipOpen = true;
-                _origStartQuiz();
-            }
+            if (fbDailyAttempts >= FB_DAILY_LIMIT) { fbShowLimitOverlay(); } else { _origStartQuiz(); }
         });
     }
 };
 
 window.startCustomQuiz = function() {
-    // If completed results exist, show them (back-button flow)
-    if (window.fxhCompletedResults) { showPage('page3'); return; }
     if (!fbCurrentUser || fbIsGuest) { _origStartCustomQuiz(); return; }
     var CACHE_TTL = 10 * 60 * 1000;
     var cacheIsFresh = (Date.now() - fbAttemptsLastFetched) < CACHE_TTL;
     if (cacheIsFresh) {
         if (fbDailyAttempts >= FB_DAILY_LIMIT) { fbShowLimitOverlay(); } else { _origStartCustomQuiz(); }
     } else {
-        // Cache is stale — pre-open window synchronously to avoid popup blocker, then check limit
-        var preWin = window.open('', '_blank');
         fbLoadDailyAttempts().then(function() {
-            if (fbDailyAttempts >= FB_DAILY_LIMIT) {
-                if (preWin && !preWin.closed) { preWin.close(); }
-                fbShowLimitOverlay();
-            } else {
-                var baseUrl = window.location.href.split('#')[0];
-                if (preWin && !preWin.closed) { preWin.location.href = baseUrl + '#EXAM'; } else { window.open(baseUrl + '#EXAM', '_blank'); }
-                fxhOpenExamTab._skipOpen = true;
-                _origStartCustomQuiz();
-            }
+            if (fbDailyAttempts >= FB_DAILY_LIMIT) { fbShowLimitOverlay(); } else { _origStartCustomQuiz(); }
         });
     }
 };
@@ -4485,21 +4131,6 @@ document.addEventListener('DOMContentLoaded', function() {
         var parsedState    = rawState ? JSON.parse(rawState) : null;
         var isGuestState   = parsedState && parsedState.isGuest;
 
-        // Also check if exam tab has guest info in localStorage
-        if (!savedGuestName && window._isExamTab) {
-            try {
-                var rawExamTab = localStorage.getItem('fxhExamTab');
-                if (rawExamTab) {
-                    var examTabParsed = JSON.parse(rawExamTab);
-                    if (examTabParsed && examTabParsed.isGuest && examTabParsed.guestName) {
-                        savedGuestName = examTabParsed.guestName;
-                        isGuestState   = true;
-                        try { sessionStorage.setItem('guestName', savedGuestName); } catch(e2) {}
-                    }
-                }
-            } catch(e2) {}
-        }
-
         if (savedGuestName && isGuestState) {
             fbIsGuest     = true;
             fbCurrentUser = null;
@@ -4515,11 +4146,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
             var attemptsEl = document.getElementById('userAttemptsInfo');
             if (attemptsEl) attemptsEl.style.display = 'none';
-
-            // If exam tab, start exam directly
-            if (window._isExamTab && typeof fxhStartFromTabParams === 'function') {
-                if (fxhStartFromTabParams()) return;
-            }
 
             // Restore full state — page, exam-in-progress, etc.
             if (!fbTryRestoreState(true)) {
@@ -4550,7 +4176,6 @@ function fbRenderMyResultsTable(results) {
         'ANS-C01':'ANS.png','SCS-C02':'SCS2.png','SCS-C03':'SCS3.png'
     };
 
-    var certImgMapAR = { 'AIF-C01':'AIFAR.png', 'CLF-C02':'CLFAR.png' };
     var totalPassed = results.filter(function(r){ return r.passed; }).length;
     document.getElementById('statTotal').textContent  = results.length;
     document.getElementById('statPassed').textContent = totalPassed;
@@ -4569,9 +4194,8 @@ function fbRenderMyResultsTable(results) {
         var statusBadge = r.passed
             ? '<span class="result-badge-pass">PASS</span>'
             : '<span class="result-badge-fail">FAIL</span>';
-        var certImgSrc = (r.lang === 'ar' && certImgMapAR[r.certCode]) ? certImgMapAR[r.certCode] : certImgMap[r.certCode];
-        var certImg = certImgSrc
-            ? '<img src="' + certImgSrc + '" alt="' + r.certCode + '" class="my-results-cert-img">'
+        var certImg = r.certCode && certImgMap[r.certCode]
+            ? '<img src="' + certImgMap[r.certCode] + '" alt="' + r.certCode + '" class="my-results-cert-img">'
             : '<strong>' + (r.certCode || '—') + '</strong>';
         var tr = document.createElement('tr');
         tr.innerHTML =
@@ -4634,7 +4258,6 @@ function fbLoadMyResults() {
             'SAP-C02':'SAP.png','DOP-C02':'DOP.png','MLS-C01':'MLS.png',
             'ANS-C01':'ANS.png','SCS-C02':'SCS2.png','SCS-C03':'SCS3.png'
         };
-        var certImgMapAR_guest = { 'AIF-C01':'AIFAR.png', 'CLF-C02':'CLFAR.png' };
         var tbody = document.getElementById('myResultsBody');
         tbody.innerHTML = '';
         guestResults.forEach(function(r, idx) {
@@ -4646,9 +4269,8 @@ function fbLoadMyResults() {
             var statusBadge = r.passed
                 ? '<span class="result-badge-pass">PASS</span>'
                 : '<span class="result-badge-fail">FAIL</span>';
-            var certImgSrcG = (r.lang === 'ar' && certImgMapAR_guest[r.certCode]) ? certImgMapAR_guest[r.certCode] : certImgMap[r.certCode];
-            var certImg = certImgSrcG
-                ? '<img src="' + certImgSrcG + '" alt="' + r.certCode + '" class="my-results-cert-img">'
+            var certImg = r.certCode && certImgMap[r.certCode]
+                ? '<img src="' + certImgMap[r.certCode] + '" alt="' + r.certCode + '" class="my-results-cert-img">'
                 : '<strong>' + (r.certCode || '—') + '</strong>';
             var tr = document.createElement('tr');
             tr.innerHTML =
@@ -5060,7 +4682,7 @@ function fxhBuildPdfMarkup(data) {
     var enName = fxhCertFullNameEN[data.certCode] || data.certNameEN || data.certName || data.certCode || '';
     var arName = fxhCertFullNameAR[data.certCode] || (data.lang === 'ar' ? data.certName : '') || '';
     var certCode = data.certCode || '';
-    var certImg  = (isAr && {'AIF-C01':'AIFAR.png','CLF-C02':'CLFAR.png'}[certCode]) || fxhPrintCertImgMap[certCode] || '';
+    var certImg  = fxhPrintCertImgMap[certCode] || '';
     var examDate = data.examDate ? new Date(data.examDate) : new Date();
     var dateStr = fxhFormatGregorianDate(examDate, isAr);
     var timeObj = fxhFormatTime12(examDate, isAr);
