@@ -572,8 +572,8 @@ body.simple-theme-page #fabWrapper {
             85%  { transform: translateX( 2px) scale(1.04); background: #f39c12; color:#fff; }
             100% { transform: translateX(0)   scale(1);    background: rgba(243,156,18,.22); }
         }
-        .qnav-box.flash-red    { animation: qnavShakeRed    1s ease forwards; border-color:#c0392b !important; box-shadow: 0 0 14px rgba(231,76,60,.65); }
-        .qnav-box.flash-orange { animation: qnavShakeOrange 1s ease forwards; border-color:#e08e0b !important; box-shadow: 0 0 14px rgba(243,156,18,.7); }
+        .qnav-box.flash-red    { animation: qnavShakeRed    10s ease forwards; border-color:#c0392b !important; box-shadow: 0 0 14px rgba(231,76,60,.65); }
+        .qnav-box.flash-orange { animation: qnavShakeOrange 10s ease forwards; border-color:#e08e0b !important; box-shadow: 0 0 14px rgba(243,156,18,.7); }
 
         /* Orange border on partially-answered question card */
         .question.partial-highlight {
@@ -597,6 +597,10 @@ body.simple-theme-page #fabWrapper {
         }
         .qnav-legend-box.orange { background: #f39c12; }
         @media (max-width:600px) { .qnav-box { width: 33px; height: 33px; font-size: .72rem; } }
+
+        #qNavContainerTop .qnav-wrap {
+            margin: 0 0 28px;
+        }
     
 .lang-select-subtitle {
     font-family: 'Tajawal', sans-serif !important;
@@ -1413,6 +1417,10 @@ body.lang-ar #pageCertEN * {
                     <span class="fab-item-label" id="fabTimerToggleLabel">Hide Timer</span>
                     <button class="fab-item-btn fab-btn-timer-hide" id="fabTimerToggleBtn" onclick="event.stopPropagation(); toggleFabTimer(); closeTopbarMenu();">❌</button>
                 </div>
+                <div class="fab-item" id="fabScrollToQItem" onclick="(function(){var el=document.getElementById('qNavContainerTop');if(el){var top=el.getBoundingClientRect().top+window.pageYOffset-80;window.scrollTo({top:top,behavior:'smooth'});}closeTopbarMenu();})();" style="cursor:pointer;">
+                    <span class="fab-item-label" id="fabScrollToQLabel">Questions Bar</span>
+                    <button class="fab-item-btn" style="background:linear-gradient(135deg,#f39c12,#e67e22);color:#fff;" id="fabScrollToQBtn" onclick="event.stopPropagation();(function(){var el=document.getElementById('qNavContainerTop');if(el){var top=el.getBoundingClientRect().top+window.pageYOffset-80;window.scrollTo({top:top,behavior:'smooth'});}closeTopbarMenu();})();">🔢</button>
+                </div>
 
             </div>
         </div>
@@ -1567,9 +1575,9 @@ body.lang-ar #pageCertEN * {
             <h1 id="page2Title">AWS Exam</h1>
             <div id="questionInfo" style="font-size:1.2rem; color:var(--text-color);"></div>
         </div>
+        <div id="qNavContainerTop"></div>
         <div class="quiz-questions" id="quizQuestions"></div>
         <div class="submit-container">
-            <div id="qNavContainer"></div>
             <div id="warningMessage" class="warning" style="display:none;"></div>
             <button onclick="submitQuiz()" id="submitBtn" style="font-size:1.3rem; padding:15px 35px;">Submit Exam</button>
         </div>
@@ -2303,6 +2311,7 @@ if (isAr) {
             setText('fabThemeLabel', 'Dark Mode');
             setText('fabThemeLabelNormal', 'Dark Mode');
             setText('fabTimerToggleLabel', 'Hide Timer');
+            setText('fabScrollToQLabel', 'Questions Bar');
             setText('backToCertBtn', '← Back to Certifications');
             // Guest notice banner - English
             setText('guestNoticeTitle', '🔒 Results not saved');
@@ -2346,6 +2355,7 @@ if (isAr) {
             setText('fabThemeLabel', 'الوضع الداكن');
             setText('fabThemeLabelNormal', 'الوضع الداكن');
             setText('fabTimerToggleLabel', 'إخفاء المؤقت');
+            setText('fabScrollToQLabel', 'شريط الاسئلة');
             setText('backToCertBtn', 'رجوع إلى الشهادات ←');
             // Guest notice banner - Arabic
             setText('guestNoticeTitle', '🔒 النتائج غير محفوظة');
@@ -2900,28 +2910,28 @@ if (isAr) {
 
     /* ===== BUILD QUESTION NAV BOXES (page2) ===== */
     function buildQNavBoxes() {
-        var wrap = document.getElementById('qNavContainer');
-        if (!wrap) return;
+        var wrapTop = document.getElementById('qNavContainerTop');
+        if (!wrapTop) return;
         var isAr = currentLang === 'ar';
         var n = selectedQuestions.length;
-        if (!n) { wrap.innerHTML = ''; return; }
+        if (!n) { wrapTop.innerHTML = ''; return; }
         var lblAnswered   = isAr ? 'تم حله' : 'Answered';
         var lblUnanswered = isAr ? 'لم يُحل' : 'Not Answered';
         var lblPartial    = isAr ? 'محلول جزئياً' : 'Partial';
-        var h = '<div class="qnav-wrap">'
+        var hTop = '<div class="qnav-wrap">'
               + '<div class="qnav-legend">'
               + '<div class="qnav-legend-item"><span class="qnav-legend-box green"></span>' + lblAnswered + '</div>'
               + '<div class="qnav-legend-item"><span class="qnav-legend-box orange"></span>' + lblPartial + '</div>'
               + '<div class="qnav-legend-item"><span class="qnav-legend-box red"></span>' + lblUnanswered + '</div>'
               + '</div>'
               + '<div class="qnav-grid">';
-        for (var i = 0; i < n; i++) {
-            var lbl = (window.currentMode === 'custom' && selectedQuestions[i] && selectedQuestions[i].originalIndex != null)
-                ? selectedQuestions[i].originalIndex : (i + 1);
-            h += '<div class="qnav-box" id="qnav' + i + '" onclick="qNavScrollTo(' + i + ')">' + lbl + '</div>';
+        for (var j = 0; j < n; j++) {
+            var lblT = (window.currentMode === 'custom' && selectedQuestions[j] && selectedQuestions[j].originalIndex != null)
+                ? selectedQuestions[j].originalIndex : (j + 1);
+            hTop += '<div class="qnav-box" id="qnavT' + j + '" onclick="qNavScrollTo(' + j + ')">' + lblT + '</div>';
         }
-        h += '</div></div>';
-        wrap.innerHTML = h;
+        hTop += '</div></div>';
+        wrapTop.innerHTML = hTop;
     }
 
     function qNavScrollTo(index) {
@@ -2930,7 +2940,7 @@ if (isAr) {
     }
 
     function qNavUpdate(index) {
-        var box = document.getElementById('qnav' + index);
+        var box = document.getElementById('qnavT' + index);
         if (!box) return;
         var q = selectedQuestions[index];
         var done = false, partial = false;
@@ -3115,27 +3125,27 @@ if (isAr) {
             }
             if (unansweredIdx.length > 0 || incompleteIdx.length > 0) {
                 /* Scroll to nav box area */
-                var navWrap = document.getElementById('qNavContainer');
+                var navWrap = document.getElementById('qNavContainerTop');
                 if (navWrap) navWrap.scrollIntoView({ behavior: 'smooth', block: 'center' });
 
                 /* Flash unanswered boxes RED */
                 unansweredIdx.forEach(function(idx) {
-                    var box = document.getElementById('qnav' + idx);
-                    if (!box) return;
-                    box.classList.remove('flash-red', 'flash-orange');
-                    void box.offsetWidth;
-                    box.classList.add('flash-red');
-                    setTimeout(function() { box.classList.remove('flash-red'); }, 1050);
+                    var boxT = document.getElementById('qnavT' + idx);
+                    if (!boxT) return;
+                    boxT.classList.remove('flash-red', 'flash-orange');
+                    void boxT.offsetWidth;
+                    boxT.classList.add('flash-red');
+                    setTimeout(function() { boxT.classList.remove('flash-red'); }, 10000);
                 });
 
                 /* Flash incomplete boxes ORANGE */
                 incompleteIdx.forEach(function(idx) {
-                    var box = document.getElementById('qnav' + idx);
-                    if (!box) return;
-                    box.classList.remove('flash-red', 'flash-orange');
-                    void box.offsetWidth;
-                    box.classList.add('flash-orange');
-                    setTimeout(function() { box.classList.remove('flash-orange'); }, 1050);
+                    var boxT = document.getElementById('qnavT' + idx);
+                    if (!boxT) return;
+                    boxT.classList.remove('flash-red', 'flash-orange');
+                    void boxT.offsetWidth;
+                    boxT.classList.add('flash-orange');
+                    setTimeout(function() { boxT.classList.remove('flash-orange'); }, 10000);
                 });
                 return;
             }
