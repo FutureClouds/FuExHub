@@ -29,7 +29,6 @@
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-functions-compat.js"></script>
 
     <style>
         /* ===== CSS VARIABLES - THEMES ===== */
@@ -3644,9 +3643,8 @@ var firebaseConfig = {
    INIT FIREBASE
    ================================================================ */
 firebase.initializeApp(firebaseConfig);
-var fbAuth      = firebase.auth();
-var fbDb        = firebase.firestore();
-var fbFunctions = firebase.app().functions('us-central1');
+var fbAuth = firebase.auth();
+var fbDb   = firebase.firestore();
 
 /* Ensure login stays persisted after refresh/browser restart */
 var fbAuthReadyPromise = fbAuth.setPersistence(firebase.auth.Auth.Persistence.LOCAL)
@@ -3684,14 +3682,6 @@ var fbLimitCountdownInterval = null;
    ================================================================ */
 fbAuth.onAuthStateChanged(function(user) {
     if (user) {
-        // ── Block unverified email/password accounts ──
-        // Google Sign-In accounts are always considered verified (providerData check)
-        var isGoogleUser = user.providerData && user.providerData.some(function(p){ return p.providerId === 'google.com'; });
-        if (!isGoogleUser && !user.emailVerified) {
-            // Signed up but not yet verified — sign out silently and stay on auth page
-            fbAuth.signOut();
-            return;
-        }
         fbCurrentUser = user;
         fbIsGuest     = false;
         // If Google name prompt is pending, don't proceed yet
@@ -3869,8 +3859,7 @@ function authForgotPassword() {
         return;
     }
 
-    var sendReset = fbFunctions.httpsCallable('sendPasswordResetEmail');
-    sendReset({ email: email }).then(function() {
+    fbAuth.sendPasswordResetEmail(email).then(function() {
         sucEl.textContent = '✅ Password reset email sent! Check your inbox. | تم إرسال رابط استعادة كلمة المرور.';
         sucEl.style.display = 'block';
         errEl.textContent = '';
@@ -3955,8 +3944,7 @@ function authRegisterEmail() {
         return fbAuth.createUserWithEmailAndPassword(email, password);
     }).then(function(cred) {
         return cred.user.updateProfile({ displayName: name }).then(function() {
-            var sendVerify = fbFunctions.httpsCallable('sendVerificationEmail');
-            return sendVerify({});
+            return cred.user.sendEmailVerification();
         }).then(function() {
             // Sign out immediately — user must verify first
             return fbAuth.signOut();
