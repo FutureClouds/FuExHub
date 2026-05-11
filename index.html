@@ -3684,6 +3684,14 @@ var fbLimitCountdownInterval = null;
    ================================================================ */
 fbAuth.onAuthStateChanged(function(user) {
     if (user) {
+        // ── Block unverified email/password accounts ──
+        // Google Sign-In accounts are always considered verified (providerData check)
+        var isGoogleUser = user.providerData && user.providerData.some(function(p){ return p.providerId === 'google.com'; });
+        if (!isGoogleUser && !user.emailVerified) {
+            // Signed up but not yet verified — sign out silently and stay on auth page
+            fbAuth.signOut();
+            return;
+        }
         fbCurrentUser = user;
         fbIsGuest     = false;
         // If Google name prompt is pending, don't proceed yet
