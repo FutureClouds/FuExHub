@@ -29,6 +29,7 @@
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-functions-compat.js"></script>
 
     <style>
         /* ===== CSS VARIABLES - THEMES ===== */
@@ -3643,8 +3644,9 @@ var firebaseConfig = {
    INIT FIREBASE
    ================================================================ */
 firebase.initializeApp(firebaseConfig);
-var fbAuth = firebase.auth();
-var fbDb   = firebase.firestore();
+var fbAuth      = firebase.auth();
+var fbDb        = firebase.firestore();
+var fbFunctions = firebase.app().functions('us-central1');
 
 /* Ensure login stays persisted after refresh/browser restart */
 var fbAuthReadyPromise = fbAuth.setPersistence(firebase.auth.Auth.Persistence.LOCAL)
@@ -3859,7 +3861,8 @@ function authForgotPassword() {
         return;
     }
 
-    fbAuth.sendPasswordResetEmail(email).then(function() {
+    var sendReset = fbFunctions.httpsCallable('sendPasswordResetEmail');
+    sendReset({ email: email }).then(function() {
         sucEl.textContent = '✅ Password reset email sent! Check your inbox. | تم إرسال رابط استعادة كلمة المرور.';
         sucEl.style.display = 'block';
         errEl.textContent = '';
@@ -3944,7 +3947,8 @@ function authRegisterEmail() {
         return fbAuth.createUserWithEmailAndPassword(email, password);
     }).then(function(cred) {
         return cred.user.updateProfile({ displayName: name }).then(function() {
-            return cred.user.sendEmailVerification();
+            var sendVerify = fbFunctions.httpsCallable('sendVerificationEmail');
+            return sendVerify({});
         }).then(function() {
             // Sign out immediately — user must verify first
             return fbAuth.signOut();
