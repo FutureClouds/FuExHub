@@ -1410,7 +1410,7 @@ body.lang-ar #pageCertEN * {
                     For any issue, contact us at: <strong><a href="mailto:fuexhub@gmail.com" style="color:#58a6ff;">fuexhub@gmail.com</a></strong>
                 </span>
             </div>
-            <button class="auth-btn-primary" style="margin-top:18px;" onclick="showPage('pageAuth'); authShowLogin();">
+            <button class="auth-btn-primary" style="margin-top:18px; font-family:'Tajawal',sans-serif;" onclick="showPage('pageAuth'); authShowLogin();">
                 تسجيل الدخول | Login
             </button>
         </div>
@@ -4175,7 +4175,7 @@ function authRegisterEmail() {
     }
 
     regBtn.disabled = true;
-    regBtn.textContent = 'Sending...';
+    regBtn.textContent = 'Sending... | جارٍ الإرسال...';
     fbEmailRegPending = true;   // ← prevent onAuthStateChanged from triggering navigation
 
     fbAuthReadyPromise.then(function() {
