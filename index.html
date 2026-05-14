@@ -535,8 +535,8 @@ body.simple-theme-page #fabWrapper {
             width: 40px;
             height: 40px;
             border-radius: 7px;
-            border: 3px solid #e74c3c;
-            background: rgba(231,76,60,.12);
+            border: 2px solid rgba(255,255,255,.22);
+            background: rgba(255,255,255,.08);
             color: var(--question-text);
             display: flex;
             align-items: center;
@@ -544,36 +544,81 @@ body.simple-theme-page #fabWrapper {
             font-size: .78rem;
             font-weight: 700;
             cursor: pointer;
-            transition: transform .18s, box-shadow .18s;
+            transition: transform .18s, box-shadow .18s, background .25s, border-color .25s;
             user-select: none;
         }
+        [data-theme="light"] .qnav-box {
+            border-color: rgba(0,0,0,.18);
+            background: rgba(0,0,0,.06);
+        }
         .qnav-box:hover { transform: scale(1.12); box-shadow: 0 3px 10px rgba(0,0,0,.22); }
-        .qnav-box.answered { border-color: #27ae60; background: rgba(39,174,96,.18); }
-        .qnav-box.partial  { border-color: #f39c12; background: rgba(243,156,18,.22); }
+        .qnav-box.answered { border-color: #27ae60 !important; background: rgba(39,174,96,.18) !important; color: var(--question-text) !important; }
+        .qnav-box.wrong    { border-color: #e74c3c !important; background: rgba(231,76,60,.18) !important; color: var(--question-text) !important; }
+        .qnav-box.partial  { border-color: #f39c12 !important; background: rgba(243,156,18,.22) !important; color: var(--question-text) !important; }
+        /* Red only shown after submit attempt */
+        .qnav-box.unanswered-revealed { border-color: #c0392b !important; background: #e74c3c !important; color: #fff !important; }
+        /* Orange persistent after submit attempt */
+        .qnav-box.incomplete-revealed { border-color: #e08e0b !important; background: #f39c12 !important; color: #fff !important; }
 
         /* Flash animations on submit attempt */
         @keyframes qnavShakeRed {
-            0%   { transform: translateX(0)   scale(1);    background: rgba(231,76,60,.12); }
-            10%  { transform: translateX(-6px) scale(1.12); background: #e74c3c; color:#fff; }
-            25%  { transform: translateX( 6px) scale(1.12); background: #e74c3c; color:#fff; }
-            40%  { transform: translateX(-4px) scale(1.08); background: #e74c3c; color:#fff; }
-            55%  { transform: translateX( 4px) scale(1.08); background: #c0392b; color:#fff; }
-            70%  { transform: translateX(-2px) scale(1.04); background: #e74c3c; color:#fff; }
-            85%  { transform: translateX( 2px) scale(1.04); background: #e74c3c; color:#fff; }
-            100% { transform: translateX(0)   scale(1);    background: rgba(231,76,60,.12); }
+            0%,100% { transform: translateX(0) scale(1); background: rgba(231,76,60,.35); color:#fff; }
+            8%  { transform: translateX(-7px) scale(1.13); background: #e74c3c; color:#fff; }
+            16% { transform: translateX( 7px) scale(1.13); background: #e74c3c; color:#fff; }
+            24% { transform: translateX(-5px) scale(1.09); background: #c0392b; color:#fff; }
+            32% { transform: translateX( 5px) scale(1.09); background: #e74c3c; color:#fff; }
+            40% { transform: translateX(-3px) scale(1.05); background: #c0392b; color:#fff; }
+            48% { transform: translateX( 3px) scale(1.05); background: #e74c3c; color:#fff; }
+            56% { transform: translateX(-2px) scale(1.02); background: rgba(231,76,60,.5); color:#fff; }
+            64% { transform: translateX( 2px) scale(1.02); background: rgba(231,76,60,.5); color:#fff; }
         }
         @keyframes qnavShakeOrange {
-            0%   { transform: translateX(0)   scale(1);    background: rgba(243,156,18,.22); }
-            10%  { transform: translateX(-6px) scale(1.12); background: #f39c12; color:#fff; }
-            25%  { transform: translateX( 6px) scale(1.12); background: #f39c12; color:#fff; }
-            40%  { transform: translateX(-4px) scale(1.08); background: #f39c12; color:#fff; }
-            55%  { transform: translateX( 4px) scale(1.08); background: #e08e0b; color:#fff; }
-            70%  { transform: translateX(-2px) scale(1.04); background: #f39c12; color:#fff; }
-            85%  { transform: translateX( 2px) scale(1.04); background: #f39c12; color:#fff; }
-            100% { transform: translateX(0)   scale(1);    background: rgba(243,156,18,.22); }
+            0%,100% { transform: translateX(0) scale(1); background: rgba(243,156,18,.35); color:#fff; }
+            8%  { transform: translateX(-7px) scale(1.13); background: #f39c12; color:#fff; }
+            16% { transform: translateX( 7px) scale(1.13); background: #f39c12; color:#fff; }
+            24% { transform: translateX(-5px) scale(1.09); background: #e08e0b; color:#fff; }
+            32% { transform: translateX( 5px) scale(1.09); background: #f39c12; color:#fff; }
+            40% { transform: translateX(-3px) scale(1.05); background: #e08e0b; color:#fff; }
+            48% { transform: translateX( 3px) scale(1.05); background: #f39c12; color:#fff; }
+            56% { transform: translateX(-2px) scale(1.02); background: rgba(243,156,18,.5); color:#fff; }
+            64% { transform: translateX( 2px) scale(1.02); background: rgba(243,156,18,.5); color:#fff; }
         }
-        .qnav-box.flash-red    { animation: qnavShakeRed    10s ease forwards; border-color:#c0392b !important; box-shadow: 0 0 14px rgba(231,76,60,.65); }
-        .qnav-box.flash-orange { animation: qnavShakeOrange 10s ease forwards; border-color:#e08e0b !important; box-shadow: 0 0 14px rgba(243,156,18,.7); }
+        @keyframes cardShakeRed {
+            0%,100% { transform: translateX(0); }
+            8%  { transform: translateX(-8px); }
+            16% { transform: translateX( 8px); }
+            24% { transform: translateX(-6px); }
+            32% { transform: translateX( 6px); }
+            40% { transform: translateX(-4px); }
+            48% { transform: translateX( 4px); }
+            56% { transform: translateX(-2px); }
+            64% { transform: translateX( 2px); }
+            80% { transform: translateX(-1px); }
+            90% { transform: translateX( 1px); }
+        }
+        @keyframes cardShakeOrange {
+            0%,100% { transform: translateX(0); }
+            8%  { transform: translateX(-8px); }
+            16% { transform: translateX( 8px); }
+            24% { transform: translateX(-6px); }
+            32% { transform: translateX( 6px); }
+            40% { transform: translateX(-4px); }
+            48% { transform: translateX( 4px); }
+            56% { transform: translateX(-2px); }
+            64% { transform: translateX( 2px); }
+            80% { transform: translateX(-1px); }
+            90% { transform: translateX( 1px); }
+        }
+        .qnav-box.flash-red    { animation: qnavShakeRed    5s ease forwards; border-color:#c0392b !important; box-shadow: 0 0 14px rgba(231,76,60,.65); background: #e74c3c !important; color:#fff !important; }
+        .qnav-box.flash-orange { animation: qnavShakeOrange 5s ease forwards; border-color:#e08e0b !important; box-shadow: 0 0 14px rgba(243,156,18,.7);  background: #f39c12 !important; color:#fff !important; }
+        /* Question card highlight on submit */
+        .question.submit-unanswered { border: 2.5px solid #e74c3c !important; box-shadow: 0 0 0 3px rgba(231,76,60,.5) !important; animation: cardShakeRed 5s ease forwards; }
+        .question.submit-incomplete  { border: 2.5px solid #f39c12 !important; box-shadow: 0 0 0 3px rgba(243,156,18,.5) !important; animation: cardShakeOrange 5s ease forwards; }
+
+        /* Bottom qnav container (above submit) */
+        #qNavContainerBottom .qnav-wrap {
+            margin: 0 0 16px;
+        }
 
         /* Orange border on partially-answered question card */
         .question.partial-highlight {
@@ -817,6 +862,88 @@ body.lang-ar #pageCertEN * {
 
         #guestNoticeBtn { display: none !important; }
         #guestNoticeBanner { display: none !important; }
+
+        /* ===== SITE FOOTER SOCIAL LINKS (inside footer, above copyright) ===== */
+        .footer-links-wrap {
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            gap: 24px;
+            flex-wrap: wrap;
+            padding-bottom: 14px;
+            margin-bottom: 12px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            font-family: 'Tajawal', 'Montserrat', sans-serif;
+        }
+        .footer-links-col {
+            display: flex;
+            flex-direction: column;
+            gap: 7px;
+            min-width: 0;
+        }
+        .footer-links-col.col-ar {
+            align-items: flex-end;
+            direction: rtl;
+        }
+        .footer-links-col.col-en {
+            align-items: flex-start;
+            direction: ltr;
+        }
+        .footer-links-col-label {
+            text-align: center;
+            width: 100%;
+            font-size: 0.65rem;
+            font-weight: 700;
+            letter-spacing: 0.8px;
+            text-transform: uppercase;
+            opacity: 0.38;
+            margin-bottom: 2px;
+        }
+        .fsl-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            text-decoration: none;
+            font-size: 0.75rem;
+            font-weight: 600;
+            padding: 4px 10px 4px 7px;
+            border-radius: 999px;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+            line-height: 1.4;
+            width: 180px;
+            height: 32px;
+            box-sizing: border-box;
+        }
+        .fsl-chip.col-ar { padding: 4px 7px 4px 10px; width: 180px; height: 32px; }
+        .fsl-chip-icon {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        .fsl-chip-icon svg { width: 11px; height: 11px; flex-shrink: 0; }
+
+        /* Telegram chip */
+        .fsl-chip.tg { color: #54a9eb; background: rgba(84,169,235,0.10); border: 1px solid rgba(84,169,235,0.22); }
+        .fsl-chip.tg .fsl-chip-icon { background: rgba(84,169,235,0.18); }
+        .fsl-chip.tg:hover { background: rgba(84,169,235,0.2); border-color: rgba(84,169,235,0.45); transform: translateY(-1px); box-shadow: 0 3px 10px rgba(84,169,235,0.22); }
+
+        /* Bot chip */
+        .fsl-chip.bot { color: #a78bfa; background: rgba(167,139,250,0.10); border: 1px solid rgba(167,139,250,0.22); }
+        .fsl-chip.bot .fsl-chip-icon { background: rgba(167,139,250,0.18); }
+        .fsl-chip.bot:hover { background: rgba(167,139,250,0.2); border-color: rgba(167,139,250,0.45); transform: translateY(-1px); box-shadow: 0 3px 10px rgba(167,139,250,0.2); }
+
+        /* Email chip */
+        .fsl-chip.mail { color: #6ee7b7; background: rgba(110,231,183,0.09); border: 1px solid rgba(110,231,183,0.2); }
+        .fsl-chip.mail .fsl-chip-icon { background: rgba(110,231,183,0.16); }
+        .fsl-chip.mail:hover { background: rgba(110,231,183,0.18); border-color: rgba(110,231,183,0.4); transform: translateY(-1px); box-shadow: 0 3px 10px rgba(110,231,183,0.18); }
+
+        .footer-links-sep { width: 1px; background: rgba(255,255,255,0.1); min-height: 130px; align-self: center; flex-shrink: 0; }
+        @media (max-width: 480px) { .footer-links-sep { display: none; } .footer-links-wrap { gap: 16px; } }
 
         /* ===== SITE FOOTER ===== */
         .site-footer {
@@ -1205,12 +1332,20 @@ body.lang-ar #pageCertEN * {
                 <input type="password" id="authRegPassword" class="auth-input" placeholder="كلمة المرور | Password (min 6 chars)" autocomplete="new-password">
                 <div class="auth-error" id="authRegError"></div>
                 <div id="authVerifyNotice" class="auth-verify-notice" style="display:none;">
-                    ✅ تم إرسال رمز التحقق إلى بريدك الإلكتروني.<br>
-                    A verification code has been sent to your email.<br>
+                    ✅ تم إرسال رسالة التحقق إلى بريدك الإلكتروني.<br>
+                    A verification email has been sent to your inbox.<br>
                     <strong style="color:#27ae60;">يرجى التحقق قبل تسجيل الدخول · Please verify before logging in</strong><br>
+                    <span style="font-size:0.85rem; color:#c9d1d9; margin-top:8px; display:block; text-align:right; line-height:1.8;">
+                        📧 <strong>المُرسِل:</strong> info@fuexhub.firebaseapp.com<br>
+                        📛 <strong>الاسم:</strong> FuExHub<br>
+                    </span>
                     <span style="font-size:0.85rem; color:#f39c12; margin-top:6px; display:block;">
-                        ⚠️ قد تصل رسالة التحقق إلى البريد غير المرغوب فيه (Spam)<br>
-                        Check your Spam / Junk folder if you don't see it.
+                        ⚠️ قد تصل رسالة التحقق إلى مجلد <strong>البريد المزعج (Spam)</strong> — تحقق منه إن لم تجدها.<br>
+                        Check your <strong>Spam / Junk</strong> folder if you don't see the email.
+                    </span>
+                    <span style="font-size:0.82rem; color:#58a6ff; margin-top:8px; display:block;">
+                        🆘 في حال وجود أي مشكلة تواصل معنا عبر:<br>
+                        For any issue, contact us at: <strong>fuexhub@gmail.com</strong>
                     </span>
                 </div>
                 <button class="auth-btn-primary" id="authRegBtn" onclick="authRegisterEmail()">Create Account / إنشاء حساب</button>
@@ -1417,9 +1552,9 @@ body.lang-ar #pageCertEN * {
                     <span class="fab-item-label" id="fabTimerToggleLabel">Hide Timer</span>
                     <button class="fab-item-btn fab-btn-timer-hide" id="fabTimerToggleBtn" onclick="event.stopPropagation(); toggleFabTimer(); closeTopbarMenu();">❌</button>
                 </div>
-                <div class="fab-item" id="fabScrollToQItem" onclick="(function(){var el=document.getElementById('qNavContainerTop');if(el){var top=el.getBoundingClientRect().top+window.pageYOffset-80;window.scrollTo({top:top,behavior:'smooth'});}closeTopbarMenu();})();" style="cursor:pointer;">
+                <div class="fab-item" id="fabScrollToQItem" onclick="(function(){var topEl=document.getElementById('qNavContainerTop');var botEl=document.getElementById('qNavContainerBottom');var target=topEl;if(topEl&&botEl){var dTop=Math.abs(topEl.getBoundingClientRect().top);var dBot=Math.abs(botEl.getBoundingClientRect().top);target=(dBot<dTop)?botEl:topEl;}if(target){var t=target.getBoundingClientRect().top+window.pageYOffset-80;window.scrollTo({top:t,behavior:'smooth'});}closeTopbarMenu();})();" style="cursor:pointer;">
                     <span class="fab-item-label" id="fabScrollToQLabel">Questions Bar</span>
-                    <button class="fab-item-btn" style="background:linear-gradient(135deg,#f39c12,#e67e22);color:#fff;" id="fabScrollToQBtn" onclick="event.stopPropagation();(function(){var el=document.getElementById('qNavContainerTop');if(el){var top=el.getBoundingClientRect().top+window.pageYOffset-80;window.scrollTo({top:top,behavior:'smooth'});}closeTopbarMenu();})();">🔢</button>
+                    <button class="fab-item-btn" style="background:linear-gradient(135deg,#f39c12,#e67e22);color:#fff;" id="fabScrollToQBtn" onclick="event.stopPropagation();(function(){var topEl=document.getElementById('qNavContainerTop');var botEl=document.getElementById('qNavContainerBottom');var target=topEl;if(topEl&&botEl){var dTop=Math.abs(topEl.getBoundingClientRect().top);var dBot=Math.abs(botEl.getBoundingClientRect().top);target=(dBot<dTop)?botEl:topEl;}if(target){var t=target.getBoundingClientRect().top+window.pageYOffset-80;window.scrollTo({top:t,behavior:'smooth'});}closeTopbarMenu();})();">🔢</button>
                 </div>
 
             </div>
@@ -1578,6 +1713,7 @@ body.lang-ar #pageCertEN * {
         <div id="qNavContainerTop"></div>
         <div class="quiz-questions" id="quizQuestions"></div>
         <div class="submit-container">
+            <div id="qNavContainerBottom"></div>
             <div id="warningMessage" class="warning" style="display:none;"></div>
             <button onclick="submitQuiz()" id="submitBtn" style="font-size:1.3rem; padding:15px 35px;">Submit Exam</button>
         </div>
@@ -2910,28 +3046,39 @@ if (isAr) {
 
     /* ===== BUILD QUESTION NAV BOXES (page2) ===== */
     function buildQNavBoxes() {
-        var wrapTop = document.getElementById('qNavContainerTop');
-        if (!wrapTop) return;
+        var wrapTop    = document.getElementById('qNavContainerTop');
+        var wrapBottom = document.getElementById('qNavContainerBottom');
+        if (!wrapTop && !wrapBottom) return;
         var isAr = currentLang === 'ar';
         var n = selectedQuestions.length;
-        if (!n) { wrapTop.innerHTML = ''; return; }
+        if (!n) {
+            if (wrapTop)    wrapTop.innerHTML    = '';
+            if (wrapBottom) wrapBottom.innerHTML = '';
+            return;
+        }
         var lblAnswered   = isAr ? 'تم حله' : 'Answered';
         var lblUnanswered = isAr ? 'لم يُحل' : 'Not Answered';
         var lblPartial    = isAr ? 'محلول جزئياً' : 'Partial';
-        var hTop = '<div class="qnav-wrap">'
-              + '<div class="qnav-legend">'
-              + '<div class="qnav-legend-item"><span class="qnav-legend-box green"></span>' + lblAnswered + '</div>'
-              + '<div class="qnav-legend-item"><span class="qnav-legend-box orange"></span>' + lblPartial + '</div>'
-              + '<div class="qnav-legend-item"><span class="qnav-legend-box red"></span>' + lblUnanswered + '</div>'
-              + '</div>'
-              + '<div class="qnav-grid">';
-        for (var j = 0; j < n; j++) {
-            var lblT = (window.currentMode === 'custom' && selectedQuestions[j] && selectedQuestions[j].originalIndex != null)
-                ? selectedQuestions[j].originalIndex : (j + 1);
-            hTop += '<div class="qnav-box" id="qnavT' + j + '" onclick="qNavScrollTo(' + j + ')">' + lblT + '</div>';
+
+        function buildHtml(prefix) {
+            var h = '<div class="qnav-wrap">'
+                  + '<div class="qnav-legend">'
+                  + '<div class="qnav-legend-item"><span class="qnav-legend-box green"></span>' + lblAnswered + '</div>'
+                  + '<div class="qnav-legend-item"><span class="qnav-legend-box orange"></span>' + lblPartial + '</div>'
+                  + '<div class="qnav-legend-item"><span class="qnav-legend-box red"></span>' + lblUnanswered + '</div>'
+                  + '</div>'
+                  + '<div class="qnav-grid">';
+            for (var j = 0; j < n; j++) {
+                var lblT = (window.currentMode === 'custom' && selectedQuestions[j] && selectedQuestions[j].originalIndex != null)
+                    ? selectedQuestions[j].originalIndex : (j + 1);
+                h += '<div class="qnav-box" id="' + prefix + j + '" onclick="qNavScrollTo(' + j + ')">' + lblT + '</div>';
+            }
+            h += '</div></div>';
+            return h;
         }
-        hTop += '</div></div>';
-        wrapTop.innerHTML = hTop;
+
+        if (wrapTop)    wrapTop.innerHTML    = buildHtml('qnavT');
+        if (wrapBottom) wrapBottom.innerHTML = buildHtml('qnavB');
     }
 
     function qNavScrollTo(index) {
@@ -2940,8 +3087,8 @@ if (isAr) {
     }
 
     function qNavUpdate(index) {
-        var box = document.getElementById('qnavT' + index);
-        if (!box) return;
+        var boxT = document.getElementById('qnavT' + index);
+        var boxB = document.getElementById('qnavB' + index);
         var q = selectedQuestions[index];
         var done = false, partial = false;
         if (q && q.isHotspot) {
@@ -2957,9 +3104,15 @@ if (isAr) {
             done    = ua2.length >= required;
             partial = ua2.length > 0 && ua2.length < required;
         }
-        box.classList.remove('answered', 'partial');
-        if (done)        box.classList.add('answered');
-        else if (partial) box.classList.add('partial');
+
+        function updateBox(box) {
+            if (!box) return;
+            box.classList.remove('answered', 'partial', 'flash-red', 'flash-orange', 'unanswered-revealed', 'incomplete-revealed');
+            if (done)         box.classList.add('answered');
+            else if (partial) box.classList.add('partial');
+        }
+        updateBox(boxT);
+        updateBox(boxB);
 
         /* Orange border + badge on the question card */
         var card = document.getElementById('question' + index);
@@ -3008,7 +3161,7 @@ if (isAr) {
                   && ua2.every(function(v){ return ca.indexOf(v) !== -1; })
                   && ca.every(function(v){ return ua2.indexOf(v) !== -1; });
             }
-            h += '<div class="qnav-box' + (ok ? ' answered' : '') + '" onclick="resultNavJump(' + i + ')">' + lbl + '</div>';
+            h += '<div class="qnav-box' + (ok ? ' answered' : ' wrong') + '" onclick="resultNavJump(' + i + ')">' + lbl + '</div>';
         }
         h += '</div>';
         wrap.innerHTML = h;
@@ -3124,28 +3277,71 @@ if (isAr) {
                 }
             }
             if (unansweredIdx.length > 0 || incompleteIdx.length > 0) {
-                /* Scroll to nav box area */
-                var navWrap = document.getElementById('qNavContainerTop');
-                if (navWrap) navWrap.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                /* Scroll to NEAREST qnav container based on scroll position */
+                var topWrap    = document.getElementById('qNavContainerTop');
+                var bottomWrap = document.getElementById('qNavContainerBottom');
+                var scrollY    = window.pageYOffset || document.documentElement.scrollTop;
+                var targetWrap = topWrap;
+                if (topWrap && bottomWrap) {
+                    var topRect    = topWrap.getBoundingClientRect();
+                    var bottomRect = bottomWrap.getBoundingClientRect();
+                    var distTop    = Math.abs(topRect.top);
+                    var distBottom = Math.abs(bottomRect.top);
+                    targetWrap = (distBottom < distTop) ? bottomWrap : topWrap;
+                }
+                if (targetWrap) {
+                    var navTop = targetWrap.getBoundingClientRect().top + window.pageYOffset - 80;
+                    window.scrollTo({ top: navTop, behavior: 'smooth' });
+                }
 
-                /* Flash unanswered boxes RED */
+                /* Mark unanswered boxes as permanently red (unanswered-revealed) — removed on next answer */
                 unansweredIdx.forEach(function(idx) {
                     var boxT = document.getElementById('qnavT' + idx);
-                    if (!boxT) return;
-                    boxT.classList.remove('flash-red', 'flash-orange');
-                    void boxT.offsetWidth;
-                    boxT.classList.add('flash-red');
-                    setTimeout(function() { boxT.classList.remove('flash-red'); }, 10000);
+                    var boxB = document.getElementById('qnavB' + idx);
+                    [boxT, boxB].forEach(function(box) {
+                        if (!box) return;
+                        box.classList.remove('flash-red', 'flash-orange', 'answered', 'partial');
+                        void box.offsetWidth;
+                        box.classList.add('unanswered-revealed', 'flash-red');
+                        setTimeout(function() { box.classList.remove('flash-red'); }, 5000);
+                    });
+                    /* Highlight the question card itself in red */
+                    var card = document.getElementById('question-' + idx) || document.querySelector('[data-qidx="' + idx + '"]');
+                    if (!card) {
+                        var allCards = document.querySelectorAll('.question');
+                        if (allCards[idx]) card = allCards[idx];
+                    }
+                    if (card) {
+                        card.classList.remove('submit-unanswered', 'submit-incomplete');
+                        void card.offsetWidth;
+                        card.classList.add('submit-unanswered');
+                        setTimeout(function() { card.classList.remove('submit-unanswered'); }, 5000);
+                    }
                 });
 
-                /* Flash incomplete boxes ORANGE */
+                /* Flash incomplete boxes ORANGE (already orange from partial class — just add shake) */
                 incompleteIdx.forEach(function(idx) {
                     var boxT = document.getElementById('qnavT' + idx);
-                    if (!boxT) return;
-                    boxT.classList.remove('flash-red', 'flash-orange');
-                    void boxT.offsetWidth;
-                    boxT.classList.add('flash-orange');
-                    setTimeout(function() { boxT.classList.remove('flash-orange'); }, 10000);
+                    var boxB = document.getElementById('qnavB' + idx);
+                    [boxT, boxB].forEach(function(box) {
+                        if (!box) return;
+                        box.classList.remove('flash-red', 'flash-orange', 'incomplete-revealed');
+                        void box.offsetWidth;
+                        box.classList.add('flash-orange', 'incomplete-revealed');
+                        setTimeout(function() { box.classList.remove('flash-orange'); }, 5000);
+                    });
+                    /* Highlight the question card itself in orange */
+                    var card2 = document.getElementById('question-' + idx) || document.querySelector('[data-qidx="' + idx + '"]');
+                    if (!card2) {
+                        var allCards2 = document.querySelectorAll('.question');
+                        if (allCards2[idx]) card2 = allCards2[idx];
+                    }
+                    if (card2) {
+                        card2.classList.remove('submit-unanswered', 'submit-incomplete');
+                        void card2.offsetWidth;
+                        card2.classList.add('submit-incomplete');
+                        setTimeout(function() { card2.classList.remove('submit-incomplete'); }, 5000);
+                    }
                 });
                 return;
             }
@@ -3582,6 +3778,7 @@ if (isAr) {
             : '<div class="failure">' + (isAr ? '😞 لم تنجح هذه المرة. لا تستسلم — راجع المادة وحاول مرة أخرى!' : '😞 You didn\'t pass this time. Don\'t give up — review and try again!') + '</div>';
 
         if (typeof generateReview === 'function') generateReview(snap.timeExpiredParam || false);
+        if (typeof buildResultNavBoxes === 'function') buildResultNavBoxes();
 
         var banner = document.getElementById('guestNoticeBanner');
         if (banner) banner.style.display = (typeof fbIsGuest !== 'undefined' && fbIsGuest && !window.fbCurrentUser) ? 'flex' : 'none';
@@ -3686,6 +3883,8 @@ fbAuth.onAuthStateChanged(function(user) {
         fbIsGuest     = false;
         // If Google name prompt is pending, don't proceed yet
         if (fbGoogleNamePending) return;
+        // If email registration is in-flight, skip — signOut will follow automatically
+        if (fbEmailRegPending) return;
         fbOnUserLoggedIn(user);
     } else {
         fbCurrentUser = null;
@@ -3810,7 +4009,8 @@ function authLoginGoogle() {
     });
 }
 
-var fbGoogleNamePending = false;
+var fbGoogleNamePending  = false;
+var fbEmailRegPending    = false;  // true while createUserWithEmailAndPassword is in-flight
 
 function authSubmitGoogleName() {
     var name  = (document.getElementById('googleDisplayName').value || '').trim();
@@ -3939,6 +4139,7 @@ function authRegisterEmail() {
 
     regBtn.disabled = true;
     regBtn.textContent = 'Sending...';
+    fbEmailRegPending = true;   // ← prevent onAuthStateChanged from triggering navigation
 
     fbAuthReadyPromise.then(function() {
         return fbAuth.createUserWithEmailAndPassword(email, password);
@@ -3950,6 +4151,7 @@ function authRegisterEmail() {
             return fbAuth.signOut();
         });
     }).then(function() {
+        fbEmailRegPending = false;
         document.getElementById('authVerifyNotice').style.display = 'block';
         regBtn.disabled = false;
         regBtn.textContent = 'Create Account | إنشاء حساب';
@@ -3957,11 +4159,34 @@ function authRegisterEmail() {
         document.getElementById('authRegEmail').value = '';
         document.getElementById('authRegPassword').value = '';
     }).catch(function(err) {
+        fbEmailRegPending = false;
         regBtn.disabled = false;
         regBtn.textContent = 'Create Account | إنشاء حساب';
-        var msg = err.code === 'auth/email-already-in-use' ? 'Email already in use. | البريد مستخدم بالفعل.' :
-                  err.code === 'auth/invalid-email'        ? 'Invalid email. | بريد غير صالح.' :
-                  err.code === 'auth/weak-password'        ? 'Password too weak. | كلمة المرور ضعيفة.' :
+
+        // Special case: email already in use — check if it's unverified
+        if (err.code === 'auth/email-already-in-use') {
+            // Try signing in to see if the account is unverified
+            fbAuth.signInWithEmailAndPassword(email, password).then(function(cred2) {
+                if (!cred2.user.emailVerified) {
+                    // Resend verification email and sign out
+                    cred2.user.sendEmailVerification().catch(function(){});
+                    fbAuth.signOut();
+                    errEl.textContent = '';
+                    document.getElementById('authVerifyNotice').style.display = 'block';
+                } else {
+                    // Verified account exists — just tell them to log in
+                    fbAuth.signOut();
+                    errEl.textContent = 'هذا البريد مسجّل ومتحقق منه بالفعل، سجّل دخولك مباشرة. | This email is already registered and verified. Please log in.';
+                }
+            }).catch(function() {
+                // Sign-in failed (wrong password or other) — email is in use with different credentials
+                errEl.textContent = 'البريد الإلكتروني مسجّل بالفعل بكلمة مرور مختلفة. | Email already in use with a different password.';
+            });
+            return;
+        }
+
+        var msg = err.code === 'auth/invalid-email'   ? 'Invalid email. | بريد غير صالح.' :
+                  err.code === 'auth/weak-password'   ? 'Password too weak. | كلمة المرور ضعيفة.' :
                   err.message;
         errEl.textContent = msg;
     });
@@ -5593,7 +5818,88 @@ document.addEventListener('DOMContentLoaded', function() {
 
 </script>
 
+
 <footer class="site-footer">
+
+    <!-- ── Social Links (inside footer, above copyright) ── -->
+    <div class="footer-links-wrap">
+
+        <!-- English — يسار (now on left side visually) -->
+        <div class="footer-links-col col-en">
+            <div class="footer-links-col-label">Connect</div>
+
+            <a class="fsl-chip tg" href="https://t.me/AWS_Communiity" target="_blank" rel="noopener noreferrer">
+                <span class="fsl-chip-icon">
+                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M21.198 2.433a2.2 2.2 0 0 0-2.248-.316L3.03 8.27a1.524 1.524 0 0 0 .12 2.887l4.178 1.279 2.066 6.21a1.52 1.52 0 0 0 2.595.477l2.26-2.368 4.455 3.321a1.52 1.52 0 0 0 2.367-1.001l2.952-15.24a1.5 1.5 0 0 0-.825-1.402z" fill="currentColor"/>
+                    </svg>
+                </span>
+                Our Telegram Community
+            </a>
+
+            <a class="fsl-chip bot" href="https://t.me/AWSCommunityBot" target="_blank" rel="noopener noreferrer">
+                <span class="fsl-chip-icon">
+                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <rect x="5" y="9" width="14" height="10" rx="3" fill="currentColor"/>
+                        <circle cx="9.5" cy="14" r="1.3" fill="white" opacity="0.9"/>
+                        <circle cx="14.5" cy="14" r="1.3" fill="white" opacity="0.9"/>
+                        <path d="M10 7V5.5a2 2 0 0 1 4 0V7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                    </svg>
+                </span>
+                Our Telegram Bot
+            </a>
+
+            <a class="fsl-chip mail" href="mailto:fuexhub@gmail.com" target="_blank" rel="noopener noreferrer">
+                <span class="fsl-chip-icon">
+                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <rect x="3" y="5" width="18" height="14" rx="2.5" fill="currentColor"/>
+                        <path d="M3 8l9 5.5L21 8" stroke="white" stroke-width="1.6" stroke-linecap="round" opacity="0.85"/>
+                    </svg>
+                </span>
+                fuexhub@gmail.com
+            </a>
+        </div>
+
+        <div class="footer-links-sep"></div>
+
+        <!-- Arabic — يمين (now on right side visually) -->
+        <div class="footer-links-col col-ar">
+            <div class="footer-links-col-label">تواصل معنا</div>
+
+            <a class="fsl-chip tg col-ar" href="https://t.me/AWS_Communiity" target="_blank" rel="noopener noreferrer">
+                <span class="fsl-chip-icon">
+                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M21.198 2.433a2.2 2.2 0 0 0-2.248-.316L3.03 8.27a1.524 1.524 0 0 0 .12 2.887l4.178 1.279 2.066 6.21a1.52 1.52 0 0 0 2.595.477l2.26-2.368 4.455 3.321a1.52 1.52 0 0 0 2.367-1.001l2.952-15.24a1.5 1.5 0 0 0-.825-1.402z" fill="currentColor"/>
+                    </svg>
+                </span>
+                مجتمعنا على تيليغرام
+            </a>
+
+            <a class="fsl-chip bot col-ar" href="https://t.me/AWSCommunityBot" target="_blank" rel="noopener noreferrer">
+                <span class="fsl-chip-icon">
+                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <rect x="5" y="9" width="14" height="10" rx="3" fill="currentColor"/>
+                        <circle cx="9.5" cy="14" r="1.3" fill="white" opacity="0.9"/>
+                        <circle cx="14.5" cy="14" r="1.3" fill="white" opacity="0.9"/>
+                        <path d="M10 7V5.5a2 2 0 0 1 4 0V7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                    </svg>
+                </span>
+                البوت الخاص بنا على تيليغرام
+            </a>
+
+            <a class="fsl-chip mail col-ar" href="mailto:fuexhub@gmail.com" target="_blank" rel="noopener noreferrer">
+                <span class="fsl-chip-icon">
+                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <rect x="3" y="5" width="18" height="14" rx="2.5" fill="currentColor"/>
+                        <path d="M3 8l9 5.5L21 8" stroke="white" stroke-width="1.6" stroke-linecap="round" opacity="0.85"/>
+                    </svg>
+                </span>
+                fuexhub@gmail.com
+            </a>
+        </div>
+
+    </div>
+    <!-- ── Copyright (untouched) ── -->
      جميع الحقوق محفوظة لدى مركز اختبارات المستقبل © 2026  &nbsp;<br>&nbsp; © 2026 FuExHub. All Rights Reserved.
 </footer>
 
