@@ -4288,12 +4288,29 @@ function authLoginEmail() {
         }
         // If verified, onAuthStateChanged → fbOnUserLoggedIn handles navigation
     }).catch(function(err) {
+        var isGenericCredError =
+            err.code === 'auth/invalid-credential' ||
+            err.code === 'auth/invalid-login-credentials' ||
+            (err.message && err.message.indexOf('invalid-login-credentials') !== -1);
+
+        if (isGenericCredError) {
+            // Firebase v9+ merges wrong-password and user-not-found into one code.
+            // Disambiguate by checking if the email exists first.
+            fbAuth.fetchSignInMethodsForEmail(email).then(function(methods) {
+                if (!methods || methods.length === 0) {
+                    errEl.textContent = 'البريد الإلكتروني غير مسجل | The email is not registered';
+                } else {
+                    errEl.textContent = 'كلمة المرور غير صحيحة | Wrong password';
+                }
+            }).catch(function() {
+                errEl.textContent = 'كلمة المرور غير صحيحة | Wrong password';
+            });
+            return;
+        }
+
         var msg = err.code === 'auth/user-not-found' ? 'البريد الإلكتروني غير مسجل | The email is not registered' :
-                  err.code === 'auth/wrong-password' ? 'Wrong password. | كلمة مرور خاطئة.' :
+                  err.code === 'auth/wrong-password' ? 'كلمة المرور غير صحيحة | Wrong password' :
                   err.code === 'auth/invalid-email'  ? 'Invalid email. | بريد إلكتروني غير صالح.' :
-                  err.code === 'auth/invalid-credential' ? 'البريد الإلكتروني غير مسجل | The email is not registered' :
-                  err.code === 'auth/invalid-login-credentials' ? 'البريد الإلكتروني غير مسجل | The email is not registered' :
-                  (err.message && err.message.indexOf('invalid-login-credentials') !== -1) ? 'البريد الإلكتروني غير مسجل | The email is not registered' :
                   err.message;
         errEl.textContent = msg;
     });
