@@ -4305,35 +4305,29 @@ function authLoginEmail() {
         }
 
         // Firebase Email Enumeration Protection merges "wrong password" and
-        // "email not found" into one generic error. We disambiguate by attempting
-        // createUserWithEmailAndPassword with a dummy password:
-        //   • auth/email-already-in-use → email EXISTS → wrong password
-        //   • account created           → email NOT registered (delete dummy immediately)
-        var DUMMY_PW = '!!FXH_probe_7x$';
-        fbAuth.createUserWithEmailAndPassword(email, DUMMY_PW)
-            .then(function(dummyCred) {
-                // Email was NOT registered — dummy account just created, delete it
-                return dummyCred.user.delete().then(function() {
-                    errEl.textContent = 'البريد الإلكتروني غير مسجل | The email is not registered';
-                });
+        // "email not found" into the same generic error code.
+        // We use sendPasswordResetEmail to probe — it fires no auth events
+        // and does NOT actually send an email when the address is unknown
+        // (it throws auth/user-not-found on SDK compat 9.x).
+        fbAuth.sendPasswordResetEmail(email)
+            .then(function() {
+                // Reset email sent (or silently accepted) → email EXISTS → wrong password
+                errEl.innerHTML =
+                    'كلمة المرور غير صحيحة | Wrong password' +
+                    '<br><small style="opacity:0.8;">إذا لم تؤكد بريدك بعد، تأكد من صندوق الوارد أولاً ثم حاول مجدداً.<br>' +
+                    "If you haven't verified your email yet, please check your inbox first.</small>";
             })
             .catch(function(probeErr) {
-                if (probeErr.code === 'auth/email-already-in-use') {
-                    // Email EXISTS → original error was wrong password.
-                    // Account may also be unverified but we cannot know without
-                    // a successful sign-in. Show password error + a hint to check
-                    // email verification in case they forgot to verify.
-                    errEl.innerHTML =
-                        'كلمة المرور غير صحيحة | Wrong password' +
-                        '<br><small style="opacity:0.8;">إذا لم تؤكد بريدك بعد، تأكد من صندوق الوارد أولاً ثم حاول مجدداً.<br>If you haven't verified your email yet, please check your inbox first.</small>';
-                } else if (probeErr.code === 'auth/weak-password') {
-                    // DUMMY_PW is strong enough — should never happen, but fallback:
+                if (probeErr.code === 'auth/user-not-found') {
                     errEl.textContent = 'البريد الإلكتروني غير مسجل | The email is not registered';
                 } else if (probeErr.code === 'auth/invalid-email') {
                     errEl.textContent = 'بريد إلكتروني غير صالح | Invalid email.';
                 } else {
-                    // Unknown probe error — default to wrong password (safer UX)
-                    errEl.textContent = 'كلمة المرور غير صحيحة | Wrong password';
+                    // Protection ON even for reset — default to wrong password (safer UX)
+                    errEl.innerHTML =
+                        'كلمة المرور غير صحيحة | Wrong password' +
+                        '<br><small style="opacity:0.8;">إذا لم تؤكد بريدك بعد، تأكد من صندوق الوارد أولاً ثم حاول مجدداً.<br>' +
+                        "If you haven't verified your email yet, please check your inbox first.</small>";
                 }
             });
     });
