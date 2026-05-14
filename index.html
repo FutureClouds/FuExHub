@@ -4275,12 +4275,11 @@ function authLoginEmail() {
     fbAuthReadyPromise.then(function() {
         return fbAuth.signInWithEmailAndPassword(email, password);
     }).then(function(cred) {
-        // ✅ Login succeeded — check if email is verified
         if (!cred.user.emailVerified) {
             fbAuth.signOut();
             var errEl2 = document.getElementById('authError');
             if (errEl2) {
-                errEl2.textContent = '⚠️ لم يتم تأكيد أو توثيق البريد الإلكتروني بعد، وتم إرسال رسالة تأكيد إلى البريد الإلكتروني مسبقًا، يرجى تأكيد البريد ثم إعادة المحاولة.';
+                errEl2.textContent = '⚠️ لم يتم تأكيد بريدك الإلكتروني بعد، يرجى التحقق من صندوق الوارد أولاً. | Your email is not verified yet. Please check your inbox first.';
                 setTimeout(function() {
                     errEl2.scrollIntoView({ behavior: 'smooth', block: 'center' });
                 }, 80);
@@ -4289,42 +4288,14 @@ function authLoginEmail() {
         }
         // If verified, onAuthStateChanged → fbOnUserLoggedIn handles navigation
     }).catch(function(err) {
-        var isGenericCredError =
-            err.code === 'auth/invalid-credential' ||
-            err.code === 'auth/invalid-login-credentials' ||
-            err.code === 'auth/wrong-password' ||
-            (err.message && err.message.indexOf('invalid-login-credentials') !== -1);
-
-        if (!isGenericCredError) {
-            // Not a credentials error — show raw message
-            var msg = err.code === 'auth/user-not-found' ? '⚠️ البريد الإلكتروني غير مسجل، يرجى الضغط على زر إنشاء حساب لإنشاء حساب جديد.' :
-                      err.code === 'auth/invalid-email'  ? 'بريد إلكتروني غير صالح | Invalid email.' :
-                      err.message;
-            errEl.textContent = msg;
-            return;
-        }
-
-        // Firebase Email Enumeration Protection merges "wrong password" and
-        // "email not found" into the same generic error code.
-        // We use fetchSignInMethodsForEmail to probe — returns [] if email is not registered,
-        // or ['password'] if it exists — unaffected by Enumeration Protection in compat 9.x.
-        fbAuth.fetchSignInMethodsForEmail(email)
-            .then(function(methods) {
-                if (!methods || methods.length === 0) {
-                    // Empty array → email does not exist
-                    errEl.textContent = '⚠️ البريد الإلكتروني غير مسجل، يرجى الضغط على زر إنشاء حساب لإنشاء حساب جديد.';
-                } else {
-                    // Email exists → wrong password
-                    errEl.textContent = '⚠️ كلمة المرور غير صحيحة.';
-                }
-            })
-            .catch(function(probeErr) {
-                if (probeErr.code === 'auth/invalid-email') {
-                    errEl.textContent = 'بريد إلكتروني غير صالح | Invalid email.';
-                } else {
-                    errEl.textContent = '⚠️ كلمة المرور غير صحيحة.';
-                }
-            });
+        var msg = err.code === 'auth/user-not-found' ? 'البريد الإلكتروني غير مسجل | The email is not registered' :
+                  err.code === 'auth/wrong-password' ? 'Wrong password. | كلمة مرور خاطئة.' :
+                  err.code === 'auth/invalid-email'  ? 'Invalid email. | بريد إلكتروني غير صالح.' :
+                  err.code === 'auth/invalid-credential' ? 'البريد الإلكتروني غير مسجل | The email is not registered' :
+                  err.code === 'auth/invalid-login-credentials' ? 'البريد الإلكتروني غير مسجل | The email is not registered' :
+                  (err.message && err.message.indexOf('invalid-login-credentials') !== -1) ? 'البريد الإلكتروني غير مسجل | The email is not registered' :
+                  err.message;
+        errEl.textContent = msg;
     });
 }
 
