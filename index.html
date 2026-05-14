@@ -3936,6 +3936,14 @@ fbAuth.onAuthStateChanged(function(user) {
                 return;
             }
             fbCurrentUser = freshUser;
+            // Clear any saved state pointing to pageVerifyNotice before proceeding
+            try {
+                var _raw = sessionStorage.getItem('fxhState');
+                if (_raw) {
+                    var _s = JSON.parse(_raw);
+                    if (_s && _s.page === 'pageVerifyNotice') sessionStorage.removeItem('fxhState');
+                }
+            } catch(e) {}
             fbOnUserLoggedIn(freshUser);
         }).catch(function() {
             // reload failed (offline?) — proceed with cached data
@@ -4485,7 +4493,7 @@ window.addEventListener('popstate', function(e) {
 function fbSaveFullState(forcedPageId) {
     var activeEl = document.querySelector('.page.active');
     var pageId   = forcedPageId || (activeEl ? activeEl.id : '');
-    if (!pageId || pageId === 'pageAuth') return;
+    if (!pageId || pageId === 'pageAuth' || pageId === 'pageVerifyNotice') return;
 
     // Collect page1 form values
     var p1Count  = '', p1Time = '';
@@ -4600,7 +4608,7 @@ function fbTryRestoreState(forGuest) {
     if (!raw) return false;
     var s;
     try { s = JSON.parse(raw); } catch(e) { return false; }
-    if (!s || !s.page || s.page === 'pageAuth') return false;
+    if (!s || !s.page || s.page === 'pageAuth' || s.page === 'pageVerifyNotice') return false;
     if ( forGuest && !s.isGuest) return false;
     if (!forGuest &&  s.isGuest) return false;
 
