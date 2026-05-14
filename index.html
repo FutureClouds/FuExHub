@@ -4306,21 +4306,22 @@ function authLoginEmail() {
 
         // Firebase Email Enumeration Protection merges "wrong password" and
         // "email not found" into the same generic error code.
-        // We use sendPasswordResetEmail to probe — it fires no auth events
-        // and does NOT actually send an email when the address is unknown
-        // (it throws auth/user-not-found on SDK compat 9.x).
-        fbAuth.sendPasswordResetEmail(email)
-            .then(function() {
-                // Reset email sent (or silently accepted) → email EXISTS → wrong password
-                errEl.textContent = '⚠️ كلمة المرور غير صحيحة.';
+        // We use fetchSignInMethodsForEmail to probe — returns [] if email is not registered,
+        // or ['password'] if it exists — unaffected by Enumeration Protection in compat 9.x.
+        fbAuth.fetchSignInMethodsForEmail(email)
+            .then(function(methods) {
+                if (!methods || methods.length === 0) {
+                    // Empty array → email does not exist
+                    errEl.textContent = '⚠️ البريد الإلكتروني غير مسجل، يرجى الضغط على زر إنشاء حساب لإنشاء حساب جديد.';
+                } else {
+                    // Email exists → wrong password
+                    errEl.textContent = '⚠️ كلمة المرور غير صحيحة.';
+                }
             })
             .catch(function(probeErr) {
-                if (probeErr.code === 'auth/user-not-found') {
-                    errEl.textContent = '⚠️ البريد الإلكتروني غير مسجل، يرجى الضغط على زر إنشاء حساب لإنشاء حساب جديد.';
-                } else if (probeErr.code === 'auth/invalid-email') {
+                if (probeErr.code === 'auth/invalid-email') {
                     errEl.textContent = 'بريد إلكتروني غير صالح | Invalid email.';
                 } else {
-                    // Protection ON even for reset — default to wrong password (safer UX)
                     errEl.textContent = '⚠️ كلمة المرور غير صحيحة.';
                 }
             });
