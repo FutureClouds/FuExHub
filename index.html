@@ -121,11 +121,76 @@ body {
     overflow-x: hidden;
     max-width: 100%;
     transition: background 0.3s ease, color 0.3s ease;
-    visibility: hidden;
 }
 body.fxh-ready {
     visibility: visible;
 }
+
+        /* ===== شاشة التحميل الاحترافية ===== */
+        #fxh-loading-screen {
+            position: fixed;
+            inset: 0;
+            z-index: 99999;
+            background: rgba(0, 0, 0, 0.92);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 0;
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+            transition: opacity 0.35s ease, visibility 0.35s ease;
+            opacity: 1;
+            visibility: visible;
+        }
+        #fxh-loading-screen.fxh-ls-hide {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+        #fxh-loading-screen .fxh-ls-logo {
+            width: 160px;
+            height: 160px;
+            object-fit: contain;
+            animation: fxhLsPulse 1.8s ease-in-out infinite;
+            user-select: none;
+            pointer-events: none;
+        }
+        @media (max-width: 480px) {
+            #fxh-loading-screen .fxh-ls-logo { width: 120px; height: 120px; }
+        }
+        @keyframes fxhLsPulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50%       { opacity: 0.75; transform: scale(0.96); }
+        }
+        #fxh-loading-screen .fxh-ls-text {
+            margin-top: 22px;
+            font-family: 'Tajawal', 'Montserrat', sans-serif;
+            font-size: 1rem;
+            font-weight: 600;
+            color: rgba(255, 255, 255, 0.82);
+            letter-spacing: 0.5px;
+            text-align: center;
+            line-height: 1.7;
+        }
+        #fxh-loading-screen .fxh-ls-dots {
+            display: inline-flex;
+            gap: 6px;
+            margin-top: 14px;
+        }
+        #fxh-loading-screen .fxh-ls-dots span {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.7);
+            animation: fxhLsDot 1.4s ease-in-out infinite;
+        }
+        #fxh-loading-screen .fxh-ls-dots span:nth-child(2) { animation-delay: 0.2s; }
+        #fxh-loading-screen .fxh-ls-dots span:nth-child(3) { animation-delay: 0.4s; }
+        @keyframes fxhLsDot {
+            0%, 80%, 100% { transform: scale(0.7); opacity: 0.5; }
+            40%           { transform: scale(1);   opacity: 1;   }
+        }
 
         body.lang-ar,
 body.lang-ar * {
@@ -949,6 +1014,9 @@ body.lang-ar #pageCertEN * {
         .footer-links-sep { width: 1px; background: rgba(255,255,255,0.1); min-height: 130px; align-self: center; flex-shrink: 0; }
         @media (max-width: 480px) { .footer-links-sep { display: none; } .footer-links-wrap { gap: 16px; } }
 
+        /* ===== إخفاء footer-links-wrap في صفحة أداء الاختبار فقط ===== */
+        body.page2-active .footer-links-wrap { display: none !important; }
+
         /* ===== SITE FOOTER ===== */
         .site-footer {
             text-align: center;
@@ -1286,6 +1354,17 @@ body.lang-ar #pageCertEN * {
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 </head>
 <body data-theme="light">
+
+<!-- ===== شاشة التحميل الاحترافية ===== -->
+<div id="fxh-loading-screen">
+    <img class="fxh-ls-logo" src="FUEXHUB.png" alt="FuExHub" onerror="this.style.display='none'">
+    <div class="fxh-ls-text">
+        ...جاري التحميل<br>Loading...
+    </div>
+    <div class="fxh-ls-dots">
+        <span></span><span></span><span></span>
+    </div>
+</div>
 
 <!-- ===================================================== -->
 <!-- PAGE: AUTH (NEW) - Login / Register / Guest           -->
@@ -1868,11 +1947,11 @@ body.lang-ar #pageCertEN * {
                 </table>
             </div>
 
-            <div style="text-align:center; margin-top:28px;">
-                <button onclick="(function(){ history.pushState(null,'',location.href); history.pushState(null,'',location.href); showPage('pageLang'); window.onpopstate=function(){ history.pushState(null,'',location.href); showPage('pageLang'); }; })()" style="background:linear-gradient(45deg,#2980b9,#8e44ad); padding:12px 28px; font-size:1rem; margin:0 0 10px 0; display:block; width:fit-content; margin-left:auto; margin-right:auto; border:none; border-radius:8px; color:#fff; cursor:pointer; font-weight:600; font-family:inherit; box-shadow:0 4px 8px rgba(0,0,0,0.3);">
-                    🏠 الصفحة الرئيسية | Home
+            <div style="text-align:center; margin-top:28px; display:flex; flex-direction:column; align-items:center; gap:10px;">
+                <button onclick="(function(){ history.pushState(null,'',location.href); history.pushState(null,'',location.href); showPage('pageLang'); window.onpopstate=function(){ history.pushState(null,'',location.href); showPage('pageLang'); }; })()" style="background:linear-gradient(45deg,#2980b9,#8e44ad); padding:12px 28px; font-size:1rem; margin:0; display:block; width:260px; border:none; border-radius:8px; color:#fff; cursor:pointer; font-weight:600; font-family:inherit; box-shadow:0 4px 8px rgba(0,0,0,0.3);">
+                     Home | الصفحة الرئيسية 🏠
                 </button>
-                <button onclick="goBackFromMyResults()" style="background:linear-gradient(45deg,#636e72,#95a5a6); padding:12px 28px; font-size:1rem; margin:0;">
+                <button onclick="goBackFromMyResults()" style="background:linear-gradient(45deg,#636e72,#95a5a6); padding:12px 28px; font-size:1rem; margin:0; display:block; width:260px; border:none; border-radius:8px; color:#fff; cursor:pointer; font-weight:600; font-family:inherit; box-shadow:0 4px 8px rgba(0,0,0,0.3);">
                     ← Back | رجوع
                 </button>
             </div>
@@ -1890,7 +1969,7 @@ body.lang-ar #pageCertEN * {
         <div class="attempt-limit-msg" id="limitMsg">You've used all 3 daily attempts. Come back after:</div>
         <div class="attempt-limit-msg" style="font-family:'Tajawal',sans-serif; margin-top:4px;" id="limitMsgAr">لقد استخدمت المحاولات الثلاث. عد بعد:</div>
         <div class="attempt-limit-timer" id="limitCountdown">--:--:--</div>
-        <button class="attempt-limit-close-btn" onclick="closeLimitOverlay()">Close | إغلاق</button>
+        <button class="attempt-limit-close-btn" onclick="closeLimitOverlay()">إغلاق | Close</button>
     </div>
 </div>
 
@@ -2853,7 +2932,9 @@ if (isAr) {
         if (pageId === 'page2') {
             if (tb) tb.classList.add('active');
             if (fw) fw.style.display = 'none';
-            // Hide user info bar during exam
+            // Hide My Results button during exam
+            var ubMyResBtn = document.getElementById('userBarMyResultsBtn');
+            if (ubMyResBtn) ubMyResBtn.style.display = 'none';
             var uib = document.getElementById('userInfoBar');
             if (uib) { uib.dataset.wasShown = uib.classList.contains('show') ? '1' : '0'; uib.classList.remove('show'); }
             timerVisible = true;
@@ -2864,6 +2945,9 @@ if (isAr) {
         } else {
             if (tb) tb.classList.remove('active');
             if (fw) fw.style.display = 'flex';
+            // Restore My Results button visibility
+            var ubMyResBtn2 = document.getElementById('userBarMyResultsBtn');
+            if (ubMyResBtn2) ubMyResBtn2.style.display = '';
             // Restore user info bar visibility
             var uib2 = document.getElementById('userInfoBar');
             if (uib2 && uib2.dataset.wasShown === '1') { uib2.classList.add('show'); }
@@ -3677,6 +3761,13 @@ if (isAr) {
             document.body.classList.remove('simple-theme-page');
         }
 
+        // إخفاء footer-links-wrap في صفحة أداء الاختبار (page2) فقط
+        if (pageId === 'page2') {
+            document.body.classList.add('page2-active');
+        } else {
+            document.body.classList.remove('page2-active');
+        }
+
         updatePdfButtonVisibility(pageId);
 
         // Update hash URL
@@ -3919,8 +4010,19 @@ var fbMyResultsCache = null;  // cached results array for instant display
 var fbPrevPageForResults = 'pageLang'; // where to go back from My Results
 var fbLimitCountdownInterval = null;
 
-// ── Safety timeout: show body after 900ms regardless of auth state ──
-setTimeout(function() { document.body.classList.add('fxh-ready'); }, 900);
+// ── دالة موحدة لإخفاء شاشة التحميل ──
+function fxhHideLoading() {
+    document.body.classList.add('fxh-ready');
+    var ls = document.getElementById('fxh-loading-screen');
+    if (ls) {
+        ls.classList.add('fxh-ls-hide');
+        // إزالة العنصر من DOM بعد انتهاء الـ transition لتوفير الأداء
+        setTimeout(function() { if (ls.parentNode) ls.parentNode.removeChild(ls); }, 400);
+    }
+}
+
+// ── Safety timeout: إخفاء شاشة التحميل بعد 900ms على الأقل ──
+setTimeout(function() { fxhHideLoading(); }, 900);
 
 /* ================================================================
    AUTH STATE LISTENER
@@ -3930,20 +4032,20 @@ fbAuth.onAuthStateChanged(function(user) {
         fbCurrentUser = user;
         fbIsGuest     = false;
         // If Google name prompt is pending, don't proceed yet
-        if (fbGoogleNamePending) { document.body.classList.add('fxh-ready'); return; }
+        if (fbGoogleNamePending) { fxhHideLoading(); return; }
         // If email registration is in-flight, skip — signOut will follow automatically
-        if (fbEmailRegPending) { document.body.classList.add('fxh-ready'); return; }
+        if (fbEmailRegPending) { fxhHideLoading(); return; }
         // Reload user to get fresh emailVerified status from server
         user.reload().then(function() {
             var freshUser = fbAuth.currentUser;
-            if (!freshUser) { document.body.classList.add('fxh-ready'); return; } // signed out during reload
+            if (!freshUser) { fxhHideLoading(); return; } // signed out during reload
             // If email/password user and not verified, sign out and show verify page
             if (freshUser.providerData && freshUser.providerData.length > 0 &&
                 freshUser.providerData[0].providerId === 'password' &&
                 !freshUser.emailVerified) {
                 fbAuth.signOut();
                 showPage('pageVerifyNotice');
-                document.body.classList.add('fxh-ready');
+                fxhHideLoading();
                 return;
             }
             fbCurrentUser = freshUser;
@@ -3956,11 +4058,11 @@ fbAuth.onAuthStateChanged(function(user) {
                 }
             } catch(e) {}
             fbOnUserLoggedIn(freshUser);
-            document.body.classList.add('fxh-ready');
+            fxhHideLoading();
         }).catch(function() {
             // reload failed (offline?) — proceed with cached data
             fbOnUserLoggedIn(user);
-            document.body.classList.add('fxh-ready');
+            fxhHideLoading();
         });
         return;
     } else {
@@ -3995,22 +4097,22 @@ fbAuth.onAuthStateChanged(function(user) {
                                     var nameEl = document.getElementById('userDisplayName');
                                     if (nameEl) nameEl.textContent = tabData.guestName;
                                     if (typeof fxhStartFromTabParams === 'function') fxhStartFromTabParams();
-                                    document.body.classList.add('fxh-ready');
+                                    fxhHideLoading();
                                     return;
                                 }
                             } catch(e2) {}
                         }
                         showPage('pageAuth');
-                        document.body.classList.add('fxh-ready');
+                        fxhHideLoading();
                     }
                 }, 3000);
             } else {
                 showPage('pageAuth');
-                document.body.classList.add('fxh-ready');
+                fxhHideLoading();
             }
             document.getElementById('userInfoBar').classList.remove('show');
         } else {
-            document.body.classList.add('fxh-ready');
+            fxhHideLoading();
         }
     }
 });
