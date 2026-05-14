@@ -3927,7 +3927,25 @@ fbAuth.onAuthStateChanged(function(user) {
         if (fbGoogleNamePending) return;
         // If email registration is in-flight, skip — signOut will follow automatically
         if (fbEmailRegPending) return;
-        fbOnUserLoggedIn(user);
+        // Reload user to get fresh emailVerified status from server
+        user.reload().then(function() {
+            var freshUser = fbAuth.currentUser;
+            if (!freshUser) return; // signed out during reload
+            // If email/password user and not verified, sign out and show verify page
+            if (freshUser.providerData && freshUser.providerData.length > 0 &&
+                freshUser.providerData[0].providerId === 'password' &&
+                !freshUser.emailVerified) {
+                fbAuth.signOut();
+                showPage('pageVerifyNotice');
+                return;
+            }
+            fbCurrentUser = freshUser;
+            fbOnUserLoggedIn(freshUser);
+        }).catch(function() {
+            // reload failed (offline?) — proceed with cached data
+            fbOnUserLoggedIn(user);
+        });
+        return;
     } else {
         fbCurrentUser = null;
         // Double-check sessionStorage in case fbIsGuest was not yet set
@@ -4131,8 +4149,9 @@ function authLoginEmail() {
     }).then(function(cred) {
         if (!cred.user.emailVerified) {
             fbAuth.signOut();
-            errEl.textContent = '⚠️ Please verify your email before logging in. Check your inbox. | يرجى التحقق من بريدك الإلكتروني أولاً.';
+            showPage('pageVerifyNotice');
         }
+        // If verified, onAuthStateChanged → fbOnUserLoggedIn handles navigation
     }).catch(function(err) {
         var msg = err.code === 'auth/user-not-found' ? 'البريد الإلكتروني غير مسجل | The email is not registered' :
                   err.code === 'auth/wrong-password' ? 'Wrong password. | كلمة مرور خاطئة.' :
