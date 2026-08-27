@@ -3543,6 +3543,263 @@ https://www.examtopics.com/discussions/amazon/view/401793-exam-aws-certified-ai-
 
 ---
 
+Q: A company has fine-tuned an Amazon Bedrock foundation model (FM) to produce short document summaries. The company wants an automated metric that compares each model-generated summary with its human-written reference summary.\nWhich metric will meet these requirements?
+A. F1 score
+*B. Recall-Oriented Understudy for Gisting Evaluation (ROUGE)
+C. Perplexity
+D. Fréchet inception distance (FID)
+https://www.examtopics.com/discussions/amazon/view/411300-exam-aws-certified-ai-practitioner-aif-c01-topic-1-question/
+
+---
+
+Q: A company has created an AI assistant to provide relevant information to employees about internal processes. The AI assistant uses a fine-tuned foundation model (FM). The company wants to use feedback from employees to further refine the model's responses.\nWhich solution will meet these requirements?
+A. Implement model distillation.
+B. Perform continued pre-training and incorporate feedback from employee ratings.
+*C. Use reinforcement learning from human feedback (RLHF).
+D. Enable intelligent prompt routing.
+https://www.examtopics.com/discussions/amazon/view/411301-exam-aws-certified-ai-practitioner-aif-c01-topic-1-question/
+
+---
+
+Q: Which AWS service provides a broad range of high-performing generative AI foundation models (FMs)?
+*A. Amazon Bedrock
+B. Amazon Rekognition
+C. Amazon Lex
+D. Amazon Kendra
+https://www.examtopics.com/discussions/amazon/view/411383-exam-aws-certified-ai-practitioner-aif-c01-topic-1-question/
+
+---
+
+Q: A company is preparing data to fine-tune a large language model (LLM). The company must follow the principles of responsible AI.\nWhich actions will meet this requirement? (Choose two.)
+*A. Include demographically diverse data sources to improve model fairness.
+*B. Apply consistent labeling standards across the training dataset.
+C. Focus exclusively on high-volume data regardless of quality.
+D. Use only synthetic data to train the model.
+E. Use fewer labels to reduce ambiguity in data during model training.
+https://www.examtopics.com/discussions/amazon/view/411302-exam-aws-certified-ai-practitioner-aif-c01-topic-1-question/
+
+---
+
+Q: Which benefit does a company gain by using ongoing pre-training to fine-tune a foundation model (FM)?
+A. Decreased model complexity
+*B. Improved model performance over time
+C. Decreased time required to train the model
+D. Reduced model training cost
+https://www.examtopics.com/discussions/amazon/view/411380-exam-aws-certified-ai-practitioner-aif-c01-topic-1-question/
+
+---
+
+Q: A software development company wants to increase its speed to market delivery. The company needs a solution that helps developers generate real-time code and unit tests.\nWhich AWS service meets these requirements?
+A. Amazon Personalize
+*B. Amazon Q Developer
+C. Amazon Comprehend
+D. Amazon Kendra
+https://www.examtopics.com/discussions/amazon/view/411365-exam-aws-certified-ai-practitioner-aif-c01-topic-1-question/
+
+---
+
+Q: A company plans to use a dataset to train a new AI model. The company needs to determine whether a bias against a specific user group exists in the dataset before the company trains the model.\nWhich solution will meet these requirement?
+*A. Use Amazon SageMaker Clarify to compute pre-training bias metrics.
+B. Use Amazon SageMaker Model Cards to compute pre-training bias metrics.
+C. Use Amazon SageMaker Clarify to compute post-training bias metrics.
+D. Use Amazon SageMaker Model Cards to compute post-training bias metrics.
+https://www.examtopics.com/discussions/amazon/view/411366-exam-aws-certified-ai-practitioner-aif-c01-topic-1-question/
+
+---
+
+Q: An AI practitioner wants to use Retrieval Augmented Generation (RAG) architecture. However, company leadership thinks RAG will make the architecture too complex.\nWhich response will support the AI practitioner's recommendation to use RAG?
+A. RAG improves large language model (LLM) inference time.
+B. RAG improves model training speed.
+*C. RAG decreases hallucinations.
+D. RAG decreases development controls.
+https://www.examtopics.com/discussions/amazon/view/411362-exam-aws-certified-ai-practitioner-aif-c01-topic-1-question/
+
+---
+
+Q: A company built a Retrieval Augmented Generation (RAG) based AI assistant by using Amazon Bedrock Agents. Sometimes the AI assistant gives incomplete or inaccurate answers. The company wants to improve and evaluate the AI assistant's performance.\nWhich solution will meet these requirements?
+A. Use automated metrics such as Bilingual Evaluation Understudy (BLEU) scores to measure response similarity to reference answers.
+B. Monitor response latency and token generation speed to optimize performance.
+C. Evaluate only the final answer quality against ground truth responses.
+*D. Confirm that the retrieved documents are relevant and that the final answers are accurate.
+https://www.examtopics.com/discussions/amazon/view/411367-exam-aws-certified-ai-practitioner-aif-c01-topic-1-question/
+
+---
+
+Q: A company wants to develop an AI solution to automatically extract structured and unstructured data from scanned PDF documents and forms.\nWhich AWS service will meet these requirements?
+A. Amazon Polly
+B. Amazon Lex
+C. Amazon Personalize
+*D. Amazon Textract
+https://www.examtopics.com/discussions/amazon/view/411375-exam-aws-certified-ai-practitioner-aif-c01-topic-1-question/
+
+---
+
+Q: A company is developing an AI solution to help make hiring decisions.\nWhich strategy complies with AWS guidance for responsible AI?
+A. Use the AI solution to make final hiring decisions without human review.
+B. Train the AI solution exclusively on data from previous successful hires.
+*C. Test the AI solution to ensure that it does not discriminate against any protected groups.
+D. Keep the AI decision-making process confidential to maintain a competitive advantage.
+https://www.examtopics.com/discussions/amazon/view/411373-exam-aws-certified-ai-practitioner-aif-c01-topic-1-question/
+
+---
+
+Q: An AI practitioner is developing a recommendation system. The AI practitioner wants to document a business problem, data assumptions, training considerations, and usage risks. The company must follow guidelines for transparency and governance.\nWhich Amazon SageMaker AI feature will meet these requirements?
+A. Model Registry
+*B. Model Cards
+C. Model Monitor
+D. Model Dashboard
+https://www.examtopics.com/discussions/amazon/view/411382-exam-aws-certified-ai-practitioner-aif-c01-topic-1-question/
+
+---
+
+Q: A company that runs AI workloads on Amazon Bedrock needs to evaluate and document compliance with regulatory standards.\nWhich AWS service or feature meets these requirements?
+*A. AWS Audit Manager
+B. Amazon SageMaker Model Cards
+C. Amazon SageMaker Model Monitor
+D. AWS Artifact
+https://www.examtopics.com/discussions/amazon/view/411374-exam-aws-certified-ai-practitioner-aif-c01-topic-1-question/
+
+---
+
+Q: A company wants to use foundation models (FMs) for multiple use cases, including content summarization, code generation, and customer service AI assistants.\nWhich solution will implement FMs MOST cost-effectively?
+*A. Select the smallest model that meets the performance requirements for each specific use case.
+B. Use the largest and most capable model available for all tasks to ensure quality.
+C. Build and train a custom FM for each individual use case.
+D. Use batch processing for all inference requests to reduce the costs and latency for each request.
+https://www.examtopics.com/discussions/amazon/view/411369-exam-aws-certified-ai-practitioner-aif-c01-topic-1-question/
+
+---
+
+Q: An AI practitioner wants to quickly deploy and fine-tune foundation models (FMs) for generative AI (GenAI) tasks. The AI practitioner needs access to pre-trained models, solution templates, and example notebooks that can accelerate the development process.\nWhich AWS feature or resource meets these requirements?
+A. Amazon SageMaker Studio
+*B. Amazon SageMaker JumpStart
+C. Amazon Bedrock model catalog
+D. Amazon SageMaker Canvas
+https://www.examtopics.com/discussions/amazon/view/411363-exam-aws-certified-ai-practitioner-aif-c01-topic-1-question/
+
+---
+
+Q: A human resources company is building an AI/ML solution to screen resumes and select relevant applicants for various job roles.\nWhich AI methodologies will help ensure impartial treatment for all demographic groups? (Choose two.)
+A. Modularity
+*B. Fairness
+*C. Explainability
+D. Secrecy
+E. Underfitting
+https://www.examtopics.com/discussions/amazon/view/411377-exam-aws-certified-ai-practitioner-aif-c01-topic-1-question/
+
+---
+
+Q: A company needs to document an ML model's purpose, owners, and limitations.\nWhich AWS service or feature provides this capability?
+A. Amazon Bedrock
+B. AWS AI Service Cards
+C. AWS Prescriptive Guidance
+*D. Amazon SageMaker Model Cards
+https://www.examtopics.com/discussions/amazon/view/411386-exam-aws-certified-ai-practitioner-aif-c01-topic-1-question/
+
+---
+
+Q: A company is training a foundation model (FM). The company wants the FM training data to be well managed, secure, and compliant throughout the data lifecycle. The data must follow governance practices.\nWhich option is an AWS data governance strategy for managing data across the data lifecycle?
+A. Allow unrestricted access to all data for every employee.
+B. Store data indefinitely without classification or retention policies.
+C. Rely solely on manual reviews for data quality and compliance.
+*D. Establish data lifecycle policies, access controls, logging, and monitoring.
+https://www.examtopics.com/discussions/amazon/view/411381-exam-aws-certified-ai-practitioner-aif-c01-topic-1-question/
+
+---
+
+Q: A company is building an agentic AI application by using Model Context Protocol (MCP) servers with Amazon Q Developer CLI. The company wants to follow MCP security practices.\nWhich solutions will meet these requirements? (Choose two.)
+*A. Keep MCP servers and the Amazon Q Developer CLI updated.
+B. Monitor MCP logs for normal successful activity.
+C. Use plain text files to store sensitive configurations.
+D. Automatically approve all tools that are provided by MCP servers.
+*E. Install servers only from trusted sources.
+https://www.examtopics.com/discussions/amazon/view/411372-exam-aws-certified-ai-practitioner-aif-c01-topic-1-question/
+
+---
+
+Q: A company is using a generative AI (GenAI) system to generate medical summaries from patient records. The system sometimes produces inaccurate information that appears credible.\nWhich strategy will mitigate the issue?
+A. Implement strict input validation and output formatting rules.
+*B. Implement Retrieval Augmented Generation (RAG) to ground responses.
+C. Use smaller, more transparent models for medical applications.
+D. Increase computational resources and model size.
+https://www.examtopics.com/discussions/amazon/view/411364-exam-aws-certified-ai-practitioner-aif-c01-topic-1-question/
+
+---
+
+Q: A company wants to call a single Amazon Bedrock endpoint and needs Amazon Bedrock to pick the most suitable foundation model (FM) for each request. The company does not want to hardcode a model.\nWhich Amazon Bedrock feature or resource will meet these requirements?
+A. Amazon Bedrock Guardrails
+B. Amazon Bedrock Knowledge Bases
+*C. Amazon Bedrock prompt router
+D. Amazon Bedrock agent memory
+https://www.examtopics.com/discussions/amazon/view/411371-exam-aws-certified-ai-practitioner-aif-c01-topic-1-question/
+
+---
+
+Q: A company is using Retrieval Augmented Generation (RAG) in its generative AI (GenAI) application. The company wants to use Amazon Bedrock Knowledge Bases evaluations to measure how well responses avoid hallucination based on the retrieved texts.\nWhich metric meets these requirements?
+A. Refusal
+B. Harmfulness
+C. Stereotyping
+*D. Faithfulness
+https://www.examtopics.com/discussions/amazon/view/411385-exam-aws-certified-ai-practitioner-aif-c01-topic-1-question/
+
+---
+
+Q: A social media company uses an AI-based "Add as Friend" recommendation system. The company wants to ensure that its AI models are transparent and explainable.\nWhich solution will meet these requirements in the MOST operationally efficient way?
+A. Use Amazon Rekognition to analyze user profile pictures to improve model recommendations.
+*B. Use Amazon SageMaker Clarify to enhance the explainability of model recommendations.
+C. Migrate the AI model to Amazon Personalize to improve model recommendations.
+D. Use Amazon SageMaker Ground Truth to manually detect model bias.
+https://www.examtopics.com/discussions/amazon/view/411387-exam-aws-certified-ai-practitioner-aif-c01-topic-1-question/
+
+---
+
+Q: A company has deployed an ML model. The company wants to provide external customers with secure access to the model through the customers' own applications.\nWhich solution will meet these requirements?
+A. Use a custom script in the customers' application for authentication.
+B. Store model credentials and share them with the customers directly for authentication.
+*C. Create a secure API endpoint that customers can use.
+D. Embed the model directly into the customers' applications.
+https://www.examtopics.com/discussions/amazon/view/411388-exam-aws-certified-ai-practitioner-aif-c01-topic-1-question/
+
+---
+
+Q: A company wants to establish a data governance framework for its AI system. The framework must give the company the ability to monitor when data is generated, updated, and scheduled for deletion.\nWhich data governance component meets these requirements?
+A. Data residency
+*B. Data lifecycle management
+C. Data observability
+D. Data logging
+https://www.examtopics.com/discussions/amazon/view/411376-exam-aws-certified-ai-practitioner-aif-c01-topic-1-question/
+
+---
+
+Q: A company is using a foundation model (FM) to create product descriptions. The model sometimes provides incorrect information.\nWhich potential risk of generative AI does this describe?
+A. Toxicity
+*B. Hallucinations
+C. Interpretability
+D. Deterministic outputs
+https://www.examtopics.com/discussions/amazon/view/411370-exam-aws-certified-ai-practitioner-aif-c01-topic-1-question/
+
+---
+
+Q: A company needs to evaluate AI-generated summaries against reference text. The company must measure semantic similarity and coverage of key information.\nWhich metrics meet these requirements? (Choose two.)
+A. F1 score
+*B. BERTScore
+C. Bilingual Evaluation Understudy (BLEU) score
+D. Accuracy
+*E. Recall-Oriented Understudy for Gisting Evaluation (ROUGE)
+https://www.examtopics.com/discussions/amazon/view/411379-exam-aws-certified-ai-practitioner-aif-c01-topic-1-question/
+
+---
+
+Q: A global logistics company is using generative AI (GenAI) models on Amazon Bedrock to automate paperwork and shipment documentation. The company wants to set up a clear AI governance process to make sure the models are used responsibly and meet company policies.\nWhich solutions will meet these requirements? (Choose two.)
+*A. Set up a regular review process to check that the models' results are accurate and fair and follow company policies.
+*B. Provide training for all employees who work with AI tools so the employees understand company rules, data handling, and responsible AI use.
+C. Let the cloud provider manage all AI safety checks and reviews to save internal effort.
+D. Involve only developers in governance reviews because the developers build and deploy the AI systems.
+E. Review the models only when users report problems or errors in the system.
+https://www.examtopics.com/discussions/amazon/view/411384-exam-aws-certified-ai-practitioner-aif-c01-topic-1-question/
+
+---
+
 Q: A company wants to build an ML application.\nSelect and order the correct steps from the following list to develop a well-architected ML workload. Each step should be selected one time.
 TYPE: hotspot
 HOTSPOT_OPTIONS: Deploy model | Develop model | Monitor model | Define business goal and frame ML problem
@@ -3773,7 +4030,7 @@ HOTSPOT_ROW: Step 2: | Put together a cross-functional Al governance group.
 HOTSPOT_ROW: Step 3: | Set up model monitoring mechanisms.
 https://www.examtopics.com/discussions/amazon/view/401758-exam-aws-certified-ai-practitioner-aif-c01-topic-1-question/
 
-Q: Q: A company has multiple datasets that contain historical data. The company wants to use ML technologies to process each dataset.\nSelect the correct ML technology from the following list for each dataset. Select each ML technology one time or not at all.
+Q: A company has multiple datasets that contain historical data. The company wants to use ML technologies to process each dataset.\nSelect the correct ML technology from the following list for each dataset. Select each ML technology one time or not at all.
 TYPE: hotspot
 HOTSPOT_OPTIONS: Computer vision | Natural language processing (NLP) | Reinforcement learning | Time series forecasting
 HOTSPOT_ROW: A dataset that contains text-based customer reviews | Natural language processing (NLP)
@@ -3789,5 +4046,24 @@ HOTSPOT_ROW: Define the persona the model should assume to meet the requirements
 HOTSPOT_ROW: Describe the tone, format, or structure that the model should follow. | Response style
 HOTSPOT_ROW: Set clear metrics to evaluate whether the model output meets expectations. | Success criteria
 https://www.examtopics.com/discussions/amazon/view/401788-exam-aws-certified-ai-practitioner-aif-c01-topic-1-question/
+
+Q: A company is using Amazon Bedrock AgentCore to build, deploy, and implement agents at scale. The company needs to identify which resources to use.\nSelect the correct AgentCore resource from the following list for each description. Select each resource one time or not at all.
+TYPE: hotspot
+HOTSPOT_OPTIONS: Observability | Code Interpreter | Reinforcement learning | Browser tool | Runtime | Gateway | Memory
+HOTSPOT_ROW: Monitor agent behavior through intuitive dashboards | Observability
+HOTSPOT_ROW: Execute code securely across multiple languages | Code Interpreter
+HOTSPOT_ROW: Fast, secure, and serverless browser runtime for agents | Browser tool
+https://www.examtopics.com/discussions/amazon/view/411378-exam-aws-certified-ai-practitioner-aif-c01-topic-1-question/
+
+---
+
+Q: A company wants to use Amazon Bedrock to create a knowledge base from existing documents. The documents include text, tables, and images.\nSelect and order the steps from the following list to correctly describe how to convert data from the documents into a knowledge base by using an ingestion process in Amazon Bedrock. Select each step one time or not at all.
+TYPE: hotspot
+HOTSPOT_OPTIONS: Convert the chunks into vector embeddings. | Divide the data into chunks. | Parse the documents. | Use data events to create a data lineage. | Use Retrieval Augmented Generation (RAG) to retrieve relevant content. | Write the vector embeddings to the vector store.
+HOTSPOT_ROW: Step 1 | Parse the documents.
+HOTSPOT_ROW: Step 2 | Divide the data into chunks.
+HOTSPOT_ROW: Step 3 | Convert the chunks into vector embeddings.
+HOTSPOT_ROW: Step 4 | Write the vector embeddings to the vector store.
+https://www.examtopics.com/discussions/amazon/view/411368-exam-aws-certified-ai-practitioner-aif-c01-topic-1-question/
 
 `;
