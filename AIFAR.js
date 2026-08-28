@@ -3993,7 +3993,7 @@ https://www.examtopics.com/discussions/amazon/view/411370-exam-aws-certified-ai-
 
 س: تقوم شركة باستخدام Amazon Bedrock AgentCore لبناء ونشر وتنزيل العوامل على نطاق واسع. تحتاج الشركة إلى تحديد الموارد المراد استخدامها.\nحدد مورد AgentCore الصحيح من القائمة التالية لكل وصف. حدد كل مورد مرة واحدة أو لا تقم بتحديده على الإطلاق.
 TYPE: hotspot
-HOTSPOT_OPTIONS: مراقبة الأداء وجمع البيانات (Observability) | مفسر التعليمات البرمجية (Code Interpreter) | التعلم المعزز (Reinforcement learning) | أداة المتصفح (Browser tool) | وقت التشغيل (Runtime) | البوابة (Gateway) | الذاكرة (Memory)
+HOTSPOT_OPTIONS: مراقبة الأداء وجمع البيانات (Observability) | مفسر التعليمات البرمجية (Code Interpreter) | أداة المتصفح (Browser tool) | وقت التشغيل (Runtime) | البوابة (Gateway) | الذاكرة (Memory)
 HOTSPOT_ROW: مراقبة سلوك العميل من خلال لوحات المعلومات البديهية | مراقبة الأداء وجمع البيانات (Observability)
 HOTSPOT_ROW: تنفيذ التعليمات البرمجية بشكل آمن عبر لغات متعددة | مفسر التعليمات البرمجية (Code Interpreter)
 HOTSPOT_ROW: وقت تشغيل متصفح سريع وآمن وخادم للعوامل | أداة المتصفح (Browser tool)

@@ -4049,7 +4049,7 @@ https://www.examtopics.com/discussions/amazon/view/401788-exam-aws-certified-ai-
 
 Q: A company is using Amazon Bedrock AgentCore to build, deploy, and implement agents at scale. The company needs to identify which resources to use.\nSelect the correct AgentCore resource from the following list for each description. Select each resource one time or not at all.
 TYPE: hotspot
-HOTSPOT_OPTIONS: Observability | Code Interpreter | Reinforcement learning | Browser tool | Runtime | Gateway | Memory
+HOTSPOT_OPTIONS: Observability | Code Interpreter | Browser tool | Runtime | Gateway | Memory
 HOTSPOT_ROW: Monitor agent behavior through intuitive dashboards | Observability
 HOTSPOT_ROW: Execute code securely across multiple languages | Code Interpreter
 HOTSPOT_ROW: Fast, secure, and serverless browser runtime for agents | Browser tool
