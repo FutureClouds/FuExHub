@@ -2156,6 +2156,106 @@ https://www.examtopics.com/discussions/amazon/view/404851-exam-aws-certified-mac
 
 ---
 
+Q: A company has a custom extract, transform, and load (ETL) process that runs on premises. The ETL process is written in the R language and runs for an average of 6 hours. The company wants to migrate the process to run on AWS.\nWhich solution will meet these requirements?
+A. Use an AWS Lambda function created from a container image to run the ETL jobs.
+*B. Use Amazon SageMaker AI processing jobs with a custom Docker image stored in Amazon Elastic Container Registry (Amazon ECR).
+C. Use Amazon SageMaker AI script mode to build a Docker image. Run the ETL jobs by using SageMaker Notebook Jobs.
+D. Use AWS Glue to prepare and run the ETL jobs.
+https://www.examtopics.com/discussions/amazon/view/415122-exam-aws-certified-machine-learning-engineer-associate-mla/
+
+---
+
+Q: An ML engineer wants to run a training job on Amazon SageMaker AI. The training job will train a neural network by using multiple GPUs. The training dataset is stored in Parquet format.\nThe ML engineer discovered that the Parquet dataset contains files too large to fit into the memory of the SageMaker AI training instances.\nWhich solution will fix the memory problem?
+A. Attach an Amazon Elastic Block Store (Amazon EBS) Provisioned IOPS SSD volume to the instance. Store the files in the EBS volume.
+*B. Repartition the Parquet files by using Apache Spark on Amazon EMR. Use the repartitioned files for the training job.
+C. Change the instance type to Memory Optimized instances with sufficient memory for the training job.
+D. Use the SageMaker AI distributed data parallelism (SMDDP) library with multiple instances to split the memory usage.
+https://www.examtopics.com/discussions/amazon/view/415123-exam-aws-certified-machine-learning-engineer-associate-mla/
+
+---
+
+Q: An ML engineer is setting up an ML pipeline to train and deploy models by using Amazon SageMaker AI. The pipeline will include steps for data pre-processing, model training, and model deployment.\nWhich SageMaker AI capability should the ML engineer use to automate this pipeline?
+A. Use an AWS Step Functions pipeline with AWS Lambda function integrations for SageMaker AI asynchronous execution.
+B. Use a SageMaker Autopilot pipeline with an AutoML job.
+C. Use a SageMaker AI MLflow pipeline with AWS integrations.
+*D. Use a SageMaker AI pipeline with the SageMaker pipeline definition JSON schema.
+https://www.examtopics.com/discussions/amazon/view/415124-exam-aws-certified-machine-learning-engineer-associate-mla/
+
+---
+
+Q: A company is training a deep learning model to detect abnormalities in images. The company has limited GPU resources and a large hyperparameter space to explore. The company needs to test different configurations and avoid wasting computation time on poorly performing models that show weak validation accuracy in early epochs.\nWhich hyperparameter optimization strategy should the company use?
+A. Grid search across all possible combinations
+*B. Bayesian optimization with early stopping
+C. Manual tuning of each parameter individually
+D. Exhaustive search without early stopping
+https://www.examtopics.com/discussions/amazon/view/415125-exam-aws-certified-machine-learning-engineer-associate-mla/
+
+---
+
+Q: An ML engineering team has a data processing pipeline that ingests sensor data from IoT devices into an Amazon S3 bucket. The pipeline then processes the data by using AWS Glue extract, transform, and load (ETL) jobs for ML modeling. The team noticed throttling errors in the ETL jobs. The data ingestion process has also been slower than normal.\nWhat is the cause of the problem?
+*A. The AWS Glue service quotas have been reached.
+B. The network bandwidth between the IoT devices and the AWS Region is insufficient.
+C. The AWS Glue ETL jobs are not optimized for parallel processing.
+D. The AWS Glue execution role is missing Amazon S3 permissions.
+https://www.examtopics.com/discussions/amazon/view/415126-exam-aws-certified-machine-learning-engineer-associate-mla/
+
+---
+
+Q: A company's dataset for prediction analytics contains duplicate records, missing data, and unusually extreme high or low values. The company needs a solution to resolve the data quality issues quickly. The solution must maintain data integrity.\nWhich solution will meet these requirements with the LEAST operational overhead?
+*A. Use AWS Glue DataBrew to delete duplicate records, fill missing values with medians, and replace extreme values with values in a normal range.
+B. Configure an AWS Glue job to identify records with missing values, identify records with extreme measurements, and delete the two identified record sets.
+C. Create an Amazon EMR Spark job to replace all missing values with zeros, keep extreme values unchanged, and merge duplicate records.
+D. Use an Amazon SageMaker Data Wrangler flow to delete duplicate records, use statistical modeling for missing values, and apply outlier detection algorithms.
+https://www.examtopics.com/discussions/amazon/view/415127-exam-aws-certified-machine-learning-engineer-associate-mla/
+
+---
+
+Q: A company is building a conversational AI assistant on Amazon Bedrock. The company is using Retrieval Augmented Generation (RAG) to reference the company's internal knowledge base. The AI assistant uses the Anthropic Claude 4 foundation model (FM). The company needs a solution that uses a vector embedding model, a vector store, and a vector search algorithm.\nWhich solution will develop the AI assistant with the LEAST development effort?
+*A. Use Amazon Kendra Experience Builder.
+B. Use Amazon Aurora PostgreSQL with the pgvector extension.
+C. Use Amazon RDS for PostgreSQL with the pgvector extension.
+D. Use the AWS Glue Data Catalog metadata repository.
+https://www.examtopics.com/discussions/amazon/view/415128-exam-aws-certified-machine-learning-engineer-associate-mla/
+
+---
+
+Q: A company is developing an AI assistant research application by using the Amazon Kendra GenAI Enterprise Edition index. The application will give users the ability to query documents stored in a Confluence (Cloud) software as a service (SaaS) application. The application will provide context-aware, summarized responses. The company needs to ensure that only the application can query the Amazon Kendra GenAI Enterprise Edition index.\nWhich combination of steps will meet these requirements? (Choose two.)
+*A. Create a data source by using the Amazon Kendra Confluence connector V2.0. Configure OAuth 2.0 credentials by using AWS Secrets Manager.
+*B. Encrypt the AWS Secrets Manager credentials with an AWS Key Management Service (AWS KMS) key that allows kms:Decrypt permissions for the application IAM role.
+C. Use the third-party CDATA custom Java Database Connectivity AWS Glue connector for Confluence. Associate an AWS Secrets Manager secret configured with Confluence cloud OAuth 2.0 credentials with the AWS Glue connector.
+D. Enable zero-ETL integration with the AWS Glue data source. Configure the target with kms:Decrypt permissions for the application IAM role.
+E. Configure the Amazon Kendra index IAM role with read access to the AWS Glue data source. Configure the application IAM role with kms:Decrypt permissions.
+https://www.examtopics.com/discussions/amazon/view/415129-exam-aws-certified-machine-learning-engineer-associate-mla/
+
+---
+
+Q: A company is building a near real-time data analytics application to detect anomalies and failures for industrial equipment. The company has thousands of IoT sensors that send data every 60 seconds. When new versions of the application are released, the company wants to ensure that application code bugs do not prevent the application from running.\nWhich solution will meet these requirements?
+*A. Use Amazon Managed Service for Apache Flink with the system rollback capability enabled to build the data analytics application.
+B. Use Amazon Managed Service for Apache Flink with manual rollback when an error occurs to build the data analytics application.
+C. Use Amazon Data Firehose to deliver real-time streaming data programmatically for the data analytics application. Pause the stream when a new version of the application is released and resume the stream after the application is deployed.
+D. Use Amazon Data Firehose to deliver data to Amazon EC2 instances across two Availability Zones for the data analytics application.
+https://www.examtopics.com/discussions/amazon/view/415130-exam-aws-certified-machine-learning-engineer-associate-mla/
+
+---
+
+Q: A government agency is conducting a national census to assess program needs by area and city. The census form collects approximately 500 responses from each citizen. The agency needs to analyze the data to extract meaningful insights. The agency wants to reduce the dimensions of the high-dimensional data to uncover hidden patterns.\nWhich solution will meet these requirements?
+*A. Use the principal component analysis (PCA) algorithm in Amazon SageMaker AI.
+B. Use the t-Distributed Stochastic Neighbor Embedding (t-SNE) algorithm in Amazon SageMaker AI.
+C. Use the k-means algorithm in Amazon SageMaker AI.
+D. Use the Random Cut Forest (RCF) algorithm in Amazon SageMaker AI.
+https://www.examtopics.com/discussions/amazon/view/415131-exam-aws-certified-machine-learning-engineer-associate-mla/
+
+---
+
+Q: A company is using Amazon SageMaker AI to train an artificial neural network. The artificial neural network converges faster than expected during training and the model is underfitting. The utilized memory of the underlying training instance is already at its maximum level.\nWhich modification will improve the model's training results?
+A. Increase the batch size.
+B. Reduce the number of training epochs.
+C. Reduce the number of images in the training dataset.
+*D. Reduce the batch size.
+https://www.examtopics.com/discussions/amazon/view/415132-exam-aws-certified-machine-learning-engineer-associate-mla/
+
+---
+
 Q: A company stores historical data in .csv files in Amazon S3. Only some of the rows and columns in the .csv files are populated. The columns are not labeled. An ML engineer needs to prepare and store the data so that the company can use the data to train ML models.\nSelect and order the correct steps from the following list to perform this task. Each step should be selected one time or not at all.\n• Create an Amazon SageMaker batch transform job for data cleaning and feature engineering.\n• Store the resulting data back in Amazon S3.\n• Use Amazon Athena to infer the schemas and available columns.\n• Use AWS Glue crawlers to infer the schemas and available columns.\n• Use AWS Glue DataBrew for data cleaning and feature engineering\n(Select and order three.).
 TYPE: hotspot
 HOTSPOT_OPTIONS: Create an Amazon SageMaker batch transform job for data cleaning and feature engineering. | Store the resulting data back in Amazon S3. | Use Amazon Athena to infer the schemas and available columns. | Use AWS Glue crawlers to infer the schemas and available columns. | Use AWS Glue DataBrew for data cleaning and feature engineering.
@@ -2350,6 +2450,37 @@ HOTSPOT_ROW: Where can the ML engineer store labels to compare with predictions 
 HOTSPOT_ROW: Which service feature can the ML engineer use to monitor bias metrics for a deployed model? | Amazon SageMaker Clarify
 HOTSPOT_ROW: Which service feature can the ML engineer use to roll back to a previous endpoint if a new endpoint's average error rate exceeds a specified threshold? | Amazon CloudWatch alarms
 https://www.examtopics.com/discussions/amazon/view/404826-exam-aws-certified-machine-learning-engineer-associate-mla/
+
+---
+
+Q: A company has multiple models that are hosted on Amazon SageMaker AI. The models need to be re-trained. The requirements for each model are different, so the company needs to choose different deployment strategies to transfer all requests to a new model.\nSelect the correct strategy from the following list for each requirement. Select each strategy one time.\n• Canary traffic shifting\n• Linear traffic shifting guardrail\n• All at once traffic shifting.
+TYPE: hotspot
+HOTSPOT_OPTIONS: Canary traffic shifting | Linear traffic shifting guardrail | All at once traffic shifting
+HOTSPOT_ROW: Simultaneous calls to the endpoint must reach models with the same configuration. | All at once traffic shifting
+HOTSPOT_ROW: The new model must receive only a fraction of the requests for validation before receiving all the traffic. | Canary traffic shifting
+HOTSPOT_ROW: Traffic to the new model must increase gradually to ensure that pipelines that rely on the endpoint do not fail because of changes in latency. | Linear traffic shifting guardrail
+https://www.examtopics.com/discussions/amazon/view/415133-exam-aws-certified-machine-learning-engineer-associate-mla/
+
+---
+
+Q: A company wants to evaluate a new ML model architecture to understand its performance before deploying the model to production. The company wants to use Amazon SageMaker AI shadow testing.\nThe company needs to analyze the performance metrics of the shadow model and the production model without affecting the existing production endpoint. The analysis must use real-time inference requests.\nSelect and order the correct steps from the following list to implement shadow testing and compare the model variants in SageMaker AI. Select each step one time or not at all. (Choose three.)\n• Create a new endpoint that includes the production model and the shadow model.\n• Create a shadow test.\n• Open the Amazon SageMaker Model Monitoring dashboard to access the production model and shadow model analytics.\n• Update the existing endpoint with a shadow variant. Pick a suitable duration. Start the shadow test.\n• Use the SageMaker AI shadow testing dashboard to analyze the performance differences between the variants.
+TYPE: hotspot
+HOTSPOT_OPTIONS: Create a new endpoint that includes the production model and the shadow model. | Create a shadow test. | Open the Amazon SageMaker Model Monitoring dashboard to access the production model and shadow model analytics. | Update the existing endpoint with a shadow variant. Pick a suitable duration. Start the shadow test. | Use the SageMaker AI shadow testing dashboard to analyze the performance differences between the variants.
+HOTSPOT_ROW: Step 1: | Update the existing endpoint with a shadow variant. Pick a suitable duration. Start the shadow test.
+HOTSPOT_ROW: Step 2: | Create a shadow test.
+HOTSPOT_ROW: Step 3: | Use the SageMaker AI shadow testing dashboard to analyze the performance differences between the variants.
+https://www.examtopics.com/discussions/amazon/view/415134-exam-aws-certified-machine-learning-engineer-associate-mla/
+
+---
+
+Q: A company uses a training job on Amazon SageMaker AI to train a neural network. The job first trains a model and then evaluates the model's performance against a test dataset. The company uses the results from the evaluation phase to decide if the trained model will go to production.\nThe training phase takes too long. The company needs solutions that can shorten training time without decreasing the model's final performance.\nSelect the correct solutions from the following list to meet the requirements for each description. Select each solution one time or not at all. (Choose three.)\n• Change the epoch count.\n• Choose an Amazon EC2 Spot Fleet.\n• Change the batch size.\n• Use early stopping on the training job.\n• Use the SageMaker AI distributed data parallelism (SMDDP) library.\n• Stop the training job.
+TYPE: hotspot
+HOTSPOT_OPTIONS: Change the epoch count. | Choose an Amazon EC2 Spot Fleet. | Change the batch size. | Use early stopping on the training job. | Use the SageMaker AI distributed data parallelism (SMDDP) library. | Stop the training job.
+HOTSPOT_ROW: Change the number of samples used in each iteration of training. | Change the batch size.
+HOTSPOT_ROW: Increase the number of instances used during training. | Use the SageMaker AI distributed data parallelism (SMDDP) library.
+HOTSPOT_ROW: Stop training before the maximum number of epochs are reached if performance is sufficient and not improving. | Use early stopping on the training job.
+https://www.examtopics.com/discussions/amazon/view/415135-exam-aws-certified-machine-learning-engineer-associate-mla/
+
 
 
 
