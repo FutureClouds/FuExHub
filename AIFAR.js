@@ -4002,10 +4002,10 @@ https://www.examtopics.com/discussions/amazon/view/411378-exam-aws-certified-ai-
 س: تريد شركة استخدام Amazon Bedrock لإنشاء قاعدة معارف من المستندات الحالية. تتضمن المستندات نصوصاً وجداول وصوراً.\nحدد ورتب الخطوات من القائمة التالية لوصف كيفية تحويل البيانات من المستندات إلى قاعدة معارف باستخدام عملية الابتلاع (ingestion) في Amazon Bedrock. حدد كل خطوة مرة واحدة أو لا تقم بتحديدها على الإطلاق.
 TYPE: hotspot
 HOTSPOT_OPTIONS: تحويل الأجزاء إلى تمثيلات متجهة (vector embeddings). | تقسيم البيانات إلى أجزاء (chunks). | تحليل وتحويل المستندات (Parse the documents). | استخدام أحداث البيانات لإنشاء سلالة البيانات. | استخدام التوليد المعزز بالاسترجاع (RAG) لاسترجاع المحتوى ذي الصلة. | كتابة التمثيلات المتجهة إلى مخزن المتجهات.
-HOTSPOT_ROW: الخطوة 1 | تحليل وتحويل المستندات (Parse the documents)
-HOTSPOT_ROW: الخطوة 2 | تقسيم البيانات إلى أجزاء (chunks)
-HOTSPOT_ROW: الخطوة 3 | تحويل الأجزاء إلى تمثيلات متجهة (vector embeddings)
-HOTSPOT_ROW: الخطوة 4 | كتابة التمثيلات المتجهة إلى مخزن المتجهات
+HOTSPOT_ROW: الخطوة 1 | تحليل وتحويل المستندات (Parse the documents).
+HOTSPOT_ROW: الخطوة 2 | تقسيم البيانات إلى أجزاء (chunks).
+HOTSPOT_ROW: الخطوة 3 | تحويل الأجزاء إلى تمثيلات متجهة (vector embeddings).
+HOTSPOT_ROW: الخطوة 4 | كتابة التمثيلات المتجهة إلى مخزن المتجهات.
 https://www.examtopics.com/discussions/amazon/view/411368-exam-aws-certified-ai-practitioner-aif-c01-topic-1-question/
 
 
