@@ -19,12 +19,454 @@ https://www.examtopics.com/discussions/amazon/view/369114-exam-aws-certified-clo
 
 ---
 
+Q: A company is migrating a legacy application to AWS. The company manually installs and configures the legacy application on Amazon EC2 instances across multiple Availability Zones. The company sets up an Application Load Balancer (ALB) for the application. The company sets the target group routing algorithm to weighted random. The application requires session affinity.\nAfter the company deploys the application, users report random application errors that were not present in the legacy version of the application. The target group health checks do not show any failures. The company must resolve the application errors.\nWhich solution will meet this requirement?
+*A. Set the routing algorithm of the target group to least outstanding requests.
+B. Turn on anomaly mitigation for the target group.
+C. Turn off the cross-zone load balancing attribute of the target group.
+D. Increase the deregistration delay attribute of the target group.
+https://www.examtopics.com/discussions/amazon/view/369117-exam-aws-certified-cloudops-engineer-associate-soa-c03-topic/
+
+---
+
+Q: A company is using an Amazon Aurora MySQL DB cluster that has point-in-time recovery, backtracking, and automatic backup enabled. A CloudOps engineer needs to be able to roll back the DB cluster to a specific recovery point within the previous 72 hours. Restores must be completed in the same production DB cluster.\nWhich solution will meet these requirements?
+A. Create an Aurora Replica. Promote the replica to replace the primary DB instance.
+B. Create an AWS Lambda function to restore an automatic backup to the existing DB cluster.
+*C. Use backtracking to rewind the existing DB cluster to the desired recovery point.
+D. Use point-in-time recovery to restore the existing DB duster to the desired recovery point.
+https://www.examtopics.com/discussions/amazon/view/369118-exam-aws-certified-cloudops-engineer-associate-soa-c03-topic/
+
+---
+
+Q: A company uses AWS Organizations to manage a set of AWS accounts. The company has set up organizational units (OUs) in the organization. An application OU supports various applications.\nA CloudOps engineer must prevent users from launching Amazon EC2 instances that do not have a CostCenter-Project tag into any account in the application OU. The restriction must apply only to accounts in the application OU.\nWhich solution will meet these requirements?
+A. Create an IAM group that has a policy that allows the ec2:RunInstances action when the CostCenter-Project tag is present. Place all IAM users who need access to the application accounts in the IAM group.
+*B. Create a service control policy (SCP) that denies the oc2:RunInstances action when the CostCenter-Project tag is missing. Attach the SCP to the application OU.
+C. Create an IAM role that has a policy that allows the oc2:RunInstances action when the CostCenter-Project tag is present. Attach the IAM role to the IAM users that are in the application OU accounts.
+D. Create a service control policy (SCP) that denies the ec2:RunInstances action when the CostCenter-Project tag is missing. Attach the SCP to the root OU.
+https://www.examtopics.com/discussions/amazon/view/369338-exam-aws-certified-cloudops-engineer-associate-soa-c03-topic/
+
+---
+
+Q: An application runs on Amazon EC2 instances behind an Application Load Balancer (ALB). The application takes up to 2 minutes to populate a local cache after the application is started. The application reports as healthy in the target group health check a few seconds after starting.\nA CloudOps engineer observes that after some of the instances are rebooted, the instances receive an equal share of the traffic immediately after each instance reports as healthy. The application needs to receive a gradually increasing share of the traffic while the application cache is populated.\nWhich solution will meet this requirement?
+*A. Change the slow_start.duration_seconds target group attribute to 120 seconds. Before rebooting the instances, deregister the instances from the target group. After rebooting the instances, register the instances with the target group.
+B. Change the HealthCheckTimeoutSeconds paramotor in the target group to 120 seconds. Before rebooting the instances, deregister the instances from the target group. After rebooting the instances, register the instances with the target group.
+C. Configure an Amazon CloudWatch alarm to monitor the health check status. Configure the action of the alarm to restart an EC2 instance if a health check fails. Change the loadbalancing.algorithm.type target group attribute to be weighted_random.
+D. Create an Amazon EC2 Auto Scaling group. Attach the existing EC2 instances to the Auto Scaling group. Configure an EC2 Auto Scaling lifecycle hook to move starting instances to the\nPending Wait state. Update the application to complete the lifecycle hook when the local cache has been populated.
+https://www.examtopics.com/discussions/amazon/view/369155-exam-aws-certified-cloudops-engineer-associate-soa-c03-topic/
+
+---
+
+Q: A company's website runs on an Amazon EC2 Linux instance. The website needs to serve PDF files from an Amazon S3 bucket. All public access to S3 bucket is blocked at the account level. The company needs to allow website users to download the PDF files.\nWhich solution will meet these requirements with the LEAST administrative effort?
+A. Create an IAM role that has a policy that allows s3:list* and s3:get* permissions. Assign the role to the EC2 instance. Assign a company employee to download requested PDF file to the EC2 instance and to deliver the files to website users. Create an AWS Lambda function to periodically delete local files.
+B. Create an Amazon CloudFront distribution that uses an origin access control (OAC) that points to the S3 bucket. Apply a bucket policy to the bucket to allow connections from the CloudFront distribution. Assign a company employee to provide a download URL that contains the distribution URL and the object path to users when users request PDF files.
+C. Change the S3 bucket permissions to allow public access on the source S3 bucket. Assign a company employee to provide a PDF file URL to users when users request the PDF files.
+*D. Deploy an EC2 instance that has an 1AM instance profile to a public subnet. Use a signed URL from the EC2 instance to provide temporary access to the S3 bucket for website users.
+https://www.examtopics.com/discussions/amazon/view/383646-exam-aws-certified-cloudops-engineer-associate-soa-c03-topic/
+
+---
+
 Q: A multinational company uses an organization in AWS Organizations to manage over 200 member accounts across multiple AWS Regions. The company must ensure that all AWS resources meet specific security requirements.\nThe company must not deploy any EC2 instances in the ap-southeast-2 Region. The company must completely block root user actions in all member accounts. The company must prevent any user from deleting AWS CloudTrail logs, including administrators.\nThe company requires a centrally managed solution that the company can automatically apply to all existing and future accounts.\nWhich solution will meet these requirements?
 A. Create AWS Config rules with remediation actions in each account to detect policy violations. Implement IAM permissions boundaries for the account root users.
 B. Enable AWS Security Hub across the organization. Create custom security standards to enforce the security requirements. Use AWS CloudFormation StackSets to deploy the standards to all the accounts in the organization. Set up Security Hub automated remediation actions.
 *C. Use AWS Control Tower for account governance. Configure Region deny controls. Use service control policies (SCPs) to restrict root user access.
 D. Configure AWS Firewall Manager with security policies to meet the security requirements. Use an AWS Config aggregator with organization-wide conformance packs to detect security policy violations.
 https://www.examtopics.com/discussions/amazon/view/383637-exam-aws-certified-cloudops-engineer-associate-soa-c03-topic/
+
+---
+
+Q: A company runs a workload in an Amazon VPC. The company configures Amazon CloudWatch Logs for the workload. The company needs a solution to automatically detect unusual API activity and security events in the company's AWS account.\nWhich solution will meet this requirement?
+A. Use Amazon Inspector to scan VPC flow logs.
+B. Use Amazon GuardDuty to monitor CloudWatch logs.
+*C. Implement AWS CloudTrail Insights.
+D. Use AWS Config automatic anomaly detection.
+https://www.examtopics.com/discussions/amazon/view/383640-exam-aws-certified-cloudops-engineer-associate-soa-c03-topic/
+
+---
+
+Q: A CloudOps engineer needs to disable automatic backups for an Amazon RDS instance to optimize costs. When the CloudOps engineer attempts to disable the backups, the CloudOps engineer receives an error message that states the retention period must be between 1 and 35.\nWhat is the likely cause of this issue?
+A. The RDS instance has insufficient permissions to change the backup retention period.
+*B. Read replicas are configured for the RDS instance.
+C. The RDS instance is using the default backup window.
+D. The RDS instance is part of a Multi-AZ deployment.
+https://www.examtopics.com/discussions/amazon/view/402901-exam-aws-certified-cloudops-engineer-associate-soa-c03-topic/
+
+---
+
+Q: A retail company runs a web application. The application uses an Application Load Balancer (ALB) to distribute traffic across multiple Amazon EC2 instances in two Availability Zones. The application experiences high traffic during flash sales. The company needs to ensure even distribution of requests across all healthy instances. Additionally, the company requires session persistence for shopping cart functionality.\nWhich configuration will meet these requirements with the LEAST administrative effort?
+*A. Configure the ALB target group to use the round robin algorithm. Enable stickiness and cross-zone load balancing.
+B. Switch the ALB to a Network Load Balancer. Modify the target group to use the least outstanding requests algorithm. Enable stickiness. Disable cross-zone load balancing.
+C. Configure the ALB target group to use the weighted round robin algorithm. Implement session persistence by using AWS Lambda functions to store session data in Amazon DynamoDB.
+D. Configure the ALB listener with path-based routing to direct shopping cart requests to a dedicated target group with sticky sessions. Use the round robin algorithm without stickiness for a second target group.
+https://www.examtopics.com/discussions/amazon/view/416146-exam-aws-certified-cloudops-engineer-associate-soa-c03-topic/
+
+---
+
+Q: A company runs a web application on Amazon EC2 instances behind an Application Load Balancer (ALB). The company needs an AWS Lambda function to perform a custom recovery procedure on the application server when the application returns an HTTP 500 status code.\nA CloudOps engineer needs to design a solution that detects HTTP 500 status codes and runs the Lambda function reliably when errors are detected.\nWhich solution will meet these requirements?
+*A. Configure an Amazon CloudWatch alarm on the HTTPCode_Target_5XX_Count ALB target group metric. Set the alarm action to run the Lambda function.
+B. Deploy a new Lambda function that continuously scans the ALB access logs in Amazon S3 to detect HTTP 500 status codes and then invokes the existing lambda function.
+C. Enable AWS CloudTrail on the application instances. Configure Amazon CloudWatch Logs metric filters to detect HTTP 500 status codes and run the Lambda function.
+D. Create an Amazon EventBridge rule for all ALB request events that invokes the Lambda function. Configure the Lambda function to filter for HTTP 500 status codes internally.
+https://www.examtopics.com/discussions/amazon/view/416147-exam-aws-certified-cloudops-engineer-associate-soa-c03-topic/
+
+---
+
+Q: A CloudOps engineer manages policies for many AWS member accounts in an AWS Organizations structure. Administrators on other teams have access to the account root user credentials of the member accounts. The CloudOps engineer must prevent all teams, including their administrators, from using Amazon DynamoDB. The solution must not affect the ability of the teams to access other AWS services.\nWhich solution will meet these requirements?
+A. In all member accounts, configure IAM policies that deny access to all DynamoDB resources for all users, including the root user.
+*B. Create a service control policy (SCP) in the management account to deny all DynamoDB actions. Apply the SCP to the root of the organization.
+C. In all member accounts, configure IAM policies that deny AmazonDynamoDBFullAccess to all users, including the root user.
+D. Remove the default service control policy (SCP) in the management account. Create a replacement SCP that includes a single statement that denies all DynamoDB actions.
+https://www.examtopics.com/discussions/amazon/view/416158-exam-aws-certified-cloudops-engineer-associate-soa-c03-topic/
+
+---
+
+Q: A CloudOps engineer has blocked public access to all company Amazon S3 buckets. The CloudOps engineer wants to be notified when an S3 bucket becomes publicly readable in the future.\nWhat is the MOST operationally efficient way to meet this requirement?
+A. Create an AWS Lambda function that periodically checks the public access settings for each S3 bucket. Set up Amazon SNS to send notifications.
+B. Create a cron script that uses the S3 API to check the public access settings for each S3 bucket. Set up Amazon SNS to send notifications.
+C. Enable S3 Event Notifications for each S3 bucket. Subscribe S3 Event Notifications to an Amazon SNS topic.
+*D. Enable the s3-bucket-public-read-prohibited managed rule in AWS Config. Subscribe the AWS Config rule to an Amazon SNS topic.
+https://www.examtopics.com/discussions/amazon/view/416166-exam-aws-certified-cloudops-engineer-associate-soa-c03-topic/
+
+---
+
+Q: A company has a new security policy that requires all Amazon EBS volumes to be encrypted at rest. The company needs to use a custom key policy to manage access to the encryption keys. The company must rotate the keys once each year.\nWhich solution will meet these requirements with the LEAST operational overhead?
+*A. Create AWS KMS symmetric customer managed keys. Enable automatic key rotation.
+B. Use AWS owned AWS KMS keys across the company's AWS environment.
+C. Create AWS KMS asymmetric customer managed keys. Enable automatic key rotation.
+D. Create AWS KMS symmetric customer managed keys by using imported key material. Rotate the keys on a yearly basis.
+https://www.examtopics.com/discussions/amazon/view/416175-exam-aws-certified-cloudops-engineer-associate-soa-c03-topic/
+
+---
+
+Q: A company is hosting a public website on Amazon EC2 instances behind an Application Load Balancer (ALB). The company needs the website to support HTTPS connections.\nWhich solution will meet this requirement?
+A. Replace the ALB with a Network Load Balancer.
+*B. Use AWS Certificate Manager (ACM) to issue a public SSL/TLS certificate. Configure the ALB to use the certificate.
+C. Import a public SSL/TLS certificate into AWS KMS. Configure the ALB to retrieve the certificate from AWS KMS.
+D. Attach a public SSL/TLS certificate to the target group that is associated with the ALB.
+https://www.examtopics.com/discussions/amazon/view/416177-exam-aws-certified-cloudops-engineer-associate-soa-c03-topic/
+
+---
+
+Q: A CloudOps engineer needs to quickly resolve issues in an application that runs in a production environment on Amazon EC2 instances. The application uses an Amazon RDS database. To resolve the issues, the CloudOps engineer needs a centralized solution to collect and query logs for both the EC2 instances and the RDS database.\nWhich solution will meet these requirements?
+*A. Install and configure the Amazon CloudWatch agent on the EC2 instances to forward ERROR log events to Amazon CloudWatch Logs. Configure the RDS database to export log events to CloudWatch Logs. Use CloudWatch Logs Insights to query the logs.
+B. Install and configure the Amazon CloudWatch agent on the EC2 instances to forward INFO log events to an Amazon S3 bucket. Install the CloudWatch agent on the RDS database. Forward ERROR log events to the S3 bucket. Configure S3 Event Notifications to invoke AWS Lambda functions to analyze the logs.
+C. Install and configure the Amazon CloudWatch agent on the EC2 instances to forward ERROR log events to Amazon CloudWatch Logs. Use the Logs & events menu to examine log events for the RDS database. Use CloudWatch Logs Insights to query logs only for the EC2 instances.
+D. Install and configure the AWS X-Ray agent on the EC2 instances to forward INFO, DEBUG, and latency log events to Amazon CloudWatch Logs. Configure the RDS database to export log events to Amazon CloudWatch Logs. Use CloudWatch Logs Insights to query the logs.
+https://www.examtopics.com/discussions/amazon/view/416178-exam-aws-certified-cloudops-engineer-associate-soa-c03-topic/
+
+---
+
+Q: A company has business-critical resources in one of its AWS accounts. The company wants to receive an email notification every time an AWS Management Console root user sign-in event occurs in the account.\nWhich solution will meet this requirement with the MOST operational efficiency?
+A. Create an Amazon CloudWatch alarm that detects AWS Management Console root user sign-in events. Configure the alarm to send email notifications directly through AWS Trusted Advisor.
+B. Launch an Amazon EC2 instance. Schedule a script to run every hour to analyze AWS CloudTrail events. Configure the script to send email notifications to an Amazon SNS topic when AWS Management Console root user sign-in events occur.
+C. Create an Amazon EventBridge rule that reacts to AWS Management Console root user sign-in events. Configure the rule to send email notifications to an Amazon SQS queue.
+*D. Create an Amazon EventBridge rule that reacts to AWS Management Console root user sign-in events. Configure the rule to send email notifications to an Amazon SNS topic.
+https://www.examtopics.com/discussions/amazon/view/416179-exam-aws-certified-cloudops-engineer-associate-soa-c03-topic/
+
+---
+
+Q: A company's developers deploy applications to multiple AWS accounts. The developers are able to create any AWS resource within the AWS accounts.\nA security team wants to audit the resources that the developers created in the company's AWS accounts.\nWhich solution will meet this requirement?
+A. Create an AWS account for the security team. Configure AWS Audit Manager in the security team's account. Create an Audit Manager assessment. Include the company's AWS accounts in the assessment scope. Generate an assessment report for the security team.
+*B. Configure an AWS Config recorder in each AWS account. In the security team's AWS account, create an AWS Config aggregator. Authorize the aggregator in every AWS account. Use Amazon Quick Suite and Amazon Athena to generate a report for the security team.
+C. Create a trail in AWS CloudTrail in every AWS account. Create an Amazon RDS DB instance in the security team's account. Configure CloudTrail in every account to write logs to the DB instance. Use Amazon Quick Suite to query the DB instance and generate a report for the security team.
+D. Enable AWS Trusted Advisor in every AWS account. Create a scheduled Amazon EventBridge rule to periodically refresh the Trusted Advisor checks. Use the Trusted Advisor console to generate a report for the security team.
+https://www.examtopics.com/discussions/amazon/view/416180-exam-aws-certified-cloudops-engineer-associate-soa-c03-topic/
+
+---
+
+Q: A company experiences increased production incidents. A CloudOps engineer must provide developers with secure access to Amazon EC2 instances from the AWS Management Console. The developers must be able to successfully connect by using EC2 Instance Connect for real-time troubleshooting.\nThe EC2 instances are based on the latest Amazon Linux 2023 AMIs. The EC2 instances are publicly accessible. The EC2 instances have been properly configured with security groups that allow inbound SSH traffic. The developers will use the default ec2-user account to access the instances from the console.\nWhich step should the CloudOps engineer perform NEXT to ensure that the developers can successfully connect by using EC2 Instance Connect?
+A. Create an IAM role with EC2 access. Attach the role to the EC2 instances.
+B. Download and install the EC2 Instance Connect agent on the production instances.
+*C. Grant IAM permissions to the developers to use EC2 Instance Connect and describe the EC2 instances.
+D. Enable AWS CloudTrail logging. Create a VPC endpoint for EC2 Instance Connect.
+https://www.examtopics.com/discussions/amazon/view/416181-exam-aws-certified-cloudops-engineer-associate-soa-c03-topic/
+
+---
+
+Q: A company asks a CloudOps engineer to provision an additional environment for an application in four additional AWS Regions. The application is running on more than 100 Amazon EC2 instances in the us-east-1 Region, using fully configured Amazon Machine Images (AMIs). The company has an AWS CloudFormation template to deploy resources in us-east-1.\nWhat should the CloudOps engineer do to provision the application in the MOST operationally efficient manner?
+*A. Copy the AMI to each Region by using the aws ec2 copy-image command. Update the CloudFormation template to include mappings for the copied AMIs.
+B. Create a snapshot of the running instance. Copy the snapshot to the other Regions. Create an AMI from the snapshots. Update the CloudFormation template for each Region to use the new AMI.
+C. Run the existing CloudFormation template in each additional Region based on the success of the template that is used currently in us-east-1.
+D. Update the CloudFormation template to include the additional Regions in the Auto Scaling group. Update the existing stack in us-east-1.
+https://www.examtopics.com/discussions/amazon/view/416182-exam-aws-certified-cloudops-engineer-associate-soa-c03-topic/
+
+---
+
+Q: A company runs on-premises workloads that need to use AWS hosted DNS services. The company requires high availability for DNS queries to ensure continuous DNS resolution for critical applications.\nWhich solution will meet these requirements?
+*A. Deploy Amazon Route 53 Resolver inbound endpoints to multiple Availability Zones. Configure on-premises DNS resolvers to use the endpoint IP addresses in a failover configuration.
+B. Use Amazon Route 53 latency-based routing to ensure that DNS queries from on-premises systems are directed to the closest resolver endpoint.
+C. Configure an Amazon Route 53 private hosted zone. Associate the private hosted zone with the on-premises network.
+D. Deploy Amazon Route 53 Resolver outbound endpoints to multiple Availability Zones. Associate the endpoints with the on-premises DNS resolvers.
+https://www.examtopics.com/discussions/amazon/view/416185-exam-aws-certified-cloudops-engineer-associate-soa-c03-topic/
+
+---
+
+Q: A company runs an application on a fleet of Amazon EC2 Windows instances in a Multi-AZ deployment. The company needs a solution that will give the instances access to shared files.\nThe solution must be highly available, must use native Windows storage capabilities, and must maximize consistency for all file requests.\nWhich solution will meet these requirements?
+*A. Create an Amazon FSx for Windows File Server Multi-AZ file system. Map file shares on the instances by using the file system's DNS name.
+B. Grant the instances access to a shared Amazon S3 bucket. Use Windows Task Scheduler to synchronize the contents of the S3 bucket locally to each instance periodically.
+C. Create an Amazon EFS file system that uses the EFS Standard storage class. Mount the file system to the instances by using the file system's DNS name and the EFS mount helper.
+D. Create a new Amazon EBS Multi-Attach volume. Attach the EBS volume as an additional drive to each instance.
+https://www.examtopics.com/discussions/amazon/view/416186-exam-aws-certified-cloudops-engineer-associate-soa-c03-topic/
+
+---
+
+Q: A CloudOps engineer is troubleshooting a VPC with public and private subnets that leverage custom network ACLs. Instances in the private subnet are unable to access the internet. There is an internet gateway attached to the public subnet. The private subnet has a route to a NAT gateway that is also attached to the public subnet. The Amazon EC2 instances are associated with the default security group for the VPC.\nWhat is causing the issue in this scenario?
+*A. There Is a network ACL on the private subnet set to deny all outbound traffic.
+B. There is no NAT gateway deployed in the private subnet of the VPC.
+C. The default security group for the VPC blocks all inbound traffic to the EC2 instances.
+D. The default security group for the VPC blocks all outbound traffic from the EC2 instances.
+https://www.examtopics.com/discussions/amazon/view/416187-exam-aws-certified-cloudops-engineer-associate-soa-c03-topic/
+
+---
+
+Q: A CloudOps engineer configured AWS Backup to capture snapshots from a single Amazon EC2 instance that has one Amazon EBS volume attached. On the first snapshot, the EBS volume has 10 GiB of data. On the second snapshot, the EBS volume still contains 10 GiB of data, but 4 GiB have changed. On the third snapshot, 2 GiB of data have been added to the volume, for a total of 12 GiB.\nHow much total storage is required to store these snapshots?
+A. 12 GIB
+*B. 16 GiB
+C. 26 GiB
+D. 32 GIB
+https://www.examtopics.com/discussions/amazon/view/416188-exam-aws-certified-cloudops-engineer-associate-soa-c03-topic/
+
+---
+
+Q: A company uses two production environments for deployments. A blue stack and a green stack are each behind a unique Application Load Balancer (ALB). The company wants to use DNS to send some traffic to green and gradually increase traffic over time. The company wants automatic tailback if green becomes unhealthy.\nWhich DNS configuration will meet these requirements?
+*A. Create Amazon Route 53 weighted alias records that point to each ALB. Attach health checks. Adjust the weights during deployment.
+B. Use Amazon Route 53 latency-based alias records for both ALBs with health checks. Reduce TTL. Add a checker-latency dashboard. Rely on the policy to steer a small percentage of traffic to green during the ramp.
+C. Point the apex at one ALB. Register blue and green as target groups. Use a listener rule with weighted targets for gradual shifts. Rely on target-group health to shift traffic.
+D. Use an Amazon Route 53 failover record. Set green as primary and blue as secondary. Set both to 50/50.
+https://www.examtopics.com/discussions/amazon/view/424459-exam-aws-certified-cloudops-engineer-associate-soa-c03-topic/
+
+---
+
+Q: A company's financial department needs to view the cost details of each project in an AWS account. A CloudOps engineer must perform the initial configuration that is required to view cost for each project in Cost Explorer.\nWhich solution will meet this requirement?
+*A. Activate cost allocation tags. Add a project tag to the appropriate resources.
+B. Configure consolidated billing. Create AWS Cost and Usage Reports.
+C. Use AWS Budgets. Create AWS Budgets reports.
+D. Use cost categories to define custom groups that are based on AWS cost and usage dimensions.
+https://www.examtopics.com/discussions/amazon/view/424460-exam-aws-certified-cloudops-engineer-associate-soa-c03-topic/
+
+---
+
+Q: A company wants to use only IPv6 for all its Amazon EC2 instances. The EC2 instances must not be accessible from the internet, but the EC2 instances must be able to access the internet. The company creates a dual-stack VPC and IPv6-only subnets.\nHow should a CloudOps engineer configure the VPC to meet these requirements?
+A. Create and attach a NAT gateway. Create a custom route table that includes an entry to point all IPv6 traffic to the NAT gateway. Attach the custom route table to the IPv6-only subnets.
+B. Create and attach an internet gateway. Create a custom route table that includes an entry to point all IPv6 traffic to the internet gateway. Attach the custom route table to the IPv6-only subnets.
+*C. Create and attach an egress-only internet gateway. Create a custom route table that includes an entry to point all IPv6 traffic to the egress-only internet gateway. Attach the custom route table to the IPv6-only subnets.
+D. Create and attach an internet gateway and a NAT gateway. Create a custom route table that includes an entry to point all IPv6 traffic to the internet gateway and all IPv4 traffic to the NAT gateway. Attach the custom route table to the IPv6-only subnets.
+https://www.examtopics.com/discussions/amazon/view/424464-exam-aws-certified-cloudops-engineer-associate-soa-c03-topic/
+
+---
+
+Q: A company is using Amazon S3 buckets to store datasets. The company has several teams that use Amazon Athena to run one-time queries against the datasets. A CloudOps engineer must implement a solution that stores each team's Athena query results in that team's individual S3 bucket.\nWhich solution will meet this requirement?
+*A. Create individual Athena workgroups that have separate S3 query result locations.
+B. Configure an AWS Glue Data Catalog database for each team. Instruct the teams to run their queries on tables in their separate databases.
+C. Require each team to use the primary Athena workgroup. Instruct the teams to set individual S3 result locations when they query Athena.
+D. Create an AWS Glue security configuration. Associate the security configuration with each team.
+https://www.examtopics.com/discussions/amazon/view/424465-exam-aws-certified-cloudops-engineer-associate-soa-c03-topic/
+
+---
+
+Q: A company has a new application that runs on three Amazon EC2 instances. The EC2 instances are spread across three Availability Zones in a single AWS Region. The application is accessible on TCP port 1028. The company wants to balance traffic across all the EC2 instances.\nWhich solution will meet these requirements with the LEAST operational overhead?
+A. Create an Application Load Balancer with a listener configured to use port 1028. Create a target group on the listener for TCP port 1028. Register the EC2 instances with the target group.
+*B. Create a Network Load Balancer with a listener configured to use port 1028. Create a target group on the listener for TCP port 1028. Register the EC2 instances with the target group.
+C. Create a Gateway Load Balancer with a listener configured to use port 1028. Create a target group on the listener for TCP port 1028. Register the EC2 instances with the target group.
+D. Launch an EC2 instance with HAProxy configured that forwards requests to the three IP addresses.
+https://www.examtopics.com/discussions/amazon/view/424466-exam-aws-certified-cloudops-engineer-associate-soa-c03-topic/
+
+---
+
+Q: Users are reporting consistent forced logouts from a stateful web application. The web application is hosted on Amazon EC2 instances that are in an Auto Scaling group. The instances run behind an Application Load Balancer (ALB) that has multiple target groups with one listener rule. The ALB is configured as the origin in an Amazon CloudFront distribution.\nWhich combination of actions should a CloudOps engineer take to resolve the logout problem? (Choose two.)
+A. Change to the least outstanding requests algorithm on the ALB target group.
+*B. Configure cookie forwarding in the CloudFront distribution's cache behavior settings.
+C. Configure header forwarding in the CloudFront distribution's cache behavior settings.
+*D. Enable group-level stickiness on the ALB listener rule for the target groups.
+E. Configure weighted target groups on the ALB.
+https://www.examtopics.com/discussions/amazon/view/424467-exam-aws-certified-cloudops-engineer-associate-soa-c03-topic/
+
+---
+
+Q: A company has a policy that requires all Amazon EC2 instances to have a specific set of tags. If an EC2 instance does not have the required tags, the noncompliant instance should be terminated.\nWhat is the MOST operationally efficient solution that meets these requirements?
+A. Create an Amazon EventBridge rule to send all EC2 instance state changes to an AWS Lambda function to determine if each instance is compliant. Terminate any noncompliant instances.
+B. Create an IAM policy that enforces all EC2 instance tag requirements. If the required tags are not in place for an instance, the policy will terminate noncompliant instance.
+C. Create an AWS Lambda function to determine if each EC2 instance is compliant and terminate an instance if it is noncompliant. Schedule the Lambda function to invoke every 5 minutes.
+*D. Create an AWS Config rule to check if the required tags are present. If an EC2 instance is noncompliant, invoke an AWS Systems Manager Automation runbook to terminate the instance.
+https://www.examtopics.com/discussions/amazon/view/424468-exam-aws-certified-cloudops-engineer-associate-soa-c03-topic/
+
+---
+
+Q: A company uses AWS Backup to back up critical Amazon EC2 instances daily. The company wants to test disaster recovery procedures by restoring an EC2 instance from a recent backup.\nWhich solution will meet this requirement in the LEAST amount of time?
+A. Restore individual files from backups to the original EC2 instance to verify data integrity.
+B. Restore the most recent full backup to the original EC2 instance. Configure AWS Backup to update the instance by using changed blocks from subsequent incremental backups.
+*C. Identify the backup plan and recovery point for the EC2 instance. Use the restore backup option to create a new EC2 instance directly from the AMI-based recovery point.
+D. Identify the backup plan and recovery point for the EC2 instance. Launch a new EC2 instance. Use AWS Backup root volume to restore the identified recovery point to the new instance.
+https://www.examtopics.com/discussions/amazon/view/424469-exam-aws-certified-cloudops-engineer-associate-soa-c03-topic/
+
+---
+
+Q: A CloudOps engineer is setting up a fleet of Amazon EC2 instances in an Auto Scaling group for an application. The fleet should have 50% CPU available at all times to accommodate bursts of traffic. The load will increase significantly between the hours of 09:00 and 17:00, 7 days a week.\nHow should the CloudOps engineer configure the scaling of the EC2 instances to meet these requirements?
+A. Create a target tracking scaling policy that runs when the CPU utilization is higher than 90%.
+*B. Create a target tracking scaling policy that runs when the CPU utilization is higher than 50%. Create a scheduled scaling policy that ensures that the fleet is available at 09:00. Create a second scheduled scaling policy that scales in the fleet at 17:00.
+C. Set the Auto Scaling group to start with 2 instances by setting the desired instances, maximum instances, and minimum instances to 2. Create a scheduled scaling policy that ensures that the fleet is available at 09:00.
+D. Create a scheduled scaling policy that ensures that the fleet is available at 09:00. Create a second scheduled scaling policy that scales in the fleet at 17:00.
+https://www.examtopics.com/discussions/amazon/view/424470-exam-aws-certified-cloudops-engineer-associate-soa-c03-topic/
+
+---
+
+Q: A company runs a website from Sydney, Australia. Users in the United States (US) and Europe are reporting that images and videos are taking a long time to load. However, local testing in Australia indicates no performance issues. The website has a large amount of static content in the form of images and videos that are stored in Amazon S3.\nWhich solution will result in the MOST improvement in the user experience for users in the US and Europe?
+A. Configure AWS PrivateLink for Amazon S3.
+B. Configure S3 Transfer Acceleration.
+*C. Create an Amazon CloudFront distribution. Distribute the static content to the CloudFront edge locations.
+D. Create an Amazon API Gateway API in each AWS Region. Cache the content locally.
+https://www.examtopics.com/discussions/amazon/view/424471-exam-aws-certified-cloudops-engineer-associate-soa-c03-topic/
+
+---
+
+Q: A company has multiple AWS accounts that run applications in different AWS Regions. The company has configured Amazon CloudWatch alarms in each account to monitor CPU utilization and request latency metrics.\nAn operations team must create a centralized dashboard in a single Region within the operations team's AWS account. The dashboard needs to be able to display metrics and alarm states from all applications.\nWhich solution will meet these requirements?
+A. Enable the CloudWatch cross-account cross-Region console in each application account. Configure the sharing of metrics and alarms with the operations team's AWS account. In the operations team's AWS account, create a CloudWatch dashboard with the metrics and alarms from the application account.
+B. Create an Amazon EventBridge rule in each application account to forward CloudWatch alarm state changes to an Amazon SNS topic in the operations team's AWS account. In the operations team's AWS account, create a CloudWatch dashboard with the metrics and alarms from the application accounts.
+C. Deploy AWS Lambda functions in each application account. Configure the functions to periodically extract CloudWatch metrics and alarm states and copy the values to CloudWatch in the operations team's AWS account. In the operations team's AWS account, create a CloudWatch dashboard with the metrics and alarms from the application accounts.
+*D. Set up CloudWatch cross-account observability. Designate the operations team's AWS account as the monitoring account. Configure the application accounts as source accounts. In the operations team's AWS account, create a CloudWatch dashboard with the metrics and alarms from the application accounts.
+https://www.examtopics.com/discussions/amazon/view/424473-exam-aws-certified-cloudops-engineer-associate-soa-c03-topic/
+
+---
+
+Q: A company needs to view a list of security groups that are open to the internet on port 3389.\nWhat should a CloudOps engineer do to meet this requirement?
+A. Configure Amazon GuardDuty to scan security groups and report unrestricted access on port 3389.
+B. Configure a service control policy (SCP) to identify security groups that allow unrestricted access on port 3389.
+C. Use AWS Identity and Access Management Access Analyzer to find any instances that have unrestricted access on port 3389.
+*D. Use AWS Trusted Advisor to find security groups that allow unrestricted access on port 3389.
+https://www.examtopics.com/discussions/amazon/view/424474-exam-aws-certified-cloudops-engineer-associate-soa-c03-topic/
+
+---
+
+Q: A development team is building an application that will use an Amazon API Gateway REST API and AWS Lambda functions to receive and process requests. The Lambda functions will deliver messages to an Amazon SNS topic. External stakeholders subscribe to the SNS topic.\nThe company wants to prevent sensitive data from being published to the SNS topic.\nWhich solution will meet these requirements?
+*A. Associate a data protection policy with the SNS topic. Define policy statements that identify and protect the sensitive data.
+B. Run a sensitive data discovery job in Amazon Macie. Define the scope to identify and redact sensitive information within the workflow before publishing messages to the SNS topic.
+C. Deploy Amazon GuardDuty Lambda Protection. Define sensitive data patterns that generate specific finding types when the patterns are matched. Send notifications to the development team.
+D. Use Amazon Inspector to scan the Lambda function code for sensitive information. Activate an alert when Amazon Inspector finds sensitive information.
+https://www.examtopics.com/discussions/amazon/view/424475-exam-aws-certified-cloudops-engineer-associate-soa-c03-topic/
+
+---
+
+Q: A CloudOps engineer has an AWS CloudFormation template that deploys an encrypted Amazon Machine Image (AMI). The AMI is encrypted with an AWS KMS asymmetric key.\nThe CloudFormation template needs to be used in a second account. The CloudOps engineer copies the encrypted AMI to the second account. The new CloudFormation stack in the second account fails to launch.\nWhich action should the CloudOps engineer take to resolve this issue?
+*A. Update the CloudFormation template with the ID of the AMI in the second account. In the KMS key policy, allow the second account to access the KMS key.
+B. Convert the KMS key to a symmetric key. Copy the AMI to the second account. Deregister the AMI in the initial account. Register the AMI in the second account.
+C. Export the KMS key from the initial account. Import the KMS key into the second account. Update the CloudFormation template with the KMS key's new Amazon Resource Name (ARN).
+D. Export the KMS key from the initial account. Change the AMI permissions to mark the AMI as public. Import the KMS key into the second account.
+https://www.examtopics.com/discussions/amazon/view/424476-exam-aws-certified-cloudops-engineer-associate-soa-c03-topic/
+
+---
+
+Q: A CloudOps engineer must load test a new Amazon CloudFront distribution to assess data transfer and latency performance.\nWhich solution will meet this requirement?
+A. Send client requests from a single geographic region. Configure the load test so that each client makes an identical DNS request. Focus the client requests on the IP address that the DNS returns.
+B. Send client requests from a single geographic region. Configure the load test so that each client makes an independent DNS request. Spread the client requests across the set of IP addresses that the DNS returns.
+C. Send client requests from multiple geographic regions. Configure the load test so that each client makes an identical DNS request. Focus the client requests on the IP address that the DNS returns.
+*D. Send client requests from multiple geographic regions. Configure the load test so that each client makes an independent DNS request. Spread the client requests across the set of IP addresses that the DNS returns.
+https://www.examtopics.com/discussions/amazon/view/424502-exam-aws-certified-cloudops-engineer-associate-soa-c03-topic/
+
+---
+
+Q: A company is expanding globally and needs to back up data on Amazon EBS volumes to a different AWS Region. Most of the EBS volumes that store the data are encrypted, but some of the EBS volumes are unencrypted. The company needs the backup data from all the EBS volumes to be encrypted.\nWhich solution will meet these requirements with the LEAST management overhead?
+*A. Configure a lifecycle policy in Amazon Data Lifecycle Manager (Amazon DLM) to create the EBS volume snapshots with cross-Region backups enabled. Encrypt the snapshot copies by using AWS KMS.
+B. Create a point-in-time snapshot of the EBS volumes. When the snapshot status is COMPLETED, copy the snapshots to another Region and set the Encrypted parameter to False.
+C. Create a point-in-time snapshot of the EBS volumes. Copy the snapshots to an Amazon S3 bucket that uses server-side encryption. Turn on S3 CrossRegion Replication on the S3 bucket.
+D. Schedule an AWS Lambda function with the Python runtime. Configure the Lambda function to create the EBS volume snapshots, encrypt the unencrypted snapshots, and copy the snapshots to another Region.
+https://www.examtopics.com/discussions/amazon/view/424503-exam-aws-certified-cloudops-engineer-associate-soa-c03-topic/
+
+---
+
+Q: A CloudOps engineer needs to give an existing AWS Lambda function access to an existing Amazon S3 bucket. Traffic between the Lambda function and the S3 bucket must not use public IP addresses. The Lambda function has been configured to run in a VPC.\nWhich solution will meet these requirements?
+A. Configure VPC sharing between the Lambda VPC and the S3 bucket.
+B. Attach a transit gateway to the Lambda VPC to allow the Lambda function to connect to the S3 bucket.
+C. Create a NAT gateway. Associate the NAT gateway with the subnet where the Lambda function is configured to run.
+*D. Create an S3 interface endpoint. Change the Lambda function to use the new S3 DNS name.
+https://www.examtopics.com/discussions/amazon/view/424504-exam-aws-certified-cloudops-engineer-associate-soa-c03-topic/
+
+---
+
+Q: A company has an application that runs on Amazon EC2 instances. The application stores data on an Amazon RDS for MySQL Single-AZ DB instance. Requests to the DB instance from the application include reads and writes.\nA CloudOps engineer must implement a solution that provides failover for the DB instance. The solution must minimize application downtime.\nWhich solution will meet these requirements?
+*A. Modify the DB instance to be a Multi-AZ DB instance deployment.
+B. Add a read replica in the same Availability Zone where the DB instance is deployed.
+C. Add the DB instance to an Auto Scaling group that has a minimum capacity of 2 and a desired capacity of 2.
+D. Use RDS Proxy to configure a proxy in front of the DB instance.
+https://www.examtopics.com/discussions/amazon/view/424505-exam-aws-certified-cloudops-engineer-associate-soa-c03-topic/
+
+---
+
+Q: A company has a non-production application that runs on an Amazon EC2 instance. The instance has an Amazon EBS volume attached. Each time an instance health check fails, a CloudOps engineer resolves the issue by rebooting the instance.\nThe CloudOps engineer must implement an automated solution to reboot the instance after a failed health check. The CloudOps engineer creates a service-linked IAM role for Amazon EventBridge.\nWhat should the CloudOps engineer do next to meet the automation requirement?
+A. Create an Amazon CloudWatch alarm for the HealthyHostCount metric. Include a search expression in the alarm that matches the instance. Configure the alarm to perform an EC2 reboot action when the metric value is greater than zero.
+B. Create an Amazon CloudWatch alarm for the StatusCheckFailed_Instance metric. Include a search expression in the alarm that matches the instance. Configure the alarm to perform an EC2 recover action when the metric value is greater than zero.
+*C. Create an Amazon CloudWatch alarm for the StatusCheckFailed_Instance metric. Use the instance ID as a dimension. Configure the alarm to perform an EC2 reboot action when the metric value is greater than zero.
+D. Configure detailed monitoring for the instance. Create an Amazon CloudWatch alarm for the StatusCheckFailed_Instance metric. Use the EC2 Amazon Machine Image (AMI) ID as a dimension. Configure the alarm to perform an EC2 stop instance operation and then an EC2 start instance operation when the metric value is greater than zero.
+https://www.examtopics.com/discussions/amazon/view/424507-exam-aws-certified-cloudops-engineer-associate-soa-c03-topic/
+
+---
+
+Q: A compliance team requires all administrator passwords for Amazon RDS DB instances to be changed at least annually.\nWhich solution meets this requirement in the MOST operationally efficient manner?
+*A. Store the database credentials in AWS Secrets Manager. Configure automatic rotation for the secret every 365 days.
+B. Store the database credentials as a parameter in the RDS parameter group. Create a database trigger to rotate the password every 365 days.
+C. Store the database credentials in a private Amazon S3 bucket. Schedule an AWS Lambda function to generate a new set of credentials every 365 days.
+D. Store the database credentials in AWS Systems Manager Parameter Store as a secure string parameter. Configure automatic rotation for the parameter every 365 days.
+https://www.examtopics.com/discussions/amazon/view/424508-exam-aws-certified-cloudops-engineer-associate-soa-c03-topic/
+
+---
+
+Q: A company uses AWS Organizations to manage multiple AWS accounts. Corporate policy mandates that only specific AWS Regions can be used to store and process customer data. A CloudOps engineer must prevent the provisioning of Amazon EC2 instances in unauthorized Regions by anyone in the company.\nWhat is the MOST operationally efficient solution that meets these requirements?
+A. Configure AWS CloudTrail in all Regions to record all API activity. Create an Amazon EventBridge rule in all unauthorized Regions for ec2:RunInstances events. Use AWS Lambda to terminate the launched EC2 instances.
+B. In each AWS account, create a managed IAM policy that uses a Region condition to deny the ec2:RunInstances action in all unauthorized Regions. Attach this policy to all IAM groups in each AWS account.
+C. In each AWS account, create an IAM permissions boundary policy that uses a Region condition to deny the ec2:RunInstances action in all unauthorized Regions. Attach the permissions boundary policy to all IAM users in each AWS account.
+*D. Create a service control policy (SCP) in AWS Organizations to deny the ec2:RunInstances action in all unauthorized Regions. Attach this policy to the root level of the organization.
+https://www.examtopics.com/discussions/amazon/view/424509-exam-aws-certified-cloudops-engineer-associate-soa-c03-topic/
+
+---
+
+Q: A company has AWS accounts in an organization in AWS Organizations. The company has built an AWS Lambda function in one account. The Lambda function needs to retrieve a list of Amazon EC2 instances that are running in another account.\nWhich solution will provide this access MOST securely?
+A. Create an IAM user in the account where the EC2 instances are running. Collect access keys from the user. Store these credentials in AWS Systems Manager Parameter Store in the account of the Lambda function. Configure the Lambda function to use the access key and the secret key.
+*B. Configure the Lambda function's execution role to assume a cross-account IAM role in the account where the EC2 instances are running. Modify the trust policy of the cross-account role to allow the Lambda function to assume the role. Add the AWS STS AssumeRole API operation to the Lambda function's code.
+C. From the management account in the organization, call the Organizations CreatePolicy API operation to create a new service control policy (SCP). Configure the SCP to grant lambda:InvokeFunction permission. Assign the SCP to the organization root.
+D. Create a new resource-based policy for the Lambda function. In the policy, set the Principal to "*" and set the Action to lambda:InvokeFunction. Create a condition on the policy to allow access when the value of the aws:PrincipalOrgID condition key matches the organization's ID.
+https://www.examtopics.com/discussions/amazon/view/424510-exam-aws-certified-cloudops-engineer-associate-soa-c03-topic/
+
+---
+
+Q: An application is running on an Amazon EC2 instance in a VPC with the default DHCP option set. The application connects to an on-premises Microsoft SQL Server database with the DNS name mssql.example.com. The application is unable to resolve the database DNS name.\nWhich solution will fix this problem?
+A. Create an Amazon Route 53 Resolver inbound endpoint. Add a forwarding rule for the domain example.com. Associate the forwarding rule with the VPC.
+B. Create an Amazon Route 53 Resolver inbound endpoint. Add a system rule for the domain example.com. Associate the system rule with the VPC.
+*C. Create an Amazon Route 53 Resolver outbound endpoint. Add a forwarding rule for the domain example.com. Associate the forwarding rule with the VPC.
+D. Create an Amazon Route 53 Resolver outbound endpoint. Add a system rule for the domain example.com. Associate the system rule with the VPC.
+https://www.examtopics.com/discussions/amazon/view/424512-exam-aws-certified-cloudops-engineer-associate-soa-c03-topic/
+
+---
+
+Q: A company uses an AWS Lambda function to process user uploads to an Amazon S3 bucket. The Lambda function runs in response to Amazon S3 PutObject events.\nA CloudOps engineer needs to set up monitoring for the Lambda function. The CloudOps engineer wants to receive a notification through an Amazon SNS topic if the function takes more than 10 seconds to process an event.\nWhich solution will meet this requirement?
+A. Collect Amazon CloudWatch logs for the Lambda function. Create a metric filter to extract the PostRuntimeExtensionsDuration metric from the logs. Create a CloudWatch alarm to publish a notification to the SNS topic when the function runtime exceeds 10 seconds.
+*B. Collect Amazon CloudWatch metrics for the Lambda function to extract the function runtime. Create a CloudWatch alarm to publish a notification to the SNS topic when the runtime exceeds 10 seconds.
+C. Configure an Amazon CloudWatch metric filter to capture the runtime of the Lambda function. Set the function's timeout setting to 10 seconds. Create an SNS subscription to alert the CloudOps engineer if the function times out.
+D. Use Amazon CloudWatch Logs Insights to query Lambda logs for the function runtime. Set up a CloudWatch alarm based on the query result. Configure Amazon SNS to send notifications when function runtime exceeds 10 seconds.
+https://www.examtopics.com/discussions/amazon/view/424513-exam-aws-certified-cloudops-engineer-associate-soa-c03-topic/
+
+---
+
+Q: A company recently purchased Savings Plans. The company wants to receive email notification when the company's utilization drops below 90% for a given day.\nWhich solution will meet this requirement?
+A. Create an Amazon CloudWatch alarm to monitor the Savings Plan check in AWS Trusted Advisor. Configure an Amazon SQS queue for email notification when the utilization drops below 90% for a given day.
+B. Create an Amazon CloudWatch alarm to monitor the SavingsPlansUtilization metric under the AWS/SavingsPlans namespace in CloudWatch. Configure an Amazon SQS queue for email notification when the utilization drops below 90% for a given day.
+C. Create a Savings Plans alert to monitor the daily utilization of the Savings Plans. Configure an Amazon SNS topic for email notification when the utilization drops below 90% for a given day.
+*D. Use AWS Budgets to create a Savings Plans budget to track the daily utilization of the Savings Plans. Configure an Amazon SNS topic for email notification when the utilization drops below 90% for a given day.
+https://www.examtopics.com/discussions/amazon/view/424514-exam-aws-certified-cloudops-engineer-associate-soa-c03-topic/
+
+---
+
+Q: A company's ecommerce application is running on Amazon EC2 instances that are behind an Application Load Balancer (ALB). The instances are in an Auto Scaling group. Customers report that the website is occasionally down. When the website is down, the website returns an HTTP 500 (server error) status message to customer browsers.\nThe Auto Scaling group's health check is configured for EC2 status checks, and the instances are healthy.\nWhich solution will resolve the problem?
+A. Replace the ALB with a Network Load Balancer.
+*B. Add Elastic Load Balancing (ELB) health checks to the Auto Scaling group.
+C. Update the target group configuration on the ALB. Enable session affinity (sticky sessions).
+D. Install the Amazon CloudWatch agent on all the instances. Configure the agent to reboot the instances.
+https://www.examtopics.com/discussions/amazon/view/424515-exam-aws-certified-cloudops-engineer-associate-soa-c03-topic/
+
+---
+
+Q: A company has created a new video-on-demand (VOD) application. The application runs on a fleet of Amazon EC2 instances behind an Application Load Balancer (ALB). The company configured an Amazon CloudFront distribution and set the ALB as the origin. Because of increasing application demand, the company wants to move all video files to a central Amazon S3 bucket.\nA CloudOps engineer needs to ensure that video files can be cached at edge locations after the company migrates the files to Amazon S3.\nWhich solution will meet this requirement?
+A. Configure CloudFront to send the X-Forwarded-For header to the origin and to redirect video requests to Amazon S3 instead of the ALB.
+*B. Configure a new CloudFront cache behavior to route to Amazon S3 as a new origin, based on matching an URL path pattern.
+C. Configure URL signing in the CloudFront distribution by using a custom policy. Ensure that video files are accessed through signed URLs only.
+D. Configure a CloudFront origin group. Specify the required HTTP status codes to direct connection attempts to a secondary origin.
+https://www.examtopics.com/discussions/amazon/view/424516-exam-aws-certified-cloudops-engineer-associate-soa-c03-topic/
 
 ---
 
@@ -46,24 +488,6 @@ https://www.examtopics.com/discussions/amazon/view/369115-exam-aws-certified-clo
 
 ---
 
-Q: A company is migrating a legacy application to AWS. The company manually installs and configures the legacy application on Amazon EC2 instances across multiple Availability Zones. The company sets up an Application Load Balancer (ALB) for the application. The company sets the target group routing algorithm to weighted random. The application requires session affinity.\nAfter the company deploys the application, users report random application errors that were not present in the legacy version of the application. The target group health checks do not show any failures. The company must resolve the application errors.\nWhich solution will meet this requirement?
-*A. Set the routing algorithm of the target group to least outstanding requests.
-B. Turn on anomaly mitigation for the target group.
-C. Turn off the cross-zone load balancing attribute of the target group.
-D. Increase the deregistration delay attribute of the target group.
-https://www.examtopics.com/discussions/amazon/view/369117-exam-aws-certified-cloudops-engineer-associate-soa-c03-topic/
-
----
-
-Q: A company is using an Amazon Aurora MySQL DB cluster that has point-in-time recovery, backtracking, and automatic backup enabled. A CloudOps engineer needs to be able to roll back the DB cluster to a specific recovery point within the previous 72 hours. Restores must be completed in the same production DB cluster.\nWhich solution will meet these requirements?
-A. Create an Aurora Replica. Promote the replica to replace the primary DB instance.
-B. Create an AWS Lambda function to restore an automatic backup to the existing DB cluster.
-*C. Use backtracking to rewind the existing DB cluster to the desired recovery point.
-D. Use point-in-time recovery to restore the existing DB duster to the desired recovery point.
-https://www.examtopics.com/discussions/amazon/view/369118-exam-aws-certified-cloudops-engineer-associate-soa-c03-topic/
-
----
-
 Q: A CloudOps engineer is troubleshooting an AWS CloudFormation stack creation that failed. Before the CloudOps engineer can identify the problem, the stack and its resources are deleted. For future deployments, the CloudOps engineer must preserve any resources that CloudFormation successfully created.\nWhat should the CloudOps engineer do to meet this requirement?
 A. Set the value of the DisableRollback parameter to False during stack creation.
 *B. Set the value of the OnFailure parameter to DO_NOTHING during stack creation.
@@ -79,15 +503,6 @@ A. Create an Application Load Balancer that has one HTTPS listener on port 80. A
 C. Create an Application Load Balancer that has two TCP listeners on port 80 and port 443. Attach an SSL/TLS certificate to listener port 443. Create a rule to redirect requests from port 80 to port 443.
 D. Create a Network Load Balancer that has two TCP listeners on port 80 and port 443. Attach an SSL/TLS certificate to listener port 443. Create a rule to redirect requests from port 80 to port 443.
 https://www.examtopics.com/discussions/amazon/view/369120-exam-aws-certified-cloudops-engineer-associate-soa-c03-topic/
-
----
-
-Q: A company uses AWS Organizations to manage a set of AWS accounts. The company has set up organizational units (OUs) in the organization. An application OU supports various applications.\nA CloudOps engineer must prevent users from launching Amazon EC2 instances that do not have a CostCenter-Project tag into any account in the application OU. The restriction must apply only to accounts in the application OU.\nWhich solution will meet these requirements?
-A. Create an IAM group that has a policy that allows the ec2:RunInstances action when the CostCenter-Project tag is present. Place all IAM users who need access to the application accounts in the IAM group.
-*B. Create a service control policy (SCP) that denies the oc2:RunInstances action when the CostCenter-Project tag is missing. Attach the SCP to the application OU.
-C. Create an IAM role that has a policy that allows the oc2:RunInstances action when the CostCenter-Project tag is present. Attach the IAM role to the IAM users that are in the application OU accounts.
-D. Create a service control policy (SCP) that denies the ec2:RunInstances action when the CostCenter-Project tag is missing. Attach the SCP to the root OU.
-https://www.examtopics.com/discussions/amazon/view/369338-exam-aws-certified-cloudops-engineer-associate-soa-c03-topic/
 
 ---
 
@@ -472,15 +887,6 @@ https://www.examtopics.com/discussions/amazon/view/369154-exam-aws-certified-clo
 
 ---
 
-Q: An application runs on Amazon EC2 instances behind an Application Load Balancer (ALB). The application takes up to 2 minutes to populate a local cache after the application is started. The application reports as healthy in the target group health check a few seconds after starting.\nA CloudOps engineer observes that after some of the instances are rebooted, the instances receive an equal share of the traffic immediately after each instance reports as healthy. The application needs to receive a gradually increasing share of the traffic while the application cache is populated.\nWhich solution will meet this requirement?
-*A. Change the slow_start.duration_seconds target group attribute to 120 seconds. Before rebooting the instances, deregister the instances from the target group. After rebooting the instances, register the instances with the target group.
-B. Change the HealthCheckTimeoutSeconds paramotor in the target group to 120 seconds. Before rebooting the instances, deregister the instances from the target group. After rebooting the instances, register the instances with the target group.
-C. Configure an Amazon CloudWatch alarm to monitor the health check status. Configure the action of the alarm to restart an EC2 instance if a health check fails. Change the loadbalancing.algorithm.type target group attribute to be weighted_random.
-D. Create an Amazon EC2 Auto Scaling group. Attach the existing EC2 instances to the Auto Scaling group. Configure an EC2 Auto Scaling lifecycle hook to move starting instances to the\nPending Wait state. Update the application to complete the lifecycle hook when the local cache has been populated.
-https://www.examtopics.com/discussions/amazon/view/369155-exam-aws-certified-cloudops-engineer-associate-soa-c03-topic/
-
----
-
 Q: A company runs an application on Amazon EC2 instances. The application stores and retrieves data from an Amazon Aurora PostgreSQL database. A developer accidentally drops a table from the database, which causes application errors. Two hours later, a CloudOps engineer needs to recover the data and make the application function again.\nWhich solution will meet this requirement?
 A. Use the Aurora Backtrack feature to rewind the database to a specified time, 2 hours in the past.
 B. Perform a point-in-time recovery on the existing database to restore the database to a specified point in time, 2 hours in the past.
@@ -593,15 +999,6 @@ https://www.examtopics.com/discussions/amazon/view/369163-exam-aws-certified-clo
 
 ---
 
-Q: A company's website runs on an Amazon EC2 Linux instance. The website needs to serve PDF files from an Amazon S3 bucket. All public access to S3 bucket is blocked at the account level. The company needs to allow website users to download the PDF files.\nWhich solution will meet these requirements with the LEAST administrative effort?
-A. Create an IAM role that has a policy that allows s3:list* and s3:get* permissions. Assign the role to the EC2 instance. Assign a company employee to download requested PDF file to the EC2 instance and to deliver the files to website users. Create an AWS Lambda function to periodically delete local files.
-*B. Create an Amazon CloudFront distribution that uses an origin access control (OAC) that points to the S3 bucket. Apply a bucket policy to the bucket to allow connections from the CloudFront distribution. Assign a company employee to provide a download URL that contains the distribution URL and the object path to users when users request PDF files.
-C. Change the S3 bucket permissions to allow public access on the source S3 bucket. Assign a company employee to provide a PDF file URL to users when users request the PDF files.
-D. Deploy an EC2 instance that has an 1AM instance profile to a public subnet. Use a signed URL from the EC2 instance to provide temporary access to the S3 bucket for website users.
-https://www.examtopics.com/discussions/amazon/view/383646-exam-aws-certified-cloudops-engineer-associate-soa-c03-topic/
-
----
-
 Q: A company uses memory-optimized Amazon EC2 instances behind a Network Load Balancer (NLB) to run an application. The company launched the EC2 instances from an AWS provided Red Hat Enterprise Linux (RHEL) Amazon Machine Image (AMI).\nA CloudOps engineer must monitor RAM utilization in 5-minute intervals. The CloudOps engineer must ensure that the EC2 instances scale in and out appropriately based on incoming load.\nWhich solution will meet these requirements?
 A. Configure detailed monitoring for the EC2 instances. Configure the Amazon CloudWatch agent on the EC2 instances. Create an EC2 Auto Scaling group and Auto Scaling policy that is based on the mem_active metric.
 B. Configure detailed monitoring for the EC2 instances. Use the mem_used_percent metric that the detailed monitoring feature provides. Create an IAM role that allows the CloudWatch agent to upload data. Create an EC2 Auto Scaling group and Auto Scaling policy that is based on the mem_used_percent metric.
@@ -617,15 +1014,6 @@ A. The missing instances have insufficient historical Amazon CloudWatch metric d
 C. Compute Optimizer already considers the missing instances to be optimized.
 D. The missing instances are running a Windows operating system.
 https://www.examtopics.com/discussions/amazon/view/383645-exam-aws-certified-cloudops-engineer-associate-soa-c03-topic/
-
----
-
-Q: A company runs a workload in an Amazon VPC. The company configures Amazon CloudWatch Logs for the workload. The company needs a solution to automatically detect unusual API activity and security events in the company's AWS account.\nWhich solution will meet this requirement?
-A. Use Amazon Inspector to scan VPC flow logs.
-*B. Use Amazon GuardDuty to monitor CloudWatch logs.
-C. Implement AWS CloudTrail Insights.
-D. Use AWS Config automatic anomaly detection.
-https://www.examtopics.com/discussions/amazon/view/383640-exam-aws-certified-cloudops-engineer-associate-soa-c03-topic/
 
 ---
 
@@ -728,12 +1116,613 @@ https://www.examtopics.com/discussions/amazon/view/402900-exam-aws-certified-clo
 
 ---
 
-Q: A CloudOps engineer needs to disable automatic backups for an Amazon RDS instance to optimize costs. When the CloudOps engineer attempts to disable the backups, the CloudOps engineer receives an error message that states the retention period must be between 1 and 35.\nWhat is the likely cause of this issue?
-A. The RDS instance has insufficient permissions to change the backup retention period.
-B. Read replicas are configured for the RDS instance.
-C. The RDS instance is using the default backup window.
-*D. The RDS instance is part of a Multi-AZ deployment.
-https://www.examtopics.com/discussions/amazon/view/402901-exam-aws-certified-cloudops-engineer-associate-soa-c03-topic/
+Q: A company hosts an ecommerce website on a fleet of Nitro-based Amazon EC2 Linux instances. During a recent sales event, some customers reported HTTP timeout errors.\nTo help identify the root cause of the errors, a CloudOps engineer needs more detailed network metrics from the Elastic Network Adapter (ENA) driver. The CloudOps engineer must obtain the conntrack_allowance_available metric and the conntrack_allowance_exceeded metric.\nWhich solution will provide these metrics with the MOST operational efficiency?
+*A. Install the Amazon CloudWatch agent on the instances. Filter by the conntrack_allowance_available metric and the conntrack_allowance_exceeded metric.
+B. Install the collectd daemon and the Amazon CloudWatch agent on the EC2 instances. Filter by the conntrack_allowance_available metric and the conntrack_allowance_exceeded metric.
+C. Enable VPC Flow Logs. Filter by the conntrack_allowance_available metric and the conntrack_allowance_exceeded metric.
+D. Enable Performance Insights for the instances. Use Amazon CloudWatch to view the conntrack_allowance_available metric and the conntrack_allowance_exceeded metric.
+https://www.examtopics.com/discussions/amazon/view/416137-exam-aws-certified-cloudops-engineer-associate-soa-c03-topic/
+
+---
+
+Q: A CloudOps engineer has an Amazon S3 bucket and a new AWS Lambda function. The CloudOps engineer tries to configure a new event notification from the S3 bucket to the Lambda function by using the Lambda console. The configuration fails and returns the following error: "Unable to validate the following destination configurations."\nThe engineer confirms that the new Lambda function and the function's IAM role are correctly configured.\nWhat is the cause of this error?
+A. The maximum number of S3 event notification destinations has been exceeded for the S3 bucket.
+B. The S3 bucket owner needs to grant the Lambda function explicit cross-account permissions by using a resource policy.
+C. The new Lambda function's resource-based policy is missing the lambda:InvokeFunction permission for Amazon S3.
+*D. The S3 bucket has an existing stale event notification that points to a deleted or permission-deficient resource.
+https://www.examtopics.com/discussions/amazon/view/416138-exam-aws-certified-cloudops-engineer-associate-soa-c03-topic/
+
+---
+
+Q: A company has scientists who upload large data objects to an Amazon S3 bucket. The scientists upload the objects as multipart uploads. The multipart uploads often fail because of poor end-client connectivity.\nThe company wants to optimize storage costs that are associated with the data. A CloudOps engineer must implement a solution that presents metrics for incomplete uploads. The solution also must automatically delete any incomplete uploads after 7 days.\nWhich solution will meet these requirements?
+*A. Review the Incomplete Multipart Upload Bytes metric in the S3 Storage Lens dashboard. Create an S3 Lifecycle policy to automatically delete any incomplete multipart uploads after 7 days.
+B. Implement S3 Intelligent-Tiering to move data into lower-cost storage classes after 7 days. Create an S3 Storage Lens policy to automatically delete any incomplete multipart uploads after 7 days.
+C. Access the S3 console. Review the Metrics tab to check the storage that incomplete multipart uploads are consuming. Create an AWS Lambda function to delete any incomplete multipart uploads after 7 days.
+D. Use the S3 analytics storage class analysis tool to identify and measure incomplete multipart uploads. Configure an S3 bucket policy to enforce restrictions on multipart uploads to delete incomplete multipart uploads after 7 days.
+https://www.examtopics.com/discussions/amazon/view/416139-exam-aws-certified-cloudops-engineer-associate-soa-c03-topic/
+
+---
+
+Q: A company uses an organization in AWS Organizations to manage a multi-account AWS environment. The company creates a new Amazon EBS backed Amazon Machine Image (AMI). The company shares the AMI across the organization. Employees must use the AMI to launch all new Linux-based Amazon EC2 instances across the entire organization.\nIn one of the company's application accounts, an employee uses the new AMI to launch a new workload. The EC2 instance launches, but it is terminated immediately.\nWhat the MOST likely reason that the instance did not fully boot?
+A. The user who launched the instance does not have ec2:RunInstances permissions within the application account.
+*B. The company encrypted the AMI by using an AWS KMS key that the user who launched the EC2 instance does not have access to.
+C. There is a service control policy (SCP) that denies the user who launched the EC2 instance access to launch instances in the application account.
+D. The user launched the EC2 instance into a subnet that does not have access to the internet.
+https://www.examtopics.com/discussions/amazon/view/416140-exam-aws-certified-cloudops-engineer-associate-soa-c03-topic/
+
+---
+
+Q: A company launches an application. The company hosts the application on Amazon EC2 instances. The instances are in a private subnet for security reasons.\nAn application team needs SSH access to the instances from corporate desktops in an office. The desktops are connected to the internet.\nWhich solution will provide this access?
+A. Configure a NAT gateway in the public subnet.
+*B. Create an AWS Site-to-Site VPN connection between the on-premises network and the VPC.
+C. Configure an internet gateway. Attach the internet gateway to the VPC.
+D. Create security groups that allow inbound traffic from the on-premises network to resources in the public subnets.
+https://www.examtopics.com/discussions/amazon/view/416141-exam-aws-certified-cloudops-engineer-associate-soa-c03-topic/
+
+---
+
+Q: A CloudOps engineer must troubleshoot performance issues for a web application that is delivered through Amazon CloudFront. The metrics show a consistently low cache hit ratio that leads to many requests being forwarded to the origin.\nWhich configuration will increase the cache hit ratio?
+A. Modify the origin's Cache-Control header to max-age=0.
+B. Reduce the TTL for cached objects.
+*C. Reduce the number of request headers, query strings, and cookies included in the cache key.
+D. Configure signed URLs or signed cookies to restrict access to content.
+https://www.examtopics.com/discussions/amazon/view/416142-exam-aws-certified-cloudops-engineer-associate-soa-c03-topic/
+
+---
+
+Q: A company plans to deploy a database on an Amazon Aurora MySQL DB cluster. The database will store data for a demonstration environment. The data must be reset on a daily basis.\nWhat is the MOST operationally efficient solution that meets these requirements?
+A. Create a manual snapshot of the DB cluster after the data has been populated. Create an Amazon EventBridge rule to invoke an AWS Lambda function on a daily basis. Configure the function to restore the snapshot and then delete the previous DB cluster.
+*B. Enable the Backtrack feature during the creation of the DB cluster. Specify a target backtrack window of 48 hours. Create an Amazon EventBridge rule to invoke an AWS Lambda function on a daily basis. Configure the function to perform a backtrack operation.
+C. Export a manual snapshot of the DB cluster to an Amazon S3 bucket after the data has been populated. Create an Amazon EventBridge rule to invoke an AWS Lambda function on a daily basis. Configure the function to restore the snapshot from Amazon S3.
+D. Set the DB cluster backup retention period to 2 days. Create an Amazon EventBridge rule to invoke an AWS Lambda function on a daily basis. Configure the function to restore the DB cluster to a point in time and then delete the previous DB cluster.
+https://www.examtopics.com/discussions/amazon/view/416143-exam-aws-certified-cloudops-engineer-associate-soa-c03-topic/
+
+---
+
+Q: A company's application runs on Amazon EC2 instances behind an Application Load Balancer (ALB). The company has configured an Amazon CloudWatch alarm to monitor the HTTPCode_Target_5XX_Count metric. The application crashes every few days during business hours. The crashes trigger the CloudWatch alarm and result in service disruption.\nThe cause of the crashes is a memory leak in the application. While developers work to fix the problem, a CloudOps engineer needs to implement a temporary solution. The solution must automatically reboot the EC2 instances every day and must minimize application disruption during business hours.\nWhich solution will meet these requirements?
+A. Create an Amazon EventBridge rule that is scheduled to run outside of business hours. Configure the rule to invoke the StartInstances operation on the EC2 instances.
+*B. Use AWS Systems Manager to create a daily maintenance window that is outside of business hours. Register the EC2 instances as a target. Assign the AWS-RestartEC2Instance runbook to the maintenance window.
+C. Configure an additional CloudWatch alarm to monitor the StatusCheckFailed_System metric for the EC2 instances. Configure an EC2 action on the additional alarm to reboot the instances.
+D. Configure an additional CloudWatch alarm that is triggered every time the application crashes. Configure an EC2 action on the additional alarm to restart the application on the EC2 instances.
+https://www.examtopics.com/discussions/amazon/view/416144-exam-aws-certified-cloudops-engineer-associate-soa-c03-topic/
+
+---
+
+Q: A company has an Amazon S3 bucket that has server-side encryption with AWS KMS keys (SSE-KMS) enabled. Several applications read from the S3 bucket for daily reporting. The company clears the data in the S3 bucket weekly when the company moves the data into a data warehouse.\nAs more applications read from the S3 bucket, the cost of KMS-related transactions is increasing. A CloudOps engineer needs to reduce the KMS costs without removing S3 encryption and without losing access to existing objects.\nWhich solution will meet these requirements with the LEAST operational overhead?
+*A. Enable S3 Bucket Keys on the S3 bucket. Specify the existing KMS key.
+B. Change the encryption type on the S3 bucket to server-side encryption with customer-provided keys (SSE-C).
+C. Use Amazon CloudFront to cache the objects in the S3 bucket and to serve the objects to the applications.
+D. Configure the applications to connect to the S3 bucket through an S3 access point.
+https://www.examtopics.com/discussions/amazon/view/416145-exam-aws-certified-cloudops-engineer-associate-soa-c03-topic/
+
+---
+
+Q: A company uses an Amazon CloudFront distribution to serve a static website that the company hosts on an Amazon S3 bucket. The S3 bucket is the origin of the CloudFront distribution. The website has users all over the world.\nThe company updates some content for the website. After the update, users report that they are encountering the previous version of the content.\nThe company must ensure that website users receive only the most current content.\nWhich solution will meet this requirement?
+A. Use Amazon S3 ACLs to make new content public.
+B. Reupload the new content. Set up versioning on the origin S3 bucket.
+C. Upload new content to the same Availability Zone where the CloudFront distribution is located.
+*D. Use CloudFront invalidation when new content is uploaded.
+https://www.examtopics.com/discussions/amazon/view/416148-exam-aws-certified-cloudops-engineer-associate-soa-c03-topic/
+
+---
+
+Q: A company uses default settings to create an AWS Lambda function. The function needs to access an Amazon RDS database that is in a private subnet of a VPC. The function has the correct IAM permissions to access the database. The private subnet has appropriate routing configurations and is accessible from within the VPC. However, the Lambda function is unable to connect to the RDS instance.\nWhat is the likely reason the Lambda function cannot connect to the RDS instance?
+A. The company did not set the RDS instance as the destination for the Lambda function in the function configuration.
+*B. The Lambda function configuration did not deploy the function in the same VPC that contains the RDS instance.
+C. The VPC where the Lambda function is deployed is not peered with the VPC where the RDS instance is deployed.
+D. The security group for the Lambda function does not allow outbound access to the RDS instance.
+https://www.examtopics.com/discussions/amazon/view/416149-exam-aws-certified-cloudops-engineer-associate-soa-c03-topic/
+
+---
+
+Q: A CloudOps engineer is unable to launch Amazon EC2 instances into a VPC because there are no available private IPv4 addresses in the VPC.\nWhich combination of actions must the CloudOps engineer take to launch the instances? (Choose two.)
+*A. Associate a secondary IPv4 CIDR block with the VPC.
+B. Associate a primary IPv6 CIDR block with the VPC.
+*C. Create a new subnet for the VPC.
+D. Modify the CIDR block of the VPC.
+E. Modify the CIDR block of the subnet that is associated with the instances.
+https://www.examtopics.com/discussions/amazon/view/416150-exam-aws-certified-cloudops-engineer-associate-soa-c03-topic/
+
+---
+
+Q: A company is running a stateless application. The application consists of a web server and a PostgreSQL database that run on a single Amazon EC2 instance. The EC2 instance becomes overloaded during times of high application traffic, leading to slow response times.\nA CloudOps engineer needs to implement a solution to resolve the application's performance issues. The solution must accommodate increased application traffic as the number of users continues to grow. The solution also must make the application highly available.\nWhich combination of steps will meet these requirements? (Choose two.)
+A. Create an Amazon CloudFront distribution. Specify the EC2 instance as the origin.
+*B. Configure an EC2 Auto Scaling group of web servers behind an Application Load Balancer.
+C. Upgrade the existing EC2 instance to a larger instance type with more CPU and memory resources.
+*D. Use an Amazon RDS for PostgreSQL Multi-AZ deployment for the database. Point the application to the new endpoint.
+E. Upgrade the PostgreSQL database on the EC2 instance to a newer version.
+https://www.examtopics.com/discussions/amazon/view/416151-exam-aws-certified-cloudops-engineer-associate-soa-c03-topic/
+
+---
+
+Q: A CloudOps engineer needs to configure a caching layer for a read-heavy application that uses an Amazon RDS for PostgreSQL database. The application exists across three AWS Regions. Read and write activities occur in the primary Region. In the two secondary Regions, read-only activity occurs on RDS for PostgreSQL cross-Region read replicas.\nThe cache in each Region must consist of the same data to provide a consistent user experience across Regions.\nWhich solution for the caching layer will meet these requirements?
+*A. Set up an Amazon ElastiCache (Redis OSS) global datastore. Include a read and write cluster in the primary Region. Include a read-only cluster in each secondary Region.
+B. Set up an Amazon ElastiCache (Memcached) global database. Include a read and write cluster in the primary Region. Include a read-only cluster in each secondary Region.
+C. Set up query caching on the RDS for PostgreSQL database in the primary Region. Configure query cache replication to the secondary RDS cross-Region replicas.
+D. Set up an Amazon ElastiCache (Memcached) cluster with cluster mode enabled in all three Regions. Set up ElastiCache cross-Region replication from the primary Region to the secondary Regions.
+https://www.examtopics.com/discussions/amazon/view/416152-exam-aws-certified-cloudops-engineer-associate-soa-c03-topic/
+
+---
+
+Q: A company uses a large number of Linux based Amazon EC2 instances to run business operations such as ordering, fulfillment, and billing. The company uses AWS Systems Manager to manage the EC2 instances. The company wants to ensure that the Systems Manager Agent (SSM Agent) is always up to date with the latest version.\nWhich solution will meet this requirement in the MOST operationally efficient way?
+*A. Enable the Auto update SSM Agent setting in Systems Manager Fleet Manager.
+B. Subscribe to SSM Agent notifications on Github. Configure the subscription events to invoke an Amazon SNS topic. Configure the SNS topic to run a custom AWS Lambda function to update the SSM Agent by using the Systems Manager Run Command API.
+C. Enable the Auto update SSM Agent setting in Systems Manager Patch Manager.
+D. Subscribe to SSM Agent notifications on Github. Configure the subscription events to invoke an Amazon SNS topic. Configure the topic to run a custom AWS Lambda function to update the SSM Agent by using a Systems Manager Automation document.
+https://www.examtopics.com/discussions/amazon/view/416153-exam-aws-certified-cloudops-engineer-associate-soa-c03-topic/
+
+---
+
+Q: A CloudOps engineer needs to implement a monitoring system to collect instance metrics every minute for an application. The application runs on a highly available pair of Amazon EC2 instances. The monitoring system must send an email alert when the metrics exceed a predefined threshold.\nWhich solution will meet these requirements?
+A. Use the AWS Health Dashboard to extract the instance metrics. Configure Amazon EventBridge to detect and react to changes in the metrics and to send email alerts.
+B. Use AWS CloudTrail to monitor the instances. Copy the logs to an Amazon S3 bucket. Configure an AWS Lambda function to send email alerts based on the logs from the S3 bucket.
+C. Use basic monitoring in Amazon CloudWatch for the instance metrics. Configure CloudWatch alarms that use Amazon SNS to send email alerts.
+*D. Use detailed monitoring in Amazon CloudWatch for the instance metrics. Configure CloudWatch alarms that use Amazon SNS to send email alerts.
+https://www.examtopics.com/discussions/amazon/view/416154-exam-aws-certified-cloudops-engineer-associate-soa-c03-topic/
+
+---
+
+Q: A company is managing a website with a global user base hosted on Amazon EC2 with an Application Load Balancer (ALB). To reduce the load on the web servers, a CloudOps engineer configures an Amazon CloudFront distribution with the ALB as the origin. After a week of monitoring the solution, the CloudOps engineer notices that requests are still being served by the ALB and there is no change in the web server load.\nWhat are possible causes for this problem? (Choose two.)
+A. CloudFront does not have the ALB configured as the origin access identity.
+*B. The DNS is still pointing to the ALB instead of the CloudFront distribution.
+C. The ALB security group is not permitting inbound traffic from CloudFront.
+*D. The default, minimum, and maximum Time to Live (TTL) are set to 0 seconds on the CloudFront distribution.
+E. The target groups associated with the ALB are configured for sticky sessions.
+https://www.examtopics.com/discussions/amazon/view/416155-exam-aws-certified-cloudops-engineer-associate-soa-c03-topic/
+
+---
+
+Q: A company is undergoing an external audit of its systems, which run wholly on AWS. A CloudOps engineer must supply documentation of Payment Card Industry Data Security Standard (PCI DSS) compliance for the infrastructure managed by AWS.\nWhich set of actions should the CloudOps engineer take to meet this requirement?
+*A. Download the applicable reports from the AWS Artifact portal and supply these to the auditors.
+B. Download complete copies of the AWS CloudTrail log files and supply these to the auditors.
+C. Download complete copies of the Amazon CloudWatch logs and supply these to the auditors.
+D. Provide the auditors with administrative access to the production AWS account so that the auditors can determine compliance.
+https://www.examtopics.com/discussions/amazon/view/416156-exam-aws-certified-cloudops-engineer-associate-soa-c03-topic/
+
+---
+
+Q: A CloudOps engineer has used AWS CloudFormation to deploy a serverless application into a production VPC. The application consists of an AWS Lambda function, an Amazon DynamoDB table, and an Amazon API Gateway API. The CloudOps engineer must delete the AWS CloudFormation stack without deleting the DynamoDB table.\nWhich action should the CloudOps engineer take before deleting the AWS CloudFormation stack?
+*A. Add a Retain deletion policy to the DynamoDB resource in the AWS CloudFormation stack.
+B. Add a Snapshot deletion policy to the DynamoDB resource in the AWS CloudFormation stack.
+C. Enable termination protection on the AWS CloudFormation stack.
+D. Update the application's IAM policy with a Deny statement for the dynamodb:DeleteTable action.
+https://www.examtopics.com/discussions/amazon/view/416157-exam-aws-certified-cloudops-engineer-associate-soa-c03-topic/
+
+---
+
+Q: A CloudOps engineer is working on cost savings for a company. The CloudOps engineer notices multiple unused Elastic IP addresses. The addresses are spread across different accounts and AWS Regions in an organization in AWS Organizations.\nThe CloudOps engineer must administer and track the addresses based on security domains. The CloudOps engineer must be able to view the history of assigned addresses.\nWhich solution will meet these requirements?
+A. Enable AWS Config with an IP address tracking rule.
+B. Use Amazon CloudWatch with custom IP metrics to view addresses by account and Region.
+*C. Enable Amazon VPC IP Address Manager for Organizations integrations.
+D. In AWS Systems Manager Inventory, enable a resource data sync to Amazon S3 for IP tracking.
+https://www.examtopics.com/discussions/amazon/view/416161-exam-aws-certified-cloudops-engineer-associate-soa-c03-topic/
+
+---
+
+Q: A company has a software as a service (SaaS) application. The company has integrated the application with AWS services by using the AWS SDK and an IAM user's access key ID and secret access key.\nThe company needs to implement the principle of least privilege for the IAM user. The company must avoid the usage of permanent credentials.\nWhich solution will meet these requirements?
+A. Migrate the application to use the AWS STS AssumeRoleWithSAML API operation.
+*B. Migrate the application to use the AWS STS AssumeRole API operation. Allow the IAM user to call only AWS STS.
+C. Add a policy to the existing IAM user to scope the permissions to only the permissions that the user needs for the application.
+D. Add an IAM group to scope the permissions to only the permissions that the user needs for the application. Add the IAM user to the IAM group.
+https://www.examtopics.com/discussions/amazon/view/416162-exam-aws-certified-cloudops-engineer-associate-soa-c03-topic/
+
+---
+
+Q: A company has many accounts in an organization in AWS Organizations. The company must automate resource provisioning from the organization's management account to the member accounts.\nWhich solution will meet this requirement?
+A. Create an AWS CloudFormation change set. Deploy the change set to all member accounts.
+B. Create an AWS CloudFormation nested stack. Deploy the nested stack to all member accounts.
+*C. Create an AWS CloudFormation stack set. Deploy the stack set to all member accounts.
+D. Create an AWS SAM template. Deploy the template to all member accounts.
+https://www.examtopics.com/discussions/amazon/view/416163-exam-aws-certified-cloudops-engineer-associate-soa-c03-topic/
+
+---
+
+Q: A company's VPC has connectivity to an on-premises data center through an AWS Site-to-Site VPN. The company needs Amazon EC2 instances in the VPC to send DNS queries for example.com to the DNS servers in the data center.\nWhich solution will meet these requirements?
+A. Create an Amazon Route 53 Resolver inbound endpoint. Create a conditional forwarding rule on the on-premises DNS servers to forward DNS requests for example.com to the inbound endpoints.
+B. Create an Amazon Route 53 Resolver inbound endpoint. Create a forwarding rule on the resolver that sends all queries for example.com to the on-premises DNS servers. Associate this rule with the VPC.
+C. Create an Amazon Route 53 Resolver outbound endpoint. Create a conditional forwarding rule on the on-premises DNS servers to forward DNS requests for example.com to the outbound endpoints.
+*D. Create an Amazon Route 53 Resolver outbound endpoint. Create a forwarding rule on the resolver that sends all queries for example.com to the on-premises DNS servers. Associate this rule with the VPC.
+https://www.examtopics.com/discussions/amazon/view/416164-exam-aws-certified-cloudops-engineer-associate-soa-c03-topic/
+
+---
+
+Q: A company runs a three-tier web application on AWS. The application includes web servers, application servers, and database servers. The application servers process requests from the web servers.\nThe company wants to ensure high availability of the application. Therefore, the company needs to monitor the health of the application servers and route traffic only to healthy instances.\nWhich solution will meet these requirements?
+*A. Create an Application Load Balancer (ALB) in front of the application servers with health checks for the application servers.
+B. Create an Amazon Route 53 health check for the application servers. Attach a Network Load Balancer (NLB) in front of the application servers.
+C. Create an AWS Lambda function that restarts an application server. Configure an Amazon CloudWatch alarm to monitor the health of the application servers. Run the function when an application is unhealthy.
+D. Create an Amazon CloudWatch metric to monitor the health of the application servers. Route traffic by using a Network Load Balancer (NLB).
+https://www.examtopics.com/discussions/amazon/view/416167-exam-aws-certified-cloudops-engineer-associate-soa-c03-topic/
+
+---
+
+Q: A company uses a custom Amazon Machine Image (AMI) as part of an EC2 Image Builder pipeline. A CloudOps engineer notices that the custom AMI will reach the end of its support lifespan in few months. The CloudOps engineer needs to update the EC2 Image Builder pipeline to use the latest AMI ID.\nWhich solution will meet this requirement?
+*A. Create a new version of the existing EC2 Image Builder recipe. Update the AMI ID details. Update the pipeline to use the new recipe version.
+B. Disable the AMI in the lifecycle rules for the existing AMI. Update the existing EC2 Image Builder recipe with the latest AMI ID details. Rerun the pipeline.
+C. Update the build component to use the latest AMI ID details.
+D. Replace the AMI ID in the launch template for the pipeline.
+https://www.examtopics.com/discussions/amazon/view/416168-exam-aws-certified-cloudops-engineer-associate-soa-c03-topic/
+
+---
+
+Q: A company runs multiple Amazon EC2 instances that are distributed across multiple AWS Regions. The company uses AWS Systems Manager tools to manage the EC2 instances. The company needs to deploy an auditing software package onto every instance to record user logins and any actions that users take.\nA CloudOps engineer must implement a solution that automatically installs the auditing software on all existing EC2 instances. The solution also must automatically install the auditing software on any new EC2 instances when they are launched.\nWhich solution will meet these requirements?
+*A. Create a Systems Manager Distributor package that includes the auditing software. Store the package in an Amazon S3 bucket. Create a Systems Manager State Manager association in each Region to install the software package on all managed instances in the company's AWS account.
+B. Load the installer for the auditing software into an Amazon S3 bucket. Connect to every instance by using Systems Manager Fleet Manager Remote Desktop. Download the installer by using the AWS CLI. Run the installer manually.
+C. Create an AWS Lambda function that calls the software installer. Merge the auditing software into the Lambda function by using Lambda layers. Run the Lambda function from each instance by using a scheduled Amazon EventBridge rule.
+D. Create an Amazon EventBridge rule to react to Amazon EC2 RunInstances events. Configure the rule to modify the events to include a step that runs the software installer. Reboot all the instances.
+https://www.examtopics.com/discussions/amazon/view/416169-exam-aws-certified-cloudops-engineer-associate-soa-c03-topic/
+
+---
+
+Q: A company is attempting to manage its costs in the AWS Cloud. A CloudOps engineer needs specific company-defined tags that are assigned to resources to appear on the billing report.\nWhat should the CloudOps engineer do to meet this requirement?
+A. Activate the tags as AWS generated cost allocation tags.
+*B. Activate the tags as user-defined cost allocation tags.
+C. Create a new cost category. Select the account billing dimension.
+D. Create a new AWS Cost and Usage Report. Include the resource IDs.
+https://www.examtopics.com/discussions/amazon/view/416170-exam-aws-certified-cloudops-engineer-associate-soa-c03-topic/
+
+---
+
+Q: A company uses AWS Systems Manager to automate tasks across AWS accounts. The company uses monitoring tools to detect issues. The company creates a Systems Manager Automation runbook that runs an AWS Lambda function to remediate the issues.\nInitially, the company runs the runbook manually. Now, the company wants to automate running the runbook whenever the monitoring tools detect issues.\nWhich solution will meet this requirement?
+*A. Configure the monitoring tools to publish findings to Amazon EventBridge. Create an EventBridge rule that invokes the runbook in response to events from the monitoring tools.
+B. Configure the monitoring tools to send findings to an Amazon SNS topic. Subscribe the runbook to the SNS topic. Invoke the runbook when a message is received.
+C. Configure the monitoring tools to write findings to Amazon CloudWatch Logs. Create a CloudWatch Logs subscription filter that invokes the runbook when new log entries are detected.
+D. Configure AWS Config to assess the resources and publish configuration changes to Amazon EventBridge. Create a rule to invoke the runbook in response to configuration change events.
+https://www.examtopics.com/discussions/amazon/view/416171-exam-aws-certified-cloudops-engineer-associate-soa-c03-topic/
+
+---
+
+Q: A CloudOps engineer has created a VPC that contains a public subnet and a private subnet. Amazon EC2 instances that were launched in the private subnet cannot access the internet. The default network ACL is active on all subnets in the VPC, and all security groups allow all outbound traffic.\nWhich solution will provide the EC2 instances in the private subnet with access to the internet?
+*A. Create a NAT gateway in the public subnet. Create a route from the private subnet to the NAT gateway.
+B. Create a NAT gateway in the public subnet. Create a route from the public subnet to the NAT gateway.
+C. Create a NAT gateway in the private subnet. Create a route from the public subnet to the NAT gateway.
+D. Create a NAT gateway in the private subnet. Create a route from the private subnet to the NAT gateway.
+https://www.examtopics.com/discussions/amazon/view/416172-exam-aws-certified-cloudops-engineer-associate-soa-c03-topic/
+
+---
+
+Q: A CloudOps engineer monitors and maintains the availability of resources in an AWS environment. The CloudOps engineer notices that the CPU utilization of an Amazon EC2 instance that runs web server software peaks above 80% at various times during each day. The CPU spikes correlate with peak daily loads. The high CPU load has resulted in performance issues for customers.\nThe CloudOps engineer needs to resolve the system performance issue without causing any service disruptions.\nWhich solution will meet these requirements?
+A. Configure an Amazon CloudWatch alarm that invokes an AWS Systems Manager Automation runbook to vertically scale the EC2 instance when the CPU utilization exceeds 80%.
+B. Configure an AWS Systems Manager Automation runbook to run a script that automatically restarts the application when CPU utilization exceeds 80%.
+C. Configure an Amazon EventBridge rule that invokes an AWS Systems Manager Automation document. Configure the document to increase the EC2 instance size when CPU utilization exceeds 80%.
+*D. Set up an Auto Scaling group with an Amazon CloudWatch alarm that triggers a scaling policy to launch additional EC2 instances when the CPU utilization exceeds 80%.
+https://www.examtopics.com/discussions/amazon/view/416173-exam-aws-certified-cloudops-engineer-associate-soa-c03-topic/
+
+---
+
+Q: A company collects operating system logs in an Amazon CloudWatch Logs log group. The company wants a solution to automatically alert a support team if a specific exception appears in the logs more than 5 times within 10 minutes.\nWhich solution will meet these requirements?
+*A. Create a metric filter in the log group. Create an alarm based on the metric with a period of 10 minutes. Create an Amazon SNS topic. Point the alarm to the SNS topic. Subscribe the support team's email address to the SNS topic.
+B. Create a CloudWatch dashboard. Add a table widget to the dashboard. Populate the table with data from CloudWatch Logs Insights. Share the dashboard with the support team.
+C. Create an AWS Lambda subscription filter to send all logs that match the search pattern to a Lambda function. Create an Amazon SNS topic to receive notifications from the Lambda function. Subscribe the support team's email address to the SNS topic.
+D. Give the support team read-only access to the CloudWatch Logs log group so that the team can review the logs autonomously.
+https://www.examtopics.com/discussions/amazon/view/416174-exam-aws-certified-cloudops-engineer-associate-soa-c03-topic/
+
+---
+
+Q: A school uses a web application to track student attendance. The application uses an Amazon API Gateway REST API and backend AWS Lambda functions. The application stores data in an Amazon DynamoDB table that is in on-demand capacity mode.\nTeachers report slow application performance at the same time every weekday. A CloudOps engineer notices that the performance problems happen only when the application demand suddenly increases. The application can handle the peak load if the load increases gradually. The CloudOps engineer must modify the application to resolve the performance issue.\nWhich solution will meet this requirement?
+A. Configure provisioned concurrency with scheduled auto scaling for the Lambda functions.
+B. Configure reserved concurrency with scheduled auto scaling for the Lambda functions.
+C. Change the DynamoDB table from on-demand capacity mode to provisioned capacity mode with auto scaling.
+*D. Change the DynamoDB table from on-demand capacity mode to provisioned capacity mode. Set the provisioned capacity to match peak usage.
+https://www.examtopics.com/discussions/amazon/view/416176-exam-aws-certified-cloudops-engineer-associate-soa-c03-topic/
+
+---
+
+Q: A CloudOps engineer maintains the security and compliance of a company's AWS account. To ensure the company's Amazon EC2 instances are following company policy, a CloudOps engineer wants to terminate any EC2 instances that do not contain a department tag. Noncompliant resources must be terminated in near real time.\nWhich solution will meet these requirements?
+*A. Create an AWS Config rule with the required-tags managed rule to identify noncompliant resources. Configure automatic remediation to run the AWS-TerminateEC2Instance automation runbook to terminate noncompliant resources.
+B. Create a new Amazon EventBridge rule to monitor when new EC2 instances are created. Send the event to an Amazon SNS topic for automatic remediation.
+C. Ensure all users who can create EC2 instances also have the permissions to use the ec2:CreateTags and ec2:DescribeTags actions. Change the instance's shutdown behavior to terminate.
+D. Ensure AWS Systems Manager Compliance is configured to manage the EC2 instances. Call the AWS-StopEC2Instances automation runbook to stop noncompliant resources.
+https://www.examtopics.com/discussions/amazon/view/416183-exam-aws-certified-cloudops-engineer-associate-soa-c03-topic/
+
+---
+
+Q: A company needs to deploy a MySQL database on AWS to support an application. The database must be highly available and recoverable. The database must meet a recovery time objective (RTO) of 15 minutes. The database must meet a recovery point objective (RPO) of 5 minutes.\nWhich solution will meet these requirements in the MOST operationally effective manner?
+A. Deploy a MySQL database in a single Availability Zone by using Amazon RDS. Enable automated backups.
+*B. Deploy a MySQL database across two Availability Zones by using Amazon RDS with a Multi-AZ deployment. Enable point-in-time restore.
+C. Deploy a MySQL database across two Availability Zones by using Amazon EC2 instances. Configure database replication and Amazon EBS volume snapshots.
+D. Deploy a MySQL database across two Availability Zones by using Amazon RDS. Enable automated backups and database replication.
+https://www.examtopics.com/discussions/amazon/view/416189-exam-aws-certified-cloudops-engineer-associate-soa-c03-topic/
+
+---
+
+Q: A company runs a web application on Amazon EC2 instances in an Auto Scaling group behind an Application Load Balancer (ALB).\nA CloudOps engineer must implement deployments without any service interruptions. The company needs the ability to shift traffic between application versions and quickly revert to the previous version by redirecting traffic if issues occur.\nWhich deployment approach will meet these requirements?
+*A. Use AWS CodeDeploy blue/green deployment with two ALB target groups. Deploy the new version to a separate fleet. Shift traffic gradually to the new target group. Maintain the original fleet for immediate rollback if necessary.
+B. Implement an in-place rolling update by using Auto Scaling instance refresh on the existing target group. Configure connection draining for each instance. Update the launch template. Rely on health checks during the replacement process.
+C. Create a new AMI by using the updated application. Modify the Auto Scaling launch template. Temporarily increase desired capacity to add new instances. Then terminate old instances while using ALB connection draining to manage the transition.
+D. Design an AWS Step Functions workflow that creates a parallel Auto Scaling group and updates monitoring configurations. Configure the workflow to change instance registrations on the ALB and automatically terminate the previous fleet after a verification period.
+https://www.examtopics.com/discussions/amazon/view/416190-exam-aws-certified-cloudops-engineer-associate-soa-c03-topic/
+
+---
+
+Q: A company stores critical data in Amazon S3 buckets. A CloudOps engineer must build a solution to record all S3 API activity.\nWhich action will meet this requirement?
+A. Configure S3 bucket metrics to record object access logs.
+*B. Create an AWS CloudTrail trail to log data events for all S3 objects.
+C. Enable S3 server access logging for each S3 bucket.
+D. Use AWS IAM Access Analyzer for Amazon S3 to store object access logs.
+https://www.examtopics.com/discussions/amazon/view/416191-exam-aws-certified-cloudops-engineer-associate-soa-c03-topic/
+
+---
+
+Q: A healthcare company uses Amazon SageMaker within a VPC to build machine learning (ML) models that use data that is stored in Amazon S3 buckets. The company wants to ensure that SageMaker accesses the data securely without using public IP addresses.\nWhich solution will meet this requirement?
+*A. Create Amazon S3 gateway endpoints. Configure SageMaker to access the S3 buckets by using AWS PrivateLink.
+B. Provision a NAT gateway within the same VPC where the company runs SageMaker. Configure SageMaker to access the S3 buckets by using the NAT gateway.
+C. Configure an AWS Site-to-Site VPN connection to connect SageMaker to the S3 buckets.
+D. Configure AWS Transit Gateway to route traffic from SageMaker to the S3 buckets.
+https://www.examtopics.com/discussions/amazon/view/416192-exam-aws-certified-cloudops-engineer-associate-soa-c03-topic/
+
+---
+
+Q: An ecommerce company hires a cybersecurity company to audit the ecommerce company's AWS account. The cybersecurity company requests read-only access to the account. The ecommerce company creates an IAM role, adds a trust relationship with the cybersecurity company's AWS account, and adds read-only permissions to the ecommerce company's account.\nAn employee at the cybersecurity company unsuccessfully tries to assume the read-only role that the ecommerce company created.\nA CloudOps engineer at the ecommerce company must resolve the access issue.\nWhich solution will meet this requirement?
+A. Configure multi-factor authentication (MFA).
+B. Configure an identity provider by using OpenID Connect (OIDC).
+*C. Create a policy that allows the sts:AssumeRole action. Add the policy to the cybersecurity employee's role. Ensure that the resource for the policy is the role that the employee needs to assume.
+D. Create a policy that allows the sts:SetSourceIdentity action. Add the policy to the cybersecurity employee's role. Ensure that the resource for the policy is in the ecommerce company's account.
+https://www.examtopics.com/discussions/amazon/view/416193-exam-aws-certified-cloudops-engineer-associate-soa-c03-topic/
+
+---
+
+Q: A company uses AWS Lambda to process files that users upload to an Amazon S3 bucket. When a user uploads a file to the S3 bucket, S3 Event Notifications invokes a Lambda function to process the file.\nThe company wants to automatically invoke the Lambda function only for flies with a .txt extension that users upload to the S3 bucket.\nWhich solution will meet these requirements?
+*A. Configure a Lambda function that is invoked by S3 PUT requests for .txt files in the S3 bucket.
+B. Configure a Lambda function that is invoked by S3 GET requests for .txt files in the S3 bucket.
+C. Configure an S3 bucket notification to send all object creation events to an Amazon SNS topic. Subscribe the Lambda function to the SNS topic. Apply a filter policy on the SNS topic for .txt file extensions.
+D. Modify the existing S3 Event Notifications configuration to send events for .txt file uploads to Amazon CloudWatch Logs to invoke the existing Lambda function.
+https://www.examtopics.com/discussions/amazon/view/416194-exam-aws-certified-cloudops-engineer-associate-soa-c03-topic/
+
+---
+
+Q: A security team requires that all Amazon S3 buckets that contain sensitive data must be tagged as "Confidential" and use a restrictive bucket policy. All other buckets must be tagged as "Nonconfidential".\nA CloudOps engineer needs to provide a self-service provisioning mechanism that allows different development teams to create S3 buckets with the appropriate tags and policies applied upon creation.\nWhich solution will meet these requirements in the MOST reliable way?
+A. Create an AWS CloudFormation template to create S3 buckets that include a parameter for the classification tag. Distribute the template to all the development teams to use when creating S3 buckets.
+B. Create an AWS Step Functions workflow that is triggered by every newly created S3 bucket. Configure the workflow to assign the correct bucket policy after the buckets are provisioned by the development teams.
+C. Create an AWS Config rule to check if newly created S3 buckets are correctly tagged as "Nonconfidential" or "Confidential" after the buckets are provisioned by the development teams. Create an AWS Systems Manager Automation document to be triggered by AWS Config for noncompliant buckets.
+*D. Create two separate AWS Service Catalog products named "Nonconfidential S3 Bucket" and "Confidential S3 Bucket" for creating the S3 buckets. Preconfigure each product with an S3 bucket and the appropriate bucket policy for its classification tag.
+https://www.examtopics.com/discussions/amazon/view/424461-exam-aws-certified-cloudops-engineer-associate-soa-c03-topic/
+
+---
+
+Q: A company's public website is hosted in an Amazon S3 bucket in the us-east-1 Region behind an Amazon CloudFront distribution. The company wants to ensure that the website is protected from DDoS attacks. A CloudOps engineer needs to deploy a solution that gives the company the ability to maintain control over the rate limit at which DDoS protections are applied.\nWhich solution will meet these requirements?
+*A. Deploy a global-scoped AWS WAF web ACL with an allow default action. Configure an AWS WAF rate-based rule to block matching traffic. Associate the web ACL with the CloudFront distribution.
+B. Deploy an AWS WAF web ACL with an allow default action in us-east-1. Configure an AWS WAF rate-based rule to block matching traffic. Associate the web ACL with the S3 bucket.
+C. Deploy a global-scoped AWS WAF web ACL with a block default action. Configure an AWS WAF rate-based rule to allow matching traffic. Associate the web ACL with the CloudFront distribution.
+D. Deploy an AWS WAF web ACL with a block default action in us-east-1. Configure an AWS WAF rate-based rule to allow matching traffic. Associate the web ACL with the S3 bucket.
+https://www.examtopics.com/discussions/amazon/view/424463-exam-aws-certified-cloudops-engineer-associate-soa-c03-topic/
+
+---
+
+Q: A company must receive an email notification immediately when new Amazon EC2 instances launch in the company's main AWS production account.\nWhich solution will meet this requirement?
+A. Create a user data script that sends an email message through an SMTP mail relay. Include the company's email address in the user data script as the recipient. Ensure that all new EC2 instances include the user data script as part of a standardized build process.
+B. Create an Amazon SNS topic. Configure AWS Systems Manager to publish EC2 events to the SNS topic. Create an AWS Lambda function to poll the SNS topic. Configure the Lambda function to send messages to the company's email address.
+*C. Create an Amazon SNS topic and a subscription that uses the email protocol. Enter the company's email address as the subscriber. Create an Amazon EventBridge rule that reacts when EC2 instances launch. Specify the SNS topic as the rule's target.
+D. Create an Amazon SNS topic and a subscription that uses the email protocol. Enter the company's email address as the subscriber. Use the EC2 AssociateInstanceEventWindow operation to specify the SNS topic as the event target when EC2 instances launch.
+https://www.examtopics.com/discussions/amazon/view/424477-exam-aws-certified-cloudops-engineer-associate-soa-c03-topic/
+
+---
+
+Q: A company has created an AWS Site-to-Site VPN connection with logging enabled between the company's VPC and an on-premises data center. The company's finance team has begun to experience intermittent connectivity issues when the team tries to access an application that runs in the VPC from the data center.\nThe company needs to implement an automated monitoring solution to receive immediate notifications when a VPN tunnel becomes unavailable.\nWhich combination of steps will meet this requirement? (Choose two.)
+*A. Use Amazon CloudWatch Logs to collect and store VPN collection logs. Convert the logs into readable metrics. Create a metric filter to filter the logs for VPN tunnel metrics.
+B. Use AWS CloudTrail to collect VPN logs. Store the logs in an Amazon S3 bucket. Use Amazon Athena to query the data to find site-to-site VPN tunnel connection errors. Store the error files in a second S3 bucket.
+*C. Use VPN tunnel metrics to create an Amazon CloudWatch alarm. Use Amazon SNS to send a notification when a VPN tunnel state changes.
+D. Use Amazon EventBridge rules to invoke an AWS Lambda function. Configure the Lambda function to use Amazon SNS to send a notification when a VPN tunnel connection error is detected.
+E. Use AWS Systems Manager to manage the VPN tunnels and to monitor VPN tunnels for any connection errors.
+https://www.examtopics.com/discussions/amazon/view/424478-exam-aws-certified-cloudops-engineer-associate-soa-c03-topic/
+
+---
+
+Q: A company runs a non-production application on an Amazon EC2 instance. The application logs all error messages to a log file on the local file system. All entries that are written to the log file start with the word "error."\nA CloudOps engineer must implement a solution that gives the company the ability to search for all occurrences of the error during the previous year.\nWhich solution will meet this requirement?
+*A. Install the Amazon CloudWatch agent on the EC2 instance. Configure the agent to send logs to an Amazon CloudWatch Logs log group. Create a metric filter on the log group for all messages that include the word "error."
+B. Install the Amazon CloudWatch agent on the EC2 instance. Configure the agent to send an Amazon SNS message to an Amazon CloudWatch Logs log group. Create a metric filter on the log group for all messages that include the word "error."
+C. Configure the log file to post all messages to an Amazon SQS queue. Create an AWS Lambda function. Configure the Lambda function to determine whether the messages include the word "error."
+D. Configure the log file to send all messages to an Amazon S3 bucket. Create an event notification on the S3 bucket to publish the contents of the messages to an Amazon SQS queue.
+https://www.examtopics.com/discussions/amazon/view/424479-exam-aws-certified-cloudops-engineer-associate-soa-c03-topic/
+
+---
+
+Q: A company has a large on-premises tape backup solution. The company has started to use AWS Storage Gateway. The company created a Tape Gateway to replace the existing on-premises hardware. The company's backup engineer noticed that some of the backup jobs that were supposed to write to AWS failed to run because of a "Not Enough Space" error.\nThe company does not want these failures to happen again. The company also wants to consistently have enough tape available on AWS.\nWhat is the MOST operationally efficient way for a CloudOps engineer to meet these requirements?
+A. Create an AWS Lambda function that runs on an hourly basis and checks how many tapes have available space. If the available tapes are below a certain threshold, provision more.
+B. Install the Amazon CloudWatch agent on the on-premises system. Push the log files to a CloudWatch log group. Create an AWS Lambda function that creates more tapes when the "Not Enough Space" error appears. Create a metric filter and a metric alarm that launches the Lambda function.
+C. Create an additional Tape Gateway with its own set of tapes. Configure Amazon SNS to send a notification to the backup engineer if the tapes that are associated with the primary Tape Gateway do not have available space.
+*D. Configure tape auto-create on the Tape Gateway. In the auto-create settings, configure a minimum number of tapes, an appropriate barcode prefix, and a tape pool.
+https://www.examtopics.com/discussions/amazon/view/424480-exam-aws-certified-cloudops-engineer-associate-soa-c03-topic/
+
+---
+
+Q: A CloudOps engineer manages the security of accounts in an organization in AWS Organizations. The CloudOps engineer must implement a solution that applies a base configuration to all accounts when the accounts join the organization.\nWhich solution will meet this requirement with the LEAST operational overhead?
+*A. Create the configuration in an AWS CloudFormation template. Deploy the template to all accounts in the organization by using StackSets automatic deployments.
+B. Turn on AWS Config in the organization's management account. Use multi-account, multi-Region data aggregation. Review results on the Aggregated Resources page.
+C. Create an AWS Lambda function in the organization's management account to configure resources. Configure the Lambda function with cross-account access. Run the function when a new account is detected.
+D. Create the configuration in an AWS CloudFormation template. Deploy the template to all accounts in the organization by using an AWS Lambda function that runs when a new account is detected.
+https://www.examtopics.com/discussions/amazon/view/424481-exam-aws-certified-cloudops-engineer-associate-soa-c03-topic/
+
+---
+
+Q: A company hosts an application on AWS that uses a 5 TB Amazon RDS for MySQL database. The company performs frequent micro updates that cannot be interrupted. Sometimes structural changes to the database cause issues for the application. When an issue occurs, the company immediately receives a notification through automated monitoring.\nThe company wants to undo the problematic database changes as soon as possible. The company wants to transition from RDS for MySQL to an Amazon Aurora MySQL-Compatible Edition cluster.\nWhich solution will meet these requirements?
+A. Create a DB cluster snapshot immediately before the update begins. If the update fails, restore the DB snapshot and modify the application to use the new DB cluster endpoint.
+B. Create a database record in an Amazon Route 53 private zone that points to the cluster endpoint. Create a DB cluster snapshot immediately before the update begins. If the update fails, restore the DB snapshot and modify DNS accordingly.
+*C. Activate the backtrack feature in the Aurora cluster during the initial creation or restoration of the Aurora cluster from the RDS for MySQL database. Use backtrack to roll back the database to the point in time right before the update began.
+D. Create an RDS Proxy in front of the Aurora cluster. If the update fails, restore the DB snapshot and modify the RDS Proxy to use the new DB cluster endpoint.
+https://www.examtopics.com/discussions/amazon/view/424482-exam-aws-certified-cloudops-engineer-associate-soa-c03-topic/
+
+---
+
+Q: A company hosts its website on Amazon EC2 instances in the us-east-1 Region. The company is preparing to extend its website into the eu-central-1 Region, but the database must remain only in us-east-1. After deployment, the EC2 instances in eu-central-1 are unable to connect to the database in us-east-1.\nWhat is the MOST operationally efficient solution that will resolve this connectivity issue?
+*A. Create a VPC peering connection between the two Regions. Add the private IP address range of the instances to the inbound rule of the database security group.
+B. Create a VPC peering connection between the two Regions. Add the security group of the instances in eu-central-1 to the outbound rule of the database security group.
+C. Create a VPN connection between the two Regions. Add the private IP address range of the instances to the outbound rule of the database security group.
+D. Create a VPN connection between the two Regions. Add the security group of the instances in eu-central-1 to the inbound rule of the database security group.
+https://www.examtopics.com/discussions/amazon/view/424483-exam-aws-certified-cloudops-engineer-associate-soa-c03-topic/
+
+---
+
+Q: A company uses AWS Organizations to manage its AWS accounts. The company is implementing a CostCenter tag for business units to track costs and prevent noncompliant actions.\nThe company needs to prevent users from launching Amazon EC2 instances with a CostCenter tag unless the tag has specified values.\nWhich solution will meet this requirement with the LEAST administrative effort?
+*A. Create a service control policy (SCP) for the CostCenter tag in Organizations. Define the specified values in the policy. Attach the policy to all the company's organizational units (OUs).
+B. Configure inventory collection for the EC2 instances in AWS Systems Manager Inventory. Attach the CostCenter tag to the managed instances.
+C. Create an Amazon Machine Image (AMI) for each of the company's business units. Include a user data script that tags instances when they are launched.
+D. Create an Amazon EventBridge rule that invokes an AWS Lambda function when a user launches an EC2 instance. Configure the Lambda function to apply the appropriate CostCenter tag for each user's IAM role or to terminate the instance if the tag lacks the specified values.
+https://www.examtopics.com/discussions/amazon/view/424484-exam-aws-certified-cloudops-engineer-associate-soa-c03-topic/
+
+---
+
+Q: A CloudOps engineer needs to implement a backup strategy for Amazon EC2 resources and Amazon RDS resources. The backup strategy must meet the following retention requirements:\n• Daily backups: must be kept for 6 days\n• Weekly backups: must be kept for 4 weeks\n• Monthly backups: must be kept for 11 months\n• Yearly backups: must be kept for 7 years\nWhich backup strategy will meet these requirements with the LEAST administrative effort?
+A. Use Amazon Data Lifecycle Manager to create an Amazon EBS snapshot policy. Create tags on each resource that needs to be backed up. Create multiple schedules according to the requirements within the policy. Set the appropriate frequency and retention period.
+*B. Use AWS Backup to create a new backup plan for each retention requirement with a backup frequency of daily, weekly, monthly, or yearly. Set the retention period to match the requirement. Create tags on each resource that needs to be backed up. Set up resource assignment by using the tags.
+C. Create an AWS Lambda function. Program the Lambda function to use native tooling to take backups of file systems in Amazon EC2 and to make copies of databases in Amazon RDS. Create an Amazon EventBridge rule to invoke the Lambda function.
+D. Use Amazon Data Lifecycle Manager to create an Amazon EBS snapshot policy. Create tags on each resource that needs to be backed up. Set up resource assignment by using the tags. Create multiple schedules according to the requirements within the policy. Set the appropriate frequency and retention period. In Amazon RDS, activate automated backups on the required DB instances.
+https://www.examtopics.com/discussions/amazon/view/424485-exam-aws-certified-cloudops-engineer-associate-soa-c03-topic/
+
+---
+
+Q: An ecommerce company runs a microservices application on Amazon ECS. Customers sometimes experience high latency when the customers attempt to complete a purchase through the application.\nA CloudOps engineer needs a solution to track individual transactions across multiple services to identify where latency is occurring. The solution must require minimal code changes and must provide a visual representation of service dependencies.\nWhich solution will meet these requirements?
+*A. Set up the AWS X-Ray daemon as a sidecar container. Instrument the application code by using the X-Ray SDK. Use the service map to visualize request flows to identify latency.
+B. Configure an Amazon CloudWatch agent on ECS containers as a sidecar container. Create custom metrics for each service. Set up CloudWatch dashboards to monitor response times.
+C. Use Amazon VPC Flow Logs to collect logs for microservices that run on the ECS container. Monitor network traffic, and use the service map to identify latency between microservices.
+D. Use Amazon CloudWatch Container Insights as a sidecar container to collect container metrics. Monitor response times, and visualize request flows to identify latency.
+https://www.examtopics.com/discussions/amazon/view/424486-exam-aws-certified-cloudops-engineer-associate-soa-c03-topic/
+
+---
+
+Q: A company has an Amazon S3 bucket where users upload feedback items. The company also has an Amazon API Gateway REST API that processes feedback notifications.\nThe company needs a solution that automatically calls the API Gateway REST API when new feedback items are uploaded to the S3 bucket.\nWhich solution will meet these requirements?
+A. Configure an event notification for the S3 bucket with API Gateway as the destination. Use the s3:ObjectAcl:Put event.
+*B. Configure an event notification for the S3 bucket with Amazon EventBridge as the destination. Configure an EventBridge rule that monitors for the S3 event and calls the API Gateway REST API.
+C. Create a Lambda@Edge function that calls the API Gateway REST API when a new feedback item is uploaded. Configure an event notification for the S3 bucket with the Lambda@Edge function as the destination.
+D. Create an Amazon SQS queue. Configure an event notification for the S3 bucket with the SQS queue as the destination. Configure Amazon SQS to push new events to the API Gateway REST API.
+https://www.examtopics.com/discussions/amazon/view/424487-exam-aws-certified-cloudops-engineer-associate-soa-c03-topic/
+
+---
+
+Q: A company's application consists of AWS Lambda functions that access an Amazon RDS instance. Occasionally, the application load creates an unexpectedly high volume of database connections. The high volume of connections causes the RDS instance to rapidly exhaust its compute resources, leading to downtime for users.\nA CloudOps Administrator must make the application more resilient to increased load without making modifications to the application code.\nWhich solution will meet these requirements?
+A. Use Amazon ElastiCache (Redis OSS) with Amazon RDS. Point the application to ElastiCache (Redis OSS).
+*B. Use Amazon RDS Proxy with Amazon RDS. Point the application to Amazon RDS Proxy.
+C. Create a Lambda function with that invokes an Amazon EventBridge rule to scale the RDS instance based on usage.
+D. Use Amazon ElastiCache (Memcached) with Amazon RDS. Point the application to ElastiCache (Memcached).
+https://www.examtopics.com/discussions/amazon/view/424488-exam-aws-certified-cloudops-engineer-associate-soa-c03-topic/
+
+---
+
+Q: A company hosts a web application on Amazon EC2 instances behind an Application Load Balancer. The instances are in an Amazon EC2 Auto Scaling group. The application is accessed with a public URL.\nA CloudOps engineer needs to implement a monitoring solution that checks the availability of the application and follows the same routes and actions as a customer. The CloudOps engineer must receive a notification if less than 95% of the monitoring runs find no errors.\nWhich solution will meet these requirements?
+*A. Create an Amazon CloudWatch Synthetics canary with a script that follows customer routes. Schedule the canary to run on a recurring schedule. Create a CloudWatch alarm that publishes a message to an Amazon SNS topic when the SuccessPercent metric is less than 95%.
+B. Create Amazon Route 53 health checks that monitor the availability of the endpoint. Create Amazon CloudWatch alarms that publish a message to an Amazon SNS topic when the HealthCheckPercentageHealthy metric is less than 95%.
+C. Create a single AWS Lambda function to check whether the endpoints are available for each customer path. Schedule the Lambda function by using Amazon EventBridge. Configure the Lambda function to publish a message to an Amazon SNS topic when an endpoint returns an error.
+D. Create an AWS Lambda function for each customer path to check whether that specific endpoint is available. Schedule the Lambda functions by using Amazon EventBridge. Configure each Lambda function to publish a custom metric to Amazon CloudWatch for the endpoint status. Create CloudWatch alarms based on each custom metric to publish a message to an Amazon SNS topic when an alarm is in the ALARM state.
+https://www.examtopics.com/discussions/amazon/view/424489-exam-aws-certified-cloudops-engineer-associate-soa-c03-topic/
+
+---
+
+Q: A company wants to create an automated solution for all accounts managed by AWS Organizations to detect any security groups that use 0.0.0.0/0 as the source address for inbound traffic. The company also wants to automatically remediate any noncompliant security groups by restricting access to a specific CIDR block that corresponds with the company's intranet.\nWhich set of actions should the CloudOps engineer take to create a solution?
+*A. Create an AWS Config rule to detect noncompliant security groups. Set up automatic remediation to change the 0.0.0.0/0 source address to the approved CIDR block.
+B. Create an IAM policy to deny the creation of security groups that have 0.0.0.0/0 as the source address. Attach this IAM policy to every user in the company.
+C. Create an AWS Lambda function to inspect new and existing security groups. Check for a noncompliant 0.0.0.0/0 source address and change the source address to the approved CIDR block.
+D. Create a service control policy (SCP) for the organizational unit (OU) to deny the creation of security groups that have the 0.0.0.0/0 source address. Set up automatic remediation to change the 0.0.0.0/0 source address to the approved CIDR block.
+https://www.examtopics.com/discussions/amazon/view/424490-exam-aws-certified-cloudops-engineer-associate-soa-c03-topic/
+
+---
+
+Q: A CloudOps engineer needs to ensure that an Amazon RDS for PostgreSQL DB instance has available backups. The DB instance has automated backups turned on with a backup retention period of 7 days. However, no automated backups for the DB instance have been created in the past month.\nWhat could be the cause of the lack of automated backups?
+A. The Amazon S3 bucket that stores the backups is full.
+*B. The DB instance is in the STORAGE_FULL state.
+C. The DB instance is not configured for Multi-AZ.
+D. The backup retention period must be 30 days.
+https://www.examtopics.com/discussions/amazon/view/424491-exam-aws-certified-cloudops-engineer-associate-soa-c03-topic/
+
+---
+
+Q: A CloudOps engineer must ensure that all of a company's Amazon S3 buckets have versioning enabled.\nWhich solution will meet this requirement?
+A. Enable AWS Config. Set up the s3-bucket-versioning-enabled AWS Config managed rule. Specify the configuration changes trigger type. Configure an automatic remediation action that uses an AWS Lambda function to enable versioning on noncompliant S3 buckets.
+*B. Enable AWS Config. Set up the s3-bucket-versioning-enabled AWS Config managed rule. Specify the configuration changes trigger type. Configure an automatic remediation action that uses the AWS-ConfigureS3BucketVersioning AWS Systems Manager Automation runbook to enable versioning on noncompliant S3 buckets.
+C. Enable Amazon GuardDuty. Use GuardDuty to identify S3 buckets that have versioning disabled. Create an Amazon EventBridge rule that sends the GuardDuty findings to AWS Systems Manager Automation. Specify the AWS-ConfigureS3BucketVersioning Systems Manager Automation runbook to enable versioning on noncompliant S3 buckets.
+D. Enable Amazon GuardDuty. Use GuardDuty to identify S3 buckets that have versioning disabled. Create an Amazon EventBridge rule that sends the GuardDuty findings to a target AWS Lambda function. Configure the Lambda function to enable versioning on noncompliant S3 buckets.
+https://www.examtopics.com/discussions/amazon/view/424492-exam-aws-certified-cloudops-engineer-associate-soa-c03-topic/
+
+---
+
+Q: A company runs an application on Amazon EC2 instances. The instances are in three Availability Zones behind an Auto Scaling group and an Application Load Balancer (ALB). The ALB maps to an Amazon Route 53 alias record.\nAmazon CloudWatch metrics show healthy instances in all three Availability Zones. However, instances in only two of the Availability Zones receive traffic.\nWhich solution will resolve this issue?
+A. Enable cross-zone load balancing on the ALB.
+*B. Ensure that all the required subnets are correctly associated with the ALB.
+C. Disable cross-zone load balancing on the ALB.
+D. Update the ALB's DNS mapping in Route 53 to use a CNAME record instead of an alias.
+https://www.examtopics.com/discussions/amazon/view/424493-exam-aws-certified-cloudops-engineer-associate-soa-c03-topic/
+
+---
+
+Q: A company has an Amazon EC2 instance that has high CPU utilization. The EC2 instance is a t3.large instance and is running a test web application. The company discovers that the web application would operate better on a compute optimized large instance.\nWhat should a CloudOps engineer do to make this change?
+A. Migrate the EC2 instance to a compute optimized instance by using AWS VM Import/Export.
+B. Enable hibernation on the EC2 instance. Change the instance type to a compute optimized instance. Disable hibernation on the EC2 instance.
+*C. Stop the EC2 instance. Change the instance type to a compute optimized instance. Start the EC2 instance.
+D. Change the instance type to a compute optimized instance while the EC2 instance is running.
+https://www.examtopics.com/discussions/amazon/view/424494-exam-aws-certified-cloudops-engineer-associate-soa-c03-topic/
+
+---
+
+Q: A company needs to monitor the disk utilization of Amazon EBS volumes. The EBS volumes are attached to Amazon EC2 Linux instances. A CloudOps engineer must set up an Amazon CloudWatch alarm that provides an alert when disk utilization increases to more than 80%.\nWhich combination of steps must the CloudOps engineer take to meet these requirements? (Choose three.)
+*A. Create an IAM role that includes the CloudWatchAgentServerPolicy AWS managed policy. Attach the role to the instances.
+B. Create an IAM role that includes the CloudWatchApplicationInsightsReadOnlyAccess AWS managed policy. Attach the role to the instances.
+*C. Install and start the CloudWatch agent by using AWS Systems Manager or the command line.
+D. Install and start the CloudWatch agent by using an IAM role. Attach the CloudWatchAgentServerPolicy AWS managed policy to the role.
+*E. Configure a CloudWatch alarm to enter ALARM state when the disk_used_percent CloudWatch metric is greater than 80%.
+F. Configure a CloudWatch alarm to enter ALARM state when the disk_used CloudWatch metric is greater than 80% or when the disk_free CloudWatch metric is less than 20%.
+https://www.examtopics.com/discussions/amazon/view/424495-exam-aws-certified-cloudops-engineer-associate-soa-c03-topic/
+
+---
+
+Q: A company stores critical files in an Amazon S3 bucket in the us-east-1 AWS Region. To comply with disaster recovery requirements, all new objects in the bucket must automatically replicate to a bucket in the us-west-2 Region.\nWhich solution will meet this requirement with the LEAST operational overhead?
+*A. Enable Cross-Region Replication (CRR) on the source bucket. Specify the destination bucket in the us-west-2 Region. Enable versioning on the source bucket.
+B. Enable Cross-Origin Resource Sharing (CORS) on both the us-east-1 bucket and the us-west-2 bucket.
+C. Create an AWS Lambda function that copies the object to the destination bucket. Configure an Amazon EventBridge rule to run the Lambda function for each object that is created.
+D. Enable S3 Lifecycle policies to transition objects to a different storage class in the us-west-2 Region.
+https://www.examtopics.com/discussions/amazon/view/424496-exam-aws-certified-cloudops-engineer-associate-soa-c03-topic/
+
+---
+
+Q: A company uses an AWS Cloud Formation template to provision an Amazon EC2 instance and an Amazon RDS DB instance. A CloudOps engineer must update the template to ensure that the DB instance is created before the EC2 instance is launched.\nWhat should the CloudOps engineer do to meet this requirement?
+A. Add a wait condition to the template. Update the EC2 instance user data script to send a signal after the EC2 instance is started.
+*B. Add the DependsOn attribute to the EC2 instance resource, and provide the logical name of the RDS resource.
+C. Change the order of the resources in the template so that the RDS resource is listed before the EC2 instance resource.
+D. Create multiple templates. Use AWS CloudFormation StackSets to wait for one stack to complete before the second stack is created.
+https://www.examtopics.com/discussions/amazon/view/424497-exam-aws-certified-cloudops-engineer-associate-soa-c03-topic/
+
+---
+
+Q: A company stores sensitive data in an Amazon S3 bucket. The company must log all access attempts to the S3 bucket. The company's risk team must receive immediate notification about any delete events.\nWhich solution will meet these requirements?
+*A. Enable S3 server access logging for audit logs. Set up an Amazon SNS notification for the S3 bucket. Select DeleteObject for the event type for the alert system.
+B. Enable S3 server access logging for audit logs. Launch an Amazon EC2 instance for the alert system. Run a cron job on the EC2 instance to download the access logs each day and to scan for a DeleteObject event.
+C. Use Amazon CloudWatch Logs for audit logs. Use Amazon CloudWatch alarms with an Amazon SNS notification for the alert system.
+D. Use Amazon CloudWatch Logs for audit logs. Launch an Amazon EC2 instance for the alert system. Run a cron job on the EC2 instance each day to compare the list of the items with the list from the previous day. Configure the cron job to send a notification if an item is missing.
+https://www.examtopics.com/discussions/amazon/view/424498-exam-aws-certified-cloudops-engineer-associate-soa-c03-topic/
+
+---
+
+Q: A company wants to automate the processing of photos that upload to an Amazon S3 bucket.\nA CloudOps engineer must invoke a 2-minute processing workflow immediately when a new photo uploads. The CloudOps engineer must initiate the workflow by using a native S3 notification destination.\nWhich solution will meet these requirements with the LEAST operational overhead?
+A. Send an Amazon S3 event notification to an Amazon SQS queue to invoke an AWS Lambda function for processing.
+*B. Configure an Amazon S3 event notification to invoke an AWS Lambda function upon each object upload.
+C. Configure an Amazon S3 event notification to publish events to an Amazon EventBridge bus that routes events to an AWS Lambda function.
+D. Configure an Amazon S3 event notification to notify an AWS Step Functions state machine to start the transformation process.
+https://www.examtopics.com/discussions/amazon/view/424499-exam-aws-certified-cloudops-engineer-associate-soa-c03-topic/
+
+---
+
+Q: A company uses a multi-account structure in the AWS Cloud. The company's environment includes a shared account for common resources. The environment also includes a development account for new application development. The company uses Amazon Route 53 for DNS management. The company manages all its Route 53 hosted zones from the shared account.\nA CloudOps engineer needs to obtain a new SSL/TLS certificate for an application that is deployed in the development account.\nWhat must the CloudOps engineer do to meet this requirement?
+A. Create a new AWS KMS key in the shared account. Configure the key policy to give read access to the development account's root principal.
+B. Request a new certificate by using AWS Certificate Manager (ACM) from the shared account. Use Route 53 from the shared account to create validation record sets in the relevant hosted zone.
+*C. Request a new certificate by using AWS Certificate Manager (ACM) from the development account. Use Route 53 from the shared account to create validation record sets in the relevant hosted zone.
+D. Create a new AWS KMS key in the development account. Configure the key policy to give read access to the shared account's root principal. Use Route 53 from the shared account to create a validation record set that references the Amazon Resource Name (ARN) of the KMS key.
+https://www.examtopics.com/discussions/amazon/view/424500-exam-aws-certified-cloudops-engineer-associate-soa-c03-topic/
+
+---
+
+Q: A retail company runs its primary ecommerce web application in the us-east-1 AWS Region with a fully configured disaster recovery (DR) environment in the us-west-2 Region. The company requires automatic failover to the DR environment if the primary environment becomes unhealthy.\nHow should the company configure Amazon Route 53 to enable automated failover between the primary and DR environments?
+*A. Create a Route 53 health check that monitors the primary web application endpoint. Configure a failover routing policy with primary and secondary records that point to the respective primary and secondary environments. Set the primary record with the health check association. Configure the secondary record as the failover record.
+B. Create two Route 53 latency-based routing records. Point one routing record at each environment. Configure Amazon CloudWatch alarms to monitor the primary environment. Use an Amazon EventBridge rule to update the latency routing weights when the primary environment becomes unhealthy.
+C. Configure a Route 53 geolocation routing policy that directs all global traffic to the primary Region by default. Set up Route 53 DNS Firewall rules to detect application failures and automatically update the geolocation routing to redirect traffic to the secondary Region.
+D. Deploy Route 53 Resolver DNS Firewall rule groups in both Regions. Configure Amazon CloudWatch alarms to monitor the primary environment. Use Amazon EventBridge rules to trigger DNS Firewall actions that redirect queries to the DR environment when failures occur.
+https://www.examtopics.com/discussions/amazon/view/424501-exam-aws-certified-cloudops-engineer-associate-soa-c03-topic/
+
+---
+
+Q: A company is building a web application on AWS. The company is using Amazon CloudFront with a domain name of www.example.com. All traffic to CloudFront must be encrypted in transit. The company already has provisioned an SSL certificate for www.example.com in AWS Certificate Manager (ACM).\nWhich combination of steps should a CloudOps engineer take to encrypt the traffic in transit? (Choose two.)
+*A. For each cache behavior in the CloudFront distribution, modify the Viewer Protocol Policy setting to redirect HTTP to HTTPS.
+B. For each cache behavior in the CloudFront distribution, modify the Viewer Protocol Policy setting to allow HTTP and HTTPS.
+*C. Enter the alternate domain name (CNAME) of www.example.com for the CloudFront distribution. Select the custom SSL certificate.
+D. Configure an AWS WAF web ACL for the CloudFront distribution.
+E. Configure CloudFront Origin Shield for the CloudFront origin.
+https://www.examtopics.com/discussions/amazon/view/424506-exam-aws-certified-cloudops-engineer-associate-soa-c03-topic/
 
 ---
 
@@ -755,6 +1744,42 @@ https://www.examtopics.com/discussions/amazon/view/383638-exam-aws-certified-clo
 
 ---
 
+Q: To comply with regulations, a CloudOps engineer needs to back up an Amazon EC2 Amazon Machine Image (AMI) to an Amazon S3 bucket. If the CloudOps engineer restores the AMI from the bucket in the future, the AMI must use the same AMI image ID as the original AMI.\nWhich solution will meet this requirement?
+A. Create a copy of the AMI. Specify the destination S3 bucket. Set the launch permissions to implicit.
+B. Archive the snapshot that is associated with the AMI. Specify the S3 bucket as the archive destination.
+*C. Create a store image task. Specify the image ID and the destination S3 bucket.
+D. Use the AWS CLI copy-image command. Specify the image ID and the destination S3 bucket.
+https://www.examtopics.com/discussions/amazon/view/416165-exam-aws-certified-cloudops-engineer-associate-soa-c03-topic/
+
+---
+
+Q: A company has an application that processes events sequentially by using an Amazon SQS FIFO queue. The company needs a solution that automatically sends notifications to the SQS queue when new objects are uploaded to an Amazon S3 bucket. The solution must maintain message ordering.\nWhich solution will meet these requirements with the LEAST operational overhead?
+A. Create an AWS Lambda function that polls the objects by using the ListObjectsV2 command and detects new objects when the objects are added. Configure the Lambda function to add a message to the SQS queue when new objects are detected.
+B. Create an event notification on the S3 bucket. Use the FIFO delivery option. Route the notifications to the existing SQS queue.
+*C. Create an Amazon SNS FIFO topic. Create an event notification on the S3 bucket. Configure the event to send messages to the SNS topic. Subscribe the existing SQS queue to the SNS topic.
+D. Create an access point in Amazon S3 Access Points. Configure the access point to send new items to the existing SQS queue.
+https://www.examtopics.com/discussions/amazon/view/416184-exam-aws-certified-cloudops-engineer-associate-soa-c03-topic/
+
+---
+
+Q: A CloudOps engineer wants to use AWS CloudFormation stacks to deploy Amazon CloudFront resources in an account. The CloudOps engineer will use custom domain names, such as www.example.com and example.com.\nWhen the CloudOps engineer tries to deploy a CloudFormation stack, the CloudOps engineer receives the following error:\n"Resource handler returned message: Invalid request provided: AWS::CloudFront::Distribution: One or more of the CNAMEs you provided are already associated with a different resource."\nWhat should the CloudOps engineer do to deploy the stack successfully?
+A. Check the names that are specified for CNAMEs in the stack and correct them. Redeploy the stack.
+B. Check the number of specified CNAMEs in the stack for each distribution. Reduce the number to 10.
+*C. Remove any CNAMEs that correspond to CNAMEs in the existing CloudFront resource. Redeploy the stack.
+D. Remove the CNAME property from the template. Redeploy the stack.
+https://www.examtopics.com/discussions/amazon/view/424462-exam-aws-certified-cloudops-engineer-associate-soa-c03-topic/
+
+---
+
+Q: A gaming company uses Amazon EC2 Spot Instances to run game servers. Currently, the company uses small instance types. However, the company occasionally experiences spot unavailability.\nThe company needs a solution that can automatically modify a spot request and add a new instance family when current instance types are unavailable.\nWhich solution will meet this requirement?
+*A. Use Amazon CloudWatch to log the event instance-stopped-no-capacity. Invoke an AWS Lambda function to modify the spot request.
+B. Use AWS CloudTrail to log EC2 spot request state changes. Configure an Amazon EventBridge rule on the CloudTrail log to invoke an AWS Lambda function to modify the spot request.
+C. Use Amazon CloudWatch logs and metrics to invoke an AWS Lambda function to modify the spot request.
+D. Configure AWS Systems Manager Automation to detect spot request failures and run a runbook to implement the spot request.
+https://www.examtopics.com/discussions/amazon/view/424472-exam-aws-certified-cloudops-engineer-associate-soa-c03-topic/
+
+---
+
 Q: A CloudOps engineer is examining the following AWS CloudFormation template:\nWhy will the stack creation fail?
 IMG_Q: SOAC03-1.png
 A. The Outputs section of the CloudFormation template was omitted.
@@ -765,6 +1790,40 @@ https://www.examtopics.com/discussions/amazon/view/369111-exam-aws-certified-clo
 
 ---
 
+Q: A CloudOps engineer must create an IAM policy for a developer who needs access to specific AWS services. Based on the requirements, the CloudOps engineer creates the following policy:\nWhich actions does this policy allow? (Choose two.)
+IMG_Q: SOAC03-2.png
+A. Create an AWS Storage Gateway.
+B. Create an IAM role for an AWS Lambda function.
+C. Delete an Amazon SQS queue.
+*D. Describe AWS load balancers.
+*E. Invoke an AWS Lambda function.
+https://www.examtopics.com/discussions/amazon/view/416159-exam-aws-certified-cloudops-engineer-associate-soa-c03-topic/
+
+---
+
+Q: A development team wants to match events on Amazon EventBridge where the state of an Amazon EC2 machine is not "terminated".\nAn example event is as follows:\nWhich event pattern should the development team use to find relevant events?
+IMG_Q: SOAC03-3.png
+A. {"detail": {"state": ["not equals-ignore-case": "terminated"]}}
+B. {"detail": {"state": ["! equals-ignore-case": "terminated"]}}
+C. {"detail": {"state": ["equals-ignore-case": "terminated"]}}
+*D. {"detail": {"state": [{"anything-but": {"equals-ignore-case": "terminated"}}]}}
+https://www.examtopics.com/discussions/amazon/view/416160-exam-aws-certified-cloudops-engineer-associate-soa-c03-topic/
+
+---
+
+Q: A development team is setting up an Amazon EventBridge rule to look for Amazon Macie findings that have a severity score of 1 and a count of 2.\nThe development team receives the following event:\nWhich EventBridge event pattern will find the events that have a severity score of 1 and a count of 2?
+IMG_Q: SOAC03-4.png
+*A. 
+IMG_A: SOAC03-5.png
+B. 
+IMG_B: SOAC03-6.png
+C. 
+IMG_C: SOAC03-7.png
+D. 
+IMG_D: SOAC03-8.png
+https://www.examtopics.com/discussions/amazon/view/424511-exam-aws-certified-cloudops-engineer-associate-soa-c03-topic/
+
+---
 
 
 `;
