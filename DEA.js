@@ -3243,5 +3243,104 @@ https://www.examtopics.com/discussions/amazon/view/316747-exam-aws-certified-dat
 
 ---
 
+Q: A company has a data warehouse in Amazon Redshift. The Amazon Redshift provisioned cluster is created in a VPC. The company is developing a new application in AWS Lambda that needs to access the data from Amazon Redshift. The company security policy states that AWS services can access the Amazon Redshift cluster only from the AWS network. Traffic between Lambda and the Amazon Redshift Data API must remain in the AWS network.\nWhich solution will meet these requirements?
+*A. Use the Data API in the Lambda function to access the data. Set up an Amazon VPC endpoint for the Data API.
+B. Use the Data API in the Lambda function to access the data. Set up an Amazon VPC endpoint for the Lambda function.
+C. Connect to the Amazon Redshift cluster from the Lambda function by using an Amazon Redshift ODBC driver. Set up an Amazon VPC endpoint for the Lambda function.
+D. Connect to the Amazon Redshift cluster from the Lambda function by using an Amazon Redshift JDBC driver. Set up an Amazon VPC endpoint for the Lambda function.
+https://www.examtopics.com/discussions/amazon/view/417376-exam-aws-certified-data-engineer-associate-dea-c01-topic-1/
+
+---
+
+Q: A data engineer needs to share a dataset that contains customer transaction data with a machine learning (ML) team in another AWS account. The dataset is stored in Amazon S3 and contains sensitive information that requires governance controls. The data engineer wants to ensure that the ML team can discover and request access to the dataset. The solution must maintain appropriate security controls and track data lineage.\nWhich solution will meet these requirements?
+A. Create cross-account IAM roles that grant the ML team direct access to the S3 bucket where the data is stored. Use AWS CloudTrail to track data access.
+*B. Configure an Amazon SageMaker Unified Studio data catalog project that contains the dataset with appropriate metadata and project-based access controls.
+C. Set up cross-account S3 bucket replication to copy the dataset to the ML team's account. Use S3 server access logging to monitor usage.
+D. Create an AWS Lake Formation data catalog. Define tag-based access controls that allow the ML team to query the data directly from the team's account.
+https://www.examtopics.com/discussions/amazon/view/417370-exam-aws-certified-data-engineer-associate-dea-c01-topic-1/
+
+---
+
+Q: A data engineering team needs to deploy an AWS CloudFormation template for its data pipeline across development, testing, and production AWS accounts. The team requires a solution that automatically updates deployments when changes are committed to the team’s Git repository. The solution must also provide centralized management across all accounts.\nWhich solution will meet these requirements with the LEAST operational overhead?
+A. Create individual CloudFormation stacks in each account with self-managed permissions. Use AWS CodePipeline with webhooks to detect Git commits and update stacks.
+*B. Use CloudFormation StackSets with service-managed permissions. Enable automatic deployments to target accounts by using an AWS Organizations integration.
+C. Set up an AWS Lambda function that is invoked by Git commits. Configure the Lambda function to use the CloudFormation API to update stacks in each account.
+D. Create a CloudFormation stack in the management account that uses cross-account roles to deploy resources to target accounts.
+https://www.examtopics.com/discussions/amazon/view/417368-exam-aws-certified-data-engineer-associate-dea-c01-topic-1/
+
+---
+
+Q: A company has a data lake in Amazon S3 and uses AWS Glue across multiple AWS accounts. The company needs to control access to tables and databases in the AWS Glue Data Catalog. Specific departments need the ability to securely share data with each other. The company requires fine-grained access control that the company can manage based on department ownership.\nWhich solution will meet these requirements?
+A. Create IAM roles for each department with policies that grant access to specific AWS Glue databases and tables. Use resource-based policies on S3 buckets for cross-account data access.
+*B. Register all S3 locations with AWS Lake Formation. Use Lake Formation tag-based access control (LF-TBAC) to assign permissions to databases and tables.
+C. Create AWS Resource Access Manager (AWS RAM) resource shares for each database and table. Grant access to specific AWS accounts and IAM principals by using AWS RAM.
+D. Enable AWS Lake Formation hybrid access mode. Use AWS Glue resource policies to share catalogs and databases across accounts and maintain IAM permissions for existing workloads.
+https://www.examtopics.com/discussions/amazon/view/417387-exam-aws-certified-data-engineer-associate-dea-c01-topic-1/
+
+---
+
+Q: A company uses a 1 ТВ Amazon Aurora MySQL database as an online transaction processing (OLTP) data store. The company needs to back up the database in the primary AWS Region and copy the backup to a secondary Region every month. After 180 days, the backups must transition to cold storage.\nWhich solution will meet these requirements with the LEAST effect on database performance?
+*A. Create a backup plan in AWS Backup to schedule monthly snapshots and copy the snapshots to the secondary Region. Configure AWS Backup lifecycle settings to transition snapshots to cold storage after 180 days.
+B. Enable Amazon Aurora automated backups to create monthly snapshots. Configure a cross-Region copy of the snapshots to the secondary Region. Add an Amazon S3 Lifecycle policy to transition backups to Amazon S3 Glacier after 180 days.
+C. Create a backup plan in AWS Backup to schedule monthly snapshots and copy the snapshots to the secondary Region. Configure Amazon EventBridge to run the StartExportTask action to export snapshots to Amazon S3. Use an S3 Lifecycle policy to transition backups to Amazon S3 Glacier after 180 days.
+D. Create a backup plan in AWS Backup for monthly snapshots and secondary Region copies. Configure Amazon EventBridge to launch an Amazon EC2 instance that uses the mysqldump tool to export the database to Amazon S3. Use S3 Lifecycle policies to transition backups to Amazon S3 Glacier after 180 days.
+https://www.examtopics.com/discussions/amazon/view/417384-exam-aws-certified-data-engineer-associate-dea-c01-topic-1/
+
+---
+
+Q: A data engineer uploads unpredictable volumes of unstructured data to an Amazon S3 bucket throughout the day. The data engineer needs to transform the data by using complex processing logic that takes from 5 to 30 minutes to complete. The solution must automatically scale with incoming data volume and process each uploaded file only one time.\nWhich solution will meet these requirements with the LEAST operational overhead?
+A. Create AWS Lambda functions that are invoked by S3 Event Notifications to process the data as the data arrives in the S3 bucket.
+*B. Use AWS Glue jobs with job bookmarks enabled to process the data with automatic scaling based on workload.
+C. Set up an Amazon EMR cluster that runs a Spark job to transform data when new files are detected in the S3 bucket.
+D. Create an Amazon EC2 Auto Scaling group with instances that poll the S3 bucket for new data.
+https://www.examtopics.com/discussions/amazon/view/417366-exam-aws-certified-data-engineer-associate-dea-c01-topic-1/
+
+---
+
+Q: A company has text files that are stored in an Amazon S3 bucket. The structure of the files can change over time as the company adds new columns to the files. The company wants to give users the ability to query the data by using Amazon Athena and Amazon Quick Suite (previously known as Amazon QuickSight). The company wants to use predefined column names for the data in the text files.\nWhich solution will meet these requirements with the LEAST operational overhead?
+A. Create a table in Athena that points to the S3 location and uses the predefined column names. Use the table in Athena and Quick Suite. Update the table when the company adds new columns.
+*B. Write a custom grok classifier to match the predefined column names and schema. Create an AWS Glue crawler that uses the grok classifier and creates a table. Use the table in Athena and Quick Suite. Run the crawler when the company adds new columns.
+C. Use the built-in classifier in AWS Glue. Create an AWS Glue crawler that creates a table. Use the table in Athena and Quick Suite. Run the crawler when the company adds new columns.
+D. Write a custom XML classifier to match the predefined column names and schema. Create an AWS Glue crawler that uses the XML classifier and creates a table. Use the table in Athena and Quick Suite. Run the crawler when the company adds new columns.
+https://www.examtopics.com/discussions/amazon/view/417381-exam-aws-certified-data-engineer-associate-dea-c01-topic-1/
+
+---
+
+Q: A data engineer needs to build an interactive system that answers complex questions about customer feedback. The system must generate comprehensive reports that summarize feedback trends and provide natural language explanations of product issues with supporting evidence. The system must give users the ability to ask follow-up questions in natural language. The system must also dynamically explore feedback patterns without predefined categories. The data must remain within the data engineer's AWS account.\nWhich solution will meet these requirements with the LEAST operational overhead?
+A. Use Amazon SageMaker Al to build a custom sentiment analysis model. Use Amazon EMR to run batch processing jobs that categorize the feedback data into themes.
+*B. Create an Amazon Bedrock knowledge base linked to an Amazon S3 bucket that contains survey data. Use Retrieval Augmented Generation (RAG) to analyze feedback trends.
+C. Use Amazon Comprehend to detect sentiment and key phrases. Use Amazon OpenSearch Service to index and search the feedback data for specific themes.
+D. Store survey data in Amazon DynamoDB. Use AWS Lambda functions with custom code to analyze sentiment and categorize the feedback.
+https://www.examtopics.com/discussions/amazon/view/417369-exam-aws-certified-data-engineer-associate-dea-c01-topic-1/
+
+---
+
+Q: A company wants to create a business data catalog where users can discover and share data assets with standardized terminology. The company needs to organize data across multiple AWS services, give users the ability to add business context to technical metadata, and implement governance controls.\nWhich solution will meet these requirements?
+A. Use AWS Lake Formation to create tag-based access control policies. Use the AWS Glue Data Catalog to store technical metadata about the data sources.
+*B. Create a domain by using the Amazon SageMaker Catalog. Define business glossary terms and publish data assets from the AWS Glue Data Catalog to the SageMaker Catalog.
+C. Create AWS Glue crawlers to discover data sources. Use AWS Resource Access Manager (AWS RAM) to share the AWS Glue Data Catalog tables across accounts.
+D. Use Amazon SageMaker Feature Store to catalog machine learning (ML) features. Use Amazon Athena to query the metadata across different data sources.
+https://www.examtopics.com/discussions/amazon/view/417385-exam-aws-certified-data-engineer-associate-dea-c01-topic-1/
+
+---
+
+Q: A company is developing a product recommendation system that uses Amazon OpenSearch Service. The system needs to perform к-nearest neighbors (k-NN) vector searches on 10 million product embeddings with 768-dimensional vectors. The system must maintain high recall accuracy and support incremental updates without reindexing as new products are added each day. The system must also accommodate complex filtering based on product categories and inventory status.\nWhich vector index type will meet these requirements?
+A. FAISS Inverted File Index (IVF) with an nlist value of 1024 and an nprobes value of 10
+*B. Lucene Hierarchical Navigable Small Worlds (HNSW) index with an M value of 16 and an efConstruction value of 200
+C. Exact k-NN search that uses a Painless script scoring
+D. Faiss index with binary quantization and an nlist value of 4096
+https://www.examtopics.com/discussions/amazon/view/417388-exam-aws-certified-data-engineer-associate-dea-c01-topic-1/
+
+---
+
+Q: A company is developing a vector search application that needs to perform similarity searches across 5 million product embeddings. The embeddings are stored in Amazon Aurora PostgreSQL.\nThe application must support 1,000 queries each second with response times of less than 100 milliseconds. The company has generated 256-dimensional embeddings for each product. The company needs to implement an indexing strategy with optimized query performance at scale.\nWhich configuration will meet these requirements with the LEAST development effort?
+A. Create an exact IVFFlat index with 500 lists. Enable parallel queries on the Aurora PostgreSQL cluster.
+*B. Create an HNSW index with ef_construction=128 and m=16 parameters. Store vectors by using the pgvector extension.
+C. Create a В-tree index on the vectors column. Increase the work_mem parameter to accommodate vector operations.
+D. Create an approximate IVFFlat index with 5,000 lists and a probe value of 10. Partition the table by product category. Store vectors by using the pgvector extension.
+https://www.examtopics.com/discussions/amazon/view/417379-exam-aws-certified-data-engineer-associate-dea-c01-topic-1/
+
+---
+
 
 `;
