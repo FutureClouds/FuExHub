@@ -28,6 +28,15 @@ https://www.examtopics.com/discussions/amazon/view/382918-exam-aws-certified-sec
 
 ---
 
+Q: A company runs several applications on Amazon Elastic Kubernetes Service (Amazon EKS). The company needs a solution to detect any Kubernetes security risks by monitoring Amazon EKS audit logs in addition to operating system, networking, and file events. The solution must send email alerts for any identified risks to a mailing list that is associated with a security team.\nWhich solution will meet these requirements?
+A. Deploy AWS Security Hub and enable security standards that contain EKS controls. Create an Amazon Simple Notification Service (Amazon SNS) topic and set the security team's mailiing list as a subscriber. Use an Amazon EventBridge rule to send relevant Security Hub events to the SNS topic.
+B. Enable Amazon Inspector container image scanning. Configure Amazon Detective to analyze EKS security logs. Create Amazon CloudWatch log groups for EKS audit logs. Use an AWS Lambda function to process the logs and to send email alerts to the security team.
+*C. Enable Amazon GuardDuty Enable EKS Protection and Runtime Monitoring for Amazon EKS in GuardDuty. Create an Amazon Simple Notification Service (Amazon SNS) topic and set the security team's mailing list as a subscriber. Use an Amazon EventBridge rule to send relevant GuardDuty events to the SNS topic.
+D. Install the AWS Systems Manager Agent (SSM Agent) on all EKS nodes. Configure Amazon CloudWatch Logs lo collect EKS audit logs. Create an Amazon Simple Notification Service (Amazon SNS) topic and set the security team's mailing list as a subscriber. Configure a CloudWatch alarm to publish a message to the SNS topic when now audit logs are generated.
+https://www.examtopics.com/discussions/amazon/view/382891-exam-aws-certified-security-specialty-scs-c03-topic-1/
+
+---
+
 Q: A company allows users to download its mobile app onto their phones. The app is MQTT based and connects to AWS IoT Core lo subscribe la specific client-related topics.\nRecently, the company discovered that some malicious attackers have been trying to get a Trojan horse onto legitimate mobile phones. The Trojan horse poses as the authentic application and uses a client ID with injected special characters to gain access to topics outside the client's privilege scope.\nWhich combination of actions should the company take to prevent this threat? (Choose two.)
 *A. In the application, use an IoT thing name as the client ID to conned the device to AWS IoT Core.
 B. In the application, add a client ID check. Disconnect from the server if any special character is detected.
@@ -53,6 +62,24 @@ B. Update the policy on the instance profile role to allow the S3 actions only i
 C. Add a network ACL rule to the subnet of the EC2 instances to block outgoing connections on port 443.
 D. Apply an SCP on the AWS account to allow the S3 actions only if the values of the aws:ResourceOrgID and aws:PrincipalOrgID condition keys match the company's values.
 https://www.examtopics.com/discussions/amazon/view/382893-exam-aws-certified-security-specialty-scs-c03-topic-1/
+
+---
+
+Q: A company recently experienced a malicious attack on its cloud-based environment. The company successfully contained and eradicated the attack A security engineer is performing incident response work. The security engineer needs to recover an Amazon RDS database cluster to the last known good version. The database cluster is configured to generate automated backups with a retention period of 14 days. The initial attack occurred 5 days ago at exactly 3:15 PM\nWhich solution will meet this requirement?
+*A. Identify the Regional duster ARN for the database. Use the ARN to restore the Regional cluster by using the Restore to point in time feature. Set a target time 5 days ago at 3:14 PM.
+B. Identify the Regional cluster ARN for the database. List snapshots that have been taken of the cluster. Restore the database by using the snapshot that has a creation time that is closest to 5 days ago at 3:14 PM.
+C. List all snapshots that have been taken of all the company's RDS databases. Identify the snapshot that was taken closest to 5 days ago at 3:14 PM and restore it.
+D. Identify the Regional cluster ARN for the database. Use the ARN to restore the Regional cluster by using the Restore to point in time feature. Set a target time 14 days ago.
+https://www.examtopics.com/discussions/amazon/view/382907-exam-aws-certified-security-specialty-scs-c03-topic-1/
+
+---
+
+Q: A security engineer for a company needs to design an incident response plan that addresses compromised IAM user account credentials. The company uses an organization in AWS Organizations and AWS IAM Identify Center to manage user access. The company uses a delegated administrator account to implement AWS Security Hub. The delegated administrator account contains an organizational trail in AWS CloudTrail that logs all events to an Amazon S3 bucket. The company has also configured an organizational event data store that captures all events from the trail.\nThe incident response plan must provide steps that the security engineer can take to immediately disable any compromised IAM user when the security engineer receives a notification of a security incident.\nThe plan must prevent the IAM user from being used in any AWS account. The plan must also collect all AWS actions that the compromised IAM user performed across all accounts in the previous 7 days.\nWhich solution will meet these requirements?
+A. Disable the compromised IAM user in the organization management account. Use Amazon Athena to query the organizational CloudTrail logs in the S3 bucket for actions that the IAM user performed in the previous 7 days.
+B. Remove all IAM policies that are attached to the IAM user in the organization management account. Use Security Hub to query the CloudTrail logs for actions that the IAM user performed in the previous 7 days.
+C. Remove any permission sets that arc assigned to the IAM user in IAM Identity Center. Use Amazon CloudWatch Logs Insights to directly query the organizational CloudTrail logs in the S3 bucket for actions that the IAM user performed m the previous 7 days.
+*D. Disable the IAM user's access in IAM Identity Center. Use CloudTrail to query the organizational event data store for actions that the IAM user performed in the previous 7 days.
+https://www.examtopics.com/discussions/amazon/view/382926-exam-aws-certified-security-specialty-scs-c03-topic-1/
 
 ---
 
@@ -89,6 +116,15 @@ B. Create an AWS Lambda function based on an Amazon CloudWatch request. Configur
 C. Modify the EC2 application to count the source IP address of requests and calculate a rolling 5-minute sum. Return an error message if the count sum is greater than 3.
 D. Add source IP address and request time to the DynamoDB table. Add a 5-minute TTL setting based on request time. Change the read capacity of the DynamoDB table throughput to 3.
 https://www.examtopics.com/discussions/amazon/view/382941-exam-aws-certified-security-specialty-scs-c03-topic-1/
+
+---
+
+Q: A public subnet contains two Amazon EC2 instances. The subnet has a custom network ACL. A security engineer is designing a solution to improve the subnet security.\nThe solution must allow outbound traffic to an internet service that uses TLS through port 443. The solution also must deny inbound traffic that is destined for MySQL port 3306.\nWhich network ACL rule set meets these requirements?
+A. Use inbound rule 100 to allow traffic on TCP port 443. Use inbound rule 200 to deny traffic on TCP port 3306. Use outbound rule 100 to allow traffic on TCP port 443.
+*B. Use inbound rule 100 to deny traffic on TCP port 3306. Use inbound rule 200 to allow traffic on TCP port range 1024-65535. Use outbound rule 100 to allow traffic on TCP port 443.
+C. Use inbound rule 100 to allow traffic on TCP port range 1024-65535. Use inbound rule 200 to deny traffic on TCP port 3306. Use outbound rule 100 to allow traffic on TCP port 443.
+D. Use inbound rule 100 to deny traffic on TCP port 3306. Use inbound rule 200 to allow traffic on TCP port 443. Use outbound rule 100 to allow traffic on TCP port 443.
+https://www.examtopics.com/discussions/amazon/view/382932-exam-aws-certified-security-specialty-scs-c03-topic-1/
 
 ---
 
@@ -220,22 +256,106 @@ https://www.examtopics.com/discussions/amazon/view/382939-exam-aws-certified-sec
 
 ---
 
+Q: A company has enabled AWS Config for its organization in AWS Organizations. The company has deployed hundreds of Amazon S3 buckets across the organization.\nA security engineer needs to identify any S3 buckets that are not encrypted with AWS Key Management Service (AWS KMS). The security engineer also must prevent objects that are not encrypted with AWS KMS from being uploaded to the S3 buckets.\nWhich solution will meet these requirements?
+*A. Use the s3-default-encryplion-kms AWS. Config managed rule to identity unencrypted S3 buckets. Create an SCP to allow the s3:PutObject action only when the object is encrypted with AWS KMS.
+B. Use the s3-default-encryption-kms AWS. Config managed rule to identify unencrypted S3 buckets. Create bucket policies for each S3 bucket to deny the s3:PutObject action only when the object has server-since encryption with S3 managed keys (SSE-S3).
+C. Use the s3-bucket-ssl-requests-only AWS Config managed rule to identify unencrypted S3 buckets. Create an SCP to allow the s3:PutObject action only when the object is encrypted with AWS KMS.
+D. Use the s3-bucket-ssl-requests-only AWS Config managed rule to identify unencrypted S3 buckets. Create bucket policies for each S3 bucket to allow the s3:PutObject action only when the object is encrypted with AWS KMS.
+https://www.examtopics.com/discussions/amazon/view/382933-exam-aws-certified-security-specialty-scs-c03-topic-1/
+
+---
+
+Q: A company uses AWS IAM Identity Center to manage access to its AWS accounts. The accounts are in an organization in AWS Organizations.\nA security engineer needs to set up delegated administration of IAM Identity Center in the organization's management account.\nWhich combination of steps should the security engineer perform in IAM Identity Center before configuring delegated administration? (Choose three.)
+*A. Grant least privilege access to the organization's management account.
+B. Create a new IAM Identity Center directory in the organization's management account.
+C. Set up a second AWS Region in the organization's management account.
+*D. Create permission sets for use only in the organization's management account.
+E. Create IAM users for use only in the organization's management account.
+*F. Create user assignments only in the organization’s management account.
+https://www.examtopics.com/discussions/amazon/view/382928-exam-aws-certified-security-specialty-scs-c03-topic-1/
+
+---
+
+Q: A company's security engineer is designing an isolation procedure for Amazon EC2 instances as part of an incident response plan. The security engineer needs to isolate a target instance to block any traffic to and from the target instance, except for traffic from the company's forensics team. Each of the company's EC2 instances has its own dedicated security group. The EC2 instances are deployed in subnets of a VPC. A subnet can contain multiple instances.\nThe security engineer is testing the procedure for EC2 isolation and opens an SSH session to the target instance. The procedure starts to simulate access to the target instance by an attacker. The security engineer removes the existing security group rules and adds security group rules to give the forensics team access to the target instance on port 22.\nAfter these changes, the security engineer notices that the SSH connection is still active and usable. When the security engineer runs a ping command to the public IP address of the target instance, the ping command is blocked.\nWhat should the security engineer do to isolate the target instance?
+A. Add an inbound rule to the security group to allow traffic from 0.0.0.0/0 for all ports. Add an outbound rule to the security group to allow traffic to 0.0.0.0/0 for all ports. Then immediately delete these rules.
+B. Remove the port 22 security group rule. Attach an instance role policy that allows AWS Systems Manager Session Manager connections so that the forensics team can access the target instance.
+*C. Create a network ACL that is associated with the target instance's subnet. Add a rule at the top of the inbound rule set to deny all traffic from 0.0.0.0/0. Add a rule at the top of the outbound rule set to deny all traffic to 0.0.0.0/0.
+D. Create an AWS Systems Manager document that adds a host-level firewall rule to block all inbound traffic and outbound traffic. Run the document on the target instance.
+https://www.examtopics.com/discussions/amazon/view/382927-exam-aws-certified-security-specialty-scs-c03-topic-1/
+
+---
+
 Q: A development team is creating an open source toolset to manage a company's software as a service (SaaS) application. The company stores the code in a public repository so that anyone can view and download the toolset's code.\nThe company discovers that the code contains an IAM access key and secret key that provide access to internal resources in the company’s AWS environment\nA security engineer must implement a solution to identify whether unauthorized usage of the exposed credentials has occurred. The solution also must prevent any additional usage of the exposed credentials.\nWhich combination of steps will meet these requirements? (Choose two.)
-A. Use AWS Identity and Access Management Access Analyzer to determine which resources the exposed credentials accessed and who used them.
+*A. Use AWS Identity and Access Management Access Analyzer to determine which resources the exposed credentials accessed and who used them.
 *B. Deactivate the exposed IAM access key from the user’s IAM account.
 C. Create a rule in Amazon GuardDuty to block the access key in the source code from being used.
 D. Create a new IAM access key and secret key for the user whose credentials were exposed.
-*E. Generate an IAM credential report. Check the report to determine when the user that owns the access key last logged in.
+E. Generate an IAM credential report. Check the report to determine when the user that owns the access key last logged in.
 https://www.examtopics.com/discussions/amazon/view/382906-exam-aws-certified-security-specialty-scs-c03-topic-1/
 
 ---
 
-Q: A company runs several applications on Amazon Elastic Kubernetes Service (Amazon EKS). The company needs a solution to detect any Kubernetes security risks by monitoring Amazon EKS audit logs in addition to operating system, networking, and file events. The solution must send email alerts for any identified risks to a mailing list that is associated with a security team.\nWhich solution will meet these requirements?
-A. Deploy AWS Security Hub and enable security standards that contain EKS controls. Create an Amazon Simple Notification Service (Amazon SNS) topic and set the security team's mailiing list as a subscriber. Use an Amazon EventBridge rule to send relevant Security Hub events to the SNS topic.
-B. Enable Amazon Inspector container image scanning. Configure Amazon Detective to analyze EKS security logs. Create Amazon CloudWatch log groups for EKS audit logs. Use an AWS Lambda function to process the logs and to send email alerts to the security team.
-*C. Enable Amazon GuardDuty Enable EKS Protection and Runtime Monitoring for Amazon EKS in GuardDuty. Create an Amazon Simple Notification Service (Amazon SNS) topic and set the security team's mailing list as a subscriber. Use an Amazon EventBridge rule to send relevant GuardDuty events to the SNS topic.
-D. Install the AWS Systems Manager Agent (SSM Agent) on all EKS nodes. Configure Amazon CloudWatch Logs lo collect EKS audit logs. Create an Amazon Simple Notification Service (Amazon SNS) topic and set the security team's mailing list as a subscriber. Configure a CloudWatch alarm to publish a message to the SNS topic when now audit logs are generated.
-https://www.examtopics.com/discussions/amazon/view/382891-exam-aws-certified-security-specialty-scs-c03-topic-1/
+Q: A company runs an application on an Amazon EC2 instance. The application generates invoices and stores them in an Amazon S3 bucket. The instance profile that is attached to the instance has appropriate access to the S3 bucket.\nThe company needs to share each invoice with multiple clients that do not have AWS credentials. Each client must be able to download only the client's own invoices. Clients must download their invoices within 1 hour of invoice creation. Clients must use only temporary credentials to access the company’s AWS resources.\nA security engineer creates a script that runs on the EC2 instance. The script uses the instance profile to generate an S3 presigned URL for the clients. Each presigned URL expires after 1 hour.\nWhich additional step will meet these requirements?
+A. Update the S3 bucket policy to ensure that clients that use presigned URLs have the S3:Get* permission and the S3:List* permission to access S3 objects in the bucket.
+B. Add a StringEquals condition to the IAM role policy for the EC2 instance profile. Configure the policy condition to restrict access based on the s3:ResourceTag/ClientId tag of each invoice. Tag each generated invoice with the ID of its corresponding client.
+*C. Update the script to use AWS Security Token Service (AWS STS) to obtain new credentials each time the script runs by assuming a new role that has S3 GetObject permissions. Use the credentials to generate the presigned URLs.
+D. Generate an access key and a secret key for an IAM user that has S3:GetObject permissions on the S3 bucket. Embed the keys into the script. Use the keys to generate the presigned URLs.
+https://www.examtopics.com/discussions/amazon/view/404534-exam-aws-certified-security-specialty-scs-c03-topic-1/
+
+---
+
+Q: A company is using Amazon Made, AWS Firewall Manager. Amazon Inspector, and AWS Shield Advanced in its AWS account. The company wants to receive alerts if a DDoS attack occurs against the account.\nWhich solution will meet this requirement?
+A. Use Macie to detect an active DDoS event. Create Amazon CloudWatch alarms that respond to Macie findings.
+B. Use Amazon Inspector to review resources and to invoke Amazon CloudWatch alarms for any resources that are vulnerable to DDoS attacks.
+C. Create an Amazon CloudWatch alarm that monitors Firewall Manager metrics for an active DDoS event.
+*D. Create an Amazon CloudWatch alarm that monitors Shield Advanced metrics for an active DDoS event.
+https://www.examtopics.com/discussions/amazon/view/404535-exam-aws-certified-security-specialty-scs-c03-topic-1/
+
+---
+
+Q: A company runs critical workloads in an on-premises data center. The company wants to implement an AWS based disaster recovery (DR) solution that will achieve an RTO of less than 1 hour. The company needs to continuously replicate physical and virtual servers. The company must optimize costs for data storage and bandwidth usage. The DR solution must be automated.\nWhich solution will meet these requirements?
+A. Use AWS Backup to directly replicate the on-premises servers to AWS. Enable cross-Region backup copying and data vaulting. Configure recovery points to match the defined RTO. Use AWS Step Functions to automate recovery steps.
+B. Configure an AWS Storage Gateway Volume Gateway to use Amazon Elastic Block Store (Amazon EBS) snapshots for recovery. Configure AWS Backup to manage the snapshots. Create automated recovery procedures.
+*C. Enable AWS Elastic Disaster Recovery. Configure replication agents to continuously replicate each on-premises server. Enable the default staging area subnet configuration.
+D. Create an AWS Direct Connect connection between the on-premises data center and AWS. Configure Amazon EventBridge to monitor for failures and to invoke AWS Lambda functions that launch preconfigured Amazon EC2 instances from AMIs in the event of an incident.
+https://www.examtopics.com/discussions/amazon/view/404536-exam-aws-certified-security-specialty-scs-c03-topic-1/
+
+---
+
+Q: An ecommerce website was down for 1 hour following a DDoS attack. Users were unable to connect to the website during the attack period. The ecommerce company's security team is worried about future potential attacks and wants to prepare for such events. The company needs to minimize downtime in its response to similar attacks in the future.\nWhich steps would help achieve this? (Choose two.)
+A. Enable Amazon GuardDuty to automatically monitor for malicious activity and block unauthorized access.
+*B. Subscribe to AWS Shield Advanced and reach out to AWS Support in the event of an attack.
+C. Use VPC Flow Logs to monitor network traffic and an AWS Lambda function to automatically block an attacker's IP using security groups.
+D. Set up an Amazon EventBridge rule to monitor the AWS CloudTrail events in real time, use AWS Config rules to audit the configuration, and use AWS Systems Manager for remediation.
+*E. Use AWS WAF to create rules to respond to such attacks.
+https://www.examtopics.com/discussions/amazon/view/404539-exam-aws-certified-security-specialty-scs-c03-topic-1/
+
+---
+
+Q: A company has two AWS accounts: Account A and Account B. Each account has a VPC. An application that runs in the VPC in Account A needs to write to an Amazon S3 bucket in Account B. The application in Account A already has permission to write to the S3 bucket in Account B.\nThe application and the S3 bucket are in the same AWS Region. The company cannot send network traffic over the public internet.\nWhich solution will meet these requirements?
+A. In both accounts, create a transit gateway and VPC attachments in a subnet in each Availability Zone. Update the VPC route tables.
+B. Deploy a software VPN appliance in Account A. Create a VPN connection between the software VPN appliance and a virtual private gateway in Account B.
+C. Create a VPC peering connection between the VPC in Account A and the VPC in Account B. Update the VPC route tables, network ACLs, and security groups to allow network traffic between the peered IP ranges.
+*D. In Account A, create a gateway VPC endpoint for Amazon S3. Update the VPC route table in Account A.
+https://www.examtopics.com/discussions/amazon/view/404540-exam-aws-certified-security-specialty-scs-c03-topic-1/
+
+---
+
+Q: A security engineer needs to build a solution to turn AWS CloudTrail back on in multiple AWS Regions in case it is ever turned off.\nWhat is the MOST efficient way to implement this solution?
+*A. Use AWS Config with a managed rule to initiate the AWS-EnableCloudTrail remediation.
+B. Create an Amazon EventBridge event with a cloudtrail.amazonaws.com event source and a StartLogging event name to invoke an AWS Lambda function to call the StartLogging API.
+C. Create an Amazon CloudWatch alarm with a cloudtrail.amazonaws.com event source and a StopLogging event name to invoke an AWS Lambda function to call the StartLogging API.
+D. Monitor AWS Trusted Advisor to ensure CloudTrail logging is enabled.
+https://www.examtopics.com/discussions/amazon/view/404541-exam-aws-certified-security-specialty-scs-c03-topic-1/
+
+---
+
+Q: A company uses AWS Organizations to manage an organization that consists of three workload OUs: Production. Development, and Testing. The company uses AWS CloudFormation templates to define and deploy workload infrastructure in AWS accounts that are associated with the OUs. Different SCPs are attached to each workload OU.\nThe company successfully deployed a CloudFormation stack update to workloads in the Development OU and the Testing OU. When the company uses the same CloudFormation template to deploy the stack update in an account in the Production OU, the update fails. The error message reports insufficient IAM permissions.\nWhat is the FIRST step that a security engineer should take to troubleshoot this issue?
+*A. Review the AWS CloudTrail logs in the account in the Production OU. Search for any failed API calls from CloudFormation during the deployment attempt.
+B. Remove all the SCPs that are attached to the Production OU. Rerun the CloudFormation stack update to determine if the SCPs were preventing the CloudFormation API calls
+C. Confirm that the role used by CloudFormation has sufficient permissions to create, update, and delete the resources that are referenced in the CloudFormation template
+D. Make all the SCPs that are attached to the Production OU the same as the SCPs that are attached to the Testing OU.
+https://www.examtopics.com/discussions/amazon/view/408956-exam-aws-certified-security-specialty-scs-c03-topic-1/
 
 ---
 
@@ -257,39 +377,12 @@ https://www.examtopics.com/discussions/amazon/view/382948-exam-aws-certified-sec
 
 ---
 
-Q: A company recently experienced a malicious attack on its cloud-based environment. The company successfully contained and eradicated the attack A security engineer is performing incident response work. The security engineer needs to recover an Amazon RDS database cluster to the last known good version. The database cluster is configured to generate automated backups with a retention period of 14 days. The initial attack occurred 5 days ago at exactly 3:15 PM\nWhich solution will meet this requirement?
-*A. Identify the Regional duster ARN for the database. Use the ARN to restore the Regional cluster by using the Restore to point in time feature. Set a target time 5 days ago at 3:14 PM.
-B. Identify the Regional cluster ARN for the database. List snapshots that have been taken of the cluster. Restore the database by using the snapshot that has a creation time that is closest to 5 days ago at 3:14 PM.
-C. List all snapshots that have been taken of all the company's RDS databases. Identify the snapshot that was taken closest to 5 days ago at 3:14 PM and restore it.
-D. Identify the Regional cluster ARN for the database. Use the ARN to restore the Regional cluster by using the Restore to point in time feature. Set a target time 14 days ago.
-https://www.examtopics.com/discussions/amazon/view/382907-exam-aws-certified-security-specialty-scs-c03-topic-1/
-
----
-
-Q: A security engineer for a company needs to design an incident response plan that addresses compromised IAM user account credentials. The company uses an organization in AWS Organizations and AWS IAM Identify Center to manage user access. The company uses a delegated administrator account to implement AWS Security Hub. The delegated administrator account contains an organizational trail in AWS CloudTrail that logs all events to an Amazon S3 bucket. The company has also configured an organizational event data store that captures all events from the trail.\nThe incident response plan must provide steps that the security engineer can take to immediately disable any compromised IAM user when the security engineer receives a notification of a security incident.\nThe plan must prevent the IAM user from being used in any AWS account. The plan must also collect all AWS actions that the compromised IAM user performed across all accounts in the previous 7 days.\nWhich solution will meet these requirements?
-A. Disable the compromised IAM user in the organization management account. Use Amazon Athena to query the organizational CloudTrail logs in the S3 bucket for actions that the IAM user performed in the previous 7 days.
-B. Remove all IAM policies that are attached to the IAM user in the organization management account. Use Security Hub to query the CloudTrail logs for actions that the IAM user performed in the previous 7 days.
-C. Remove any permission sets that arc assigned to the IAM user in IAM Identity Center. Use Amazon CloudWatch Logs Insights to directly query the organizational CloudTrail logs in the S3 bucket for actions that the IAM user performed m the previous 7 days.
-*D. Disable the IAM user's access in IAM Identity Center. Use CloudTrail to query the organizational event data store for actions that the IAM user performed in the previous 7 days.
-https://www.examtopics.com/discussions/amazon/view/382926-exam-aws-certified-security-specialty-scs-c03-topic-1/
-
----
-
 Q: A security engineer is designing security controls for a fleet of Amazon EC2 instances that run sensitive workloads in a VPC. The security engineer needs to implement a solution to detect and mitigate software vulnerabilities on the EC2 instances.\nWhich solution will meet this requirement?
 *A. Scan the EC2 instances by using Amazon Inspector. Apply security patches and updates by using AWS Systems Manager Patch Manager.
 B. Install host-based firewall and antivirus software on each EC2 instance. Use AWS Systems Manager Run Command to update the firewall and antivirus software.
 C. Install the Amazon CloudWatch agent on the EC2 instances. Enable detailed logging. Use Amazon EventBridge to review the software logs for anomalies.
 D. Scan the EC2 instances by using Amazon GuardDuty Malware Protection. Apply security patches and updates by using AWS Systems Manager Patch Manager.
 https://www.examtopics.com/discussions/amazon/view/382924-exam-aws-certified-security-specialty-scs-c03-topic-1/
-
----
-
-Q: A public subnet contains two Amazon EC2 instances. The subnet has a custom network ACL. A security engineer is designing a solution to improve the subnet security.\nThe solution must allow outbound traffic to an internet service that uses TLS through port 443. The solution also must deny inbound traffic that is destined for MySQL port 3306.\nWhich network ACL rule set meets these requirements?
-A. Use inbound rule 100 to allow traffic on TCP port 443. Use inbound rule 200 to deny traffic on TCP port 3306. Use outbound rule 100 to allow traffic on TCP port 443.
-*B. Use inbound rule 100 to deny traffic on TCP port 3306. Use inbound rule 200 to allow traffic on TCP port range 1024-65535. Use outbound rule 100 to allow traffic on TCP port 443.
-C. Use inbound rule 100 to allow traffic on TCP port range 1024-65535. Use inbound rule 200 to deny traffic on TCP port 3306. Use outbound rule 100 to allow traffic on TCP port 443.
-D. Use inbound rule 100 to deny traffic on TCP port 3306. Use inbound rule 200 to allow traffic on TCP port 443. Use outbound rule 100 to allow traffic on TCP port 443.
-https://www.examtopics.com/discussions/amazon/view/382932-exam-aws-certified-security-specialty-scs-c03-topic-1/
 
 ---
 
@@ -396,15 +489,6 @@ https://www.examtopics.com/discussions/amazon/view/382943-exam-aws-certified-sec
 
 ---
 
-Q: A company has enabled AWS Config for its organization in AWS Organizations. The company has deployed hundreds of Amazon S3 buckets across the organization.\nA security engineer needs to identify any S3 buckets that are not encrypted with AWS Key Management Service (AWS KMS). The security engineer also must prevent objects that are not encrypted with AWS KMS from being uploaded to the S3 buckets.\nWhich solution will meet these requirements?
-*A. Use the s3-default-encryplion-kms AWS. Config managed rule to identity unencrypted S3 buckets. Create an SCP to allow the s3:PutObject action only when the object is encrypted with AWS KMS.
-B. Use the s3-default-encryption-kms AWS. Config managed rule to identify unencrypted S3 buckets. Create bucket policies for each S3 bucket to deny the s3:PutObject action only when the object has server-since encryption with S3 managed keys (SSE-S3).
-C. Use the s3-bucket-ssl-requests-only AWS Config managed rule to identify unencrypted S3 buckets. Create an SCP to allow the s3:PutObject action only when the object is encrypted with AWS KMS.
-D. Use the s3-bucket-ssl-requests-only AWS Config managed rule to identify unencrypted S3 buckets. Create bucket policies for each S3 bucket to allow the s3:PutObject action only when the object is encrypted with AWS KMS.
-https://www.examtopics.com/discussions/amazon/view/382933-exam-aws-certified-security-specialty-scs-c03-topic-1/
-
----
-
 Q: A company runs an application on a fleet of Amazon EC2 instances. The company can remove instances from the fleet without risk to the application. All EC2 instances use the same security group named ProdFleet. Amazon GuardDuty and AWS Config are active in the company's AWS account.\nA security engineer needs to provide a solution that will prevent an EC2 instance from sending outbound traffic if GuardDuty generates a cryptocurrency finding event. The security engineer creates a new security group named isolate that contains no outbound rules. The security engineer configures an AWS Lambda function to remove an EC2 instance from the ProdFleet security group and add it to the isolate security group.\nWhich additional step will meet this requirement?
 A. Configure GuardDuty to directly invoke the Lambda function if GuardDuty generates a CryptoCurrency:EC2/* finding event.
 B. Configure an AWS Config rule that invokes the Lambda function if a CryptoCurroncy:EC2/* configuration change event occurs for an EC2 instance.
@@ -423,17 +507,6 @@ https://www.examtopics.com/discussions/amazon/view/382905-exam-aws-certified-sec
 
 ---
 
-Q: A company uses AWS IAM Identity Center to manage access to its AWS accounts. The accounts are in an organization in AWS Organizations.\nA security engineer needs to set up delegated administration of IAM Identity Center in the organization's management account.\nWhich combination of steps should the security engineer perform in IAM Identity Center before configuring delegated administration? (Choose three.)
-A. Grant least privilege access to the organization's management account.
-*B. Create a new IAM Identity Center directory in the organization's management account.
-C. Set up a second AWS Region in the organization's management account.
-*D. Create permission sets for use only in the organization's management account.
-E. Create IAM users for use only in the organization's management account.
-*F. Create user assignments only in the organization’s management account.
-https://www.examtopics.com/discussions/amazon/view/382928-exam-aws-certified-security-specialty-scs-c03-topic-1/
-
----
-
 Q: A company finds that one of its Amazon EC2 instances suddenly has a high CPU usage. The company does not know whether the EC2 instance is compromised or whether the operating system is performing background cleanup.\nWhich combination of steps should a security engineer take before investigating the issue? (Choose three.)
 A. Disable termination protection for the EC2 instance if termination protection has not been disabled.
 *B. Enable termination protection for the EC2 instance if termination protection has not been enabled.
@@ -442,15 +515,6 @@ D. Remove all snapshots of the Amazon Elastic Block Store (Amazon EBS) data volu
 *E. Capture the EC2 instance metadata, and then tag the EC2 instance as under quarantine.
 F. Immediately remove any entries in the EC2 instance metadata that contain sensitive information.
 https://www.examtopics.com/discussions/amazon/view/382908-exam-aws-certified-security-specialty-scs-c03-topic-1/
-
----
-
-Q: A company's security engineer is designing an isolation procedure for Amazon EC2 instances as part of an incident response plan. The security engineer needs to isolate a target instance to block any traffic to and from the target instance, except for traffic from the company's forensics team. Each of the company's EC2 instances has its own dedicated security group. The EC2 instances are deployed in subnets of a VPC. A subnet can contain multiple instances.\nThe security engineer is testing the procedure for EC2 isolation and opens an SSH session to the target instance. The procedure starts to simulate access to the target instance by an attacker. The security engineer removes the existing security group rules and adds security group rules to give the forensics team access to the target instance on port 22.\nAfter these changes, the security engineer notices that the SSH connection is still active and usable. When the security engineer runs a ping command to the public IP address of the target instance, the ping command is blocked.\nWhat should the security engineer do to isolate the target instance?
-A. Add an inbound rule to the security group to allow traffic from 0.0.0.0/0 for all ports. Add an outbound rule to the security group to allow traffic to 0.0.0.0/0 for all ports. Then immediately delete these rules.
-*B. Remove the port 22 security group rule. Attach an instance role policy that allows AWS Systems Manager Session Manager connections so that the forensics team can access the target instance.
-C. Create a network ACL that is associated with the target instance's subnet. Add a rule at the top of the inbound rule set to deny all traffic from 0.0.0.0/0. Add a rule at the top of the outbound rule set to deny all traffic to 0.0.0.0/0.
-D. Create an AWS Systems Manager document that adds a host-level firewall rule to block all inbound traffic and outbound traffic. Run the document on the target instance.
-https://www.examtopics.com/discussions/amazon/view/382927-exam-aws-certified-security-specialty-scs-c03-topic-1/
 
 ---
 
@@ -500,33 +564,6 @@ https://www.examtopics.com/discussions/amazon/view/382945-exam-aws-certified-sec
 
 ---
 
-Q: A company runs an application on an Amazon EC2 instance. The application generates invoices and stores them in an Amazon S3 bucket. The instance profile that is attached to the instance has appropriate access to the S3 bucket.\nThe company needs to share each invoice with multiple clients that do not have AWS credentials. Each client must be able to download only the client's own invoices. Clients must download their invoices within 1 hour of invoice creation. Clients must use only temporary credentials to access the company’s AWS resources.\nA security engineer creates a script that runs on the EC2 instance. The script uses the instance profile to generate an S3 presigned URL for the clients. Each presigned URL expires after 1 hour.\nWhich additional step will meet these requirements?
-A. Update the S3 bucket policy to ensure that clients that use presigned URLs have the S3:Get* permission and the S3:List* permission to access S3 objects in the bucket.
-B. Add a StringEquals condition to the IAM role policy for the EC2 instance profile. Configure the policy condition to restrict access based on the s3:ResourceTag/ClientId tag of each invoice. Tag each generated invoice with the ID of its corresponding client.
-*C. Update the script to use AWS Security Token Service (AWS STS) to obtain new credentials each time the script runs by assuming a new role that has S3 GetObject permissions. Use the credentials to generate the presigned URLs.
-D. Generate an access key and a secret key for an IAM user that has S3:GetObject permissions on the S3 bucket. Embed the keys into the script. Use the keys to generate the presigned URLs.
-https://www.examtopics.com/discussions/amazon/view/404534-exam-aws-certified-security-specialty-scs-c03-topic-1/
-
----
-
-Q: A company is using Amazon Made, AWS Firewall Manager. Amazon Inspector, and AWS Shield Advanced in its AWS account. The company wants to receive alerts if a DDoS attack occurs against the account.\nWhich solution will meet this requirement?
-A. Use Macie to detect an active DDoS event. Create Amazon CloudWatch alarms that respond to Macie findings.
-B. Use Amazon Inspector to review resources and to invoke Amazon CloudWatch alarms for any resources that are vulnerable to DDoS attacks.
-C. Create an Amazon CloudWatch alarm that monitors Firewall Manager metrics for an active DDoS event.
-*D. Create an Amazon CloudWatch alarm that monitors Shield Advanced metrics for an active DDoS event.
-https://www.examtopics.com/discussions/amazon/view/404535-exam-aws-certified-security-specialty-scs-c03-topic-1/
-
----
-
-Q: A company runs critical workloads in an on-premises data center. The company wants to implement an AWS based disaster recovery (DR) solution that will achieve an RTO of less than 1 hour. The company needs to continuously replicate physical and virtual servers. The company must optimize costs for data storage and bandwidth usage. The DR solution must be automated.\nWhich solution will meet these requirements?
-A. Use AWS Backup to directly replicate the on-premises servers to AWS. Enable cross-Region backup copying and data vaulting. Configure recovery points to match the defined RTO. Use AWS Step Functions to automate recovery steps.
-B. Configure an AWS Storage Gateway Volume Gateway to use Amazon Elastic Block Store (Amazon EBS) snapshots for recovery. Configure AWS Backup to manage the snapshots. Create automated recovery procedures.
-*C. Enable AWS Elastic Disaster Recovery. Configure replication agents to continuously replicate each on-premises server. Enable the default staging area subnet configuration.
-D. Create an AWS Direct Connect connection between the on-premises data center and AWS. Configure Amazon EventBridge to monitor for failures and to invoke AWS Lambda functions that launch preconfigured Amazon EC2 instances from AMIs in the event of an incident.
-https://www.examtopics.com/discussions/amazon/view/404536-exam-aws-certified-security-specialty-scs-c03-topic-1/
-
----
-
 Q: A company in France uses Amazon Cognito with the Cognito Hosted UI as an identity broker for sign-in and sign-up processes. The company is marketing an application and expects that all the application's users will come from France.\nWhen the company launches the application, the company’s security team observes fraudulent sign-ups for the application. Most of the fraudulent registrations are from users outside of France.\nThe security team needs a solution to perform custom validation at sign-up. Based on the results of the validation, the solution must accept or deny the registration request.\nWhich combination of steps will meet these requirements? (Choose two.)
 *A. Create a pre sign-up AWS Lambda trigger. Associate the Amazon Cognito function with the Amazon Cognito user pool.
 *B. Use a geographic match rule statement to configure an AWS WAF web ACL. Associate the web ACL with the Amazon Cognito user pool.
@@ -543,34 +580,6 @@ B. Enable Amazon Cognito and create a new identity pool for Amazon Q Developer.
 C. Enable Amazon Cognito and set up Amazon Q Developer as an AWS managed application
 D. Enable AWS IAM Identity Center and create a new identity pool for Amazon Q Developer.
 https://www.examtopics.com/discussions/amazon/view/404538-exam-aws-certified-security-specialty-scs-c03-topic-1/
-
----
-
-Q: An ecommerce website was down for 1 hour following a DDoS attack. Users were unable to connect to the website during the attack period. The ecommerce company's security team is worried about future potential attacks and wants to prepare for such events. The company needs to minimize downtime in its response to similar attacks in the future.\nWhich steps would help achieve this? (Choose two.)
-A. Enable Amazon GuardDuty to automatically monitor for malicious activity and block unauthorized access.
-*B. Subscribe to AWS Shield Advanced and reach out to AWS Support in the event of an attack.
-C. Use VPC Flow Logs to monitor network traffic and an AWS Lambda function to automatically block an attacker's IP using security groups.
-D. Set up an Amazon EventBridge rule to monitor the AWS CloudTrail events in real time, use AWS Config rules to audit the configuration, and use AWS Systems Manager for remediation.
-*E. Use AWS WAF to create rules to respond to such attacks.
-https://www.examtopics.com/discussions/amazon/view/404539-exam-aws-certified-security-specialty-scs-c03-topic-1/
-
----
-
-Q: A company has two AWS accounts: Account A and Account B. Each account has a VPC. An application that runs in the VPC in Account A needs to write to an Amazon S3 bucket in Account B. The application in Account A already has permission to write to the S3 bucket in Account B.\nThe application and the S3 bucket are in the same AWS Region. The company cannot send network traffic over the public internet.\nWhich solution will meet these requirements?
-A. In both accounts, create a transit gateway and VPC attachments in a subnet in each Availability Zone. Update the VPC route tables.
-B. Deploy a software VPN appliance in Account A. Create a VPN connection between the software VPN appliance and a virtual private gateway in Account B.
-C. Create a VPC peering connection between the VPC in Account A and the VPC in Account B. Update the VPC route tables, network ACLs, and security groups to allow network traffic between the peered IP ranges.
-*D. In Account A, create a gateway VPC endpoint for Amazon S3. Update the VPC route table in Account A.
-https://www.examtopics.com/discussions/amazon/view/404540-exam-aws-certified-security-specialty-scs-c03-topic-1/
-
----
-
-Q: A security engineer needs to build a solution to turn AWS CloudTrail back on in multiple AWS Regions in case it is ever turned off.\nWhat is the MOST efficient way to implement this solution?
-*A. Use AWS Config with a managed rule to initiate the AWS-EnableCloudTrail remediation.
-B. Create an Amazon EventBridge event with a cloudtrail.amazonaws.com event source and a StartLogging event name to invoke an AWS Lambda function to call the StartLogging API.
-C. Create an Amazon CloudWatch alarm with a cloudtrail.amazonaws.com event source and a StopLogging event name to invoke an AWS Lambda function to call the StartLogging API.
-D. Monitor AWS Trusted Advisor to ensure CloudTrail logging is enabled.
-https://www.examtopics.com/discussions/amazon/view/404541-exam-aws-certified-security-specialty-scs-c03-topic-1/
 
 ---
 
@@ -625,6 +634,42 @@ B. Create an Amazon EventBridge rule that filters for Security Hub findings abou
 *C. Create an SCP that prevents the creation or modification of security group rules that allow inbound traffic from all IP addresses on TCP port 22.
 D. Deploy AWS Network Firewall with a rule that inspects all inbound traffic and prevents incoming traffic on TCP port 22.
 https://www.examtopics.com/discussions/amazon/view/404548-exam-aws-certified-security-specialty-scs-c03-topic-1/
+
+---
+
+Q: A company runs an application on a fleet of Amazon EC2 instances. The application is accessible to users around the world. The company associates an AWS WAF web ACL with an Application Load Balancer (ALB) that routes traffic to the EC2 instances.\nA security engineer is investigating a sudden increase in traffic to the application. The security engineer discovers a significant amount of potentially malicious requests coming from hundreds of IP addresses in two countries. The security engineer wants to quickly limit the potentially malicious requests. The security engineer does not want to prevent legitimate users from accessing the application.\nWhich solution will meet these requirements?
+*A. Use AWS WAF to implement a rate-based rule for all incoming requests.
+B. Use AWS WAF to implement a geographical match rule to block all incoming traffic from the two countries.
+C. Edit the ALB security group to include a geographical match rule to block all incoming traffic from the two countries
+D. Add deny rules to the ALB security group that prohibit incoming requests from the IP addresses.
+https://www.examtopics.com/discussions/amazon/view/409750-exam-aws-certified-security-specialty-scs-c03-topic-1/
+
+---
+
+Q: A security engineer needs to implement a logging solution that captures detailed information about objects in an Amazon S3 bucket. The solution must include details such as the IAM identity that makes the request and the time the object was accessed. The data must be structured and available in near real time.\nWhich solution meets these requirements?
+A. Enable Amazon S3 server access logging on the S3 bucket. Create a new S3 bucket to store the logs. Analyze the logs from the logging S3 bucket.
+*B. Enable AWS CloudTrail data event logging. Create a new S3 bucket to store the logs. Analyze the logs from the logging S3 bucket.
+C. Configure AWS Config rules to log access to the objects stored in the S3 bucket.
+D. Enable Amazon Macie to log access to the objects stored in the S3 bucket.
+https://www.examtopics.com/discussions/amazon/view/409753-exam-aws-certified-security-specialty-scs-c03-topic-1/
+
+---
+
+Q: A company needs to develop a code-signing application that will use a certificate authority (CA) to sign a code-signing certificate. The solution must use an AWS Key Management Service (AWS KMS) asymmetric key. The solution needs to collect and store immutable evidence about the creation, origin, and use of the KMS key for compliance purposes. This information must be made available to internal auditors.\nWhich solution meets these requirements?
+*A. Create an Amazon S3 bucket with S3 Object Lock enabled. Create an AWS CloudTrail trail with an event selector and log file validation enabled for all kms.amazonaws.com CreateKey events. Configure the event selector to send the CreateKey events to the S3 bucket. Create the KMS key. Update the event selector to filter for API calls that reference the KMS key ARN. Provide the auditors with access to the S3 bucket.
+B. Implement logging for application operations that reference the KMS key. Ensure that the logs contain all associated metadata. Store the logs in an Amazon CloudWatch Logs log group. Configure an automated export of the log group Send the export to the auditors.
+C. Create an Amazon DynamoDB table that the auditors can access. Create an AWS Lambda function that an Amazon EventBridge rule invokes. Configure the EventBridge rule to monitor KMS API calls. Configure the EventBridge rule to filter for all API calls that reference the KMS key ARN. Configure the Lambda function to store the contents of the API calls in the DynamoDB table.
+D. Set up Amazon CloudWatch Logs Insights with a custom metric to track KMS key usage. Visualize the metrics by using a CloudWatch dashboard with real-time monitoring. Configure CloudWatch alarms. Use a subscription filter to replicate the data to a separate account for the auditors to review.
+https://www.examtopics.com/discussions/amazon/view/409754-exam-aws-certified-security-specialty-scs-c03-topic-1/
+
+---
+
+Q: A company is planning to deploy a new log analysis environment. The company needs to implement a solution to analyze logs from multiple AWS services in near real time. The solution must provide the ability to search the logs. The solution also must send alerts to an existing Amazon Simple Notification Service (Amazon SNS) topic when specific logs match detection rules.\nWhich solution will meet these requirements?
+*A. Analyze the logs by using Amazon OpenSearch Service. Search the logs from the OpenSearch API. Use OpenSearch Service Security Analytics to match logs with detection rules and to send alerts to the SNS topic.
+B. Analyze the logs by using AWS Security Hub. Search the logs from the Findings page in Security Hub. Create custom actions to match logs with detection rules and to send alerts to the SNS topic.
+C. Analyze the logs by using Amazon CloudWatch Logs. Use a subscription filter to match logs with detection rules and to send alerts to the SNS topic. Search the logs manually by using CloudWatch Logs Insights.
+D. Analyze the logs by using Amazon QuickSight. Search the logs by listing the query results in a dashboard. Run queries to match logs with detection rules and to send alerts to the SNS topic
+https://www.examtopics.com/discussions/amazon/view/409755-exam-aws-certified-security-specialty-scs-c03-topic-1/
 
 ---
 
@@ -728,6 +773,41 @@ HOTSPOT_ROW: Step 3: | Select the custom action in Security Hub for EC2 host fin
 https://www.examtopics.com/discussions/amazon/view/404544-exam-aws-certified-security-specialty-scs-c03-topic-1/
 
 ---
+
+Q: HOTSPOT\n-\nA security engineer needs to prepare for a security audit of an AWS account.\nSelect the correct AWS resource from the following list to meet each requirement. Select each resource one time or not at all.\n• AWS Artifact reports\n• AWS Audit Manager controls\n• AWS Config conformance packs\n• AWS Config rules\n• Amazon Detective investigations\n• AWS Identity and Access Management Access Analyzer internal access analyzers
+TYPE: hotspot
+HOTSPOT_OPTIONS: AWS Artifact reports | AWS Audit Manager controls | AWS Config conformance packs | AWS Config rules | Amazon Detective investigations | AWS Identity and Access Management Access Analyzer internal access analyzers
+HOTSPOT_ROW: Automatically collect evidence from AWS CloudTrail, AWS Config, and AWS Security Hub for an assessment report. | AWS Audit Manager controls
+HOTSPOT_ROW: Determine which IAM principals within the AWS account have access to a specified resource. | AWS Identity and Access Management Access Analyzer internal access analyzers
+HOTSPOT_ROW: Download AWS security and compliance documents on demand. | AWS Artifact reports
+https://www.examtopics.com/discussions/amazon/view/409751-exam-aws-certified-security-specialty-scs-c03-topic-1/
+
+---
+
+Q: HOTSPOT\n-\nA company uses an organization in AWS Organizations to manage multiple AWS accounts. A security engineer needs to monitor the security compliance of AWS resources across the organization. The security engineer wants to receive notifications when any AWS resources does not comply with the company's security policies.\nSelect the correct AWS Config based solution from the following list to meet each requirement. Select each AWS Config based solution one time.\n• AWS Config aggregator\n• AWS Config conformance packs\n• AWS Config with AWS Systems Manager\n• AWS Config rules\n• AWS Config with AWS User Notifications
+TYPE: hotspot
+HOTSPOT_OPTIONS: AWS Config aggregator | AWS Config conformance packs | AWS Config with AWS Systems Manager | AWS Config rules | AWS Config with AWS User Notifications
+HOTSPOT_ROW: Provide a collection of compliance rules that can be deployed across the organization. | AWS Config conformance packs
+HOTSPOT_ROW: Centralize compliance data from multiple accounts and AWS Regions into a single account or unified visibly. | AWS Config aggregator
+HOTSPOT_ROW: Evaluate the configuration settings of AWS resources against desired settings. | AWS Config rules
+HOTSPOT_ROW: Automatically take corrective measures when resources are noncompliant. | AWS Config with AWS Systems Manager
+HOTSPOT_ROW: Deliver notifications when configuration changes or compliance violations are detected. | AWS Config with AWS User Notifications
+https://www.examtopics.com/discussions/amazon/view/408955-exam-aws-certified-security-specialty-scs-c03-topic-1/
+
+---
+
+Q: HOTSPOT\n-\nA security engineer is using the AWS Well-Architected Tool to evaluate a multi-tier web application that a company hosts on AWS. During the assessment, the security engineer identifies several resources that violate design principles of the Well-Architected Framework security pillar.\nSelect the security pillar design principle from the following list that each assessment finding primarily violates. Select each security pillar design principle one time.\n• Configure service and application logging\n• Reduce manual management and interactive access.\n• Deploy software programmatically.\n• Control traffic flow within your network layers.\n• Protecting data in transit.
+TYPE: hotspot
+HOTSPOT_OPTIONS: Configure service and application logging. | Reduce manual management and interactive access. | Deploy software programmatically. | Control traffic flow within your network layers. | Protecting data in transit.
+HOTSPOT_ROW: Application servers require manual software patching through direct administrator access, which bypasses automated deployment pipelines. | Deploy software programmatically.
+HOTSPOT_ROW: Production database instances allow interactive developer sessions for troubleshooting and data analysis. | Reduce manual management and interactive access.
+HOTSPOT_ROW: Security groups allow access on ports 0-65535 from 0.0,0.0/0. A WAF is configured with default rules. | Control traffic flow within your network layers.
+HOTSPOT_ROW: Communication between the database and application workload tiers uses HTTP. | Protecting data in transit.
+HOTSPOT_ROW: Security events are detected only through weekly manual reviews of raw AWS CloudTrail logs that do not provide automated alerts. | Configure service and application logging.
+https://www.examtopics.com/discussions/amazon/view/409752-exam-aws-certified-security-specialty-scs-c03-topic-1/
+
+---
+
 
 
 `;
