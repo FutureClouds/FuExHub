@@ -2727,6 +2727,52 @@ https://www.examtopics.com/discussions/amazon/view/394086-exam-aws-certified-adv
 
 ---
 
+Q: A company wants to use SSL/TLS certificates that are issued by AWS Certificate Manager (ACM) to secure the company's social media web application. The application runs on backend Amazon EC2 instances behind an Application Load Balancer (ALB). The company uses Amazon Route 53 to manage DNS records. The company needs to integrate ACM with the EC2 instances and Route 53.\nWhich solution will meet this requirement?
+*A. Request a public certificate from ACM for the domain name that is configured in Route 53. Configure the ALB to use the public certificate Configure the A record in Route 53 to point to the ALB alias.
+B. Request a private certificate from ACM for the domain name that is configured in Route 53. Configure the ALB to use the private certificate. Configure the A record in Route 53 to point to the ALB domain name.
+C. Request two private certificates from ACM for the domain name that is configured in Route 53. Configure the ALB to use one private certificate. Configure the A record in Route 53 to point to the ALB alias. Configure the backend EC2 instances to use the second private certificate.
+D. Request a private certificate and a public certificate from ACM for the domain name that is configured in Route 53. Configure the ALB to use the public certificate. Configure the A record in Route 53 to point to the ALB domain name. Configure the backend EC2 instances to use the private certificate.
+https://www.examtopics.com/discussions/amazon/view/413083-exam-aws-certified-advanced-networking-specialty-ans-c01/
+
+---
+
+Q: A company has an AWS Direct Connect connection between an on-premises data center and a single private VIF in the company's VPC. The VPC contains resources that the company has secured by using security groups and network ACLs.\nA network engineer adds a subnet in the company's data center during a maintenance period. The network engineer notices that the BGP status for the private VIF is down after the maintenance activity. The Direct Connect connection was fully operational before the maintenance period. The network team verifies that layer 2 connectivity is working between the company’s router and the Direct Connect router.\nThe networking engineer must resolve this issue.\nWhich solution will meet this requirement?
+*A. Use route filters or aggregation on the company's router to limit the routes that are advertised from the company’s router.
+B. Add a route policy to the company's router to ensure that all routes that are advertised from the company's router are tagged with a correct BGP community string that begins in "7224".
+C. Revalidate the physical and logical path between the company's router and the Direct Connect router, including any Direct Connect Partner.
+D. Ensure that security groups and network ACLs allow TCP communications to port 179.
+https://www.examtopics.com/discussions/amazon/view/413084-exam-aws-certified-advanced-networking-specialty-ans-c01/
+
+---
+
+Q: A company uses AWS Cloud WAN as a primary connectivity solution to establish communication between VPCs in a multi-account and multi-Region environment. The company has created an attachment policy statement in the AWS Cloud WAN core network policy. The attachment policy requires acceptance for new VPC attachments, regardless of the segment that the new VPC attachment needs to be associated with.\nThe company wants to automate acceptance for new VPC attachments based on specific conditions. The company creates an AWS Lambda function to check for the specific conditions. A network engineer must integrate the Lambda function with the company’s existing architecture.\nWhich solution will meet these requirements in the MOST cost-effective way?
+A. Update the AWS Cloud WAN core network policy to create a network function group. Select the require acceptance option. Create a service insertion segment action that targets the Lambda function.
+*B. Create an Amazon EventBridge rule to match AWS Network Manager events for the VPC attachments. Configure the EventBridge rule to invoke the Lambda function when the rule matches.
+C. Use Amazon CloudWatch logs to stream AWS CloudTrail logs to an Amazon Kinesis data stream. Configure an event source mapping to target the Lambda function to process the event stream.
+D. Configure AWS Network Manager as a source for a pipe in Amazon EventBridge Pipes. Create a filter in the pipe for new VPC attachments. Set the Lambda function as the target of the pipe.
+https://www.examtopics.com/discussions/amazon/view/413085-exam-aws-certified-advanced-networking-specialty-ans-c01/
+
+---
+
+Q: A company hosts multiple workloads in a single VPC that has public subnets and private subnets. The company establishes an AWS Direct Connect connection to provide connectivity between the company’s on-premises network and the VPC.\nThe company purchases a domain in its AWS account. The domain needs to resolve to a private Application Load Balancer (ALB) for requests that originate from the company's network. The domain needs to resolve to a public ALB for requests that originate from the internet.\nWhich solution will meet these requirements?
+A. Create an Amazon CloudFront distribution for the domain. Create an AWS Lambda@Edge function that inspects each request and routes requests from the internet to the public ALB. Configure the Lambda@Edge function to route requests from the company’s network to the private ALB. Create an Amazon Route 53 public hosted zone for the domain. Include an A record that is configured as an alias that points to the CloudFront distribution.
+*B. Create an Amazon Route 53 public hosted zone for the domain. Include an alias record that points to the public ALCreate a Route 53 private hosted zone for the domain. Include an alias record that points to the private ALConfigure a Route 53 inbound resolver endpoint on the VPC. Configure the company's network DNS to forward queries for the domain to the endpoint.
+C. Create an Amazon Route 53 public hosted zone for the domain. Include an alias record that points to the public ALB. Create an additional alias record for the domain that routes to the private ALB. Associate a geolocation routing policy with the CIDR range of the company’s network.
+D. Deploy new Amazon EC2 instances that host DNS servers in each of the private subnets. Configure the DNS servers to return the IP address of the public ALB for requests from the internet. Configure the DNS servers to return the IP address of the private ALB for requests from the company’s network. Configure a public Amazon Route 53 inbound resolver to forward all requests for the domain to the EC2 instances. Enable client IP preservation.
+https://www.examtopics.com/discussions/amazon/view/413086-exam-aws-certified-advanced-networking-specialty-ans-c01/
+
+---
+
+Q: A company uses an organization in AWS Organizations to manage multiple AWS accounts. The company is centralizing VPC endpoint access in a shared services VPC that is in the company’s networking AWS account. The company uses a transit gateway to connect the shared services VPC in the networking account to spoke VPCs that are in separate AWS accounts. A network engineer tests the connectivity from the spoke VPCs to the central VPC endpoints and finds that everything works as expected.\nThe company expects to create new VPC endpoints in the shared services VPC. The network engineer wants to reduce the operational overhead for other teams to configure DNS resolution in an Amazon Route 53 private hosted zone when the other teams add new centralized VPC endpoints. The network engineer plans to use AWS CloudFormation as an infrastructure as code (IaC) solution.\nWhich combination of actions will meet these requirements with the LEAST operational overhead? (Choose two.)
+*A. Create a Route 53 Profile. From the networking account, use AWS Resource Access Manager (AWS RAM) to share the Route 53 Profile with the organization.
+B. In a CloudFormation stack set, create an Amazon EventBridge rule that invokes an AWS Lambda function any time a user creates a new private hosted zone.
+C. Create an AWS Lambda function that has cross-account permissions. Configure the Lambda function to associate a private hosted zone with each of the spoke VPCs.
+*D. Create the VPC endpoint, private hosted zone, and private hosted zone association to the Route 53 Profile resources in the same AWS CloudFormation stack in the networking AWS account.
+E. Create an AWS Lambda function that associates the new private hosted zone with the Route 53 Profile.
+https://www.examtopics.com/discussions/amazon/view/413087-exam-aws-certified-advanced-networking-specialty-ans-c01/
+
+---
+
 
 
 `;
